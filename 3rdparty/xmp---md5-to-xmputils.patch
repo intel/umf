@@ -1,0 +1,83 @@
+From 0b4e10149f00a856c14c01d824e3706cd19258c3 Mon Sep 17 00:00:00 2001
+From: Andrey Pavlenko <andrey.pavlenko@itseez.com>
+Date: Fri, 26 Sep 2014 18:39:53 +0400
+Subject: [PATCH] adding MD5 API to XMPUtils
+
+---
+ 3rdparty/xmp/XMPCore/source/XMPUtils.cpp | 40 ++++++++++++++++++++++++++++++++
+ 3rdparty/xmp/XMPCore/source/XMPUtils.hpp | 10 ++++++++
+ 2 files changed, 50 insertions(+)
+
+diff --git a/3rdparty/xmp/XMPCore/source/XMPUtils.cpp b/3rdparty/xmp/XMPCore/source/XMPUtils.cpp
+index 8d7e043..47d83e3 100644
+--- a/3rdparty/xmp/XMPCore/source/XMPUtils.cpp
++++ b/3rdparty/xmp/XMPCore/source/XMPUtils.cpp
+@@ -1972,4 +1972,44 @@ XMPUtils::CompareDateTime ( const XMP_DateTime & _in_left,
+ 
+ }	// CompareDateTime
+ 
++// ---------
++// class MD5
++// ---------
++
++XMPUtils::MD5::MD5()
++{
++    context = new MD5_CTX();
++    MD5Init( (MD5_CTX*)context );
++}
++
++XMPUtils::MD5::~MD5()
++{
++    delete (MD5_CTX*)context;
++    context = NULL;
++}
++
++void XMPUtils::MD5::update(XMP_Uns8 *inputBlock, XMP_Uns32 inputLen)
++{
++    MD5Update( (MD5_CTX*)context, inputBlock, inputLen );
++}
++
++XMP_VarString XMPUtils::MD5::finalize()
++{
++    static char hexDigits[] = "0123456789ABCDEF";
++    XMP_Uns8 digest[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
++
++    MD5Final(digest, (MD5_CTX*)context);
++
++    char str[33];
++    for(int i=0; i<16; i++)
++    {
++        str[2*i]   = hexDigits[digest[i] >> 4];
++        str[2*i+1] = hexDigits[digest[i] & 0xF];
++    }
++    str[32] = '\0';
++
++    return XMP_VarString(str);
++}
++
++
+ // =================================================================================================
+diff --git a/3rdparty/xmp/XMPCore/source/XMPUtils.hpp b/3rdparty/xmp/XMPCore/source/XMPUtils.hpp
+index 1863242..d756f31 100644
+--- a/3rdparty/xmp/XMPCore/source/XMPUtils.hpp
++++ b/3rdparty/xmp/XMPCore/source/XMPUtils.hpp
+@@ -185,6 +185,16 @@ public:
+ 					   XMP_StringPtr   destRoot,
+ 					   XMP_OptionBits  options );
+ 
++    class MD5 {
++    public:
++        MD5();
++        ~MD5();
++        void update(XMP_Uns8 *inputBlock, XMP_Uns32 inputLen);
++        XMP_VarString finalize();
++    private:
++        void* context;
++    };
++
+ };	// XMPUtils
+ 
+ // =================================================================================================
+-- 
+1.9.4.msysgit.0
+

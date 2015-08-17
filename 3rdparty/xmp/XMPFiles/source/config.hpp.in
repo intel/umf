@@ -1,0 +1,3 @@
+// Copyright (C) 2012, Intel Corporation, all rights reserved.
+
+#define xmpfiles_USE_TR1_SHARED_PTR @xmpfiles_USE_TR1_SHARED_PTR@

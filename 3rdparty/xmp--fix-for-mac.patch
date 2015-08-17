@@ -1,0 +1,154 @@
+From 9c546cf21b297e59acde2541b67e1465092d3cc5 Mon Sep 17 00:00:00 2001
+From: Anna Plyakina <Anna.Plyakina@itseez.com>
+Date: Tue, 5 Aug 2014 16:29:15 +0400
+Subject: [PATCH] Fix for compilation issues for Mac OS.
+
+---
+ 3rdparty/xmp/XMPCore/CMakeLists.txt                           | 10 +++++-----
+ 3rdparty/xmp/XMPFiles/CMakeLists.txt                          |  4 +---
+ 3rdparty/xmp/XMPFiles/source/PluginHandler/ModuleUtils.h      |  4 ++--
+ 3rdparty/xmp/XMPFiles/source/PluginHandler/OS_Utils_Linux.cpp |  2 +-
+ 3rdparty/xmp/XMPFiles/source/PluginHandler/PluginManager.h    |  2 +-
+ 3rdparty/xmp/public/include/XMP_Const.h                       |  5 +++++
+ 3rdparty/xmp/source/Host_IO-UNIX.cpp                          |  2 +-
+ CMakeLists.txt                                                |  4 +++-
+ 8 files changed, 19 insertions(+), 14 deletions(-)
+
+diff --git a/3rdparty/xmp/XMPCore/CMakeLists.txt b/3rdparty/xmp/XMPCore/CMakeLists.txt
+index aa3eb28..fb77635 100644
+--- a/3rdparty/xmp/XMPCore/CMakeLists.txt
++++ b/3rdparty/xmp/XMPCore/CMakeLists.txt
+@@ -7,10 +7,8 @@ add_definitions(-DHAVE_EXPAT_CONFIG_H)
+ 
+ if(WIN32)
+ 	configure_file(${XMP_MAIN_DIR}/expat_config_win32.h ${CMAKE_BINARY_DIR}/expat_config.h COPYONLY)
+-elseif(UNIX AND CMAKE_SYSTEM_NAME MATCHES "Linux")
++elseif(UNIX)
+ 	configure_file(${XMP_MAIN_DIR}/expat_config_linux.h ${CMAKE_BINARY_DIR}/expat_config.h COPYONLY)
+-else()
+-    message(FATAL_ERROR "Unsupported platform (not Win32 or Linux)")
+ endif()
+ include_directories(${CMAKE_BINARY_DIR})
+ 
+@@ -47,8 +45,10 @@ elseif(UNIX AND CMAKE_SYSTEM_NAME MATCHES "Linux")
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Win.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-POSIX.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Mac.cpp)
+-else()
+-    message(FATAL_ERROR "Unsupported platform (not Win32 or Linux)")
++elseif(APPLE)
++    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Win.cpp)
++    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-UNIX.cpp)
++    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Mac.cpp)
+ endif()
+ 
+ add_library(xmpcore OBJECT ${SOURCE} ${SOURCE_MD5} ${SOURCE_Common} ${SOURCE_Expat})
+\ No newline at end of file
+diff --git a/3rdparty/xmp/XMPFiles/CMakeLists.txt b/3rdparty/xmp/XMPFiles/CMakeLists.txt
+index 9eb8c65..84cec4f 100644
+--- a/3rdparty/xmp/XMPFiles/CMakeLists.txt
++++ b/3rdparty/xmp/XMPFiles/CMakeLists.txt
+@@ -48,11 +48,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/source/PluginHandler)
+ if(${WIN32})
+     list(REMOVE_ITEM SOURCE_PluginHandler ${CMAKE_CURRENT_SOURCE_DIR}/source/PluginHandler/OS_Utils_Linux.cpp)
+     list(REMOVE_ITEM SOURCE_PluginHandler ${CMAKE_CURRENT_SOURCE_DIR}/source/PluginHandler/OS_Utils_Mac.cpp)
+-elseif(${UNIX} AND ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
++elseif(UNIX)
+     list(REMOVE_ITEM SOURCE_PluginHandler ${CMAKE_CURRENT_SOURCE_DIR}/source/PluginHandler/OS_Utils_WIN.cpp)
+     list(REMOVE_ITEM SOURCE_PluginHandler ${CMAKE_CURRENT_SOURCE_DIR}/source/PluginHandler/OS_Utils_Mac.cpp)
+-else()
+-    message(FATAL_ERROR "Platform seems to be unsupported (not Win32 or Linux)")
+ endif()
+ 
+ add_library(xmpfile OBJECT
+diff --git a/3rdparty/xmp/XMPFiles/source/PluginHandler/ModuleUtils.h b/3rdparty/xmp/XMPFiles/source/PluginHandler/ModuleUtils.h
+index eedf6bf..2910a46 100644
+--- a/3rdparty/xmp/XMPFiles/source/PluginHandler/ModuleUtils.h
++++ b/3rdparty/xmp/XMPFiles/source/PluginHandler/ModuleUtils.h
+@@ -16,10 +16,10 @@
+ typedef HMODULE OS_ModuleRef;
+ #elif XMP_MacBuild
+ #include <CoreFoundation/CFBundle.h>
+-#include <tr1/memory>
++#include <memory>
+ typedef CFBundleRef OS_ModuleRef;
+ #elif XMP_UNIXBuild
+-#include <tr1/memory>
++#include <memory>
+ typedef void* OS_ModuleRef;
+ #else
+ #error	Unsupported operating system
+diff --git a/3rdparty/xmp/XMPFiles/source/PluginHandler/OS_Utils_Linux.cpp b/3rdparty/xmp/XMPFiles/source/PluginHandler/OS_Utils_Linux.cpp
+index 7808a98..411bfb4 100644
+--- a/3rdparty/xmp/XMPFiles/source/PluginHandler/OS_Utils_Linux.cpp
++++ b/3rdparty/xmp/XMPFiles/source/PluginHandler/OS_Utils_Linux.cpp
+@@ -28,7 +28,7 @@ typedef std::map<OS_ModuleRef, std::string>			ResourceFileToPathMap;
+ static ResourceFileToPathMap						sMapResourceFileToPath;
+ static XMP_ReadWriteLock							sMapModuleRWLock;
+ 
+-typedef std::tr1::shared_ptr<int>					FilePtr;
++typedef std::shared_ptr<int>					FilePtr;
+ 
+ static std::string GetModulePath( OS_ModuleRef inOSModule );
+ /** ************************************************************************************************************************
+diff --git a/3rdparty/xmp/XMPFiles/source/PluginHandler/PluginManager.h b/3rdparty/xmp/XMPFiles/source/PluginHandler/PluginManager.h
+index 65165b7..e448619 100644
+--- a/3rdparty/xmp/XMPFiles/source/PluginHandler/PluginManager.h
++++ b/3rdparty/xmp/XMPFiles/source/PluginHandler/PluginManager.h
+@@ -18,7 +18,7 @@
+ 	#include <functional>
+ 	#define XMP_SHARED_PTR std::shared_ptr
+ #else
+-	#define XMP_SHARED_PTR std::tr1::shared_ptr
++	#define XMP_SHARED_PTR std::shared_ptr
+ #endif
+ 
+ namespace XMP_PLUGIN
+diff --git a/3rdparty/xmp/public/include/XMP_Const.h b/3rdparty/xmp/public/include/XMP_Const.h
+index 0bb5958..5c08af6 100644
+--- a/3rdparty/xmp/public/include/XMP_Const.h
++++ b/3rdparty/xmp/public/include/XMP_Const.h
+@@ -438,7 +438,12 @@ enum {
+ 
+ #define kXMP_ArrayLastItem      ((XMP_Index)(-1L))
+ #define kXMP_UseNullTermination ((XMP_StringLen)(~0UL))
++
++#ifdef __APPLE__
++#define kXMP_NoOptions 0
++#else
+ #define kXMP_NoOptions          ((XMP_OptionBits)0UL)
++#endif /* __APPLE__ */
+ 
+ /// \name Macros for setting and testing general option bits.
+ /// @{
+diff --git a/3rdparty/xmp/source/Host_IO-UNIX.cpp b/3rdparty/xmp/source/Host_IO-UNIX.cpp
+index 4d8caa9..c917d7e 100644
+--- a/3rdparty/xmp/source/Host_IO-UNIX.cpp
++++ b/3rdparty/xmp/source/Host_IO-UNIX.cpp
+@@ -420,7 +420,7 @@ void Host_IO::CloseFolder ( Host_IO::FolderRef folder )
+ }	// Host_IO::CloseFolder
+ 
+ // =================================================================================================
+-// Host_IO::GetNextChild
++// Host_IO	::GetNextChild
+ // =====================
+ 
+ bool Host_IO::GetNextChild ( Host_IO::FolderRef folder, std::string* childName )
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2f2d787..f312bb4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -73,7 +73,9 @@ endif()
+ 
+ #enable_testing(true)
+ 
+-add_subdirectory(${VMF_3PTY_DIR}/gtest)
++if(BUILD_TESTS)
++    add_subdirectory(${VMF_3PTY_DIR}/gtest)
++endif()
+ add_subdirectory(${VMF_3PTY_DIR}/xmp)
+ add_subdirectory(modules)
+ 
+-- 
+1.9.4.msysgit.0
+

@@ -1,0 +1,12 @@
+// Copyright (C) 2012, Intel Corporation, all rights reserved.
+
+#pragma once
+
+#define VMF_VERSION_MAJOR @VMF_VERSION_MAJOR@
+#define VMF_VERSION_MINOR @VMF_VERSION_MINOR@
+
+#ifdef VMF_API_EXPORT
+  #define VMF_EXPORT __declspec(dllexport)
+#else
+  #define VMF_EXPORT
+#endif

@@ -1,0 +1,38 @@
+From 01f406a9e674a60e76cb080a1c7242a643e8bcb9 Mon Sep 17 00:00:00 2001
+From: Konstantin Matskevich <konstantin.matskevich@itseez.com>
+Date: Fri, 22 Aug 2014 11:08:23 +0400
+Subject: [PATCH] xmp 3gp support
+
+---
+ 3rdparty/xmp/XMPFiles/source/FileHandlers/MPEG4_Handler.cpp         | 2 +-
+ 3rdparty/xmp/XMPFiles/source/FormatSupport/ISOBaseMedia_Support.hpp | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/3rdparty/xmp/XMPFiles/source/FileHandlers/MPEG4_Handler.cpp b/3rdparty/xmp/XMPFiles/source/FileHandlers/MPEG4_Handler.cpp
+index 2dfe088..23afc46 100644
+--- a/3rdparty/xmp/XMPFiles/source/FileHandlers/MPEG4_Handler.cpp
++++ b/3rdparty/xmp/XMPFiles/source/FileHandlers/MPEG4_Handler.cpp
+@@ -236,7 +236,7 @@ bool MPEG4_CheckFormat ( XMP_FileFormat format,
+ 				parent->tempUI32 = MOOV_Manager::kFileIsModernQT;
+ 				return true;
+ 			} else if ( (brand == ISOMedia::k_mp41) || (brand == ISOMedia::k_mp42) || 
+-				(brand == ISOMedia::k_f4v) || ( brand == ISOMedia::k_avc1 ) ) {
++				(brand == ISOMedia::k_f4v) || ( brand == ISOMedia::k_avc1 ) || (brand == ISOMedia::k_3gp) ) {
+ 				haveCompatibleBrand = true;	// Need to keep looking in case 'qt  ' follows.
+ 			}
+ 
+diff --git a/3rdparty/xmp/XMPFiles/source/FormatSupport/ISOBaseMedia_Support.hpp b/3rdparty/xmp/XMPFiles/source/FormatSupport/ISOBaseMedia_Support.hpp
+index dd2fbea..b57050a 100644
+--- a/3rdparty/xmp/XMPFiles/source/FormatSupport/ISOBaseMedia_Support.hpp
++++ b/3rdparty/xmp/XMPFiles/source/FormatSupport/ISOBaseMedia_Support.hpp
+@@ -32,6 +32,7 @@ namespace ISOMedia {
+ 
+ 		k_mp41 = 0x6D703431UL, 	// Compatible brand codes
+ 		k_mp42 = 0x6D703432UL,
++		k_3gp  = 0x69736F6DUL,  // 3GPP
+ 		k_f4v  = 0x66347620UL,
+ 		k_avc1 = 0x61766331UL,
+ 		k_qt   = 0x71742020UL,
+-- 
+1.9.4.msysgit.0
+

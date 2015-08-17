@@ -1,0 +1,212 @@
+From c5c4ac9336c9e336a668e004e1211076fb69b639 Mon Sep 17 00:00:00 2001
+From: Konstantin Matskevich <konstantin.matskevich@itseez.com>
+Date: Tue, 5 Aug 2014 17:35:37 +0400
+Subject: [PATCH 1/3] fix warnings
+
+---
+ .../source/FormatSupport/Reconcile_Impl.cpp        |  4 ++--
+ .../XMPFiles/source/FormatSupport/XMPScanner.cpp   | 20 +++++++++---------
+ .../XMPFiles/source/FormatSupport/XMPScanner.hpp   |  2 +-
+ 3rdparty/xmp/public/include/XMP_Const.h            | 24 ++++++++++++----------
+ 4 files changed, 26 insertions(+), 24 deletions(-)
+
+diff --git a/3rdparty/xmp/XMPFiles/source/FormatSupport/Reconcile_Impl.cpp b/3rdparty/xmp/XMPFiles/source/FormatSupport/Reconcile_Impl.cpp
+index 9dcef3d..cf56662 100644
+--- a/3rdparty/xmp/XMPFiles/source/FormatSupport/Reconcile_Impl.cpp
++++ b/3rdparty/xmp/XMPFiles/source/FormatSupport/Reconcile_Impl.cpp
+@@ -395,10 +395,10 @@ void ReconcileUtils::Latin1ToUTF8 ( const void * _latin1Ptr, size_t latin1Len, s
+ 		if ( ch8 <= 0x7F ) {
+ 			(*utf8) += (char)ch8;	// Have an ASCII character.
+ 		} else if ( ch8 <= 0xBF ) {
+-			(*utf8) += 0xC2;	// Latin-1 80..BF are UTF-8 C280..C2BF.
++			(*utf8) += (char)0xC2;	// Latin-1 80..BF are UTF-8 C280..C2BF.
+ 			(*utf8) += (char)ch8;
+ 		} else {
+-			(*utf8) += 0xC3;	// Latin-1 C0..FF are UTF-8 C380..C3BF.
++			(*utf8) += (char)0xC3;	// Latin-1 C0..FF are UTF-8 C380..C3BF.
+ 			(*utf8) += (char)(ch8 - 0x40);
+ 		}
+ 	
+diff --git a/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.cpp b/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.cpp
+index 6d8fe82..de4a7b2 100644
+--- a/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.cpp
++++ b/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.cpp
+@@ -1255,13 +1255,13 @@ XMPScanner::Scan ( const void * bufferOrigin, XMP_Int64 bufferOffset, XMP_Int64
+ 	} else {
+ 		// *** snipPos->fMachine.reset ( new PacketMachine ( bufferOffset, bufferOrigin, bufferLength ) );		VC++ lacks reset
+ 		#if 0
+-			snipPos->fMachine = auto_ptr<PacketMachine> ( new PacketMachine ( bufferOffset, bufferOrigin, bufferLength ) );
++			snipPos->fMachine = shared_ptr<PacketMachine> ( new PacketMachine ( bufferOffset, bufferOrigin, bufferLength ) );
+ 		#else
+ 			{
+ 				// Some versions of gcc complain about the assignment operator above.  This avoids the gcc bug.
+ 				PacketMachine *	pm	= new PacketMachine ( bufferOffset, bufferOrigin, bufferLength );
+-				auto_ptr<PacketMachine>	ap ( pm );
+-				snipPos->fMachine = ap;
++				shared_ptr<PacketMachine>	sp ( pm );
++				snipPos->fMachine = sp;
+ 			}
+ 		#endif
+ 		thisMachine = snipPos->fMachine.get();
+@@ -1280,12 +1280,12 @@ XMPScanner::Scan ( const void * bufferOrigin, XMP_Int64 bufferOffset, XMP_Int64
+ 
+ 			snipPos->fInfo.fState = eRawInputSnip;
+ 			#if 0
+-				snipPos->fMachine = auto_ptr<PacketMachine>();	// *** snipPos->fMachine.reset();	VC++ lacks reset
++				snipPos->fMachine = shared_ptr<PacketMachine>();	// *** snipPos->fMachine.reset();	VC++ lacks reset
+ 			#else
+ 				{
+ 					// Some versions of gcc complain about the assignment operator above.  This avoids the gcc bug.
+-					auto_ptr<PacketMachine>	ap ( 0 );
+-					snipPos->fMachine = ap;
++					shared_ptr<PacketMachine>	sp ( 0 );
++					snipPos->fMachine = sp;
+ 				}
+ 			#endif
+ 			bufferDone = true;
+@@ -1373,12 +1373,12 @@ XMPScanner::Scan ( const void * bufferOrigin, XMP_Int64 bufferOffset, XMP_Int64
+ 
+ 					// This packet ends exactly at the end of the current snip.
+ 					#if 0
+-						snipPos->fMachine = auto_ptr<PacketMachine>();	// *** snipPos->fMachine.reset();	VC++ lacks reset
++						snipPos->fMachine = shared_ptr<PacketMachine>();	// *** snipPos->fMachine.reset();	VC++ lacks reset
+ 					#else
+ 						{
+ 							// Some versions of gcc complain about the assignment operator above.  This avoids the gcc bug.
+-							auto_ptr<PacketMachine>	ap ( 0 );
+-							snipPos->fMachine = ap;
++							shared_ptr<PacketMachine>	sp ( 0 );
++							snipPos->fMachine = sp;
+ 						}
+ 					#endif
+ 					bufferDone = true;
+@@ -1390,7 +1390,7 @@ XMPScanner::Scan ( const void * bufferOrigin, XMP_Int64 bufferOffset, XMP_Int64
+ 
+ 					InternalSnipIterator	tailPos	= NextSnip ( snipPos );
+ 
+-					tailPos->fMachine = snipPos->fMachine;	// auto_ptr assignment - taking ownership
++					tailPos->fMachine = snipPos->fMachine;	// shared_ptr assignment - taking ownership
+ 					thisMachine->ResetMachine ();
+ 
+ 					snipPos = tailPos;
+diff --git a/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.hpp b/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.hpp
+index 1648692..a18c6de 100644
+--- a/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.hpp
++++ b/3rdparty/xmp/XMPFiles/source/FormatSupport/XMPScanner.hpp
+@@ -156,7 +156,7 @@ private:	// XMPScanner
+ 	public:
+ 
+ 		SnipInfo	fInfo;							// The public info about this snip.
+-		std::auto_ptr<PacketMachine>	fMachine;	// The state machine for "active" snips.
++		std::shared_ptr<PacketMachine>	fMachine;	// The state machine for "active" snips.
+ 		
+ 		InternalSnip ( XMP_Int64 offset, XMP_Int64 length );
+ 		InternalSnip ( const InternalSnip & );
+diff --git a/3rdparty/xmp/public/include/XMP_Const.h b/3rdparty/xmp/public/include/XMP_Const.h
+index 5c08af6..5c0f6b6 100644
+--- a/3rdparty/xmp/public/include/XMP_Const.h
++++ b/3rdparty/xmp/public/include/XMP_Const.h
+@@ -17,7 +17,8 @@
+     #include <stdint.h>
+ #endif
+ #if XMP_UNIXBuild		// hopefully an inttypes.h on all UNIXes...
+-		#include <inttypes.h>
++	#include <inttypes.h>
++    #include <string.h>
+ #endif
+ 
+ 
+@@ -217,14 +218,8 @@ struct XMP_DateTime {
+ 	/// The second in the range 0..59.
+     XMP_Int32 second;
+ 
+-    /// Is the date portion meaningful?
+-    XMP_Bool hasDate;
+-
+-    /// Is the time portion meaningful?
+-    XMP_Bool hasTime;
+-
+-    /// Is the time zone meaningful?
+-    XMP_Bool hasTimeZone;
++	/// Nanoseconds within a second, often left as zero.
++    XMP_Int32 nanoSecond;
+ 
+ 	/// The "sign" of the time zone, \c #kXMP_TimeIsUTC (0) means UTC, \c #kXMP_TimeWestOfUTC (-1)
+ 	/// is west, \c #kXMP_TimeEastOfUTC (+1) is east.
+@@ -236,8 +231,15 @@ struct XMP_DateTime {
+ 	/// The time zone minute in the range 0..59.
+     XMP_Int32 tzMinute;
+ 
+-	/// Nanoseconds within a second, often left as zero.
+-    XMP_Int32 nanoSecond;
++    /// Is the date portion meaningful?
++    XMP_Bool hasDate;
++
++    /// Is the time portion meaningful?
++    XMP_Bool hasTime;
++
++    /// Is the time zone meaningful?
++    XMP_Bool hasTimeZone;
++
+ 
+ 	#if __cplusplus
+ 		XMP_DateTime() : year(0), month(0), day(0), hour(0), minute(0), second(0), nanoSecond(0),
+-- 
+1.9.4.msysgit.0
+
+
+From 38b3370e18237b7e6128ec881fe0aa4c4c0049c9 Mon Sep 17 00:00:00 2001
+From: Konstantin Matskevich <konstantin.matskevich@itseez.com>
+Date: Wed, 6 Aug 2014 12:11:21 +0400
+Subject: [PATCH 2/3] fix compilation for Linux
+
+---
+ 3rdparty/xmp/XMPCore/CMakeLists.txt | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/3rdparty/xmp/XMPCore/CMakeLists.txt b/3rdparty/xmp/XMPCore/CMakeLists.txt
+index fb77635..7c10306 100644
+--- a/3rdparty/xmp/XMPCore/CMakeLists.txt
++++ b/3rdparty/xmp/XMPCore/CMakeLists.txt
+@@ -41,11 +41,7 @@ if(WIN32)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-UNIX.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-POSIX.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Mac.cpp)
+-elseif(UNIX AND CMAKE_SYSTEM_NAME MATCHES "Linux")
+-    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Win.cpp)
+-    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-POSIX.cpp)
+-    list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Mac.cpp)
+-elseif(APPLE)
++elseif(UNIX)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Win.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-UNIX.cpp)
+     list(REMOVE_ITEM SOURCE_Common ${XMP_COMMON_SOURCE_DIR}/Host_IO-Mac.cpp)
+-- 
+1.9.4.msysgit.0
+
+
+From 03e860542f346171e8dbdda74e8026d5d7670d04 Mon Sep 17 00:00:00 2001
+From: Konstantin Matskevich <konstantin.matskevich@itseez.com>
+Date: Wed, 6 Aug 2014 12:46:07 +0400
+Subject: [PATCH 3/3] fix windows warning
+
+---
+ 3rdparty/xmp/XMPCore/source/ParseRDF.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/3rdparty/xmp/XMPCore/source/ParseRDF.cpp b/3rdparty/xmp/XMPCore/source/ParseRDF.cpp
+index 7eeecb3..18c9ee9 100644
+--- a/3rdparty/xmp/XMPCore/source/ParseRDF.cpp
++++ b/3rdparty/xmp/XMPCore/source/ParseRDF.cpp
+@@ -455,7 +455,7 @@ XMP_Node * RDF_Parser::AddChildNode ( XMP_Node * xmpParent, const XML_Node & xml
+ 		return 0;
+ 	}
+ 		
+-	bool isArrayParent = (xmpParent->options & kXMP_PropValueIsArray);
++	bool isArrayParent = ((xmpParent->options & kXMP_PropValueIsArray) != 0UL);
+ 	bool isArrayItem   = (xmlNode.name == "rdf:li");
+ 	bool isValueNode   = (xmlNode.name == "rdf:value");
+ 	XMP_OptionBits childOptions = 0;
+-- 
+1.9.4.msysgit.0
+
