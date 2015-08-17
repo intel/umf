@@ -6,8 +6,8 @@ VMF allows developers to define and create metadata of any form, and about any r
 VMF embeds metadata within the host video file or video stream, so that no additional files are needed to store the metadata.
 
 VMF SDK is developed as a platform-independent C++ library. It is tested on the following operating system:
-* MS Windows 7 and 8
-* GNU Linux (Ubuntu 12)
+* MS Windows 7, 8, and 10
+* GNU Linux (Ubuntu 14)
 * Google Android 4.x
 
 VMF SDK and the samples code uses the following C++ 11 features:
@@ -17,7 +17,7 @@ VMF SDK and the samples code uses the following C++ 11 features:
 * lambda expressions
 
 The following C++ compilers are known to compile the VMF code successfully:
-* MS VC++ 2010 and newer
+* MS VC++ 2013 and newer
 * Intel C++ compiler 12.1 and newer
 * GNU GCC 4.6 and newer
 
