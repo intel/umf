@@ -29,3 +29,5 @@ The library uses the following 3rd party components:
 VMF uses Doxygen (www.doxygen.org) for API Specification generation.
 
 See docs/VMF_User_guide.pdf for instructions on building and using VMF.
+
+For the less adventurous, pre-built SDK snapshots may be found here -> https://software.intel.com/en-us/articles/intel-video-metadata-framework-sdk
