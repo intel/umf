@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Video Metadata Framework SDK by 01org</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Video Metadata Framework SDK</h1>
+        <p>vmf</p>
+
+        <p class="view"><a href="https://github.com/01org/vmf">View the Project on GitHub <small>01org/vmf</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/01org/vmf/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/01org/vmf/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/01org/vmf">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+<a id="1-introduction" class="anchor" href="#1-introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Introduction</h3>
+
+<p>The Intel® Video Metadata Framework SDK (VMF) is a cross-platform SDK for C++ programmers. Intel VMF SDK provides a set of classes that simplify the tasks of managing metadata in video-related applications. Those tasks include metadata definition, creation, querying, saving and loading, etc.</p>
+
+<p>The VMF SDK currently supports multiple operating systems and processor architectures:</p>
+
+<ul>
+<li>Windows* on x86 and x64</li>
+<li>Android* on ARM* and x86</li>
+<li>iOS*</li>
+<li>Linux* on x86, x64, MIPS, and ARM</li>
+</ul>
+
+<h3>
+<a id="2-features" class="anchor" href="#2-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Features</h3>
+
+<p>The VMF SDK provides a software framework for digital storytelling applications to manage metadata within video files. The features provided by the SDK include:</p>
+
+<ul>
+<li>Metadata definition and creation</li>
+<li>Metadata saving and loading within video files
+-In-memory metadata querying
+-Metadata sharing and merging</li>
+</ul>
+
+<h3>
+<a id="21-metadata-definition-and-creation" class="anchor" href="#21-metadata-definition-and-creation" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Metadata Definition and Creation</h3>
+
+<p>Metadata is data about data. The format of metadata can be: a single value integer, an array of strings, or a complex structure that contains multiple fields, each of which has a different name and value type. The VMF SDK allows developers to define metadata of any form and allows different types of metadata to be managed by a uniform metadata interface.</p>
+
+<p>The VMF SDK also provides a mechanism that allows metadata to be defined before using. A metadata schema declares metadata formats by defining a set of metadata descriptors. A metadata descriptor defines the name of a metadata type and the names and value types of all the fields within the metadata. Each instance of metadata is then created based on the associated metadata descriptor, using the descriptor as a template to create the internal fields.</p>
+
+<p>The metadata schema mechanism enables sharing of metadata between multiple applications when the same set of metadata schemas are used.</p>
+
+<p>The metadata schema mechanism also allows metadata defined by one ISV to be used by applications created by another ISV.</p>
+
+<h3>
+<a id="22-metadata-saving-and-loading" class="anchor" href="#22-metadata-saving-and-loading" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Metadata Saving and Loading</h3>
+
+<p>Once metadata are created for a video sequence or video file, the VMF SDK allows the metadata to be saved within the video, by embedding metadata as part of the video file data. Metadata is carried along with the video when transferring the video from one device to another, or from a device to the Internet. Since the metadata is embedded within the video file, there is no need to use any auxiliary file for metadata.</p>
+
+<p>Please note that VMF does not generate a new video format for storing the metadata and video, nor does it break the existing video format standards. The video files containing VMF metadata are all standard video formats that can be opened by any video player. The VMF supports most commonly used video formats: AVI, mp4, and WAV.</p>
+
+<p>When loading metadata from a video file, VMF allows the metadata to be loaded all at once, or just specified metadata to be loaded.</p>
+
+<h3>
+<a id="23-in-memory-metadata-querying" class="anchor" href="#23-in-memory-metadata-querying" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.3 In-memory Metadata Querying</h3>
+
+<p>The VMF SDK provides multiple querying functions that allow developers to build complex queries. Some of the functions allow developers to query about the metadata type or value. Others allow developers to query the relationships between metadata. The generic query function provided by VMF allows developers to define their own query logic.</p>
+
+<p>The VMF SDK allows multiple querying functions to be used in a sequential way: where early query results feed later querying functions with the effect of refining the results.</p>
+
+<h3>
+<a id="24-metadata-shifting-and-merging" class="anchor" href="#24-metadata-shifting-and-merging" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.4 Metadata Shifting and Merging</h3>
+
+<p>Digital storytelling applications, like other video editing applications, usually need to trim video sequences by cutting off frames from original video files to remove unnecessary video segments. Video summarization applications need to extract video segments from raw video sequences and for a new video.</p>
+
+<p>Those video editing operations (cutting, shifting, merging) typically affect the metadata embedded in the original videos. Some metadata needs to be associated with different frame indices due to the change of the frame indices. Other metadata may become invalid due to removal of the video frames associated with the metadata.</p>
+
+<p>The VMF SDK provides functions that allow developers to shift metadata within a video sequence after trimming a video. The SDK also allows metadata from multiple videos to be merged into a new metadata stream after merging multiple video files into a new video.</p>
+
+<h3>
+<a id="3-applications" class="anchor" href="#3-applications" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Applications</h3>
+
+<p>This section describes typical ways of using VMF in digital storytelling applications.</p>
+
+<h3>
+<a id="31-single-application" class="anchor" href="#31-single-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Single Application</h3>
+
+<p>Most video editing or digital storytelling applications can benefit from using VMF SDK. The SDK:</p>
+
+<ul>
+<li>Provides storage of metadata and I/O of metadata to/from video files.</li>
+<li>Allows DST applications to update metadata based on changes made to video frames. The changes can be trimming or shifting the video.</li>
+<li>Allows DST applications to import metadata from one video to another video or merge metadata from multiple videos to a new video.</li>
+<li>Allows DST applications to sort and query metadata.</li>
+</ul>
+
+<h3>
+<a id="32-creator-consumer-model" class="anchor" href="#32-creator-consumer-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Creator-Consumer Model</h3>
+
+<p>The creator-consumer model is a more common architecture for digital storytelling applications to use metadata. In this model, two applications are involved: a metadata creator app and a metadata consumer application or digital storytelling application.</p>
+
+<p>The metadata creator app is an app running on mobile devices, such as smartphones, digital cameras, and digital camcorders. The app captures video from the camera and embeds metadata collected from sensors on the mobile device. The metadata can be raw information from sensors, such as GPS locations, temperatures, and speed. The metadata can also be information detected by the app from the video or other metadata information, such as human face, scene type, etc.</p>
+
+<p>The digital storytelling application is the metadata consumer that imports videos with metadata embedded from the Internet and creates digital stories by performing additional operations, such as detecting new metadata, editing, and querying. The metadata consumer application usually runs on computers with high computation power and better user input devices, such as tablet PCs, laptops, or desktop computers.</p>
+
+<p>It is important that the creator and consumer applications share the same metadata schema when creating or loading metadata.</p>
+
+<h3>
+<a id="33-metadata-ecosystem" class="anchor" href="#33-metadata-ecosystem" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 Metadata Ecosystem</h3>
+
+<p>In a more general form, multiple metadata creators and multiple metadata consumers are involved in exchanging information through metadata. Applications can consume metadata created by other generators or add new metadata to videos that already contain metadata from other applications. Schemas are defined and shared to ensure that the metadata generators and metadata consumers understand each other. The application vendors, schemas, and metadata together form the metadata ecosystem (Figure 3).</p>
+
+<p>In a healthy metadata ecosystem, schemas defined by popular applications become de facto standards that other application developers want to implement. Thus more and more applications can share metadata freely.</p>
+
+<p>Metadata ecosystem also brings new user experience to applications. For example, a social app can allow users to query people from videos based on metadata detected by other digital storytelling applications.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/01org">01org</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
