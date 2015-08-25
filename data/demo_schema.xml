@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<vmf nextId="0" filepath="" checksum="">
+  <schemas-array>
+    <schema name="vmf://ns.intel.com/vmf/demo-schema-1.0" author="Intel">
+      <description name="table2">
+        <field name="vehicle_capture_time" type="string"/>
+        <field name="longitude" type="string"/>
+        <field name="latitude" type="string"/>
+        <field name="vehicle_speed" type="real"/>
+        <field name="vehicle_type" type="integer"/>
+        <field name="vehicle_color" type="integer"/>
+        <field name="vehicle_brand" type="integer"/>
+        <field name="vehicle_snapshot" type="rawbuffer"/>
+        <field name="vehicle_license_plate_snapshot" type="rawbuffer"/>
+        <field name="vehicle_driver_passenger_snapshot" type="rawbuffer"/>
+        <field name="vehicle_feature_data" type="rawbuffer"/>
+      </description>
+    </schema>
+  </schemas-array>
+  <metadata-array/>
+</vmf>
