@@ -1,7 +1,7 @@
-// Copyright (C) 2014, Intel Corporation, all rights reserved.
+// Copyright (C) 2015, Intel Corporation, all rights reserved.
 
 /*
-* This sample shows how to use predefined STD schema and built-in predefined metadata fields.
+* This sample shows how to use custom schema in xml file.
 */
 
 #include <vmf/vmf.hpp>
