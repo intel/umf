@@ -7,6 +7,7 @@ add_subdirectory(checksum-utility)
 add_subdirectory(metadata-read-write)
 add_subdirectory(metadata-manipulation)
 add_subdirectory(std-schema)
+add_subdirectory(metadata-schema)
 
 if(BUILD_QT_SAMPLES)
   add_subdirectory(qt/unicode)
