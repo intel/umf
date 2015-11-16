@@ -26,6 +26,7 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <stdexcept>
 
 using namespace vmf;
 using namespace std;
@@ -61,12 +62,12 @@ void demoLoadSchemaFromFile(const string& schemaFilePath, const string& schemaNa
 		// Get a pointer to the schema
 		shared_ptr<MetadataSchema> spSchema = stream.getSchema(schemaName);
 		if (spSchema == nullptr)
-			throw exception("Did not find schema in the xml file!");
+            throw runtime_error("Did not find schema in the xml file!");
 
 		// Get a pointer to the metadata description structure
 		shared_ptr<MetadataDesc> spMetadataDesc = spSchema->findMetadataDesc("table2");
 		if (spMetadataDesc == nullptr)
-			throw exception("Did not find metadata <table2> in the schema.");
+            throw runtime_error("Did not find metadata <table2> in the schema.");
 
 		// Found everything!
 		std::cout << "Found schema and metadata!" << std::endl;
