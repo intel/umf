@@ -608,8 +608,6 @@ void Variant::convertTo(Type type)
         VMF_EXCEPTION(TypeCastException, "Cannot convert value to the target type!" );
     }
 
-    release();
-
     // Convert value to double, and check to see if the value is out of range of what the new type can represent.
     std::string sValue = toString();
     double fValue;
