@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/01org/vmf.svg?branch=master)](https://travis-ci.org/01org/vmf)
+
 Video Metadata Framework
 ------------------------
 

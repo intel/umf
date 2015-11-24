@@ -1,0 +1,23 @@
+# .travis.yml
+sudo: false
+language: cpp
+os: linux
+compiler: gcc #TODO + clang
+addons:
+  apt:
+    sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake'] #TODO + 'llvm-toolchain-precise-3.7'
+    packages: ['g++-4.8', 'cmake'] #TODO + 'clang-3.7'
+before_script:
+  - mkdir ../build
+  - cd ../build
+script:
+  - export CC=gcc-4.8
+  - export CXX=g++-4.8
+  - ldd --version
+  - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=OFF ../vmf
+  - make
+  - cd ./bin/
+  - ./unit-tests
+  - ./unit-tests-ds
+notifications:
+  email: false

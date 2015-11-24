@@ -72,6 +72,10 @@ if(APPLE AND NOT IOS)
   target_link_libraries(${VMF_LIBRARY_NAME} "-framework CoreFoundation" "-framework CoreServices")
 endif()
 
+if(UNIX AND NOT APPLE)
+  # fix build with glibc < 2.17
+  target_link_libraries(${VMF_LIBRARY_NAME} rt)
+endif()
 
 if(BUILD_SHARED_LIBS AND WIN32)
     append_target_property(${VMF_LIBRARY_NAME} COMPILE_FLAGS "-DVMF_API_EXPORT")
