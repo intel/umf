@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/01org/vmf.svg?branch=master)](https://travis-ci.org/01org/vmf)
+[![Build Status](https://travis-ci.org/apavlenko/vmf.svg?branch=vmf-3.0)](https://travis-ci.org/apavlenko/vmf)
 
 Video Metadata Framework
 ------------------------
