@@ -43,9 +43,9 @@ endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # The version number.
-set(VMF_VERSION_MAJOR "2")
+set(VMF_VERSION_MAJOR "3")
 set(VMF_VERSION_MINOR "0")
-set(VMF_VERSION_TYPE  "") # dev, alpha, beta
+set(VMF_VERSION_TYPE  "dev") # dev, alpha, beta
 
 # reporting build settings
 message(STATUS "*** VMF build configuration ***")
