@@ -21,6 +21,11 @@
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
 
+#include <XMP.incl_cpp>
+#include <XMP.hpp>
+
+#include "libbase64++.h"
+
 #define VMF_GLOBAL_NEXT_ID "next-id"
 #define VMF_GLOBAL_CHECKSUM "media-checksum"
 
@@ -88,6 +93,49 @@ XMPDataSource::XMPDataSource()
 
 }
 
+static const string compressPropName = "compressed";
+
+static void loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+{
+    std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
+    //xmpFile.GetXMP(NULL, &buffer, NULL);
+    xmpFile.GetXMP(compressedXMP.get());
+    if(compressedXMP->DoesPropertyExist(VMF_NS, compressPropName.c_str()))
+    {
+        string buffer;
+        compressedXMP->GetProperty(VMF_NS, compressPropName.c_str(), &buffer, NULL);
+        string decoded = libbase64::decode<string, string::value_type, string::value_type, true>(buffer);
+        buffer = decoded;
+        xmp->ParseFromBuffer(buffer.c_str(), buffer.size(), 0);
+    }
+    else
+    {
+        xmp = compressedXMP;
+    }
+}
+
+
+static void saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+{
+    const bool toCompress = true;
+    std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
+    if(toCompress)
+    {
+        string buffer;
+        xmp->SerializeToBuffer(&buffer, 0, 0, NULL);
+        string encoded = libbase64::encode<string, string::value_type,
+                string::value_type, true>((const unsigned char*)buffer.c_str(), buffer.size());
+        buffer = encoded;
+        compressedXMP->SetProperty(VMF_NS, compressPropName.c_str(), buffer);
+    }
+    else
+    {
+        compressedXMP = xmp;
+    }
+    //xmpFile.PutXMP(buffer.c_str(), buffer.size());
+    xmpFile.PutXMP(*compressedXMP);
+}
+
 
 void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMode mode)
 {
@@ -116,7 +164,10 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
                 VMF_EXCEPTION(DataStorageException, "Could not open XMP file.");
             }
         }
-        xmpFile.GetXMP(xmp.get());
+
+        //xmpFile.GetXMP(xmp.get());
+        loadXMPstructs(xmpFile, xmp);
+
         schemaSource = make_shared<XMPSchemaSource>(xmp);
         metadataSource = make_shared<XMPMetadataSource>(xmp);
    }
@@ -237,7 +288,10 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     try
     {
         metadataSource->remove(ids);
-        xmpFile.PutXMP(*xmp);
+
+        //xmpFile.PutXMP(*xmp);
+        saveXMPstructs(xmpFile, xmp);
+
         closeFile();
         openFile(this->metaFileName, this->openMode);
     }
@@ -308,7 +362,9 @@ void XMPDataSource::save(const IdType &id)
 
 void XMPDataSource::pushChanges()
 {
-    xmpFile.PutXMP(*xmp);
+    //xmpFile.PutXMP(*xmp);
+    saveXMPstructs(xmpFile, xmp);
+
     closeFile();
     openFile(this->metaFileName, this->openMode);
 }
@@ -339,7 +395,9 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
 {
     try
     {
-        xmpFile.GetXMP(xmp.get());
+        //xmpFile.GetXMP(xmp.get());
+        loadXMPstructs(xmpFile, xmp);
+
         MetaString checksum;
         xmpFile.ComputeChecksum(&checksum, &XMPPacketSize, &XMPPacketOffset);
         return checksum;
