@@ -105,6 +105,8 @@ protected:
     virtual void metadataSourceCheck();
 
 private:
+    void loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp);
+    void saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp);
 
     SXMPFiles xmpFile;
     std::shared_ptr<SXMPMeta> xmp;

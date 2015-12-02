@@ -95,7 +95,7 @@ XMPDataSource::XMPDataSource()
 
 static const string compressPropName = "compressed";
 
-static void loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 {
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     //xmpFile.GetXMP(NULL, &buffer, NULL);
@@ -115,7 +115,7 @@ static void loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 }
 
 
-static void saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 {
     const bool toCompress = true;
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
