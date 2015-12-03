@@ -14,23 +14,18 @@
  * limitations under the License.
  *
  */
-#ifndef ICOMPRESSOR_HPP
-#define ICOMPRESSOR_HPP
+#ifndef DUMMY_COMPRESSOR_HPP
+#define DUMMY_COMPRESSOR_HPP
+
+#include "icompressor.hpp"
+
+namespace vmf {
 
 /*!
-* \file icompressor.hpp
-* \brief %ICompressor header file
-*/
-
-#include "vmf/metadataschema.hpp"
-
-namespace vmf
-{
-
-/*! \class ICompressor
- * \brief Interface for all compression algorithms
+ * \class DummyCompressor
+ * \brief Example of a compression algorithm. Actually doesn't change the input/output data.
  */
-class VMF_EXPORT ICompressor
+class VMF_EXPORT DummyCompressor : ICompressor
 {
 public:
     /*!
@@ -38,35 +33,31 @@ public:
      * \param [in] input input text data
      * \param [out] output where to put binary compressed data
      */
-    virtual void compress(const MetaString& input, vmf_rawbuffer& output) = 0;
+    virtual void compress(const MetaString& input, vmf_rawbuffer& output)
+    {
+        output = input;
+    }
 
     /*!
      * \brief Decompress data
      * \param [in] input binary compressed input data
      * \param [out] output where to put decompressed text data
      */
-    virtual void decompress(const vmf_rawbuffer& input, MetaString& output) = 0;
+    virtual void decompress(const vmf_rawbuffer& input, MetaString& output)
+    {
+        output = input;
+    }
 
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const MetaString getId() = 0;
-
-    /*!
-     * \brief Default destructor
-     */
-    virtual ~ICompressor()
+    virtual const MetaString& getId()
     {
-
+        return "dummy";
     }
 };
 
-/*!
- * \brief Registers new compression algorithm before its use.
- * \param impl Pointer to the implementation of the algorithm
- */
-void registerCompressor(std::shared_ptr<ICompressor> impl);
-
 } /* vmf */
 
-#endif /* ICOMPRESSOR_HPP */
+#endif /* DUMMY_COMPRESSOR_HPP */
+
