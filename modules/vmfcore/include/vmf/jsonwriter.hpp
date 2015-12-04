@@ -39,7 +39,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONWriter();
+    JSONWriter(std::shared_ptr<ICompressor> impl = nullptr);
 
     /*!
     * \brief Class destructor
@@ -62,7 +62,6 @@ private:
     // hiding API that may be removed soon
     virtual std::string store(const std::shared_ptr<MetadataSchema>& spSchema);
     virtual std::string store(const std::shared_ptr<Metadata>& spMetadata);
-
 };
 
 }//vmf

@@ -252,7 +252,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
-XMLReader::XMLReader(){}
+XMLReader::XMLReader(std::shared_ptr<ICompressor> impl) : IReader(impl) { }
 XMLReader::~XMLReader(){}
 
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -441,7 +441,9 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    if(text.empty())
+    std::string decompressed = decompress(text);
+
+    if(decompressed.empty())
     {
         VMF_LOG_ERROR("Empty input XML string");
         return false;
@@ -457,7 +459,8 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
         return false;
     }
 
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, decompressed.c_str(), (int)decompressed.size(),
+                                      NULL, NULL, 0);
     if(doc == NULL)
     {
         VMF_LOG_ERROR("Can't create XML document");
@@ -482,11 +485,11 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
             else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_CHECKSUM))
                 checksum = (char*)xmlGetProp(root, cur_prop->name);
         }
-	if(!parseVideoSegments(text, segments))
-	    return false;
-        if(!parseSchemas(text, schemas))
+        if(!parseVideoSegments(decompressed, segments))
             return false;
-        if(!parseMetadata(text, schemas, metadata))
+        if(!parseSchemas(decompressed, schemas))
+            return false;
+        if(!parseMetadata(decompressed, schemas, metadata))
             return false;
     }
     else

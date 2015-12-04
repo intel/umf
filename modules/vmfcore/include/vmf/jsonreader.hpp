@@ -46,7 +46,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader();
+    JSONReader(std::shared_ptr<ICompressor> impl = nullptr);
 
     /*!
     * \brief Class destructor

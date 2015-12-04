@@ -39,7 +39,6 @@ void unregisterCompressor(std::shared_ptr<ICompressor> impl)
 void unregisterCompressor(const MetaString& id)
 {
     VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
-
 }
 
 } /* vmf */

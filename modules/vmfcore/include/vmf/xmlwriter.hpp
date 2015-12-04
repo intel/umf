@@ -39,7 +39,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLWriter();
+    XMLWriter(std::shared_ptr<ICompressor> impl = nullptr);
 
     /*!
     * \brief Class destructor

@@ -39,7 +39,18 @@ class VMF_EXPORT IReader
 {
 public:
     /*!
+     * \brief IReader
+     * \param impl
+     */
+    IReader(std::shared_ptr<ICompressor> impl = nullptr) : compressor(impl)
+    { }
+
+    virtual ~IReader()
+    { }
+
+    /*!
     * \brief Deserialize input string to stream metadata and related stuff. Used for "stream.deserialize(text)" implementation.
+    * String may be comressed, in that case use ICompressor field to decompress it.
     */
     virtual bool parseAll(
         const std::string& text,
@@ -67,6 +78,24 @@ public:
     * \brief Deserialize input string to a segment vector
     */
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
+
+protected:
+    std::string decompress(const std::string& input)
+    {
+        std::string decompressed;
+        if(compressor)
+        {
+            vmf_rawbuffer compressed(input.c_str(), input.size());
+            compressor->decompress(compressed, decompressed);
+        }
+        else
+        {
+            decompressed = input;
+        }
+        return decompressed;
+    }
+
+    std::shared_ptr<ICompressor> compressor;
 };
 
 }//vmf
