@@ -104,13 +104,14 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
     }
 }
 
-bool MetadataStream::save()
+bool MetadataStream::save(std::shared_ptr<ICompressor> impl)
 {
     dataSourceCheck();
     try
     {
         if( m_eMode == ReadWrite && !m_sFilePath.empty() )
         {
+            dataSource->setCompressor(impl);
             dataSource->remove(removedIds);
             removedIds.clear();
 
@@ -175,7 +176,7 @@ bool MetadataStream::reopen( OpenMode eMode )
     return false;
 }
 
-bool MetadataStream::saveTo( const std::string& sFilePath )
+bool MetadataStream::saveTo(const std::string& sFilePath , std::shared_ptr<ICompressor> impl)
 {
     if( m_eMode != InMemory )
         throw std::runtime_error("The previous file has not been closed!");
@@ -198,7 +199,7 @@ bool MetadataStream::saveTo( const std::string& sFilePath )
         if( this->reopen( ReadWrite ) )
         {
             dataSource->clear();
-            bRet = this->save();
+            bRet = this->save(impl);
         }
         dataSource->closeFile();
 

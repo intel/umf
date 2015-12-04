@@ -62,10 +62,29 @@ public:
 };
 
 /*!
- * \brief Registers new compression algorithm before its use.
+ * \brief Registers new algorithm before its use in decompression.
  * \param impl Pointer to the implementation of the algorithm
  */
 void registerCompressor(std::shared_ptr<ICompressor> impl);
+
+/*!
+ * \brief Unregisters previously registered compression algorithm
+ * \param impl
+ */
+void unregisterCompressor(std::shared_ptr<ICompressor> impl);
+
+/*!
+ * \brief Unregisters previously registered compression algorithm
+ * \param id String id of the compression algorithm
+ */
+void unregisterCompressor(const MetaString& id);
+
+/*!
+ * \brief Gets instance of compression identified by id registered before
+ * \param id String identifying compression algorithm
+ * \return Smart pointer to ICompressor instance
+ */
+std::shared_ptr<ICompressor> getCompressorById(const MetaString& id);
 
 } /* vmf */
 

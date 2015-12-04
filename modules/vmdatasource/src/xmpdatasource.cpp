@@ -93,20 +93,38 @@ XMPDataSource::XMPDataSource()
 
 }
 
-static const string compressPropName = "compressed";
+static const string compressedDataPropName = "compressed_data";
+static const string compressionAlgoPropName = "compression_algo";
 
 void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 {
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     //xmpFile.GetXMP(NULL, &buffer, NULL);
     xmpFile.GetXMP(compressedXMP.get());
-    if(compressedXMP->DoesPropertyExist(VMF_NS, compressPropName.c_str()))
+    if(compressedXMP->DoesPropertyExist(VMF_NS, compressionAlgoPropName.c_str()))
     {
-        string buffer;
-        compressedXMP->GetProperty(VMF_NS, compressPropName.c_str(), &buffer, NULL);
-        string decoded = libbase64::decode<string, string::value_type, string::value_type, true>(buffer);
-        buffer = decoded;
-        xmp->ParseFromBuffer(buffer.c_str(), buffer.size(), 0);
+        string algo;
+        compressedXMP->GetProperty(VMF_NS, compressionAlgoPropName.c_str(), &algo, NULL);
+        if(!algo.empty())
+        {
+            std::shared_ptr<ICompressor> decompressor;
+            decompressor = getCompressorById(algo);
+            if(decompressor)
+            {
+                string encoded;
+                compressedXMP->GetProperty(VMF_NS, compressedDataPropName.c_str(), &encoded, NULL);
+                string decoded = libbase64::decode<string, string::value_type, string::value_type, true>(encoded);
+                vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
+                string theData;
+                decompressor->decompress(compressed, theData);
+                xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
+            }
+            else
+            {
+                VMF_EXCEPTION(IncorrectParamException,
+                              "Unregistered compression algorithm: " + algo);
+            }
+        }
     }
     else
     {
@@ -117,16 +135,19 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
 
 void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 {
-    const bool toCompress = true;
-    std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
-    if(toCompress)
+    std::shared_ptr<SXMPMeta> compressedXMP = std::make_shared<SXMPMeta>();
+    if(compressor)
     {
         string buffer;
         xmp->SerializeToBuffer(&buffer, 0, 0, NULL);
+        vmf_rawbuffer compressed;
+        compressor->compress(buffer, compressed);
         string encoded = libbase64::encode<string, string::value_type,
-                string::value_type, true>((const unsigned char*)buffer.c_str(), buffer.size());
-        buffer = encoded;
-        compressedXMP->SetProperty(VMF_NS, compressPropName.c_str(), buffer);
+                                           string::value_type, true>
+                                          ((const unsigned char*)compressed.data.get(),
+                                           compressed.size);
+        compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
+        compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
     }
     else
     {

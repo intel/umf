@@ -22,7 +22,24 @@ namespace vmf {
 
 void registerCompressor(std::shared_ptr<ICompressor> impl)
 {
-    throw std::runtime_error("Not implemented yet");
+    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+}
+
+
+std::shared_ptr<ICompressor> getCompressorById(const MetaString &id)
+{
+    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+}
+
+void unregisterCompressor(std::shared_ptr<ICompressor> impl)
+{
+    unregisterCompressor(impl->getId());
+}
+
+void unregisterCompressor(const MetaString& id)
+{
+    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+
 }
 
 } /* vmf */

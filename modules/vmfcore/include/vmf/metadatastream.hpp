@@ -31,6 +31,7 @@
 #include "metadatainternal.hpp"
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
+#include "icompressor.hpp"
 #include "iquery.hpp"
 #include <map>
 #include <memory>
@@ -143,7 +144,7 @@ public:
     * \brief Save loaded data to media file
     * \return Save operation result
     */
-    bool save();
+    bool save(std::shared_ptr<ICompressor> impl = nullptr);
 
 
     /*!
@@ -151,7 +152,7 @@ public:
     * \param sFilePath the path of the new file.
     * \return true if succeed.
     */
-    bool saveTo( const std::string& sFilePath );
+    bool saveTo( const std::string& sFilePath, std::shared_ptr<ICompressor> impl = nullptr );
 
 
     /*!

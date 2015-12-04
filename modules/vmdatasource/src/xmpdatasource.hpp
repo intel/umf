@@ -25,6 +25,7 @@
 #include "datasource.hpp"
 
 #include "vmf/metadataschema.hpp"
+#include "vmf/icompressor.hpp"
 
 #define TXMP_STRING_TYPE vmf::MetaString
 #define XMP_INCLUDE_XMPFILES 1
@@ -85,6 +86,11 @@ public:
 
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
+    virtual void setCompressor(std::shared_ptr<ICompressor> impl)
+    {
+        compressor = impl;
+    }
+
     /*!
      * \brief Initializes XMPDataSource class dependecies
      * \throws DataStorageException
@@ -114,6 +120,7 @@ private:
     std::shared_ptr<XMPSchemaSource> schemaSource;
     vmf::MetaString metaFileName;
     vmf::MetadataStream::OpenMode openMode;
+    std::shared_ptr<ICompressor> compressor;
 };
 
 #ifdef _MSC_VER

@@ -25,7 +25,7 @@ namespace vmf {
  * \class DummyCompressor
  * \brief Example of a compression algorithm. Actually doesn't change the input/output data.
  */
-class VMF_EXPORT DummyCompressor : ICompressor
+class VMF_EXPORT DummyCompressor : public ICompressor
 {
 public:
     /*!
@@ -33,28 +33,22 @@ public:
      * \param [in] input input text data
      * \param [out] output where to put binary compressed data
      */
-    virtual void compress(const MetaString& input, vmf_rawbuffer& output)
-    {
-        output = input;
-    }
+    virtual void compress(const MetaString& input, vmf_rawbuffer& output);
 
     /*!
      * \brief Decompress data
      * \param [in] input binary compressed input data
      * \param [out] output where to put decompressed text data
      */
-    virtual void decompress(const vmf_rawbuffer& input, MetaString& output)
-    {
-        output = input;
-    }
+    virtual void decompress(const vmf_rawbuffer& input, MetaString& output);
 
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const MetaString& getId()
-    {
-        return "dummy";
-    }
+    virtual const MetaString& getId();
+
+private:
+    static const MetaString id;
 };
 
 } /* vmf */
