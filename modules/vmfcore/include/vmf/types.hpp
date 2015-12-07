@@ -151,6 +151,7 @@ namespace vmf
         {
             data = std::unique_ptr<char[]>(new char[other.size]);
             memcpy(data.get(), other.data.get(), other.size);
+            size = other.size;
         }
         else
         {
