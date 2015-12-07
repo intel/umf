@@ -9,11 +9,11 @@ public class FieldDesc
 	
     protected final long nativeObj;
 	
-	public boolean optional;
+    public boolean optional;
 	
-	public String name;
+    public String name;
 	
-	public Variant.Type type;
+    public Variant.Type type;
 	
 	public FieldDesc ()
 	{
@@ -25,7 +25,7 @@ public class FieldDesc
         return n_isEquals(nativeObj, obj);
 	}
 	
-	@Override
+    @Override
     protected void finalize () throws Throwable 
     {
         n_delete (nativeObj);
