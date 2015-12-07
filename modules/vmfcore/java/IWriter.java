@@ -14,5 +14,5 @@ interface IWriter
 
     String store(final MetadataStream.VideoSegment spSegment);	
 
-    String store(final MetadataStream.VideoSegment[] segments)	
+    String store(final MetadataStream.VideoSegment[] segments);	
 }
