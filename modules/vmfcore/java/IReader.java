@@ -1,4 +1,4 @@
-import java.util.Vector;
+package com.intel.vmf;
 
 interface IReader
 {

@@ -1,3 +1,4 @@
+package com.intel.vmf;
 
 interface IWriter
 {
