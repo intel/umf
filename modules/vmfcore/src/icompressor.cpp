@@ -16,19 +16,35 @@
  */
 
 #include <stdexcept>
+#include <map>
 #include "vmf/icompressor.hpp"
 
 namespace vmf {
 
+typedef std::map< MetaString, std::shared_ptr<ICompressor> > CompressorsMap;
+
+CompressorsMap& getMapInstance()
+{
+    static CompressorsMap registeredCompressors;
+    return registeredCompressors;
+}
+
 void registerCompressor(std::shared_ptr<ICompressor> impl)
 {
-    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+    if(!impl)
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
+    }
+
+    CompressorsMap& cmap = getMapInstance();
+    cmap[impl->getId()] = impl;
 }
 
 
 std::shared_ptr<ICompressor> getCompressorById(const MetaString &id)
 {
-    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+    CompressorsMap& cmap = getMapInstance();
+    return cmap.at(id);
 }
 
 void unregisterCompressor(std::shared_ptr<ICompressor> impl)
@@ -38,7 +54,8 @@ void unregisterCompressor(std::shared_ptr<ICompressor> impl)
 
 void unregisterCompressor(const MetaString& id)
 {
-    VMF_EXCEPTION(NotImplementedException, "Not implemented yet");
+    CompressorsMap& cmap = getMapInstance();
+    cmap.erase(id);
 }
 
 } /* vmf */
