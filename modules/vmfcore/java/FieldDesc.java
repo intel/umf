@@ -20,9 +20,9 @@ public class FieldDesc
         nativeObj = n_FieldDesc();
 	}
 	
-	public boolean isEquals(long obj)
+	public boolean isEquals ( FieldDesc obj )
 	{
-        return n_isEquals(nativeObj, obj);
+        return n_isEquals (nativeObj, obj.nativeObj);
 	}
 	
     @Override
@@ -33,8 +33,6 @@ public class FieldDesc
     }
 	
 	private native long n_FieldDesc ();
-	
-	private native boolean n_isEquals(long nativeObj);
-	
+	private native boolean n_isEquals (long nativeObj);
 	private static native void n_delete (long nativeObj);
 }

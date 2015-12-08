@@ -9,25 +9,25 @@ public class JSONReader implements IReader
     static
     {
         System.loadLibrary("vmf");
-		//System.loadLibrary("gnustl_shared");
+        //System.loadLibrary("gnustl_shared");
     }
 
     protected final long nativeObj;
 	
-	public JSONReader ()
-	{
+    public JSONReader ()
+    {
         nativeObj = n_JSONReader();
-	}
+    }
 	
-	public boolean parseAll (final String text, Long nextId,
-				             String filepath, String checksum,
-	                         MetadataStream.VideoSegment[] segments, 
-				             MetadataSchema[] schemas,
-				             MetadataInternal[] metadata)
-	{
+    public boolean parseAll (final String text, Long nextId,
+                             String filepath, String checksum,
+                             MetadataStream.VideoSegment[] segments,
+                             MetadataSchema[] schemas,
+                             MetadataInternal[] metadata)
+    {
         return n_parseAll (nativeObj, text, nextId, filepath, 
         		           checksum, segments, schemas, metadata);
-	}
+    }
 	
 	public boolean parseSchemas (final String text, MetadataSchema[] schemas)
 	{
@@ -44,7 +44,7 @@ public class JSONReader implements IReader
 		return n_parseVideoSegments (nativeObj, text, segments);
 	}
 	
-	@Override
+    @Override
     protected void finalize () throws Throwable 
     {
         n_delete (nativeObj);
