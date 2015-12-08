@@ -14,15 +14,21 @@ public class FieldDesc
     public String name;
 	
     public Variant.Type type;
+    
+    public FieldDesc ()
+    {
+    	nativeObj = n_FieldDesc ();
+    }
 	
-	public FieldDesc ()
+	public FieldDesc ( final string sName, Variant.Type eType, boolean isOptional )
 	{
-        nativeObj = n_FieldDesc();
+        nativeObj = n_FieldDesc(sName, eType, isOptional);
 	}
 	
-	public boolean isEquals ( FieldDesc obj )
+	public boolean isEqual ( FieldDesc other )
 	{
-        return n_isEquals (nativeObj, obj.nativeObj);
+		//return (name == other.name) && (type == other.type)
+        return n_isEqual (nativeObj, obj.nativeObj);
 	}
 	
     @Override
@@ -31,8 +37,9 @@ public class FieldDesc
         n_delete (nativeObj);
         super.finalize();
     }
-	
-	private native long n_FieldDesc ();
-	private native boolean n_isEquals (long nativeObj);
-	private static native void n_delete (long nativeObj);
+    
+    private native long n_FieldDesc ();
+	private native long n_FieldDesc ( sName, eType, isOptional );
+	private native boolean n_isEqual ( long nativeObj, long other );
+	private static native void n_delete ( long nativeObj );
 }
