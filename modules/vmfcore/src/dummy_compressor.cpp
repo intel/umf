@@ -21,12 +21,14 @@ namespace vmf {
 
 void DummyCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
 {
-    output = vmf_rawbuffer(input.c_str(), input.size());
+    //copies input to another buffer and writes result
+    output = std::move(vmf_rawbuffer(input.c_str(), input.size()));
 }
 
 void DummyCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
 {
-    output = MetaString(input.data.get(), input.size);
+    //copies code to another buffer and writes result
+    output = std::move(MetaString(input.data.get(), input.size));
 }
 
 const MetaString& DummyCompressor::getId()
