@@ -7,8 +7,6 @@ public class FieldDesc
         System.loadLibrary("vmf");
     }
 	
-    protected final long nativeObj;
-	
     public boolean optional;
 	
     public String name;
@@ -17,7 +15,9 @@ public class FieldDesc
     
     public FieldDesc ()
     {
-    	nativeObj = n_FieldDesc ();
+    	optional = false;
+    	name = "";
+    	type = Variant.STRING;
     }
 	
     public FieldDesc ( final string sName, Variant.Type eType, boolean isOptional )
