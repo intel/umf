@@ -27,8 +27,9 @@ public class FieldValue extends Variant
 		nativeObj = n_FieldValue ( name, variant );
 	}
 	
-	public final String getName ()
+	public String getName ()
 	{
+		//return m_name;
 		return n_getName ( nativeObj ); 
 	}
 	
@@ -50,11 +51,11 @@ public class FieldValue extends Variant
 	    super.finalize();
 	}
 	
-	private native long n_FieldValue ();
-	private native long n_FieldValue ( long other );
-	private native long n_FieldValue ( String name, long variant );
-	private native String n_getName ( long nativeObj ); 
-	private native boolean n_isEqual ( nativeObj, other.nativeObj );
-	private native void n_Equal ( nativeObj, other.nativeObj );
+	private static native long n_FieldValue ();
+	private static native long n_FieldValue ( long other );
+	private static native long n_FieldValue ( String name, long variant );
+	private static native String n_getName ( long nativeObj ); 
+	private static native boolean n_isEqual ( nativeObj, other.nativeObj );
+	private static native void n_Equal ( nativeObj, other.nativeObj );
 	private static native void n_delete ( long nativeObj );	
 }
