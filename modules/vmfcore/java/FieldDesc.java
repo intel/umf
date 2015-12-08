@@ -20,16 +20,16 @@ public class FieldDesc
     	nativeObj = n_FieldDesc ();
     }
 	
-	public FieldDesc ( final string sName, Variant.Type eType, boolean isOptional )
-	{
+    public FieldDesc ( final string sName, Variant.Type eType, boolean isOptional )
+    {
         nativeObj = n_FieldDesc(sName, eType, isOptional);
-	}
+    }
 	
-	public boolean isEqual ( FieldDesc other )
-	{
-		//return (name == other.name) && (type == other.type)
+    public boolean isEqual ( FieldDesc other )
+    {
+        //return (name == other.name) && (type == other.type);
         return n_isEqual (nativeObj, obj.nativeObj);
-	}
+    }
 	
     @Override
     protected void finalize () throws Throwable 
@@ -39,7 +39,7 @@ public class FieldDesc
     }
     
     private native long n_FieldDesc ();
-	private native long n_FieldDesc ( sName, eType, isOptional );
-	private native boolean n_isEqual ( long nativeObj, long other );
-	private static native void n_delete ( long nativeObj );
+    private native long n_FieldDesc ( sName, eType, isOptional );
+    private native boolean n_isEqual ( long nativeObj, long other );
+    private static native void n_delete ( long nativeObj );
 }
