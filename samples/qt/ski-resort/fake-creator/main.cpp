@@ -108,8 +108,7 @@ int main(int argc, char** argv)
         frameTime += MSEC_IN_SEC;
     }
 
-    std::shared_ptr<vmf::ICompressor> compressor = std::make_shared<vmf::ZLibCompressor>();
-    stream.save(compressor);
+    stream.save();
     stream.close();
 
     vmf::terminate();
