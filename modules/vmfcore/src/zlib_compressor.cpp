@@ -40,6 +40,8 @@ void ZLibCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
     //level should be default or from 0 to 9 (regulates speed/size ratio)
     int level = Z_DEFAULT_COMPRESSION;
     int rcode = compress2(toCompress, &destLength, (const Bytef*)input.c_str(), srcLen, level);
+    destLength += sizeof(size_t);
+
     if(rcode != Z_OK)
     {
         if(rcode == Z_MEM_ERROR)
