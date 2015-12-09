@@ -154,7 +154,14 @@ void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
         compressedXMP = xmp;
     }
     //xmpFile.PutXMP(buffer.c_str(), buffer.size());
-    xmpFile.PutXMP(*compressedXMP);
+    if(xmpFile.CanPutXMP(*compressedXMP))
+    {
+        xmpFile.PutXMP(*compressedXMP);
+    }
+    else
+    {
+        VMF_EXCEPTION(InternalErrorException, "Can't write XMP data to file");
+    }
 }
 
 

@@ -39,7 +39,20 @@ void ZLibCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
 
     //level should be default or from 0 to 9 (regulates speed/size ratio)
     int level = Z_DEFAULT_COMPRESSION;
-    compress2(toCompress, &destLength, (const Bytef*)input.c_str(), srcLen, level);
+    int rcode = compress2(toCompress, &destLength, (const Bytef*)input.c_str(), srcLen, level);
+    if(rcode != Z_OK)
+    {
+        if(rcode == Z_MEM_ERROR)
+        {
+            VMF_EXCEPTION(InternalErrorException, "Out of memory");
+        }
+        else
+        {
+            VMF_EXCEPTION(InternalErrorException, "Compressing error occured");
+            //Z_BUF_ERROR if there was not enough room in the output buffer,
+            //Z_STREAM_ERROR if the level parameter is invalid.
+        }
+    }
 
     output = std::move(vmf_rawbuffer((const char*)destBuf, destLength));
     free(destBuf);
@@ -55,7 +68,20 @@ void ZLibCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
     compressedBuf += sizeof(size_t);
     size_t gotDecompressedSize = decompressedSize;
     u_char* decompressedBuf = (u_char*)malloc(decompressedSize);
-    uncompress(decompressedBuf, &gotDecompressedSize, compressedBuf, compressedSize);
+    int rcode = uncompress(decompressedBuf, &gotDecompressedSize, compressedBuf, compressedSize);
+    if(rcode != Z_OK)
+    {
+        if(rcode == Z_MEM_ERROR)
+        {
+            VMF_EXCEPTION(InternalErrorException, "Out of memory");
+        }
+        else
+        {
+            VMF_EXCEPTION(InternalErrorException, "Decompressing error occured");
+            //Z_BUF_ERROR if there was not enough room in the output buffer,
+            //Z_DATA_ERROR if the input data was corrupted or incomplete
+        }
+    }
 
     if(gotDecompressedSize != decompressedSize)
     {
