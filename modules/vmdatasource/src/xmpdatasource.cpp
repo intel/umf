@@ -136,6 +136,10 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
 void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
 {
     std::shared_ptr<SXMPMeta> compressedXMP = std::make_shared<SXMPMeta>();
+    //Sometimes compressed&encoded data is bigger than the source data
+    //but there's no need to compare their sizes and write the smallest one.
+    //Because due to RDF's verbosity it happens only when the source data is small.
+    //That's why the economy wouldn't be significant.
     if(compressor)
     {
         string buffer;

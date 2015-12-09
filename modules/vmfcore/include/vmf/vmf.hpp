@@ -30,5 +30,7 @@
 #include "vmf/xmlwriter.hpp"
 #include "vmf/jsonreader.hpp"
 #include "vmf/jsonwriter.hpp"
+#include "vmf/dummy_compressor.hpp"
+#include "vmf/zlib_compressor.hpp"
 
 #endif /* __VMF_H__ */
