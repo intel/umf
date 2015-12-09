@@ -139,7 +139,8 @@ void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
     if(compressor)
     {
         string buffer;
-        xmp->SerializeToBuffer(&buffer, 0, 0, NULL);
+        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+        xmp->SerializeToBuffer(&buffer, options, 0, NULL);
         vmf_rawbuffer compressed;
         compressor->compress(buffer, compressed);
         string encoded = libbase64::encode<string, string::value_type,
