@@ -79,7 +79,7 @@ public:
         std::map< int, std::string > dictionary;
         for (int i = 0; i < 256; i++)
         {
-          dictionary[i] = std::string(1, i);
+            dictionary[i] = std::string(1, i);
         }
 
         //load codes from raw buffer to vector<int>
@@ -94,7 +94,7 @@ public:
         std::string entry;
         for ( ; idx < nCodes; idx++)
         {
-            int k = codes[idx++]; //int k = *begin;
+            int k = codes[idx]; //int k = *begin;
             if (dictionary.count(k))
             {
                 entry = dictionary[k];
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 
     fieldDesc.push_back(FieldDesc(GPS_COORD_LAT_FIELD, Variant::type_real)); // GPS coordinates
     fieldDesc.push_back(FieldDesc(GPS_COORD_LNG_FIELD, Variant::type_real)); // GPS coordinates
-    fieldDesc.push_back(FieldDesc(GPS_TIME_FIELD,   Variant::type_integer)); // Associated time in msecs
+    fieldDesc.push_back(FieldDesc(GPS_TIME_FIELD,      Variant::type_real)); // Associated time in msecs
 
     // Create GPS metadata description
     shared_ptr<MetadataDesc> gpsDesc(new MetadataDesc(GPS_DESC, fieldDesc));
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
     shared_ptr<Metadata> gpsMetadata;
 
     // Let there be an UFO moving around some point on Earth
-    const int nPoints = 65536;
+    const int nPoints = 32768;
     for(int i = 0; i < nPoints; i++)
     {
         float lat =   37.235 + cos(i/25.0*2.0*M_PI) * 0.001;
@@ -248,7 +248,7 @@ int main(int argc, char** argv)
         vmf_real lng = metadataItem->getFieldValue(GPS_COORD_LNG_FIELD);
         cout << "\tGPS coordinates are: lat " << lat << " lng " << lng << endl;
 
-        string time = metadataItem->getFieldValue(GPS_TIME_FIELD);
+        vmf_real time = metadataItem->getFieldValue(GPS_TIME_FIELD);
         cout << "\tAssociated time is: " << time << endl;
     }
 
