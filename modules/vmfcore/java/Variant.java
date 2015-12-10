@@ -172,13 +172,14 @@
 		return n_base64Encode (struct.data, struct.size);
 	}
 	
-	static void base64Decode (String base64Str)
+	static vmf_rawbuffer base64Decode (String base64Str)
 	{
-		vmf_rawbuffer buffer;
+		vmf_rawbuffer buffer = new vmf_rawbuffer();
 		
 		int[] size;
 		n_base64Decode (base64Str, buffer.data, size);
 		buffer.size = size[0]; 
+		return buffer;
 	}
 	
     @Override
@@ -217,3 +218,4 @@
 	private native static void n_base64Decode (String str, ByteBuffer buffer, int[] size);
 	private native static void n_delete (long nativeObj);
  }
+ 
