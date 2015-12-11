@@ -13,7 +13,7 @@ public class ReferenceDesc
         isCustom = false;
 	}
     
-    public ReferenceDesc( String refName, boolean unique, boolean custom ) 
+    public ReferenceDesc(String refName, boolean unique, boolean custom) 
     {
     	name = refName;
     	isUnique = unique; 

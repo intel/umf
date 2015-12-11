@@ -9,7 +9,7 @@ public class FieldValue extends Variant
 	
 	private String name;
 	
-	protected final long nativeObj;
+	protected long nativeObj;
 	
 	public FieldValue ()
 	{
@@ -18,19 +18,25 @@ public class FieldValue extends Variant
 	
 	public FieldValue (FieldValue other)
 	{
+		if (other == null)
+            throw new java.lang.UnsupportedOperationException("Object address is NULL");
+		
 		nativeObj = n_FieldValue (other.nativeObj);
 	}
 	
-	public FieldValue (String newName, Variant variant )
+	public FieldValue (String newName, Variant variant)
 	{
+		if (variant == null)
+            throw new java.lang.UnsupportedOperationException("Object address is NULL");
+		
 		name = newName;
-		nativeObj = n_FieldValue (name, variant);
+		nativeObj = n_FieldValue (newName, variant.nativeObj);
 	}
 	
 	public String getName ()
 	{
-		//return m_name;
-		return n_getName (nativeObj); 
+		return name;
+		//return n_getName (nativeObj); 
 	}
 	
 	public boolean isEqual (FieldValue other)
@@ -44,6 +50,12 @@ public class FieldValue extends Variant
 		return;
 	}
 	
+	public void clear ()
+	{
+		n_delete (nativeObj);
+		nativeObj = n_FieldValue ();
+	}
+	
 	@Override
 	protected void finalize () throws Throwable 
 	{
@@ -55,7 +67,7 @@ public class FieldValue extends Variant
 	
 	private static native long n_FieldValue ();
 	private static native long n_FieldValue (long other);
-	private static native long n_FieldValue (String name, Variant variant);
+	private static native long n_FieldValue (String name, long variant);
 	private static native String n_getName (long nativeObj); 
 	private static native boolean n_isEqual (long nativeObj, long other);
 	private static native void n_equals (long nativeObj, long other);

@@ -37,23 +37,23 @@ import java.nio.ByteBuffer;
         nativeObj = addr;
     }
     
-	public Variant ()
-	{
+    public Variant ()
+    {
+        nativeObj = n_Variant ();
+    }
+	
+    public Variant (int value)
+    {
 	    nativeObj = n_Variant ();
-	}
+	    nativeObj = n_setTo (nativeObj, value);
+	    //nativeObj = n_Variant (value);
+    }
 	
-	public Variant (int value)
-	{
-		nativeObj = n_Variant ();
-		nativeObj = n_setTo (nativeObj, value);
-		//nativeObj = n_Variant (value);
-	}
-	
-	public Variant (float value)
-	{
-		nativeObj = n_Variant ();
-		nativeObj = n_setTo (nativeObj, value);
-		//nativeObj = n_Variant ( value );
+    public Variant (float value)
+    {
+        nativeObj = n_Variant ();
+        nativeObj = n_setTo (nativeObj, value);
+        //nativeObj = n_Variant ( value );
 	}
 	
 	public Variant (int[] array)
@@ -155,7 +155,9 @@ import java.nio.ByteBuffer;
 	
 	public void clear ()
 	{
-		n_delete (nativeObj);
+		if (nativeObj != 0)
+		    n_delete (nativeObj);
+		
 		nativeObj = n_Variant ();
 	}
 	
@@ -197,8 +199,10 @@ import java.nio.ByteBuffer;
     protected void finalize () throws Throwable 
     {
     	if (nativeObj != 0)
+    	{
             n_delete (nativeObj);
-    	
+            nativeObj = 0;
+    	}
         super.finalize();
     }
 	
@@ -227,8 +231,6 @@ import java.nio.ByteBuffer;
 	private native static int n_typeFromString (String fieldType);
 	private native static boolean n_isConvertible (int srcType, int tarType);
 	private native static String n_base64Encode (ByteBuffer buf, long size);
-	//????private native static vmf_rawbuffer n_base64Decode (String buffer);
 	private native static ByteBuffer n_base64Decode (String str, int size[]);
 	private native static void n_delete (long nativeObj);
  }
- 
