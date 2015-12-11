@@ -69,7 +69,7 @@ public:
             codes.push_back(dictionary[w]); //*result++ = dictionary[w];
 
         //according to C++ standard, this should be correct way to convert vector to array
-        output = std::move(vmf_rawbuffer((const char*)&codes[0], codes.size()*sizeof(int)));
+        output = std::move(vmf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int)));
     }
 
     virtual void decompress(const vmf_rawbuffer& input, MetaString& output)

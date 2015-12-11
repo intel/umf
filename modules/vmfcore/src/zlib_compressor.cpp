@@ -69,8 +69,8 @@ void ZLibCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
     size_t decompressedSize = *((size_t*)compressedBuf);
     compressedBuf += sizeof(size_t);
     size_t gotDecompressedSize = decompressedSize;
-    u_char* decompressedBuf = (u_char*)malloc(decompressedSize);
-    int rcode = uncompress(decompressedBuf, &gotDecompressedSize, compressedBuf, compressedSize);
+    std::vector<u_char> decompressedBuf(decompressedSize);
+    int rcode = uncompress(decompressedBuf.data(), &gotDecompressedSize, compressedBuf, compressedSize);
     if(rcode != Z_OK)
     {
         if(rcode == Z_MEM_ERROR)
@@ -88,11 +88,10 @@ void ZLibCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
     if(gotDecompressedSize != decompressedSize)
     {
         VMF_EXCEPTION(InternalErrorException,
-                      "The size of decompressed data doesn't match to ")
+                      "The size of decompressed data doesn't match to source size");
     }
 
-    output = std::move(MetaString((const char*)decompressedBuf, decompressedSize));
-    free(decompressedBuf);
+    output = std::move(MetaString((const char*)decompressedBuf.data(), decompressedSize));
 }
 
 const MetaString& ZLibCompressor::getId()
