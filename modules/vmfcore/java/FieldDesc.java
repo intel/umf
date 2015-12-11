@@ -1,4 +1,4 @@
-package com.intel.vmf;
+//package com.intel.vmf;
 
 public class FieldDesc
 {
@@ -11,23 +11,23 @@ public class FieldDesc
 	
     public String name;
 	
-    public Variant.Type type;
+    public int type;
     
     public FieldDesc ()
     {
     	optional = false;
     	name = "";
-    	type = Variant.STRING;
+    	type = Variant.type_string;
     }
 	
-    public FieldDesc ( final string sName, Variant.Type eType, boolean isOptional )
+    public FieldDesc (String newName, int newType, boolean isOptional )
     {
     	optional = isOptional;
-    	name = sName;
-    	type = eType;
+    	name = newName;
+    	type = newType;
     }
 	
-    public boolean isEqual ( FieldDesc other )
+    public boolean isEqual (FieldDesc other )
     {
         return (name == other.name) && (type == other.type);
     }

@@ -1,5 +1,7 @@
- package com.intel.vmf;
- 
+//package com.intel.vmf;
+
+import java.nio.ByteBuffer;
+
  public class Variant
  {
     static
@@ -7,32 +9,31 @@
         System.loadLibrary("vmf");
     }
 	
-    public enum Type
-    {
-    	type_unknown,
-        type_char,
-        type_integer,
-        type_real,
-        type_string,
-        type_vec2d,
-        type_vec3d,
-        type_vec4d,
-        type_rawbuffer,
-        type_char_vector,
-        type_integer_vector,
-        type_real_vector,
-        type_string_vector,
-        type_vec2d_vector,
-        type_vec3d_vector,
-        type_vec4d_vector
-    }
+    public static final int type_unknown = 0;
+    public static final int type_char = 1;
+    public static final int type_integer = 2;
+    public static final int type_real = 3;
+    public static final int type_string = 4;
+    public static final int type_vec2d = 5;
+    public static final int type_vec3d = 6;
+    public static final int type_vec4d = 7;
+    public static final int type_rawbuffer = 8;
+    public static final int type_char_vector = 9;
+    public static final int type_integer_vector = 10;
+    public static final int type_real_vector = 11;
+    public static final int type_string_vector = 12;
+    public static final int type_vec2d_vector = 13;
+    public static final int type_vec3d_vector = 14;
+    public static final int type_vec4d_vector = 15;
     
-    protected final long nativeObj;
+    
+    protected long nativeObj;
 	
-    private Variant (long addr)
+    protected Variant (long addr)
     {
         if (addr == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         nativeObj = addr;
     }
     
@@ -41,34 +42,44 @@
 	    nativeObj = n_Variant ();
 	}
 	
-	public Variant ( final int value )
+	public Variant (int value)
 	{
-		nativeObj = n_Variant ( value );
+		nativeObj = n_Variant ();
+		nativeObj = n_setTo (nativeObj, value);
+		//nativeObj = n_Variant (value);
 	}
 	
-	public Variant ( final float value )
+	public Variant (float value)
 	{
-		nativeObj = n_Variant ( value );
+		nativeObj = n_Variant ();
+		nativeObj = n_setTo (nativeObj, value);
+		//nativeObj = n_Variant ( value );
 	}
 	
-	public Variant ( int[] array )
+	public Variant (int[] array)
 	{
-		nativeObj = n_Variant (array);
+		nativeObj = n_Variant ();
+		nativeObj = n_setTo (nativeObj, array);
+		//nativeObj = n_Variant (array);
 	}
 	
-	public Variant ( float[] array )
+	public Variant (float[] array)
 	{
-		nativeObj = n_Variant (array);
+		nativeObj = n_Variant ();
+		nativeObj = n_setTo (nativeObj, array);
+		//nativeObj = n_Variant (array);
 	}
 	
-	public Variant ( String pszString )
+	public Variant (String str)
 	{
-		nativeObj = n_Variant (pszString);
+		nativeObj = n_Variant ();
+		nativeObj = n_setTo (nativeObj, str);
+		//nativeObj = n_Variant (str);
 	}
 	
-	public void copyTo (final Variant other)
+	public void copy (final Variant other)
 	{
-		n_copyTo (nativeObj, other.nativeObj);
+		n_copy (nativeObj, other.nativeObj);
 	}
 	
 	public Variant setTo (int value)
@@ -107,14 +118,14 @@
 		return retVal;
 	}
 	
-	public boolean equalTo (Variant other)
+	public boolean equals (Variant other)
 	{
-		return n_equalTo (nativeObj, other.nativeObj);
+		return n_equals (nativeObj, other.nativeObj);
 	}
 	
-	public boolean unequalTo (Variant other)
+	public boolean unequals (Variant other)
 	{
-		return n_unequalTo (nativeObj, other.nativeObj);
+		return n_unequals (nativeObj, other.nativeObj);
 	}
 	
 	public String toString ()
@@ -142,9 +153,10 @@
 		return n_getTypeName(nativeObj);
 	}
 	
-	public void dispose ()
+	public void clear ()
 	{
 		n_delete (nativeObj);
+		nativeObj = n_Variant ();
 	}
 	
 	public void convertTo (int type)
@@ -164,46 +176,47 @@
 	
 	public static boolean isConvertible (int srcType, int tarType)
 	{
-		return n_isConverible (srcType, tarType);
+		return n_isConvertible (srcType, tarType);
 	}
 	
-	public static String base64Encode (vmf_rawbuffer struct)
+	public static String base64Encode (vmfRawBuffer buf)
 	{
-		return n_base64Encode (struct.data, struct.size);
+		return n_base64Encode (buf.byteBuf, buf.size);
 	}
 	
-	static vmf_rawbuffer base64Decode (String base64Str)
+	static vmfRawBuffer base64Decode (String base64Str)
 	{
-		vmf_rawbuffer buffer = new vmf_rawbuffer();
-		
-		int[] size;
-		n_base64Decode (base64Str, buffer.data, size);
-		buffer.size = size[0]; 
-		return buffer;
+		vmfRawBuffer buf = new vmfRawBuffer ();
+		int size[] = new int[1];
+		buf.byteBuf = n_base64Decode (base64Str, size);
+		buf.size = size[0]; 
+		return buf;
 	}
 	
     @Override
     protected void finalize () throws Throwable 
     {
-        n_delete (nativeObj);
+    	if (nativeObj != 0)
+            n_delete (nativeObj);
+    	
         super.finalize();
     }
 	
 	private native long n_Variant ();
-	private native long n_Variant (final int value);
+	/*private native long n_Variant (final int value);
 	private native long n_Variant (final float value);
 	private native long n_Variant (int[] array);
 	private native long n_Variant (float[] array);
-	private native long n_Variant (String pszString);
-	private native static void n_copyTo (long nativeObj, long other);
+	private native long n_Variant (String str);*/
+	private native static void n_copy (long nativeObj, long other);
 	private native static long n_setTo (long nativeObj, int value);
 	private native static long n_setTo (long nativeObj, float value);
-	private native static long n_setTo (long nativeObj, int[] array);
-	private native static long n_setTo (long nativeObj, float[] array);
+	private native static long n_setTo (long nativeObj, int array[]);
+	private native static long n_setTo (long nativeObj, float array[]);
 	private native static long n_setTo (long nativeObj, String str);
 	private native static long n_setTo (long nativeObj, long other);
-	private native static boolean n_equalTo (long nativeObj, long other);
-	private native static boolean n_unequalTo (long nativeObj, long other);
+	private native static boolean n_equals (long nativeObj, long other);
+	private native static boolean n_unequals (long nativeObj, long other);
 	private native static String n_toString (long nativeObj);
 	private native static void n_fromString (long nativeObj, int type, String str);
 	private native static int n_getType (long nativeObj);
@@ -212,10 +225,10 @@
 	private native static void n_convertTo (long nativeObj, int type);
 	private native static String n_typeToString (int type);
 	private native static int n_typeFromString (String fieldType);
-	private native static boolean n_isConverible (int srcType, int tarType);
-	private native static String n_base64Encode (ByteBuffer buffer, long size);
+	private native static boolean n_isConvertible (int srcType, int tarType);
+	private native static String n_base64Encode (ByteBuffer buf, long size);
 	//????private native static vmf_rawbuffer n_base64Decode (String buffer);
-	private native static void n_base64Decode (String str, ByteBuffer buffer, int[] size);
+	private native static ByteBuffer n_base64Decode (String str, int size[]);
 	private native static void n_delete (long nativeObj);
  }
  
