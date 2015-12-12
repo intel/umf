@@ -4,16 +4,29 @@ import java.nio.ByteBuffer;
 
 public class vmfRawBuffer
 {
+	static
+    {
+        System.loadLibrary("vmf");
+    }
+	
     protected ByteBuffer byteBuf;
     protected int size;
     
-    public vmfRawBuffer()
+    protected vmfRawBuffer (long addr)
+    {
+        if (addr == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        nativeObj = addr;
+    }
+    
+    public vmfRawBuffer ()
     {
     	byteBuf = null;
     	size = 0;
     }
     
-    public vmfRawBuffer(ByteBuffer newBuffer)
+    public vmfRawBuffer (ByteBuffer newBuffer)
     {
     	byteBuf = newBuffer;
     	size = newBuffer.capacity();

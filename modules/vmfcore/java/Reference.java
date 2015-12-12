@@ -2,10 +2,23 @@
 
 public class Reference
 {
+	static
+    {
+        System.loadLibrary("vmf");
+    }
+	
 	private ReferenceDesc refDesc;
 	private Metadata  metaData;
 	
 	protected long nativeObj;
+	
+	protected Reference (long addr)
+    {
+        if (addr == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        nativeObj = addr;
+    }
 	
 	public Reference ()
 	{
@@ -18,7 +31,11 @@ public class Reference
 	{
 		refDesc = desc;
 		metaData = md;
-		nativeObj = n_Reference (desc.name, desc.isUnique, desc.isCustom, md.description);
+		
+		if (md.nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+		
+		nativeObj = n_Reference (desc.name, desc.isUnique, desc.isCustom, md.nativeObj);
 	}
 	
 	public void clear ()
@@ -31,8 +48,7 @@ public class Reference
 	
 	public Metadata getMetadata ()
 	{
-		return n_getMetadata (nativeObj, );
-		
+		return new Metadata (n_getMetadata (nativeObj));
 		//return metaData;
 	}
 	
@@ -42,14 +58,13 @@ public class Reference
 		String name = new String();
 		n_getReferenceDescription (nativeObj, flags, name);
 		return new ReferenceDesc (name, flags[0], flags[1]);
-		
 		//return refDesc;
 	}
 	
 	public void setMetadata (Metadata md)
 	{
 		metaData = md;
-		n_setMetadata (md);
+		n_setMetadata (nativeObj, md.nativeObj);
 	}
 	
 	@Override
@@ -63,4 +78,11 @@ public class Reference
     	
         super.finalize();
     }
+	
+	private native long n_Reference();
+	private native long n_Reference (String name, boolean unique, boolean custom, long md);
+	private native static void n_getMetadata (long nativeObj);
+	private native static void n_setMetadata (long nativeObj, long md);
+	private native static void n_getReferenceDescription (long nativeObj, boolean flags[], String name);
+	private native static void n_delete (long nativeObj);
 }

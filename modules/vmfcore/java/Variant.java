@@ -77,7 +77,7 @@ import java.nio.ByteBuffer;
 		//nativeObj = n_Variant (str);
 	}
 	
-	public void copy (final Variant other)
+	public void copy (Variant other)
 	{
 		n_copy (nativeObj, other.nativeObj);
 	}
