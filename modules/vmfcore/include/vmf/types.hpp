@@ -107,82 +107,81 @@ namespace vmf
     */
     struct vmf_rawbuffer
     {
-	vmf_rawbuffer() : data(nullptr), size(0) {}
+        vmf_rawbuffer() : data(nullptr), size(0) {}
 
-	vmf_rawbuffer(const char* _data, const size_t& _size) : size(_size)
-	{
-	    if(_data && _size > 0)
-	    {
-		data = std::unique_ptr<char[]>(new char[size]);
-		memcpy(data.get(), _data, _size);
-	    }
-	    else if(!_data && _size == 0)
-		data = nullptr;
-	    else
-		VMF_EXCEPTION(IncorrectParamException, "Raw buffer object can't be created. Empty data or invalid size.");
-	}
+        vmf_rawbuffer(const char* _data, const size_t& _size) : size(_size)
+        {
+            if(_data && _size > 0)
+            {
+                data = std::unique_ptr<char[]>(new char[size]);
+                memcpy(data.get(), _data, _size);
+            }
+            else if(!_data && _size == 0)
+                data = nullptr;
+            else
+                VMF_EXCEPTION(IncorrectParamException, "Raw buffer object can't be created. Empty data or invalid size.");
+        }
 
-	vmf_rawbuffer(const vmf_rawbuffer& other) : size(other.size)
-	{
-	    if(other.size > 0)
-	    {
-		data = std::unique_ptr<char[]>(new char[other.size]);
-		memcpy(data.get(), other.data.get(), other.size);
-	    }
-	    else
-		data = nullptr;
-	}
+        vmf_rawbuffer(const vmf_rawbuffer& other) : size(other.size)
+        {
+            if(other.size > 0)
+            {
+                data = std::unique_ptr<char[]>(new char[other.size]);
+                memcpy(data.get(), other.data.get(), other.size);
+            }
+            else
+                data = nullptr;
+        }
 
-	vmf_rawbuffer(vmf_rawbuffer&& other)
-	{
-	    *this = std::move(other);
-	}
+        vmf_rawbuffer(vmf_rawbuffer&& other)
+        {
+            *this = std::move(other);
+        }
 
-	~vmf_rawbuffer()
-	{
-	    data = nullptr;
-	}
+        ~vmf_rawbuffer()
+        {
+            data = nullptr;
+        }
 
-	vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
-	{
-	    if(this != &other)
-	    {
-		if(other.size > 0)
-		{
-		    data = std::unique_ptr<char[]>(new char[other.size]);
-		    memcpy(data.get(), other.data.get(), other.size);
-		}
-		else
-		{
-		    data = nullptr;
-		    size = 0;
-		}
-	    }
-	    return *this;
-	}
+    vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
+    {
+        if(this != &other)
+        {
+        if(other.size > 0)
+        {
+            data = std::unique_ptr<char[]>(new char[other.size]);
+            memcpy(data.get(), other.data.get(), other.size);
+            size = other.size;
+        }
+        else
+        {
+            data = nullptr;
+            size = 0;
+        }
+        }
+        return *this;
+    }
 
-	bool operator == (const vmf_rawbuffer& value) const
-	{
-	    if(size != value.size)
-		return false;
+    bool operator == (const vmf_rawbuffer& value) const
+    {
+        if(size != value.size)
+            return false;
 
-	    if(data == value.data)
-		return true;
+        if(data == value.data)
+            return true;
 
-	    for(size_t i = 0; i < size; i++)
-	    {
-		char t1 = data[i], t2 = value.data[i];
-		if(t1 != t2)
-		    return false;
-	    }
+        for(size_t i = 0; i < size; i++)
+        {
+            char t1 = data[i], t2 = value.data[i];
+            if(t1 != t2)
+                return false;
+        }
 
-	    return true;
-	}
+        return true;
+    }
 
-
-
-	std::unique_ptr<char[]> data;
-	size_t size;
+    std::unique_ptr<char[]> data;
+    size_t size;
     };
 
 } /* vmf */
