@@ -43,13 +43,12 @@ public class Reference
 		if (nativeObj != 0)
 		    n_delete (nativeObj);
 		
-		nativeObj = n_Reference (nativeObj);
+		nativeObj = n_Reference ();
 	}
 	
 	public Metadata getMetadata ()
 	{
 		return new Metadata (n_getMetadata (nativeObj));
-		//return metaData;
 	}
 	
 	public ReferenceDesc getReferenceDescription ()
@@ -58,7 +57,6 @@ public class Reference
 		String name = new String();
 		n_getReferenceDescription (nativeObj, flags, name);
 		return new ReferenceDesc (name, flags[0], flags[1]);
-		//return refDesc;
 	}
 	
 	public void setMetadata (Metadata md)

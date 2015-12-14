@@ -110,7 +110,7 @@ public class Metadata
 		if (nativeObj == 0)
 		    throw new java.lang.UnsupportedOperationException("Native object address is NULL");
 		
-		return n_getDuration (nativeObj)
+		return n_getDuration (nativeObj);
 	}
 	
 	public String getName ()
@@ -137,6 +137,34 @@ public class Metadata
 		return new MetadataDesc (n_getDesc (nativeObj));
 	}
 	
+	public ArrayList<String> getFieldNames ()
+	{
+	    return n_getFieldNames (nativeObj);	
+	}
+
+	public Variant getFieldValue (String name)
+	{
+		return new Variant (n_getFieldValue(nativeObj));
+	}
+	
+	public boolean hasField (String fieldName)
+	{
+	    return n_hasField (nativeObj);
+	}
+	
+	/*TO DO:
+	public FieldValue findField ( String fieldName ){}*/
+	
+	public boolean equals (Metadata other)
+	{
+	    return n_equals (nativeObj, other.nativeObj);
+	}
+	
+	public boolean lessThan (Metadata other)
+	{
+	    return n_lessThan (nativeObject, other.nativeObj);
+	}
+	
     @Override
 	protected void finalize () throws Throwable 
 	{
@@ -147,7 +175,10 @@ public class Metadata
 	    }
 	    super.finalize();
 	}
-    
-    private native long n_Metadata (mdDescription.nativeObj);
+   
+    private native long n_Metadata (long mdDescriptionAddr);
     private native static void n_copy (long nativeObj, long other);
+    private native static void n_clear (long nativeObj);
+    private native static void 
+
 }

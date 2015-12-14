@@ -35,8 +35,8 @@ public class FieldValue extends Variant
 	
 	public String getName ()
 	{
-		return name;
-		//return n_getName (nativeObj); 
+		//return name;
+		return n_getName (nativeObj); 
 	}
 	
 	public boolean isEqual (FieldValue other)
