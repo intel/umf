@@ -56,19 +56,12 @@ int main(int argc, char** argv)
     const string GPS_SCHEMA_NAME = "gps_coords_schema";
 
     // Create a GPS metadata field descriptions
-    vector<FieldDesc> fieldDesc;
-
-    fieldDesc.push_back(FieldDesc(GPS_COORD_LAT_FIELD, Variant::type_real)); // GPS coordinates
-    fieldDesc.push_back(FieldDesc(GPS_COORD_LNG_FIELD, Variant::type_real)); // GPS coordinates
-
-    // Create GPS metadata description
-    shared_ptr<MetadataDesc> gpsDesc(new MetadataDesc(GPS_DESC, fieldDesc));
-
-    // Create GPS metadata schema
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));
 
-    // Add description to the schema
-    gpsSchema->add(gpsDesc);
+    VMF_METADATA_BEGIN(GPS_DESC);
+        VMF_FIELD_REAL(GPS_COORD_LAT_FIELD);
+        VMF_FIELD_REAL(GPS_COORD_LNG_FIELD);
+    VMF_METADATA_END(gpsSchema);
 
     cout << "Adding metadata schema '" << GPS_SCHEMA_NAME << "'..." << endl;
 
@@ -88,7 +81,7 @@ int main(int argc, char** argv)
         cout << " with associated time " << time << endl;
 
         // Create a metadata item
-        gpsMetadata = shared_ptr<Metadata>(new Metadata(gpsDesc));
+        gpsMetadata = shared_ptr<Metadata>(new Metadata(gpsSchema->findMetadataDesc(GPS_DESC)));
 
         // Fill item fields
         gpsMetadata->push_back(FieldValue(GPS_COORD_LAT_FIELD, lat));
