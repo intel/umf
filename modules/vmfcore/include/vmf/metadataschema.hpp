@@ -129,11 +129,6 @@ private:
     schema->add( desc );\
 };
 
-#define VMF_FIELD_CHAR_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_char, isOptional ));
-#define VMF_FIELD_CHAR( name ) VMF_FIELD_CHAR_( name, false )
-#define VMF_FIELD_CHAR_OPT( name ) VMF_FIELD_CHAR_( name, true )
-
 #define VMF_FIELD_STR_( name, isOptional ) \
     fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_string, isOptional ));
 #define VMF_FIELD_STR( name ) VMF_FIELD_STR_( name, false )

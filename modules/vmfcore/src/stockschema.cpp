@@ -207,14 +207,6 @@ static shared_ptr< vmf::MetadataSchema > _createAllInOneSchema(const string& sch
 
     VMF_METADATA_BEGIN("any");
         VMF_FIELD_STR( "type" );
-        VMF_FIELD_CHAR_OPT( "c0" );
-        VMF_FIELD_CHAR_OPT( "c1" );
-        VMF_FIELD_CHAR_OPT( "c2" );
-        VMF_FIELD_CHAR_OPT( "c3" );
-        VMF_FIELD_CHAR_OPT( "c4" );
-        VMF_FIELD_CHAR_OPT( "c5" );
-        VMF_FIELD_CHAR_OPT( "c6" );
-        VMF_FIELD_CHAR_OPT( "c7" );
         VMF_FIELD_STR_OPT( "s0" );
         VMF_FIELD_STR_OPT( "s1" );
         VMF_FIELD_STR_OPT( "s2" );

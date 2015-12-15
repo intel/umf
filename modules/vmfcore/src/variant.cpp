@@ -88,7 +88,6 @@ Variant::operator const vmf_##T& () const\
     return get_##T();\
 }
 
-IMPLEMENT_VMF_TYPE( char )
 IMPLEMENT_VMF_TYPE( integer )
 IMPLEMENT_VMF_TYPE( real )
 IMPLEMENT_VMF_TYPE( string )
@@ -123,7 +122,6 @@ Variant::operator const std::vector<vmf_##T>& () const\
     return get_##T##_vector();\
 }
 
-IMPLEMENT_VECTOR_VMF_TYPE( char )
 IMPLEMENT_VECTOR_VMF_TYPE( integer )
 IMPLEMENT_VECTOR_VMF_TYPE( real )
 IMPLEMENT_VECTOR_VMF_TYPE( string )
@@ -260,7 +258,6 @@ bool Variant::operator == (const Variant& other) const
     bool bIsEqual = false;
     switch(m_type)
     {
-        COMPARE_OBJECT( char )
         COMPARE_OBJECT( integer )
         case type_real:
             bIsEqual = DOUBLE_EQ(dynamic_cast<Data<vmf_real>*>(data)->content, (vmf_real)other);
@@ -270,7 +267,6 @@ bool Variant::operator == (const Variant& other) const
         COMPARE_OBJECT( vec3d )
         COMPARE_OBJECT( vec4d )
         COMPARE_OBJECT( rawbuffer )
-        COMPARE_VECTOR_OBJECT( char )
         COMPARE_VECTOR_OBJECT( integer )
         case type_real_vector:
         {
@@ -335,9 +331,6 @@ std::string Variant::toString() const
     case type_unknown:
         ss << "<Unknown type>";
         break;
-    case type_char:
-        SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<vmf_char>*>(data)->content)
-        break;
     case type_integer:
         SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<vmf_integer>*>(data)->content)
         break;
@@ -358,9 +351,6 @@ std::string Variant::toString() const
         break;
     case type_rawbuffer:
         ss << base64encode(dynamic_cast<Data<vmf_rawbuffer>*>(data)->content);
-        break;
-    case type_char_vector:
-        VECTOR_TYPE_TO_STRING(char, SIMPLE_TYPE_TO_STRING)
         break;
     case type_integer_vector:
         VECTOR_TYPE_TO_STRING(integer, SIMPLE_TYPE_TO_STRING)
@@ -403,13 +393,6 @@ void Variant::fromString(Type eType, const std::string& sValue)
     switch (m_type)
     {
     case type_unknown:
-        break;
-    case type_char:
-        {
-            vmf_char temp_char;
-            ss >> temp_char;
-            data = new Data<vmf_char>(temp_char);
-        }
         break;
     case type_integer:
         {
@@ -455,23 +438,6 @@ void Variant::fromString(Type eType, const std::string& sValue)
             ss >> s;
             data = new Data<vmf_rawbuffer>(vmf_rawbuffer(base64decode(s)));
             break;
-        }
-        break;
-    case type_char_vector:
-        {
-            std::vector<vmf_char> vec;
-            while(ss)
-            {
-                vmf_char temp;
-                vmf_char separator = ';';
-                ss >> temp;
-                vec.push_back(temp);
-                if(ss)
-                    ss >> separator;
-                if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array items separator");
-            }
-            data = new Data<std::vector<vmf_char>>(vec);
         }
         break;
     case type_integer_vector:
@@ -635,7 +601,6 @@ std::string Variant::typeToString(Type t)
     {
         default:
         TYPE_TO_STRING( unknown , unknown )
-        TYPE_TO_STRING( char , char )
         TYPE_TO_STRING( integer , integer )
         TYPE_TO_STRING( real , real )
         TYPE_TO_STRING( string , string )
@@ -643,7 +608,6 @@ std::string Variant::typeToString(Type t)
         TYPE_TO_STRING( vec3d , vec3d )
         TYPE_TO_STRING( vec4d , vec4d )
         TYPE_TO_STRING( rawbuffer , rawbuffer )
-        TYPE_TO_STRING( char_vector, char[] )
         TYPE_TO_STRING( integer_vector, integer[] )
         TYPE_TO_STRING( real_vector, real[] )
         TYPE_TO_STRING( string_vector, string[] )
@@ -662,7 +626,6 @@ std::string Variant::typeToString(Type t)
 Variant::Type Variant::typeFromString(const std::string& sFieldType)
 {
     TYPE_FROM_STRING( unknown , unknown )
-    TYPE_FROM_STRING( char , char )
     TYPE_FROM_STRING( integer , integer )
     TYPE_FROM_STRING( real , real )
     TYPE_FROM_STRING( string , string )
@@ -670,7 +633,6 @@ Variant::Type Variant::typeFromString(const std::string& sFieldType)
     TYPE_FROM_STRING( vec3d , vec3d )
     TYPE_FROM_STRING( vec4d , vec4d )
     TYPE_FROM_STRING( rawbuffer , rawbuffer )
-    TYPE_FROM_STRING( char_vector , char[] )
     TYPE_FROM_STRING( integer_vector , integer[] )
     TYPE_FROM_STRING( real_vector , real[] )
     TYPE_FROM_STRING( string_vector , string[] )
