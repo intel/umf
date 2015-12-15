@@ -19,19 +19,19 @@
 
 namespace vmf {
 
-void DummyCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
+void DummyCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     //copies input to another buffer and writes result
     output = std::move(vmf_rawbuffer(input.c_str(), input.size()));
 }
 
-void DummyCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
+void DummyCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //copies code to another buffer and writes result
     output = std::move(MetaString(input.data.get(), input.size));
 }
 
-const MetaString& DummyCompressor::getId()
+const vmf_string &DummyCompressor::getId()
 {
     return id;
 }
@@ -46,7 +46,7 @@ public:
     }
 };
 
-const MetaString DummyCompressor::id = "dummy";
+const vmf_string DummyCompressor::id = "dummy";
 static DummyCompressorRegistrator dcr;
 
 } /* vmf */

@@ -20,7 +20,7 @@
 
 namespace vmf {
 
-void ZLibCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
+void ZLibCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     //TODO: (length of string)*(size of character)
     size_t srcLen = input.length()*sizeof(MetaString::value_type);
@@ -60,7 +60,7 @@ void ZLibCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
     free(destBuf);
 }
 
-void ZLibCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
+void ZLibCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //input data also keeps the size of source data
     //since zlib doesn't save it at compression time
@@ -91,10 +91,10 @@ void ZLibCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
                       "The size of decompressed data doesn't match to source size");
     }
 
-    output = std::move(MetaString((const char*)decompressedBuf.data(), decompressedSize));
+    output = std::move(vmf_string((const char*)decompressedBuf.data(), decompressedSize));
 }
 
-const MetaString& ZLibCompressor::getId()
+const vmf_string &ZLibCompressor::getId()
 {
     return id;
 }
@@ -104,8 +104,8 @@ class ZLibCompressorRegistrator
 public:
     ZLibCompressorRegistrator()
     {
-        std::shared_ptr<ZLibCompressor> dc = std::make_shared<ZLibCompressor>();
-        registerCompressor(std::dynamic_pointer_cast<ICompressor>(dc));
+        std::shared_ptr<ICompressor> dc = std::make_shared<ZLibCompressor>();
+        registerCompressor(dc);
     }
 };
 
