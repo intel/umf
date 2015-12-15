@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
     public static final int type_vec4d_vector = 15;
     
     
-    protected long nativeObj;
+    protected final long nativeObj;
 	
     protected Variant (long addr)
     {
@@ -45,35 +45,35 @@ import java.nio.ByteBuffer;
     public Variant (int value)
     {
 	    nativeObj = n_Variant ();
-	    nativeObj = n_setTo (nativeObj, value);
+	    n_setTo (nativeObj, value);
 	    //nativeObj = n_Variant (value);
     }
 	
     public Variant (float value)
     {
         nativeObj = n_Variant ();
-        nativeObj = n_setTo (nativeObj, value);
+        n_setTo (nativeObj, value);
         //nativeObj = n_Variant ( value );
 	}
 	
 	public Variant (int[] array)
 	{
 		nativeObj = n_Variant ();
-		nativeObj = n_setTo (nativeObj, array);
+		n_setTo (nativeObj, array);
 		//nativeObj = n_Variant (array);
 	}
 	
 	public Variant (float[] array)
 	{
 		nativeObj = n_Variant ();
-		nativeObj = n_setTo (nativeObj, array);
+		n_setTo (nativeObj, array);
 		//nativeObj = n_Variant (array);
 	}
 	
 	public Variant (String str)
 	{
 		nativeObj = n_Variant ();
-		nativeObj = n_setTo (nativeObj, str);
+		n_setTo (nativeObj, str);
 		//nativeObj = n_Variant (str);
 	}
 	
@@ -123,11 +123,6 @@ import java.nio.ByteBuffer;
 		return n_equals (nativeObj, other.nativeObj);
 	}
 	
-	public boolean unequals (Variant other)
-	{
-		return n_unequals (nativeObj, other.nativeObj);
-	}
-	
 	public String toString ()
 	{
 		return n_toString (nativeObj);
@@ -155,10 +150,10 @@ import java.nio.ByteBuffer;
 	
 	public void clear ()
 	{
-		if (nativeObj != 0)
-		    n_delete (nativeObj);
-		
-		nativeObj = n_Variant ();
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, n_Variant ());
 	}
 	
 	public void convertTo (int type)
@@ -213,12 +208,12 @@ import java.nio.ByteBuffer;
 	private native long n_Variant (float[] array);
 	private native long n_Variant (String str);*/
 	private native static void n_copy (long nativeObj, long other);
-	private native static long n_setTo (long nativeObj, int value);
-	private native static long n_setTo (long nativeObj, float value);
-	private native static long n_setTo (long nativeObj, int array[]);
-	private native static long n_setTo (long nativeObj, float array[]);
-	private native static long n_setTo (long nativeObj, String str);
-	private native static long n_setTo (long nativeObj, long other);
+	private native static void n_setTo (long nativeObj, int value);
+	private native static void n_setTo (long nativeObj, float value);
+	private native static void n_setTo (long nativeObj, int array[]);
+	private native static void n_setTo (long nativeObj, float array[]);
+	private native static void n_setTo (long nativeObj, String str);
+	private native static void n_setTo (long nativeObj, long other);
 	private native static boolean n_equals (long nativeObj, long other);
 	private native static boolean n_unequals (long nativeObj, long other);
 	private native static String n_toString (long nativeObj);

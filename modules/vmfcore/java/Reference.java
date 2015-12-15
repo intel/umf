@@ -7,9 +7,6 @@ public class Reference
         System.loadLibrary("vmf");
     }
 	
-	private ReferenceDesc refDesc;
-	private Metadata  metaData;
-	
 	protected long nativeObj;
 	
 	protected Reference (long addr)
@@ -22,16 +19,11 @@ public class Reference
 	
 	public Reference ()
 	{
-		refDesc = null;
-		metaData = null;
 		nativeObj = n_Reference();
 	}
 	
 	public Reference (ReferenceDesc desc, Metadata md)
-	{
-		refDesc = desc;
-		metaData = md;
-		
+	{	
 		if (md.nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
 		
