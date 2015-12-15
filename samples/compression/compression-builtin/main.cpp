@@ -53,7 +53,6 @@ int main(int argc, char** argv)
     const string GPS_DESC = "gps";
     const string GPS_COORD_LAT_FIELD = "lat";
     const string GPS_COORD_LNG_FIELD = "lng";
-    const string GPS_TIME_FIELD = "Time";
     const string GPS_SCHEMA_NAME = "gps_coords_schema";
 
     // Create a GPS metadata field descriptions
@@ -61,7 +60,6 @@ int main(int argc, char** argv)
 
     fieldDesc.push_back(FieldDesc(GPS_COORD_LAT_FIELD, Variant::type_real)); // GPS coordinates
     fieldDesc.push_back(FieldDesc(GPS_COORD_LNG_FIELD, Variant::type_real)); // GPS coordinates
-    fieldDesc.push_back(FieldDesc(GPS_TIME_FIELD,      Variant::type_real)); // Associated time in msecs
 
     // Create GPS metadata description
     shared_ptr<MetadataDesc> gpsDesc(new MetadataDesc(GPS_DESC, fieldDesc));
@@ -85,7 +83,7 @@ int main(int argc, char** argv)
     {
         float lat =   37.235 + cos(i/25.0*2.0*M_PI) * 0.001;
         float lng = -115.811 + sin(i/25.0*2.0*M_PI) * 0.001;
-        float time = i/25.0;
+        long int time = i;
         cout << "Adding metadata item 'lat " << lat << " lng " << lng << "'";
         cout << " with associated time " << time << endl;
 
@@ -95,7 +93,7 @@ int main(int argc, char** argv)
         // Fill item fields
         gpsMetadata->push_back(FieldValue(GPS_COORD_LAT_FIELD, lat));
         gpsMetadata->push_back(FieldValue(GPS_COORD_LNG_FIELD, lng));
-        gpsMetadata->push_back(FieldValue(GPS_TIME_FIELD, time));
+        gpsMetadata->setTimestamp(time);
 
         // Add to metadata a new item
         mdStream.add(gpsMetadata);
@@ -143,7 +141,7 @@ int main(int argc, char** argv)
         vmf_real lng = metadataItem->getFieldValue(GPS_COORD_LNG_FIELD);
         cout << "\tGPS coordinates are: lat " << lat << " lng " << lng << endl;
 
-        vmf_real time = metadataItem->getFieldValue(GPS_TIME_FIELD);
+        long int time = metadataItem->getTime();
         cout << "\tAssociated time is: " << time << endl;
     }
 
