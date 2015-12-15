@@ -162,14 +162,99 @@ public class Metadata
 	
 	public boolean lessThan (Metadata other)
 	{
-	    return n_lessThan (nativeObject, other.nativeObj);
+	    return n_lessThan (nativeObj, other.nativeObj);
+	}
+	
+	public Metadata getFirstReference (String mdName)
+	{
+	    return new Metadata (n_getFirstReference (nativeObj, mdName));
+	}
+	
+	public MetadataSet getReferencesByMetadata (String mdName)
+	{
+	    return new MetadataSet (n_getReferencesByMetadata (nativeObj, mdName));
+	}
+	
+	public MetadataSet getReferencesByName (String refName)
+	{
+	    return new MetadataSet (n_getReferencesByName (nativeObj, refName));
+	}
+	
+	public ArrayList<Reference> getAllReferences ()
+	{
+	    return n_getAllReferences (nativeObj);
+	}
+	
+	public boolean isReference (long id)
+	{
+	    String refName = "";
+	    return n_isReference (nativeObj, id, refName);
+	}
+	
+	public boolean isReference (long id, String refName)
+	{
+	    return n_isReference (nativeObj, id, refName);
+	}
+	
+	public boolean isReference (Metadata md)
+	{
+	    String refName = "";
+	    return n_isReference (nativeObj, md.nativeObj, refName);
+	}
+	
+	public boolean isReference (Metadata md, String refName)
+    {
+        return n_isReference (nativeObj, md.nativeObj, refName);
+    }
+	
+	public void addReference (Metadata md)
+	{
+	    String refName = "";
+	    n_addReference (nativeObj, md.nativeObj, refName);
+	}
+	
+	public void addReference (Metadata md, String refName)
+	{
+	    n_addReference (nativeObj, md.nativeObj, refName);
+	}
+	
+	public void removeReference (long id)
+	{
+	    String refName = "";
+	    n_removeReference (nativeObj, id, refName);
+	}
+	
+	public void removeReference (long id, String refName)
+	{
+	    n_removeReference (nativeObj, id, refName);
+	}
+	
+	public void removeReference (Metadata md)
+    {
+	    String refName = "";
+	    n_removeReference (nativeObj, md.nativeObj, refName);
+    }
+	
+	public void removeReference (Metadata md, String refName)
+	{
+	    n_removeReference (nativeObj, md.nativeObj, refName);
+	}
+	
+	public void setFieldValue (String fieldName, Variant value)
+	{
+	    n_setFieldValue (nativeObj, fieldName, value.nativeObj);
+	}
+	
+	public void addValue (Variant value)
+	{
+	    n_addValue (nativeObj, value.nativeObj);
 	}
 	
     @Override
 	protected void finalize () throws Throwable 
 	{
         if (nativeObj != 0)
-	    {
+        {
             n_delete (nativeObj);
             nativeObj = 0;
 	    }
