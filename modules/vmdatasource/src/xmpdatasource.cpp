@@ -140,19 +140,29 @@ void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
     //but there's no need to compare their sizes and write the smallest one.
     //Because due to RDF's verbosity it happens only when the source data is small.
     //That's why the economy wouldn't be significant.
-    if(compressor)
+    if(!compressorId.empty())
     {
-        string buffer;
-        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
-        xmp->SerializeToBuffer(&buffer, options, 0, NULL);
-        vmf_rawbuffer compressed;
-        compressor->compress(buffer, compressed);
-        string encoded = libbase64::encode<string, string::value_type,
-                                           string::value_type, true>
-                                          ((const unsigned char*)compressed.data.get(),
-                                           compressed.size);
-        compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
-        compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
+        std::shared_ptr<ICompressor> compressor;
+        compressor = getCompressorById(compressorId);
+        if(compressor)
+        {
+            string buffer;
+            XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+            xmp->SerializeToBuffer(&buffer, options, 0, NULL);
+            vmf_rawbuffer compressed;
+            compressor->compress(buffer, compressed);
+            string encoded = libbase64::encode<string, string::value_type,
+                                               string::value_type, true>
+                                              ((const unsigned char*)compressed.data.get(),
+                                               compressed.size);
+            compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
+            compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
+        }
+        else
+        {
+            VMF_EXCEPTION(IncorrectParamException,
+                          "Unregistered compression algorithm: " + compressorId);
+        }
     }
     else
     {

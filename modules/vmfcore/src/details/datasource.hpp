@@ -149,7 +149,7 @@ public:
     /*
      * \brief Sets the compressor for compression operations at saving
      */
-    virtual void setCompressor(std::shared_ptr<ICompressor> impl) = 0;
+    virtual void setCompressor(const vmf_string& id) = 0;
 };
 
 } /* vmf */

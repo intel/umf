@@ -44,7 +44,10 @@ void registerCompressor(std::shared_ptr<ICompressor> impl)
 std::shared_ptr<ICompressor> getCompressorById(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
-    return cmap.at(id);
+    if(cmap.find(id) != cmap.end())
+        return cmap.at(id);
+    else
+        return std::shared_ptr<ICompressor>();
 }
 
 void unregisterCompressor(std::shared_ptr<ICompressor> impl)

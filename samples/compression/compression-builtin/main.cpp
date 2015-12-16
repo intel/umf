@@ -95,8 +95,12 @@ int main(int argc, char** argv)
     cout << "Saving metadata..." << endl << endl;
 
     // Save metadata to video file with built-in zlib-based compressor
-    shared_ptr<ICompressor> compressor = make_shared<ZLibCompressor>();
-    mdStream.save(compressor);
+
+    mdStream.save("zlib");
+
+    // Alternative way:
+    //shared_ptr<ICompressor> compressor = make_shared<ZLibCompressor>();
+    //mdStream.save(compressor->getId());
 
     // Close metadata stream
     mdStream.close();

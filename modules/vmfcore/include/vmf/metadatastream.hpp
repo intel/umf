@@ -144,7 +144,7 @@ public:
     * \brief Save loaded data to media file
     * \return Save operation result
     */
-    bool save(std::shared_ptr<ICompressor> impl = nullptr);
+    bool save(vmf_string compressorId = vmf_string());
 
 
     /*!
@@ -152,7 +152,7 @@ public:
     * \param sFilePath the path of the new file.
     * \return true if succeed.
     */
-    bool saveTo( const std::string& sFilePath, std::shared_ptr<ICompressor> impl = nullptr );
+    bool saveTo(const std::string& sFilePath, vmf_string compressorId = vmf_string() );
 
 
     /*!

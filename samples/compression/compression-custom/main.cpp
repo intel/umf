@@ -103,7 +103,7 @@ int main(int argc, char** argv)
     // Register compressor before it could be used in saving and loading
     vmf::registerCompressor(compressor);
 
-    mdStream.save(compressor);
+    mdStream.save(compressor->getId());
 
     // Close metadata stream
     mdStream.close();
