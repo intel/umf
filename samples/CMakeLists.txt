@@ -8,8 +8,7 @@ add_subdirectory(metadata-read-write)
 add_subdirectory(metadata-manipulation)
 add_subdirectory(std-schema)
 add_subdirectory(metadata-schema)
-add_subdirectory(compression/compression-builtin)
-add_subdirectory(compression/compression-custom)
+add_subdirectory(compression)
 
 
 if(BUILD_QT_SAMPLES)
