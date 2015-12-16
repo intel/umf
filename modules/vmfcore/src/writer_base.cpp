@@ -15,36 +15,25 @@
  *
  */
 
-/*!
-* \file reader_base.hpp
-* \brief Common %IReader interface methods implementation
-*/
-
-#pragma once
-
-#ifndef READER_BASE_HPP
-#define READER_BASE_HPP
-
-#include "ireader.hpp"
+#include "vmf/writer_base.hpp"
 
 namespace vmf
 {
 
-/*!
- * \class ReaderBase
- * \brief Class implementing common methods for all IReader implementations
- */
-class VMF_EXPORT ReaderBase : public IReader
+std::string WriterBase::compress(const std::string& input)
 {
-public:
-    ReaderBase(std::shared_ptr<Compressor> impl = nullptr) : IReader(impl)
-    { }
+    std::string compressed;
+    if(compressor)
+    {
+        vmf_rawbuffer compressedBuf;
+        compressor->compress(input, compressedBuf);
+        compressed = std::string(compressedBuf.data.get(), compressedBuf.size);
+    }
+    else
+    {
+        compressed = input;
+    }
+    return compressed;
+}
 
-protected:
-    virtual std::string decompress(const std::string& input);
-};
-
-
-}//vmf
-
-#endif /* READER_BASE_HPP */
+}

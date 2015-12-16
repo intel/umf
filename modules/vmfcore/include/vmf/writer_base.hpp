@@ -16,35 +16,35 @@
  */
 
 /*!
-* \file reader_base.hpp
-* \brief Common %IReader interface methods implementation
+* \file writer_base.hpp
+* \brief Implementation of %IWriter interface common methods
 */
 
 #pragma once
 
-#ifndef READER_BASE_HPP
-#define READER_BASE_HPP
+#ifndef WRITER_BASE_HPP
+#define WRITER_BASE_HPP
 
-#include "ireader.hpp"
+#include "iwriter.hpp"
 
 namespace vmf
 {
 
 /*!
- * \class ReaderBase
- * \brief Class implementing common methods for all IReader implementations
+ * \class WriterBase
+ * \brief Class implementing common methods for all IWriter implementations
  */
-class VMF_EXPORT ReaderBase : public IReader
+class VMF_EXPORT WriterBase : public IWriter
 {
 public:
-    ReaderBase(std::shared_ptr<Compressor> impl = nullptr) : IReader(impl)
+    WriterBase(std::shared_ptr<Compressor> impl = nullptr) : IWriter(impl)
     { }
 
 protected:
-    virtual std::string decompress(const std::string& input);
+    virtual std::string compress(const std::string& input);
 };
 
 
 }//vmf
 
-#endif /* READER_BASE_HPP */
+#endif /* WRITER_BASE_HPP */

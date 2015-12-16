@@ -26,6 +26,7 @@
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
 #include "iwriter.hpp"
+#include "writer_base.hpp"
 
 namespace vmf
 {
@@ -33,7 +34,7 @@ namespace vmf
 * class JSONWriter
 * \brief JSONWriter class is a %IWriter interface implementation for JSON format representation
 */
-class VMF_EXPORT JSONWriter : public IWriter
+class VMF_EXPORT JSONWriter : public WriterBase
 {
 public:
     /*!
