@@ -23,8 +23,7 @@
 
 #include <XMP.incl_cpp>
 #include <XMP.hpp>
-
-#include "libbase64++.h"
+#include <XMPUtils.hpp>
 
 #define VMF_GLOBAL_NEXT_ID "next-id"
 #define VMF_GLOBAL_CHECKSUM "media-checksum"
@@ -112,7 +111,8 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
             {
                 string encoded;
                 compressedXMP->GetProperty(VMF_NS, compressedDataPropName.c_str(), &encoded, NULL);
-                string decoded = libbase64::decode<string, string::value_type, string::value_type, true>(encoded);
+                string decoded;
+                XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
                 vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
                 string theData;
                 decompressor->decompress(compressed, theData);
@@ -149,10 +149,8 @@ void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
             xmp->SerializeToBuffer(&buffer, options, 0, NULL);
             vmf_rawbuffer compressed;
             compressor->compress(buffer, compressed);
-            string encoded = libbase64::encode<string, string::value_type,
-                                               string::value_type, true>
-                                              ((const unsigned char*)compressed.data.get(),
-                                               compressed.size);
+            string encoded;
+            XMPUtils::EncodeToBase64 (compressed.data.get(), compressed.size, &encoded);
             compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
             compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
         }
