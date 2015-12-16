@@ -29,6 +29,12 @@ class VMF_EXPORT CompressorDummy : public Compressor
 {
 public:
     /*!
+     * \brief Default constructor
+     */
+    CompressorDummy()
+    { }
+
+    /*!
      * \brief Compress data
      * \param [in] input input text data
      * \param [out] output where to put binary compressed data

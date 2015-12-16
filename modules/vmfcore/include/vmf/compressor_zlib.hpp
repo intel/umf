@@ -30,6 +30,13 @@ namespace vmf {
 class VMF_EXPORT CompressorZlib : public Compressor
 {
 public:
+
+    /*!
+     * \brief Default constructor
+     */
+    CompressorZlib()
+    { }
+
     /*!
      * \brief Compress data
      * \param [in]  input  input text data
