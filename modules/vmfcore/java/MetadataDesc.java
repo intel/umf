@@ -102,31 +102,12 @@ public class MetadataDesc
         
         return n_getFieldDesc (nativeObj, field, fieldName);
     }
-    
-    private void validate ()
-    {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
         
-        n_validate (nativeObj);
-    }
-    
-    private void setSchemaName (String appName)
-    {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
-        n_setSchemaName (nativeObj);
-    }
-    
     @Override
     protected void finalize () throws Throwable 
     {
         if (nativeObj != 0)
-        {
             n_delete (nativeObj);
-            nativeObj = 0;
-        }
         
         super.finalize();
     }
@@ -137,5 +118,12 @@ public class MetadataDesc
      * private native long n_MetadataDesc (String mdName, FieldDesc[] fields);
      * private native long n_MetadataDesc (String mdName, FieldDesc[] fields, ReferenceDesc[] refs);
      */
-    
+    private native static String n_getMetadataName (long nativeObj);
+    private native static String n_getSchemaName (long nativeObj);
+    private native static FieldDesc[] n_getFields (long nativeObj);
+    private native static ReferenceDesc[] n_getAllReferenceDescs (long nativeObj);
+    private native static void n_declareCustomReference (long nativeObj, String refName, boolean isUnique);
+    private native static long n_getReferenceDesc (long nativeObj, String refName);
+    private native static boolean n_getFieldDesc (long nativeObj, FieldDesc field, String fieldName);
+    private native static void n_delete (long nativeObj);
 } 
