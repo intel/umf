@@ -20,27 +20,25 @@
 
 namespace vmf {
 
+static const size_t startingBlockSize = sizeof(vmf_integer);
+
 void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
-    //TODO: (length of string)*(size of character)
-    size_t srcLen = input.length()*sizeof(MetaString::value_type);
+    size_t srcLen = input.length()*sizeof(vmf_string::value_type);
     size_t destBound = compressBound(srcLen);
     size_t destLength = destBound;
-    //should also keep the size of source data
-    //for further decompression
-    u_char* destBuf = (u_char*)malloc(destBound+sizeof(size_t));
-    if(!destBuf)
-    {
-        VMF_EXCEPTION(InternalErrorException, "Out of memory");
-    }
 
-    *((size_t*)destBuf) = srcLen;
-    u_char* toCompress = destBuf + sizeof(size_t);
+    // We should also keep the size of source data
+    // for further decompression
+    std::vector<u_char> destBuf(destBound + startingBlockSize);
+
+    *((vmf_integer*)destBuf.data()) = vmf_integer(srcLen);
+    u_char* toCompress = destBuf.data() + startingBlockSize;
 
     //level should be default or from 0 to 9 (regulates speed/size ratio)
     int level = Z_DEFAULT_COMPRESSION;
     int rcode = compress2(toCompress, &destLength, (const Bytef*)input.c_str(), srcLen, level);
-    destLength += sizeof(size_t);
+    destLength += startingBlockSize;
 
     if(rcode != Z_OK)
     {
@@ -56,18 +54,17 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
         }
     }
 
-    output = std::move(vmf_rawbuffer((const char*)destBuf, destLength));
-    free(destBuf);
+    output = std::move(vmf_rawbuffer((const char*)destBuf.data(), destLength));
 }
 
 void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //input data also keeps the size of source data
     //since zlib doesn't save it at compression time
-    size_t  compressedSize = input.size-sizeof(size_t);
+    size_t  compressedSize = input.size - startingBlockSize;
     u_char* compressedBuf = (u_char*)input.data.get();
-    size_t decompressedSize = *((size_t*)compressedBuf);
-    compressedBuf += sizeof(size_t);
+    size_t decompressedSize = *((vmf_integer*)compressedBuf);
+    compressedBuf += startingBlockSize;
     size_t gotDecompressedSize = decompressedSize;
     std::vector<u_char> decompressedBuf(decompressedSize);
     int rcode = uncompress(decompressedBuf.data(), &gotDecompressedSize, compressedBuf, compressedSize);
