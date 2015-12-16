@@ -124,6 +124,10 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
                               "Unregistered compression algorithm: " + algo);
             }
         }
+        else
+        {
+            VMF_EXCEPTION(IncorrectParamException, "Compression algorithm name is missing");
+        }
     }
     else
     {
