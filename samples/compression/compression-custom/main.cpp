@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
+    //vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
     vmf::initialize();
 
     vmf::vmf_string videoFile(argv[1]);
@@ -103,7 +103,12 @@ int main(int argc, char** argv)
     // Register compressor before it could be used in saving and loading
     vmf::registerCompressor(compressor);
 
-    mdStream.save(compressor->getId());
+    // Trying to load or save file with unregistered compressor
+    // doesn't produce exceptions, just returns false
+    if(!mdStream.save("unknown_compressor_ID"))
+    {
+        mdStream.save(compressor->getId());
+    }
 
     // Close metadata stream
     mdStream.close();

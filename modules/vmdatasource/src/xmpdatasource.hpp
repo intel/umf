@@ -86,7 +86,7 @@ public:
 
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
-    virtual void setCompressor(const vmf_string& id)
+    virtual void setCompressorId(const vmf_string& id)
     {
         compressorId = id;
     }
