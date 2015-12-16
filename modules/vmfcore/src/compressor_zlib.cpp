@@ -102,7 +102,7 @@ public:
     ZLibCompressorRegistrator()
     {
         std::shared_ptr<Compressor> dc = std::make_shared<CompressorZlib>();
-        registerCompressor(dc);
+        Compressor::registerNew(dc);
     }
 };
 

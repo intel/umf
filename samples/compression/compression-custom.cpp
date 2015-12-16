@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     shared_ptr<Compressor> compressor = make_shared<MyLZWCompressor>();
 
     // Register compressor before it could be used in saving and loading
-    vmf::registerCompressor(compressor);
+    vmf::Compressor::registerNew(compressor);
 
     // Trying to load or save file with unregistered compressor
     // doesn't produce exceptions, just returns false

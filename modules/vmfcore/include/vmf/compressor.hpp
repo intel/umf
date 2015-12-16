@@ -59,32 +59,32 @@ public:
     {
 
     }
+
+    /*!
+     * \brief Registers new algorithm before its use in decompression.
+     * \param impl Pointer to the implementation of the algorithm
+     */
+    static void registerNew(std::shared_ptr<Compressor> impl);
+
+    /*!
+     * \brief Unregisters previously registered compression algorithm
+     * \param impl
+     */
+    static void unregister(std::shared_ptr<Compressor> impl);
+
+    /*!
+     * \brief Unregisters previously registered compression algorithm
+     * \param id String id of the compression algorithm
+     */
+    static void unregister(const vmf_string& id);
+
+    /*!
+     * \brief Gets instance of compression identified by id registered before
+     * \param id String identifying compression algorithm
+     * \return Smart pointer to ICompressor instance
+     */
+    static std::shared_ptr<Compressor> getById(const vmf_string& id);
 };
-
-/*!
- * \brief Registers new algorithm before its use in decompression.
- * \param impl Pointer to the implementation of the algorithm
- */
-void registerCompressor(std::shared_ptr<Compressor> impl);
-
-/*!
- * \brief Unregisters previously registered compression algorithm
- * \param impl
- */
-void unregisterCompressor(std::shared_ptr<Compressor> impl);
-
-/*!
- * \brief Unregisters previously registered compression algorithm
- * \param id String id of the compression algorithm
- */
-void unregisterCompressor(const vmf_string& id);
-
-/*!
- * \brief Gets instance of compression identified by id registered before
- * \param id String identifying compression algorithm
- * \return Smart pointer to ICompressor instance
- */
-std::shared_ptr<Compressor> getCompressorById(const vmf_string& id);
 
 } /* vmf */
 

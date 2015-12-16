@@ -29,7 +29,7 @@ CompressorsMap& getMapInstance()
     return registeredCompressors;
 }
 
-void registerCompressor(std::shared_ptr<Compressor> impl)
+void Compressor::registerNew(std::shared_ptr<Compressor> impl)
 {
     if(!impl)
     {
@@ -41,7 +41,7 @@ void registerCompressor(std::shared_ptr<Compressor> impl)
 }
 
 
-std::shared_ptr<Compressor> getCompressorById(const vmf_string &id)
+std::shared_ptr<Compressor> Compressor::getById(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
@@ -50,12 +50,12 @@ std::shared_ptr<Compressor> getCompressorById(const vmf_string &id)
         return std::shared_ptr<Compressor>();
 }
 
-void unregisterCompressor(std::shared_ptr<Compressor> impl)
+void Compressor::unregister(std::shared_ptr<Compressor> impl)
 {
-    unregisterCompressor(impl->getId());
+    unregister(impl->getId());
 }
 
-void unregisterCompressor(const vmf_string &id)
+void Compressor::unregister(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
     cmap.erase(id);

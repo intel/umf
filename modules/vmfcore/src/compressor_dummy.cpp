@@ -42,7 +42,7 @@ public:
     DummyCompressorRegistrator()
     {
         std::shared_ptr<CompressorDummy> dc = std::make_shared<CompressorDummy>();
-        registerCompressor(std::dynamic_pointer_cast<Compressor>(dc));
+        Compressor::registerNew(std::dynamic_pointer_cast<Compressor>(dc));
     }
 };
 
