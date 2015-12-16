@@ -15,12 +15,12 @@
  *
  */
 
-#include "vmf/zlib_compressor.hpp"
+#include "vmf/compressor_zlib.hpp"
 #include "zlib.h"
 
 namespace vmf {
 
-void ZLibCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
+void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     //TODO: (length of string)*(size of character)
     size_t srcLen = input.length()*sizeof(MetaString::value_type);
@@ -60,7 +60,7 @@ void ZLibCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
     free(destBuf);
 }
 
-void ZLibCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
+void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //input data also keeps the size of source data
     //since zlib doesn't save it at compression time
@@ -94,7 +94,7 @@ void ZLibCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
     output = std::move(vmf_string((const char*)decompressedBuf.data(), decompressedSize));
 }
 
-const vmf_string &ZLibCompressor::getId()
+const vmf_string &CompressorZlib::getId()
 {
     return id;
 }
@@ -104,12 +104,12 @@ class ZLibCompressorRegistrator
 public:
     ZLibCompressorRegistrator()
     {
-        std::shared_ptr<Compressor> dc = std::make_shared<ZLibCompressor>();
+        std::shared_ptr<Compressor> dc = std::make_shared<CompressorZlib>();
         registerCompressor(dc);
     }
 };
 
-const MetaString ZLibCompressor::id = "zlib";
+const MetaString CompressorZlib::id = "zlib";
 static ZLibCompressorRegistrator zcr;
 
 } /* vmf */

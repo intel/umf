@@ -14,31 +14,33 @@
  * limitations under the License.
  *
  */
-#ifndef DUMMY_COMPRESSOR_HPP
-#define DUMMY_COMPRESSOR_HPP
 
-#include "icompressor.hpp"
+#ifndef COMPRESSOR_ZLIB_HPP
+#define COMPRESSOR_ZLIB_HPP
+
+#include "compressor.hpp"
 
 namespace vmf {
 
 /*!
- * \class DummyCompressor
- * \brief Example of a compression algorithm. Actually doesn't change the input/output data.
+ * \class ZLibCompressor
+ * \brief Compression algorithm that uses ZLib library.
+ * Currently runs Deflate algorithm with default settings.
  */
-class VMF_EXPORT DummyCompressor : public Compressor
+class VMF_EXPORT CompressorZlib : public Compressor
 {
 public:
     /*!
      * \brief Compress data
-     * \param [in] input input text data
-     * \param [out] output where to put binary compressed data
+     * \param [in]  input  input text data
+     * \param [out] output binary buffer where to put compressed data
      */
     virtual void compress(const vmf_string& input, vmf_rawbuffer& output);
 
     /*!
      * \brief Decompress data
-     * \param [in] input binary compressed input data
-     * \param [out] output where to put decompressed text data
+     * \param [in]  input  binary buffer with compressed input data
+     * \param [out] output string where to put decompressed text data
      */
     virtual void decompress(const vmf_rawbuffer& input, vmf_string &output);
 
@@ -53,5 +55,4 @@ private:
 
 } /* vmf */
 
-#endif /* DUMMY_COMPRESSOR_HPP */
-
+#endif /* COMPRESSOR_ZLIB_HPP */

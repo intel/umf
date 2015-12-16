@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <map>
-#include "vmf/icompressor.hpp"
+#include "vmf/compressor.hpp"
 
 namespace vmf {
 

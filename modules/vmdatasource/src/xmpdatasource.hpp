@@ -25,7 +25,7 @@
 #include "datasource.hpp"
 
 #include "vmf/metadataschema.hpp"
-#include "vmf/icompressor.hpp"
+#include "vmf/compressor.hpp"
 
 #define TXMP_STRING_TYPE vmf::MetaString
 #define XMP_INCLUDE_XMPFILES 1

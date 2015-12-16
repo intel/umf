@@ -15,23 +15,23 @@
  *
  */
 
-#include "vmf/dummy_compressor.hpp"
+#include "vmf/compressor_dummy.hpp"
 
 namespace vmf {
 
-void DummyCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
+void CompressorDummy::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     //copies input to another buffer and writes result
     output = std::move(vmf_rawbuffer(input.c_str(), input.size()));
 }
 
-void DummyCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
+void CompressorDummy::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //copies code to another buffer and writes result
     output = std::move(MetaString(input.data.get(), input.size));
 }
 
-const vmf_string &DummyCompressor::getId()
+const vmf_string &CompressorDummy::getId()
 {
     return id;
 }
@@ -41,12 +41,12 @@ class DummyCompressorRegistrator
 public:
     DummyCompressorRegistrator()
     {
-        std::shared_ptr<DummyCompressor> dc = std::make_shared<DummyCompressor>();
+        std::shared_ptr<CompressorDummy> dc = std::make_shared<CompressorDummy>();
         registerCompressor(std::dynamic_pointer_cast<Compressor>(dc));
     }
 };
 
-const vmf_string DummyCompressor::id = "dummy";
+const vmf_string CompressorDummy::id = "dummy";
 static DummyCompressorRegistrator dcr;
 
 } /* vmf */

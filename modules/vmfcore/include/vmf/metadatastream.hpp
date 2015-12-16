@@ -31,7 +31,7 @@
 #include "metadatainternal.hpp"
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
-#include "icompressor.hpp"
+#include "compressor.hpp"
 #include "iquery.hpp"
 #include <map>
 #include <memory>

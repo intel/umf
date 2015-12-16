@@ -14,12 +14,12 @@
  * limitations under the License.
  *
  */
-#ifndef ICOMPRESSOR_HPP
-#define ICOMPRESSOR_HPP
+#ifndef COMPRESSOR_HPP
+#define COMPRESSOR_HPP
 
 /*!
-* \file icompressor.hpp
-* \brief %ICompressor header file
+* \file compressor.hpp
+* \brief %Compressor header file
 */
 
 #include "vmf/metadataschema.hpp"
@@ -27,7 +27,7 @@
 namespace vmf
 {
 
-/*! \class ICompressor
+/*! \class Compressor
  * \brief Interface for all compression algorithms
  */
 class VMF_EXPORT Compressor
@@ -88,4 +88,4 @@ std::shared_ptr<Compressor> getCompressorById(const vmf_string& id);
 
 } /* vmf */
 
-#endif /* ICOMPRESSOR_HPP */
+#endif /* COMPRESSOR_HPP */
