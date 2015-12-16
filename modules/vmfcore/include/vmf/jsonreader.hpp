@@ -33,6 +33,7 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
+#include "reader_base.hpp"
 
 namespace vmf
 {
@@ -40,7 +41,7 @@ namespace vmf
 * class JSONReader
 * \brief JSONReader class is a %IReader interface implementation for JSON format representation
 */
-class VMF_EXPORT JSONReader : public IReader
+class VMF_EXPORT JSONReader : public ReaderBase
 {
 public:
     /*!

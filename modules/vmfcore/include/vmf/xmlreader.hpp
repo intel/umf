@@ -32,6 +32,7 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
+#include "reader_base.hpp"
 
 namespace vmf
 {
@@ -39,7 +40,7 @@ namespace vmf
 * class XMLReader
 * \brief XMLReader class is a %IReader interface implementation for XML format representation
 */
-class VMF_EXPORT XMLReader : public IReader
+class VMF_EXPORT XMLReader : public ReaderBase
 {
 public:
     /*!

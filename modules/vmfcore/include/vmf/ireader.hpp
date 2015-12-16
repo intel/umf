@@ -80,20 +80,7 @@ public:
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
 
 protected:
-    std::string decompress(const std::string& input)
-    {
-        std::string decompressed;
-        if(compressor)
-        {
-            vmf_rawbuffer compressed(input.c_str(), input.size());
-            compressor->decompress(compressed, decompressed);
-        }
-        else
-        {
-            decompressed = input;
-        }
-        return decompressed;
-    }
+    virtual std::string decompress(const std::string& input) = 0;
 
     std::shared_ptr<Compressor> compressor;
 };
