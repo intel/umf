@@ -25,7 +25,7 @@ namespace vmf {
  * \class DummyCompressor
  * \brief Example of a compression algorithm. Actually doesn't change the input/output data.
  */
-class VMF_EXPORT DummyCompressor : public ICompressor
+class VMF_EXPORT DummyCompressor : public Compressor
 {
 public:
     /*!

@@ -45,7 +45,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLReader(std::shared_ptr<ICompressor> impl = nullptr);
+    XMLReader(std::shared_ptr<Compressor> impl = nullptr);
 
     /*!
     * \brief Class destructor

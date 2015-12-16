@@ -30,7 +30,7 @@ namespace vmf
 /*! \class ICompressor
  * \brief Interface for all compression algorithms
  */
-class VMF_EXPORT ICompressor
+class VMF_EXPORT Compressor
 {
 public:
     /*!
@@ -55,7 +55,7 @@ public:
     /*!
      * \brief Default destructor
      */
-    virtual ~ICompressor()
+    virtual ~Compressor()
     {
 
     }
@@ -65,13 +65,13 @@ public:
  * \brief Registers new algorithm before its use in decompression.
  * \param impl Pointer to the implementation of the algorithm
  */
-void registerCompressor(std::shared_ptr<ICompressor> impl);
+void registerCompressor(std::shared_ptr<Compressor> impl);
 
 /*!
  * \brief Unregisters previously registered compression algorithm
  * \param impl
  */
-void unregisterCompressor(std::shared_ptr<ICompressor> impl);
+void unregisterCompressor(std::shared_ptr<Compressor> impl);
 
 /*!
  * \brief Unregisters previously registered compression algorithm
@@ -84,7 +84,7 @@ void unregisterCompressor(const vmf_string& id);
  * \param id String identifying compression algorithm
  * \return Smart pointer to ICompressor instance
  */
-std::shared_ptr<ICompressor> getCompressorById(const vmf_string& id);
+std::shared_ptr<Compressor> getCompressorById(const vmf_string& id);
 
 } /* vmf */
 

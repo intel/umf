@@ -26,7 +26,7 @@ namespace vmf {
  * \brief Compression algorithm that uses ZLib library.
  * Currently runs Deflate algorithm with default settings.
  */
-class VMF_EXPORT ZLibCompressor : public ICompressor
+class VMF_EXPORT ZLibCompressor : public Compressor
 {
 public:
     /*!

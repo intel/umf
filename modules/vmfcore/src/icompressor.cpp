@@ -21,7 +21,7 @@
 
 namespace vmf {
 
-typedef std::map< MetaString, std::shared_ptr<ICompressor> > CompressorsMap;
+typedef std::map< MetaString, std::shared_ptr<Compressor> > CompressorsMap;
 
 CompressorsMap& getMapInstance()
 {
@@ -29,7 +29,7 @@ CompressorsMap& getMapInstance()
     return registeredCompressors;
 }
 
-void registerCompressor(std::shared_ptr<ICompressor> impl)
+void registerCompressor(std::shared_ptr<Compressor> impl)
 {
     if(!impl)
     {
@@ -41,16 +41,16 @@ void registerCompressor(std::shared_ptr<ICompressor> impl)
 }
 
 
-std::shared_ptr<ICompressor> getCompressorById(const vmf_string &id)
+std::shared_ptr<Compressor> getCompressorById(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
         return cmap.at(id);
     else
-        return std::shared_ptr<ICompressor>();
+        return std::shared_ptr<Compressor>();
 }
 
-void unregisterCompressor(std::shared_ptr<ICompressor> impl)
+void unregisterCompressor(std::shared_ptr<Compressor> impl)
 {
     unregisterCompressor(impl->getId());
 }

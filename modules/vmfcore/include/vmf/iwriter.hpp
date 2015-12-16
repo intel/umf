@@ -37,7 +37,7 @@ namespace vmf
 class VMF_EXPORT IWriter
 {
 public:
-    IWriter(std::shared_ptr<ICompressor> impl = nullptr) : compressor(impl)
+    IWriter(std::shared_ptr<Compressor> impl = nullptr) : compressor(impl)
     { }
 
     virtual ~IWriter()
@@ -90,7 +90,7 @@ protected:
         return compressed;
     }
 
-    std::shared_ptr<ICompressor> compressor;
+    std::shared_ptr<Compressor> compressor;
 };
 
 }//vmf

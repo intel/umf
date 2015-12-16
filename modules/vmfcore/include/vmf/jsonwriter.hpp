@@ -39,7 +39,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONWriter(std::shared_ptr<ICompressor> impl = nullptr);
+    JSONWriter(std::shared_ptr<Compressor> impl = nullptr);
 
     /*!
     * \brief Class destructor

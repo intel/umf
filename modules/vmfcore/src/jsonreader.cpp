@@ -266,7 +266,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader(std::shared_ptr<ICompressor> impl) : IReader(impl) { }
+JSONReader::JSONReader(std::shared_ptr<Compressor> impl) : IReader(impl) { }
 JSONReader::~JSONReader(){ }
 
 bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)

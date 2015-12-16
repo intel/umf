@@ -104,7 +104,7 @@ class ZLibCompressorRegistrator
 public:
     ZLibCompressorRegistrator()
     {
-        std::shared_ptr<ICompressor> dc = std::make_shared<ZLibCompressor>();
+        std::shared_ptr<Compressor> dc = std::make_shared<ZLibCompressor>();
         registerCompressor(dc);
     }
 };

@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     cout << "Saving metadata..." << endl << endl;
 
     // Save metadata to video file with custom compressor
-    shared_ptr<ICompressor> compressor = make_shared<MyLZWCompressor>();
+    shared_ptr<Compressor> compressor = make_shared<MyLZWCompressor>();
 
     // Register compressor before it could be used in saving and loading
     vmf::registerCompressor(compressor);

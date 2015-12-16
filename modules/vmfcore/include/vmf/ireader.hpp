@@ -42,7 +42,7 @@ public:
      * \brief IReader
      * \param impl
      */
-    IReader(std::shared_ptr<ICompressor> impl = nullptr) : compressor(impl)
+    IReader(std::shared_ptr<Compressor> impl = nullptr) : compressor(impl)
     { }
 
     virtual ~IReader()
@@ -95,7 +95,7 @@ protected:
         return decompressed;
     }
 
-    std::shared_ptr<ICompressor> compressor;
+    std::shared_ptr<Compressor> compressor;
 };
 
 }//vmf

@@ -107,7 +107,7 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
         compressedXMP->GetProperty(VMF_NS, compressionAlgoPropName.c_str(), &algo, NULL);
         if(!algo.empty())
         {
-            std::shared_ptr<ICompressor> decompressor;
+            std::shared_ptr<Compressor> decompressor;
             decompressor = getCompressorById(algo);
             if(decompressor)
             {
@@ -142,7 +142,7 @@ void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
     //That's why the economy wouldn't be significant.
     if(!compressorId.empty())
     {
-        std::shared_ptr<ICompressor> compressor;
+        std::shared_ptr<Compressor> compressor;
         compressor = getCompressorById(compressorId);
         if(compressor)
         {

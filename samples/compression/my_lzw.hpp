@@ -21,7 +21,7 @@
 
 // User-created compression algorithm should implement ICompressor interface
 // Straightforward implementation of LZW algorithm
-class MyLZWCompressor : public vmf::ICompressor
+class MyLZWCompressor : public vmf::Compressor
 {
 public:
     virtual void compress(const vmf::MetaString& input, vmf::vmf_rawbuffer& output);
