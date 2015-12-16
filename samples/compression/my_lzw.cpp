@@ -23,7 +23,7 @@ using namespace vmf;
 // Straightforward implementation of LZW algorithm
 // Based on this: http://rosettacode.org/wiki/LZW_compression#C.2B.2B
 
-void MyLZWCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
+void MyLZWCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     // Build the dictionary.
     int dictSize = 256;
@@ -60,7 +60,7 @@ void MyLZWCompressor::compress(const MetaString& input, vmf_rawbuffer& output)
     output = std::move(vmf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int)));
 }
 
-void MyLZWCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
+void MyLZWCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     // Build the dictionary.
     int dictSize = 256;
@@ -104,7 +104,3 @@ void MyLZWCompressor::decompress(const vmf_rawbuffer& input, MetaString& output)
         w = entry;
     }
 }
-
-const MetaString MyLZWCompressor::id = "my_lzw";
-
-

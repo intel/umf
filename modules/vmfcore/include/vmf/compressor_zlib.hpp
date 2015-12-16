@@ -54,10 +54,10 @@ public:
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const vmf_string& getId();
-
-private:
-    static const vmf_string id;
+    virtual const vmf_string getId()
+    {
+        return "com.intel.vmf.compressor.zlib";
+    }
 };
 
 } /* vmf */

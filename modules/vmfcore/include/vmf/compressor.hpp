@@ -50,7 +50,7 @@ public:
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const vmf_string& getId() = 0;
+    virtual const vmf_string getId() = 0;
 
     /*!
      * \brief Default destructor

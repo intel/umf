@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     cout << "Saving metadata..." << endl << endl;
 
     // Save metadata to video file with built-in zlib-based compressor
-    mdStream.save("zlib");
+    mdStream.save("com.intel.vmf.compressor.zlib");
 
     // Alternative way:
     //shared_ptr<ICompressor> compressor = make_shared<ZLibCompressor>();

@@ -24,17 +24,14 @@
 class MyLZWCompressor : public vmf::Compressor
 {
 public:
-    virtual void compress(const vmf::MetaString& input, vmf::vmf_rawbuffer& output);
+    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output);
 
-    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::MetaString& output);
+    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output);
 
-    virtual const vmf::MetaString& getId()
+    virtual const vmf::vmf_string getId()
     {
-        return id;
+        return "com.intel.vmf.compressor.example.my_lzw";
     }
-
-private:
-    static const vmf::MetaString id;
 };
 
 

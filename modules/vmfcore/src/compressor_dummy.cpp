@@ -31,11 +31,6 @@ void CompressorDummy::decompress(const vmf_rawbuffer& input, vmf_string& output)
     output = std::move(MetaString(input.data.get(), input.size));
 }
 
-const vmf_string &CompressorDummy::getId()
-{
-    return id;
-}
-
 class DummyCompressorRegistrator
 {
 public:
@@ -46,7 +41,6 @@ public:
     }
 };
 
-const vmf_string CompressorDummy::id = "dummy";
 static DummyCompressorRegistrator dcr;
 
 } /* vmf */

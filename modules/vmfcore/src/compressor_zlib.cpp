@@ -91,11 +91,6 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
     output = std::move(vmf_string((const char*)decompressedBuf.data(), decompressedSize));
 }
 
-const vmf_string &CompressorZlib::getId()
-{
-    return id;
-}
-
 class ZLibCompressorRegistrator
 {
 public:
@@ -106,7 +101,6 @@ public:
     }
 };
 
-const MetaString CompressorZlib::id = "zlib";
 static ZLibCompressorRegistrator zcr;
 
 } /* vmf */
