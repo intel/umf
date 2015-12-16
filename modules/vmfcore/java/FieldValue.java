@@ -7,9 +7,15 @@ public class FieldValue extends Variant
         System.loadLibrary ("vmf");
     }
 	
-	private String name;
+	protected final long nativeObj;
 	
-	protected long nativeObj;
+	protected FieldValue (long addr)
+    {
+        if (addr == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        nativeObj = addr;
+    }
 	
 	public FieldValue ()
 	{
@@ -35,7 +41,6 @@ public class FieldValue extends Variant
 	
 	public String getName ()
 	{
-		//return name;
 		return n_getName (nativeObj); 
 	}
 	
@@ -46,14 +51,12 @@ public class FieldValue extends Variant
 	
 	public void equals (FieldValue other)
 	{
-		n_equals( nativeObj, other.nativeObj );
-		return;
+		n_equals (nativeObj, other.nativeObj);
 	}
 	
 	public void clear ()
 	{
-		n_delete (nativeObj);
-		nativeObj = n_FieldValue ();
+	    // TO DO implementation
 	}
 	
 	@Override

@@ -9,6 +9,14 @@ public class MetadataDesc
     
     protected final long nativeObj;
     
+    protected MetadataDesc (long addr)
+    {
+        if (addr == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        nativeObj = addr;
+    }
+    
     public MetadataDesc ()
     {
         nativeObj = n_MetadataDesc ();

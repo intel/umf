@@ -11,6 +11,14 @@ public class MetadataSet extends IQuery
     
     public static final int FRAME_COUNT_ALL = long.MAX_VALUE;
     
+    protected MetadataSet (long addr)
+    {
+        if (addr == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        nativeObj = addr;
+    }
+    
     public MetadataSet ()
     {
         nativeObj = n_MetadataSet ();
@@ -18,11 +26,17 @@ public class MetadataSet extends IQuery
     
     public void copy (MetadataSet other)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         n_copy (nativeObj, other.nativeObj);
     }
     
     public void setTo (MetadataSet other)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         n_setTo (nativeObj, other.nativeObj);
     }
     
@@ -33,26 +47,41 @@ public class MetadataSet extends IQuery
     
     public MetadataSet queryByFrameIndex (long index)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryByFrameIndex (nativeObj, index));
     }
     
     public MetadataSet queryBySchema (String schemaName)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryBySchema (nativeObj, schemaName));
     }
     
     public MetadataSet queryByName (String name)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryByName (nativeObj, name));
     }
     
     public MetadataSet queryByNameAndValue (String mdName, FieldValue value)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryByNameAndValue (nativeObj, mdName, value.nativeObj));
     }
     
     public MetadataSet queryByNameAndFields (String mdName, FieldValue fields[])
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         int nativeFieldValueObjs[] = new int [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
@@ -64,16 +93,25 @@ public class MetadataSet extends IQuery
     
     public MetadataSet queryByReference (String refName)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryByReference (nativeObj, refName));
     }
     
     public MetadataSet queryByReference (String refName, FieldValue value);
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         return new MetadataSet (n_queryByReference (nativeObj, refName, value.nativeObj));
     }
     
     public MetadataSet queryByReference (String refName, FieldValue[] fields)
     {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
         int nativeFieldValueObjs[] = new int [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
@@ -85,13 +123,18 @@ public class MetadataSet extends IQuery
     
     public long shift (long nTarFrameIndex, long nSrcFrameIndex)
     {
-        long nNumOfFrames = FRAME_COUNT_ALL;
-        return n_shift (nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, 0);
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, FRAME_COUNT_ALL, 0);
     }
     
     public long shift (long nTarFrameIndex, long nSrcFrameIndex, long nNumOfFrames, MetadataSet setFailure)
     {
-        return n_shift (nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, setFailure.nativeObj);
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, setFailure.nativeObj);
     }
     
     @Override

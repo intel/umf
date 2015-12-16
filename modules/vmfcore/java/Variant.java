@@ -46,78 +46,88 @@ import java.nio.ByteBuffer;
     {
 	    nativeObj = n_Variant ();
 	    n_setTo (nativeObj, value);
-	    //nativeObj = n_Variant (value);
     }
 	
     public Variant (float value)
     {
         nativeObj = n_Variant ();
         n_setTo (nativeObj, value);
-        //nativeObj = n_Variant ( value );
 	}
 	
 	public Variant (int[] array)
 	{
 		nativeObj = n_Variant ();
 		n_setTo (nativeObj, array);
-		//nativeObj = n_Variant (array);
 	}
 	
 	public Variant (float[] array)
 	{
 		nativeObj = n_Variant ();
 		n_setTo (nativeObj, array);
-		//nativeObj = n_Variant (array);
 	}
 	
 	public Variant (String str)
 	{
 		nativeObj = n_Variant ();
 		n_setTo (nativeObj, str);
-		//nativeObj = n_Variant (str);
 	}
 	
 	public void copy (Variant other)
 	{
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
 		n_copy (nativeObj, other.nativeObj);
 	}
 	
 	//setTo is analog for operator= 
-	public Variant setTo (int value)
+	public void setTo (int value)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, value));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, value);
 	}
 	
 	//setTo is analog for operator=
-	public Variant setTo (float value)
+	public void setTo (float value)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, value));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, value);
 	}
 	
-	public Variant setTo (int[] array)
+	public void setTo (int[] array)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, array));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, array);
 	}
 	
-	public Variant setTo (float[] array)
+	public void setTo (float[] array)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, array));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, array);
 	}
 	
-	public Variant setTo (String str)
+	public void setTo (String str)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, str));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, str);
 	}
 	
-	public Variant setTo (Variant other)
+	public void setTo (Variant other)
 	{
-		Variant retVal = new Variant (n_setTo (nativeObj, other.nativeObj));
-		return retVal;
+	    if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    
+		n_setTo (nativeObj, other.nativeObj);
 	}
 	
 	public boolean equals (Variant other)
@@ -238,11 +248,6 @@ import java.nio.ByteBuffer;
     }
 	
 	private native long n_Variant ();
-	/*private native long n_Variant (final int value);
-	private native long n_Variant (final float value);
-	private native long n_Variant (int[] array);
-	private native long n_Variant (float[] array);
-	private native long n_Variant (String str);*/
 	private native static void n_copy (long nativeObj, long other);
 	private native static void n_setTo (long nativeObj, int value);
 	private native static void n_setTo (long nativeObj, float value);
