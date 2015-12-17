@@ -38,11 +38,7 @@ namespace vmf
 class VMF_EXPORT IReader
 {
 public:
-    /*!
-     * \brief IReader
-     * \param impl
-     */
-    IReader(std::shared_ptr<Compressor> impl = nullptr) : compressor(impl)
+    IReader()
     { }
 
     virtual ~IReader()
@@ -78,11 +74,6 @@ public:
     * \brief Deserialize input string to a segment vector
     */
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
-
-protected:
-    virtual std::string decompress(const std::string& input) = 0;
-
-    std::shared_ptr<Compressor> compressor;
 };
 
 }//vmf

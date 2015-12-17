@@ -37,7 +37,7 @@ namespace vmf
 class VMF_EXPORT IWriter
 {
 public:
-    IWriter(std::shared_ptr<Compressor> impl = nullptr) : compressor(impl)
+    IWriter()
     { }
 
     virtual ~IWriter()
@@ -72,11 +72,6 @@ public:
     * \brief Export a video segments vector to a string representation.
     */
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments) = 0;
-
-protected:
-    virtual std::string compress(const std::string& input) = 0;
-
-    std::shared_ptr<Compressor> compressor;
 };
 
 }//vmf

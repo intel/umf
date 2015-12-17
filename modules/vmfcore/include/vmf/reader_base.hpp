@@ -37,11 +37,17 @@ namespace vmf
 class VMF_EXPORT ReaderBase : public IReader
 {
 public:
-    ReaderBase(std::shared_ptr<Compressor> impl = nullptr) : IReader(impl)
+    /*!
+     * \brief ReaderBase
+     * \param impl
+     */
+    ReaderBase(std::shared_ptr<Compressor> impl = nullptr) : IReader(), compressor(impl)
     { }
 
 protected:
     virtual std::string decompress(const std::string& input);
+
+    std::shared_ptr<Compressor> compressor;
 };
 
 
