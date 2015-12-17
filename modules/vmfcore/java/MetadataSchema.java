@@ -82,6 +82,8 @@ public class MetadataSchema
         {
             objs[i] = new MetadataDesc (nObjs[i]);
         }
+        
+        return objs;
     }
     
     public String getStdSchemaName ()

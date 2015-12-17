@@ -53,6 +53,14 @@ public class MetadataSet extends IQuery
         return new MetadataSet (n_queryByFrameIndex (nativeObj, index));
     }
     
+    public MetadataSet queryByTime (long startTime, long endTime)
+    {
+        if (nativeObj == 0)
+            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+        
+        return new MetadataSet (n_queryByTime (nativeObj, startTime, endTime));
+    }
+    
     public MetadataSet queryBySchema (String schemaName)
     {
         if (nativeObj == 0)
@@ -150,6 +158,7 @@ public class MetadataSet extends IQuery
     private native static void n_copy (long nativeObj, long other);
     private native static void n_setTo (long nativeObj, long other);
     private native static MetadataSet n_queryByFrameIndex (long nativeObj, long index);
+    private native static MetadataSet n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static MetadataSet n_queryBySchema (long nativeObj, String schemaName);
     private native static MetadataSet n_queryByName (long nativeObj, String name);
     private native static MetadataSet n_queryByNameAndValue (long nativeObj, String mdName, long value);
