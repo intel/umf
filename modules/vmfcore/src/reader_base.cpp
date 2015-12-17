@@ -25,7 +25,9 @@ std::string ReaderBase::decompress(const std::string& input)
     std::string decompressed;
     if(compressor)
     {
-        vmf_rawbuffer compressed(input.c_str(), input.size());
+        // Compressed binary data should be represented in base64
+        // because of '\0' symbols
+        vmf_rawbuffer compressed = Variant::base64decode(input);
         compressor->decompress(compressed, decompressed);
     }
     else

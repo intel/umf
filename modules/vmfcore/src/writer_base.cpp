@@ -27,7 +27,9 @@ std::string WriterBase::compress(const std::string& input)
     {
         vmf_rawbuffer compressedBuf;
         compressor->compress(input, compressedBuf);
-        compressed = std::string(compressedBuf.data.get(), compressedBuf.size);
+        // Compressed binary data should be represented in base64
+        // because of '\0' symbols
+        compressed = Variant::base64encode(compressedBuf);
     }
     else
     {
