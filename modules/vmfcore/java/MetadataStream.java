@@ -1,6 +1,6 @@
 //package com.intel.vmf;
 
-public class MetadataStream extends IQuery
+public class MetadataStream implements IQuery
 {
     static
     {
@@ -13,7 +13,7 @@ public class MetadataStream extends IQuery
     public static final int ReadOnly = 1;
     public static final int ReadWrite = 2;
     
-    public static final int FRAME_COUNT_ALL = long.MAX_VALUE;
+    public static final long FRAME_COUNT_ALL = Long.MAX_VALUE;
     
     public class VideoSegment
     {
@@ -410,8 +410,8 @@ public class MetadataStream extends IQuery
     private native static void n_removeSet (long nativeObj, long setAddr);
     private native static void n_removeSchema (long nativeObj, long schemaAddr);
     private native static void n_removeAllMd (long nativeObj);
-    private native static void n_addSchema (long nativeObj, long nativeObj);
-    private native static long n_getSchema (long nativeObj, long schemaName);
+    private native static void n_addSchema (long nativeObj, long schemaAddr);
+    private native static long n_getSchema (long nativeObj, String schemaName);
     private native static String[] n_getAllSchemaNames (long nativeObj);
     private native static long n_getAll (long nativeObj);
     private native static boolean n_importSet (long nativeObj, long srcStreamAddr, long srcSetAddr, long tarFrameIndex,
@@ -419,7 +419,7 @@ public class MetadataStream extends IQuery
     private native static void n_clear (long nativeObjAddr);
     private native static void n_sortMdSetById (long nativeObjAddr);
     private native static String n_serialize (long nativeObjAddr, long formaterAddr);
-    private native static void n_deserialize (long nativeObj, String text, long nativeObj);
+    private native static void n_deserialize (long nativeObj, String text, long formaterAddr);
     private native static String n_computeChecksum (long nativeObjAddr);
     private native static String n_computeChecksum (long nativeObjAddr, long XMPPacketSize, long XMPPacketOffset);
     private native static String n_getChecksum (long nativeObjAddr);

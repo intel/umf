@@ -45,7 +45,7 @@ public class Reference
 	
 	public ReferenceDesc getReferenceDescription ()
 	{
-		boolean flags = new boolean[2];
+		boolean flags[] = new boolean[2];
 		String name = new String();
 		n_getReferenceDescription (nativeObj, flags, name);
 		return new ReferenceDesc (name, flags[0], flags[1]);
@@ -53,7 +53,6 @@ public class Reference
 	
 	public void setMetadata (Metadata md)
 	{
-		metaData = md;
 		n_setMetadata (nativeObj, md.nativeObj);
 	}
 	
@@ -71,7 +70,7 @@ public class Reference
 	
 	private native long n_Reference();
 	private native long n_Reference (String name, boolean unique, boolean custom, long md);
-	private native static void n_getMetadata (long nativeObj);
+	private native static long n_getMetadata (long nativeObj);
 	private native static void n_setMetadata (long nativeObj, long md);
 	private native static void n_getReferenceDescription (long nativeObj, boolean flags[], String name);
 	private native static void n_delete (long nativeObj);

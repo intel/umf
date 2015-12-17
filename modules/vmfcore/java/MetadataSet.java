@@ -1,6 +1,6 @@
 //package com.intel.vmf;
 
-public class MetadataSet extends IQuery
+public class MetadataSet implements IQuery
 {
     static
     {
@@ -9,7 +9,7 @@ public class MetadataSet extends IQuery
     
     protected final long nativeObj;
     
-    public static final int FRAME_COUNT_ALL = long.MAX_VALUE;
+    public static final long FRAME_COUNT_ALL = Long.MAX_VALUE;
     
     protected MetadataSet (long addr)
     {
@@ -90,7 +90,7 @@ public class MetadataSet extends IQuery
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
         
-        int nativeFieldValueObjs[] = new int [fields.length];
+        long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
             nativeFieldValueObjs[i] = fields[i].nativeObj;
@@ -107,7 +107,7 @@ public class MetadataSet extends IQuery
         return new MetadataSet (n_queryByReference (nativeObj, refName));
     }
     
-    public MetadataSet queryByReference (String refName, FieldValue value);
+    public MetadataSet queryByReference (String refName, FieldValue value)
     {
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
@@ -120,7 +120,7 @@ public class MetadataSet extends IQuery
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
         
-        int nativeFieldValueObjs[] = new int [fields.length];
+        long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
             nativeFieldValueObjs[i] = fields[i].nativeObj;
@@ -157,15 +157,15 @@ public class MetadataSet extends IQuery
     private native long n_MetadataSet ();
     private native static void n_copy (long nativeObj, long other);
     private native static void n_setTo (long nativeObj, long other);
-    private native static MetadataSet n_queryByFrameIndex (long nativeObj, long index);
-    private native static MetadataSet n_queryByTime (long nativeObj, long startTime, long endTime);
-    private native static MetadataSet n_queryBySchema (long nativeObj, String schemaName);
-    private native static MetadataSet n_queryByName (long nativeObj, String name);
-    private native static MetadataSet n_queryByNameAndValue (long nativeObj, String mdName, long value);
-    private native static MetadataSet n_queryByNameAndFields (long nativeObj, String mdName, long nativeFieldValueObjs[]);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName, long value);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
-    private native static long n_shift (long nTarFrameIndex, long nSrcFrameIndex, long nNumOfFrames, long setFailure);
+    private native static long n_queryByFrameIndex (long nativeObj, long index);
+    private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
+    private native static long n_queryBySchema (long nativeObj, String schemaName);
+    private native static long n_queryByName (long nativeObj, String name);
+    private native static long n_queryByNameAndValue (long nativeObj, String mdName, long value);
+    private native static long n_queryByNameAndFields (long nativeObj, String mdName, long nativeFieldValueObjs[]);
+    private native static long n_queryByReference (long nativeObj, String refName);
+    private native static long n_queryByReference (long nativeObj, String refName, long value);
+    private native static long n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
+    private native static long n_shift (long nativeObjAddr, long nTarFrameIndex, long nSrcFrameIndex, long nNumOfFrames, long setFailure);
     private native static void n_delete (long nativeObj);
 }

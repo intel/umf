@@ -74,8 +74,8 @@ import java.nio.ByteBuffer;
 	
 	public void copy (Variant other)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+	    //if (nativeObj == 0)
+          //  throw new java.lang.UnsupportedOperationException("Native object address is NULL");
 	    
 		n_copy (nativeObj, other.nativeObj);
 	}
@@ -195,45 +195,30 @@ import java.nio.ByteBuffer;
 	}
 	
 	public static String typeToString (int type)
-	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_typeToString (nativeObj, type);
+	{   
+		return n_typeToString (type);
 	}
 
 	public static int typeFromString (String fieldType)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_typeFromString (nativeObj, fieldType);
+		return n_typeFromString (fieldType);
 	}
 	
 	public static boolean isConvertible (int srcType, int tarType)
-	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_isConvertible (nativeObj, srcType, tarType);
+	{   
+		return n_isConvertible (srcType, tarType);
 	}
 	
 	public static String base64Encode (vmfRawBuffer buf)
-	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_base64Encode (nativeObj, buf.byteBuf, buf.size);
+	{   
+		return n_base64Encode (buf.byteBuf, buf.size);
 	}
 	
-	static vmfRawBuffer base64Decode (String base64Str)
+	public static vmfRawBuffer base64Decode (String base64Str)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		vmfRawBuffer buf = new vmfRawBuffer ();
 		int size[] = new int[1];
-		buf.byteBuf = n_base64Decode (nativeObj, base64Str, size);
+		buf.byteBuf = n_base64Decode (base64Str, size);
 		buf.size = size[0]; 
 		return buf;
 	}
@@ -262,10 +247,10 @@ import java.nio.ByteBuffer;
 	private native static boolean n_isEmpty (long nativeObj);
 	private native static String n_getTypeName (long nativeObj);
 	private native static void n_convertTo (long nativeObj, int type);
-	private native static String n_typeToString (long nativeObj, int type);
-	private native static int n_typeFromString (long nativeObj, String fieldType);
-	private native static boolean n_isConvertible (long nativeObj, int srcType, int tarType);
-	private native static String n_base64Encode (long nativeObj, ByteBuffer buf, long size);
-	private native static ByteBuffer n_base64Decode (long nativeObj, String str, int size[]);
+	private native static String n_typeToString (int type);
+	private native static int n_typeFromString (String fieldType);
+	private native static boolean n_isConvertible (int srcType, int tarType);
+	private native static String n_base64Encode (ByteBuffer buf, long size);
+	private native static ByteBuffer n_base64Decode (String str, int size[]);
 	private native static void n_delete (long nativeObj);
  }

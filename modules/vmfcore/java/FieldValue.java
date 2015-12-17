@@ -35,7 +35,7 @@ public class FieldValue extends Variant
 		if (variant == null)
             throw new java.lang.UnsupportedOperationException("Object address is NULL");
 		
-		name = newName;
+		
 		nativeObj = n_FieldValue (newName, variant.nativeObj);
 	}
 	

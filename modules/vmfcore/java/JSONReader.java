@@ -1,6 +1,6 @@
-package com.intel.vmf;
+//package com.intel.vmf;
 
-import java.util.String;
+//import java.util.String;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
@@ -19,7 +19,7 @@ public class JSONReader implements IReader
         nativeObj = n_JSONReader();
     }
 	
-    public boolean parseAll (final String text, Long nextId,
+    public boolean parseAll (final String text, long nextId,
                              String filepath, String checksum,
                              MetadataStream.VideoSegment[] segments,
                              MetadataSchema[] schemas,
@@ -51,9 +51,9 @@ public class JSONReader implements IReader
         super.finalize();
     }
 	
-	private static native long n_JSONReader();
+	private native long n_JSONReader();
 	
-	private static native boolean n_parseAll ( long nativeObj, final String text, Long nextId,
+	private static native boolean n_parseAll ( long nativeObj, final String text, long nextId,
                                                String filepath, String checksum,
                                                MetadataStream.VideoSegment[] segments, 
                                                MetadataSchema[] schemas,

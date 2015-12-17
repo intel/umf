@@ -1,16 +1,16 @@
-package com.intel.vmf;
+//package com.intel.vmf;
 
 interface IReader
 {
-    boolean parseAll ( final String text, Long nextId,
-                       String filepath, String checksum,
-                       MetadataStream.VideoSegment[] segments, 
-                       MetadataSchema[] schemas,
-                       MetadataInternal[] metadata);
+    boolean parseAll (String text, long nextId,
+                      String filepath, String checksum,
+                      MetadataStream.VideoSegment[] segments, 
+                      MetadataSchema[] schemas,
+                      MetadataInternal[] metadata);
 				   
-    boolean parseSchemas (final String text, MetadataSchema[] schemas);
+    boolean parseSchemas (String text, MetadataSchema[] schemas);
 	
-    boolean parseMetadata (final String text, final MetadataSchema[] schemas, MetadataInternal[] metadata);
+    boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] metadata);
 	
-    boolean parseVideoSegments(final String text, MetadataStream.VideoSegment[] segments);
+    boolean parseVideoSegments(String text, MetadataStream.VideoSegment[] segments);
 }
