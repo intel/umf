@@ -7,7 +7,7 @@ public class Reference
         System.loadLibrary("vmf");
     }
 	
-	protected long nativeObj;
+	protected final long nativeObj;
 	
 	protected Reference (long addr)
     {
@@ -32,10 +32,7 @@ public class Reference
 	
 	public void clear ()
 	{
-		if (nativeObj != 0)
-		    n_delete (nativeObj);
-		
-		nativeObj = n_Reference ();
+		//TO DO: implementation
 	}
 	
 	public Metadata getMetadata ()
@@ -60,10 +57,7 @@ public class Reference
     protected void finalize () throws Throwable 
     {
     	if (nativeObj != 0)
-    	{
             n_delete (nativeObj);
-            nativeObj = 0;
-    	}
     	
         super.finalize();
     }

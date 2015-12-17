@@ -9,11 +9,11 @@ interface IWriter
     String store (long nextId,
                   String filepath,
                   String checksum,
-                  MetadataStream.VideoSegment[] segments,
+                  VideoSegment[] segments,
                   MetadataSchema[] schemas,
                   MetadataSet set);
 
-    String store (MetadataStream.VideoSegment segment);	
+    String store (VideoSegment segment);	
 
-    String store (MetadataStream.VideoSegment[] segments);	
+    String store (VideoSegment[] segments);	
 }

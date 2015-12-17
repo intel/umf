@@ -15,111 +15,6 @@ public class MetadataStream implements IQuery
     
     public static final long FRAME_COUNT_ALL = Long.MAX_VALUE;
     
-    public class VideoSegment
-    {
-        protected final long nativeObj;
-        
-        protected VideoSegment (long addr)
-        {
-            if (addr == 0)
-                throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-            
-            nativeObj = addr;
-        }
-        
-        public VideoSegment ()
-        {
-            nativeObj = n_VideoSegment ();
-        }
-        
-        public VideoSegment (String title, double fps, long startTime)
-        {
-            long duration = 0;
-            long width = 0;
-            long height = 0;
-            
-            nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
-        }
-        
-        public VideoSegment (String title, double fps, long startTime, long duration, long width, long height)
-        {
-            nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
-        }
-        
-        public String getTitle ()
-        {
-            return n_getTitle (nativeObj);
-        }
-        
-        public void setTitle (String title)
-        {
-            n_setTitle (nativeObj, title);
-        }
-        
-        public double getFPS ()
-        {
-            return n_getFPS (nativeObj);
-        }
-        
-        public void setFPS (double fps)
-        {
-            n_setFPS (nativeObj, fps);
-        }
-        
-        public long getDuration ()
-        {
-            return n_getDuration (nativeObj);
-        }
-        
-        public void setDuration (long duration)
-        {
-            n_setDuration (nativeObj, duration);
-        }
-        
-        public long getTime ()
-        {
-            return n_getTime (nativeObj);
-        }
-        
-        public void setTime (long startTime)
-        {
-            n_setTime (nativeObj, startTime);
-        }
-        
-        public void getResolution (long width, long height)
-        {
-            n_getResolution (nativeObj, width, height);
-        }
-        
-        public void setResolution(long width, long height)
-        {
-            n_setResolution (nativeObj, width, height);
-        }
-        
-        @Override
-        protected void finalize () throws Throwable 
-        {
-            if (nativeObj != 0)
-                n_delete (nativeObj);
-            
-            super.finalize();
-        }
-        
-        private native long n_VideoSegment ();
-        private native long n_VideoSegment (String title, double fps, long startTime, long duration, long width, long height);
-        private native static String n_getTitle (long nativeObj);
-        private native static void n_setTitle (long nativeObj, String title);
-        private native static double n_getFPS (long nativeObj);
-        private native static void n_setFPS (long nativeObj, double fps);
-        private native static long n_getDuration (long nativeObj);
-        private native static void n_setDuration (long nativeObj, long duration);
-        private native static long n_getTime (long nativeObj);
-        private native static void n_setTime (long nativeObj, long startTime);
-        private native static void n_getResolution (long nativeObj, long width, long height);
-        private native static void n_setResolution (long nativeObj, long width, long height);
-        private native static void n_delete (long nativeObj);
-    }
-    
     protected MetadataStream (long addr)
     {
         if (addr == 0)
@@ -222,7 +117,7 @@ public class MetadataStream implements IQuery
                               long tarFrameIndex, long srcFrameIndex)
     {
         return n_importSet (nativeObj, srcStream.nativeObj, srcSet.nativeObj,
-                            tarFrameIndex, srcFrameIndex, FRAME_COUNT_ALL, null);
+                            tarFrameIndex, srcFrameIndex, FRAME_COUNT_ALL, 0);
     }
     
     public boolean importSet (MetadataStream srcStream, MetadataSet srcSet, long tarFrameIndex, 
@@ -242,7 +137,7 @@ public class MetadataStream implements IQuery
         n_sortMdSetById (nativeObj);
     }
     
-    public String serialize (IWriter formater)
+    /*public String serialize (IWriter formater)
     {
         return n_serialize (nativeObj, formater.nativeObj);
     }
@@ -250,7 +145,7 @@ public class MetadataStream implements IQuery
     public void deserialize (String text, IReader formater)
     {
         n_deserialize (nativeObj, text, formater.nativeObj);
-    }
+    }*/
     
     public String computeChecksum ()
     {
@@ -290,7 +185,7 @@ public class MetadataStream implements IQuery
         return objs;
     }
     
-    public void convertTimestampToFrameIndex (long timeStamp, long duration,
+    public void convertTimestampToFrameIndex (long timestamp, long duration,
                                               long frameIndex, long numOfFrames)
     {
         n_convertTimestampToFrameIndex (nativeObj, timestamp, duration,
@@ -348,7 +243,7 @@ public class MetadataStream implements IQuery
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
         
-        int nativeFieldValueObjs[] = new int [fields.length];
+        long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
             nativeFieldValueObjs[i] = fields[i].nativeObj;
@@ -365,7 +260,7 @@ public class MetadataStream implements IQuery
         return new MetadataSet (n_queryByReference (nativeObj, refName));
     }
     
-    public MetadataSet queryByReference (String refName, FieldValue value);
+    public MetadataSet queryByReference (String refName, FieldValue value)
     {
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
@@ -378,7 +273,7 @@ public class MetadataStream implements IQuery
         if (nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
         
-        int nativeFieldValueObjs[] = new int [fields.length];
+        long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
             nativeFieldValueObjs[i] = fields[i].nativeObj;
@@ -430,15 +325,15 @@ public class MetadataStream implements IQuery
                                                                long frameIndex, long numOfFrames);
     private native static void n_convertFrameIndexToTimestamp (long nativeObj, long frameIndex, long numOfFrames,
                                                                long timestamp, long duration);
-    private native static MetadataSet n_queryByFrameIndex (long nativeObj, long index);
-    private native static MetadataSet n_queryByTime (long nativeObj, long startTime, long endTime);
-    private native static MetadataSet n_queryBySchema (long nativeObj, String schemaName);
-    private native static MetadataSet n_queryByName (long nativeObj, String name);
-    private native static MetadataSet n_queryByNameAndValue (long nativeObj, String mdName, long value);
-    private native static MetadataSet n_queryByNameAndFields (long nativeObj, String mdName, long nativeFieldValueObjs[]);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName, long value);
-    private native static MetadataSet n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
+    private native static long n_queryByFrameIndex (long nativeObj, long index);
+    private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
+    private native static long n_queryBySchema (long nativeObj, String schemaName);
+    private native static long n_queryByName (long nativeObj, String name);
+    private native static long n_queryByNameAndValue (long nativeObj, String mdName, long value);
+    private native static long n_queryByNameAndFields (long nativeObj, String mdName, long nativeFieldValueObjs[]);
+    private native static long n_queryByReference (long nativeObj, String refName);
+    private native static long n_queryByReference (long nativeObj, String refName, long value);
+    private native static long n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
     //TO DO??: public long add(MetadataInternal mdInternal)
     private native static void n_delete (long nativeObj);
 }
