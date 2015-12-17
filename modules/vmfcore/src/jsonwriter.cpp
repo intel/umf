@@ -169,8 +169,8 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-JSONWriter::JSONWriter(std::shared_ptr<Compressor> impl) : WriterBase(impl) {};
-JSONWriter::~JSONWriter() {};
+JSONWriter::JSONWriter(vmf_string _compressorId) : WriterBase(_compressorId) { }
+JSONWriter::~JSONWriter() { }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
 {

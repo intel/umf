@@ -23,13 +23,22 @@ namespace vmf
 std::string WriterBase::compress(const std::string& input)
 {
     std::string compressed;
-    if(compressor)
+    if(!compressorId.empty())
     {
-        vmf_rawbuffer compressedBuf;
-        compressor->compress(input, compressedBuf);
-        // Compressed binary data should be represented in base64
-        // because of '\0' symbols
-        compressed = Variant::base64encode(compressedBuf);
+        std::shared_ptr<Compressor> compressor = Compressor::getById(compressorId);
+        if(compressor)
+        {
+            vmf_rawbuffer compressedBuf;
+            compressor->compress(input, compressedBuf);
+            // Compressed binary data should be represented in base64
+            // because of '\0' symbols
+            compressed = Variant::base64encode(compressedBuf);
+        }
+        else
+        {
+            VMF_EXCEPTION(IncorrectParamException,
+                          "Unregistered compression algorithm: " + compressorId);
+        }
     }
     else
     {

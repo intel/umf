@@ -40,7 +40,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLWriter(std::shared_ptr<Compressor> impl = nullptr);
+    XMLWriter(vmf_string _compressorId = vmf_string());
 
     /*!
     * \brief Class destructor

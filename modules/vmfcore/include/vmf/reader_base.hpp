@@ -39,15 +39,15 @@ class VMF_EXPORT ReaderBase : public IReader
 public:
     /*!
      * \brief ReaderBase
-     * \param impl
+     * \param _compressorId
      */
-    ReaderBase(std::shared_ptr<Compressor> impl = nullptr) : IReader(), compressor(impl)
+    ReaderBase(vmf_string _compressorId = vmf_string()) : IReader(), compressorId(_compressorId)
     { }
 
 protected:
     virtual std::string decompress(const std::string& input);
 
-    std::shared_ptr<Compressor> compressor;
+    vmf_string compressorId;
 };
 
 

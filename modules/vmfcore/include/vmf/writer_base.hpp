@@ -37,13 +37,13 @@ namespace vmf
 class VMF_EXPORT WriterBase : public IWriter
 {
 public:
-    WriterBase(std::shared_ptr<Compressor> impl = nullptr) : IWriter(), compressor(impl)
+    WriterBase(vmf_string _compressorId = vmf_string()) : IWriter(), compressorId(_compressorId)
     { }
 
 protected:
     virtual std::string compress(const std::string& input);
 
-    std::shared_ptr<Compressor> compressor;
+    vmf_string compressorId;
 };
 
 

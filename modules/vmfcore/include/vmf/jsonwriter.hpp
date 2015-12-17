@@ -40,7 +40,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONWriter(std::shared_ptr<Compressor> impl = nullptr);
+    JSONWriter(vmf_string _compressorId = vmf_string());
 
     /*!
     * \brief Class destructor

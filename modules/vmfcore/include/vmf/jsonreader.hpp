@@ -47,7 +47,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader(std::shared_ptr<Compressor> impl = nullptr);
+    JSONReader(vmf_string _compressorId = vmf_string());
 
     /*!
     * \brief Class destructor

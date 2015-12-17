@@ -252,7 +252,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
-XMLReader::XMLReader(std::shared_ptr<Compressor> impl) : ReaderBase(impl) { }
+XMLReader::XMLReader(vmf_string _compressorId) : ReaderBase(_compressorId) { }
 XMLReader::~XMLReader(){}
 
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
