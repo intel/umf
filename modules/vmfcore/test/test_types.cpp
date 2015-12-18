@@ -26,6 +26,6 @@ TEST(TestVmfRawBuffer, operatorEq)
 
     buf = sbuf;
 
-    ASSERT_EQ(buf.size, s.size());
-    ASSERT_EQ(std::string(buf.data.get(), buf.size), s);
+    ASSERT_EQ(buf.size(), s.size());
+    ASSERT_EQ(std::string(buf.data(), buf.size()), s);
 }

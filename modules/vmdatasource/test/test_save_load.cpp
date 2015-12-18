@@ -314,7 +314,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
         ASSERT_EQ(1, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_rawbuffer, value.getType());
-        bool result = TEST_VALUE == (vmf::vmf_rawbuffer) value;
+        bool result = TEST_VALUE == value.get_rawbuffer();
         ASSERT_TRUE(result);
     }
 

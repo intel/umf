@@ -529,9 +529,9 @@ TEST_P(TestVariantRawByfferType, ToStringFromString)
     switch(size)
     {
     case 0:
-        ASSERT_THROW(vmf::vmf_rawbuffer("", 0), vmf::IncorrectParamException);
-        ASSERT_THROW(vmf::vmf_rawbuffer(0, 10), vmf::IncorrectParamException);
-        ASSERT_NO_THROW(vmf::vmf_rawbuffer(0, 0));
+        ASSERT_NO_THROW(vmf::vmf_rawbuffer("", (size_t)0));
+        ASSERT_NO_THROW(vmf::vmf_rawbuffer(0, 10));
+        ASSERT_NO_THROW(vmf::vmf_rawbuffer(0, (size_t)0));
         return;
     default:
         data = std::unique_ptr<char[]>(new char[size]);
@@ -563,7 +563,7 @@ TEST_P(TestVariantRawBuffer_Base64Encoding, TestEncode)
     vmf::vmf_rawbuffer rbuf(data, size);
     v1 = vmf::Variant(rbuf);
     std::string result = v1.toString();
-    if(rbuf == vmf::vmf_rawbuffer(0,0))
+    if(rbuf == vmf::vmf_rawbuffer())
         ASSERT_EQ(result, "");
     else if( rbuf == vmf::vmf_rawbuffer("\0", 1) )
         ASSERT_EQ(result, "AA==");

@@ -219,7 +219,7 @@ Variant& Variant::operator = (Variant&& other)
 
 #define COMPARE_OBJECT(T) \
     case type_##T: \
-        bIsEqual = dynamic_cast<Data<vmf_##T>*>(data)->content == (vmf_##T)other; \
+        bIsEqual = dynamic_cast<Data<vmf_##T>*>(data)->content == other.get_##T(); \
         break;
 
 #define COMPARE_VECTOR_OBJECT( T ) \
@@ -482,7 +482,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 vmf_string temp;
                 vmf_char separator = ';';
                 ss >> temp;
-                vec.push_back( base64decode(temp).data.get() );
+                vec.push_back( base64decode(temp).data() );
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
@@ -664,8 +664,8 @@ std::string Variant::base64encode(const vmf_rawbuffer& value)
 {
     const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;
-    int size = (int)value.size;
-    const char * data = value.data.get();
+    int size = (int)value.size();
+    const char * data = value.data();
 
     while (size > 0)
     {
@@ -686,7 +686,7 @@ vmf_rawbuffer Variant::base64decode(const std::string& base64Str)
     const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     if (base64Str.empty())
-        return vmf_rawbuffer(0, 0);
+        return vmf_rawbuffer();
 
     size_t size = base64Str.size();
     if (base64Str.size() % 4 != 0)
