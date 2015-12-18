@@ -137,15 +137,15 @@ public class MetadataStream implements IQuery
         n_sortMdSetById (nativeObj);
     }
     
-    /*public String serialize (IWriter formater)
+    public String serialize (IWriter formater)
     {
-        return n_serialize (nativeObj, formater.nativeObj);
+        return n_serialize (nativeObj, formater.getNativeAddr());
     }
     
     public void deserialize (String text, IReader formater)
     {
-        n_deserialize (nativeObj, text, formater.nativeObj);
-    }*/
+        n_deserialize (nativeObj, text, formater.getNativeAddr());
+    }
     
     public String computeChecksum ()
     {

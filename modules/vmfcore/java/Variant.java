@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
     public static final int type_vec3d_vector = 14;
     public static final int type_vec4d_vector = 15;
     
-    
     protected final long nativeObj;
 	
     protected Variant (long addr)

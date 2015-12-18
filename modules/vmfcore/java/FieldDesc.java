@@ -7,28 +7,34 @@ public class FieldDesc
         System.loadLibrary("vmf");
     }
 	
-    public boolean optional;
-	
-    public String name;
-	
-    public int type;
+    protected final long nativeObj;
     
     public FieldDesc ()
     {
-    	optional = false;
-    	name = "";
-    	type = Variant.type_string;
+        nativeObj = n_FieldDesc ();
     }
 	
-    public FieldDesc (String newName, int newType, boolean isOptional )
+    public FieldDesc (String newName, long newType, boolean isOptional)
     {
-    	optional = isOptional;
-    	name = newName;
-    	type = newType;
+        nativeObj = n_FieldDesc (newName, newType, isOptional);
     }
 	
-    public boolean isEqual (FieldDesc other )
+    public boolean equals (FieldDesc other)
     {
-        return (name == other.name) && (type == other.type);
+        return n_equals (nativeObj, other.nativeObj);
     }
+    
+    @Override
+    protected void finalize () throws Throwable 
+    {
+        if (nativeObj != 0)
+            n_delete (nativeObj);
+        
+        super.finalize();
+    }
+    
+    private native long n_FieldDesc ();
+    private native long n_FieldDesc (String newName, long newType, boolean isOptional);
+    private static native boolean n_equals (long nativeObjAddr, long otherAddr);
+    private static native void n_delete (long nativeObj);
 }

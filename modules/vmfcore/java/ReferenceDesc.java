@@ -23,15 +23,24 @@ public class ReferenceDesc
     
     public ReferenceDesc ()
 	{
-        name = "";
-        isUnique = false;
-        isCustom = false;
+        nativeObj = ReferenceDesc ();
 	}
     
     public ReferenceDesc (String refName, boolean unique, boolean custom) 
     {
-    	name = refName;
-    	isUnique = unique; 
-    	isCustom = custom;
+        nativeObj = ReferenceDesc (refName, unique, custom);
     }
+    
+    @Override
+    protected void finalize () throws Throwable 
+    {
+        if (nativeObj != 0)
+            n_delete (nativeObj);
+        
+        super.finalize();
+    }
+    
+    private native long ReferenceDesc ();
+    private native long ReferenceDesc (String refName, boolean unique, boolean custom);
+    private static native void n_delete (long nativeAddr);
 }

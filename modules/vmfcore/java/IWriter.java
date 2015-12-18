@@ -2,6 +2,8 @@
 
 interface IWriter
 {
+    long getNativeAddr();
+    
     String store (MetadataSchema[] schemas);
 
     String store (MetadataSet set);

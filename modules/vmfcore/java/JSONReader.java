@@ -19,6 +19,11 @@ public class JSONReader implements IReader
         nativeObj = n_JSONReader();
     }
 	
+    public long getNativeAddr()
+    {
+        return nativeObj;
+    }
+    
     public boolean parseAll (final String text, long nextId,
                              String filepath, String checksum,
                              VideoSegment[] segments,

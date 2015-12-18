@@ -2,6 +2,8 @@
 
 interface IReader
 {
+    long getNativeAddr();
+     
     boolean parseAll (String text, long nextId,
                       String filepath, String checksum,
                       VideoSegment[] segments, 
