@@ -323,12 +323,6 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 
 TEST(TestSaveLoadMetadataTyped, Vectors)
 {
-    std::vector<vmf::vmf_char> test_char_value;
-    test_char_value.push_back('t');
-    test_char_value.push_back('e');
-    test_char_value.push_back('s');
-    test_char_value.push_back('t');
-
     std::vector<vmf::vmf_integer> test_integer_value;
     test_integer_value.push_back(42);
     test_integer_value.push_back(24);
@@ -404,7 +398,7 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         vmf::MetadataSet property = schema.queryByName("test_desc");
         ASSERT_EQ(1, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(7, md->getFieldNames().size());
+        ASSERT_EQ(6, md->getFieldNames().size());
 
         vmf::Variant value;
         bool result;
