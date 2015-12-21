@@ -1,4 +1,4 @@
-//package com.intel.vmf;
+package com.intel.vmf;
 
 //import java.util.String;
 import java.io.DataInputStream;

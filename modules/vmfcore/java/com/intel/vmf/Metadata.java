@@ -1,4 +1,4 @@
-//package com.intel.vmf;
+package com.intel.vmf;
 
 public class Metadata
 {
@@ -28,13 +28,12 @@ public class Metadata
 	
 	public Metadata (Metadata md)
 	{
-	    nativeObj = n_Metadata (md.getDesc().nativeObj);
-		n_Metadata (nativeObj, md.nativeObj);
+	    nativeObj = n_Metadata (md.nativeObj);
 	}
 	
 	public void clear ()
 	{
-		n_clear (nativeObj);
+		//TO DO: implementation
 	}
 	
 	public long getID ()
@@ -72,9 +71,9 @@ public class Metadata
 		n_setTimestamp (nativeObj, time, duration);
 	}
 	
-	public long getTimestamp ()
+	public long getTime ()
 	{
-		return n_getTimestamp (nativeObj);
+		return n_getTime (nativeObj);
 	}
 	
 	public long getDuration ()
@@ -220,7 +219,6 @@ public class Metadata
 	    return n_isValid (nativeObj);
 	}
 	
-	
 	@Override
 	protected void finalize () throws Throwable 
 	{
@@ -231,14 +229,14 @@ public class Metadata
 	}
    
     private native long n_Metadata (long mdDescriptionAddr);
-    private native static void n_Metadata (long nativeObj, long other);
-    private native static void n_clear (long nativeObj);
+    private native long n_MetadataCopy (long other);
+    //TO DO: private native static void n_clear (long nativeObj);
     private native static long n_getID (long nativeObj);
     private native static long n_getFrameIndex (long nativeObj);
     private native static long n_getNumOfFrames (long nativeObj);
     private native static void n_setFrameIndex (long nativeObj, long frameIndex, long numOfFrames);
     private native static void n_setTimestamp (long nativeObj, long time, long duration);
-    private native static long n_getTimestamp (long nativeObj);
+    private native static long n_getTime (long nativeObj);
     private native static long n_getDuration (long nativeObj);
     private native static String n_getName (long nativeObj);
     private native static String n_getSchemaName (long nativeObj);
