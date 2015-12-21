@@ -6,7 +6,7 @@ interface IReader
      
     boolean parseAll (String text, long nextId,
                       String filepath, String checksum,
-                      VideoSegment[] segments, 
+                      MetadataStream.VideoSegment[] segments, 
                       MetadataSchema[] schemas,
                       MetadataInternal[] metadata);
 				   
@@ -14,5 +14,5 @@ interface IReader
 	
     boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] metadata);
 	
-    boolean parseVideoSegments (String text, VideoSegment[] segments);
+    boolean parseVideoSegments (String text, MetadataStream.VideoSegment[] segments);
 }
