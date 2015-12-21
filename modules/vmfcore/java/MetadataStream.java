@@ -73,22 +73,22 @@ public class MetadataStream implements IQuery
         return n_add (nativeObj, md.nativeObj);
     }
     
-    public boolean removeMdById (long id)
+    public boolean remove (long id)
     {
         return n_removeMdById (nativeObj, id);
     }
     
-    public void removeSet (MetadataSet set)
+    public void remove (MetadataSet set)
     {
         n_removeSet (nativeObj, set.nativeObj);
     }
     
-    public void removeSchema (MetadataSchema schema)
+    public void remove (MetadataSchema schema)
     {
         n_removeSchema (nativeObj, schema.nativeObj);
     }
     
-    public void n_removeAllMd()
+    public void remove()
     {
         n_removeAllMd (nativeObj);
     }

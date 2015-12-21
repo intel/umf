@@ -44,63 +44,63 @@ extern "C" {
  * Method:    n_Variant
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1Variant
+JNIEXPORT jlong JNICALL Java_Variant_n_1Variant__
   (JNIEnv *, jobject);
 
 /*
  * Class:     Variant
- * Method:    n_copy
+ * Method:    n_Variant
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_Variant_n_1copy
+JNIEXPORT void JNICALL Java_Variant_n_1Variant__JJ
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (JI)J
+ * Signature: (JI)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__JI
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__JI
   (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (JF)J
+ * Signature: (JF)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__JF
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__JF
   (JNIEnv *, jclass, jlong, jfloat);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (J[I)J
+ * Signature: (J[I)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__J_3I
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__J_3I
   (JNIEnv *, jclass, jlong, jintArray);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (J[F)J
+ * Signature: (J[F)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__J_3F
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__J_3F
   (JNIEnv *, jclass, jlong, jfloatArray);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (JLjava/lang/String;)J
+ * Signature: (JLjava/lang/String;)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__JLjava_lang_String_2
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__JLjava_lang_String_2
   (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     Variant
  * Method:    n_setTo
- * Signature: (JJ)J
+ * Signature: (JJ)V
  */
-JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__JJ
+JNIEXPORT void JNICALL Java_Variant_n_1setTo__JJ
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
@@ -109,14 +109,6 @@ JNIEXPORT jlong JNICALL Java_Variant_n_1setTo__JJ
  * Signature: (JJ)Z
  */
 JNIEXPORT jboolean JNICALL Java_Variant_n_1equals
-  (JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     Variant
- * Method:    n_unequals
- * Signature: (JJ)Z
- */
-JNIEXPORT jboolean JNICALL Java_Variant_n_1unequals
   (JNIEnv *, jclass, jlong, jlong);
 
 /*

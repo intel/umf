@@ -71,69 +71,46 @@ import java.nio.ByteBuffer;
 		n_setTo (nativeObj, str);
 	}
 	
-	public void copy (Variant other)
-	{
-	    //if (nativeObj == 0)
-          //  throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		n_copy (nativeObj, other.nativeObj);
-	}
+	public Variant (Variant other)
+    {
+	    nativeObj = n_Variant ();
+        n_Variant (nativeObj, other.nativeObj);
+    }
 	
 	//setTo is analog for operator= 
 	public void setTo (int value)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, value);
 	}
 	
 	//setTo is analog for operator=
 	public void setTo (float value)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, value);
 	}
 	
 	public void setTo (int[] array)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, array);
 	}
 	
 	public void setTo (float[] array)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, array);
 	}
 	
 	public void setTo (String str)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, str);
 	}
 	
 	public void setTo (Variant other)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		n_setTo (nativeObj, other.nativeObj);
 	}
 	
 	public boolean equals (Variant other)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
 		return n_equals (nativeObj, other.nativeObj);
 	}
 	
@@ -232,7 +209,7 @@ import java.nio.ByteBuffer;
     }
 	
 	private native long n_Variant ();
-	private native static void n_copy (long nativeObj, long other);
+	private native static void n_Variant (long nativeObj, long other);
 	private native static void n_setTo (long nativeObj, int value);
 	private native static void n_setTo (long nativeObj, float value);
 	private native static void n_setTo (long nativeObj, int array[]);

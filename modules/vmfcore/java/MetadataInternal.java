@@ -8,7 +8,6 @@ public class MetadataInternal extends Metadata
         System.loadLibrary("vmf");
     }
     
-    
     protected MetadataInternal (long addr)
     {
         super (addr);
@@ -17,7 +16,7 @@ public class MetadataInternal extends Metadata
     public MetadataInternal (MetadataDesc mdDesc)
     {
         super (mdDesc);
-        nativeObj = n_MetadataInternal (mdDesc.nativeObj);
+        n_MetadataInternal (mdDesc.nativeObj);
     }
     
     private native long n_MetadataInternal (long addr);

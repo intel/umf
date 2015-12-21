@@ -14,7 +14,7 @@ public class FieldDesc
         nativeObj = n_FieldDesc ();
     }
 	
-    public FieldDesc (String newName, long newType, boolean isOptional)
+    public FieldDesc (String newName, int newType, boolean isOptional)
     {
         nativeObj = n_FieldDesc (newName, newType, isOptional);
     }
@@ -22,6 +22,21 @@ public class FieldDesc
     public boolean equals (FieldDesc other)
     {
         return n_equals (nativeObj, other.nativeObj);
+    }
+    
+    public String getName ()
+    {
+        return n_getName (nativeObj);
+    }
+    
+    public int getType ()
+    {
+        return n_getType (nativeObj);
+    }
+    
+    public boolean isOptional ()
+    {
+        return n_isOptional (nativeObj);
     }
     
     @Override
@@ -36,5 +51,8 @@ public class FieldDesc
     private native long n_FieldDesc ();
     private native long n_FieldDesc (String newName, long newType, boolean isOptional);
     private static native boolean n_equals (long nativeObjAddr, long otherAddr);
-    private static native void n_delete (long nativeObj);
+    private static native String n_getName (long nativeAddr);
+    private static native int n_getType (long nativeAddr);
+    private static native boolean n_isOptional (long nativeAddr);
+    private static native void n_delete (long nativeAddr);
 }

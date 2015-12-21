@@ -45,23 +45,23 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_FieldValue_n_1FieldValue__
-  (JNIEnv *, jclass);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     FieldValue
  * Method:    n_FieldValue
- * Signature: (J)J
+ * Signature: (JJ)V
  */
-JNIEXPORT jlong JNICALL Java_FieldValue_n_1FieldValue__J
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT void JNICALL Java_FieldValue_n_1FieldValue__JJ
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     FieldValue
  * Method:    n_FieldValue
- * Signature: (Ljava/lang/String;LVariant;)J
+ * Signature: (Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_FieldValue_n_1FieldValue__Ljava_lang_String_2LVariant_2
-  (JNIEnv *, jclass, jstring, jobject);
+JNIEXPORT jlong JNICALL Java_FieldValue_n_1FieldValue__Ljava_lang_String_2J
+  (JNIEnv *, jobject, jstring, jlong);
 
 /*
  * Class:     FieldValue

@@ -2,10 +2,6 @@
  
 public class ReferenceDesc
 {
-    public String name;
-    public boolean isUnique;
-    public boolean isCustom;
-
     static
     {
         System.loadLibrary("vmf");
@@ -23,12 +19,27 @@ public class ReferenceDesc
     
     public ReferenceDesc ()
 	{
-        nativeObj = ReferenceDesc ();
+        nativeObj = n_ReferenceDesc ();
 	}
     
     public ReferenceDesc (String refName, boolean unique, boolean custom) 
     {
-        nativeObj = ReferenceDesc (refName, unique, custom);
+        nativeObj = n_ReferenceDesc (refName, unique, custom);
+    }
+    
+    public String getName ()
+    {
+        return n_getName (nativeObj);
+    }
+    
+    public boolean isUnique ()
+    {
+        return n_isUnique (nativeObj);
+    }
+    
+    public boolean isCustom ()
+    {
+        return n_isCustom (nativeObj);
     }
     
     @Override
@@ -40,7 +51,10 @@ public class ReferenceDesc
         super.finalize();
     }
     
-    private native long ReferenceDesc ();
-    private native long ReferenceDesc (String refName, boolean unique, boolean custom);
+    private native long n_ReferenceDesc ();
+    private native long n_ReferenceDesc (String refName, boolean unique, boolean custom);
+    private static native String n_getName (long nativeAddr);
+    private static native boolean n_isUnique (long nativeObj);
+    private static native boolean n_isCustom (long nativeObj);
     private static native void n_delete (long nativeAddr);
 }

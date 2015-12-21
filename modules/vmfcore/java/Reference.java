@@ -27,7 +27,7 @@ public class Reference
 		if (md.nativeObj == 0)
             throw new java.lang.UnsupportedOperationException("Native object address is NULL");
 		
-		nativeObj = n_Reference (desc.name, desc.isUnique, desc.isCustom, md.nativeObj);
+		nativeObj = n_Reference (desc.nativeObj, md.nativeObj);
 	}
 	
 	public void clear ()
@@ -42,10 +42,7 @@ public class Reference
 	
 	public ReferenceDesc getReferenceDescription ()
 	{
-		boolean flags[] = new boolean[2];
-		String name = new String();
-		n_getReferenceDescription (nativeObj, flags, name);
-		return new ReferenceDesc (name, flags[0], flags[1]);
+		return new ReferenceDesc (n_getReferenceDescription (nativeObj));
 	}
 	
 	public void setMetadata (Metadata md)
@@ -63,9 +60,9 @@ public class Reference
     }
 	
 	private native long n_Reference();
-	private native long n_Reference (String name, boolean unique, boolean custom, long md);
+	private native long n_Reference (long refDescAddr, long mdAddr);
 	private native static long n_getMetadata (long nativeObj);
 	private native static void n_setMetadata (long nativeObj, long md);
-	private native static void n_getReferenceDescription (long nativeObj, boolean flags[], String name);
+	private native static long n_getReferenceDescription (long nativeObj);
 	private native static void n_delete (long nativeObj);
 }
