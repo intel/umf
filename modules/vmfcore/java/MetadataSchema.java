@@ -32,49 +32,31 @@ public class MetadataSchema
     
     public String getName ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getName (nativeObj);
     }
     
     public String getAuthor()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getAuthor (nativeObj);
     }
     
     public long size ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_size (nativeObj);
     }
     
     public void add (MetadataDesc mdDesc)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         n_add (nativeObj, mdDesc.nativeObj);
     }
     
     public MetadataDesc findMetadataDesc (String mdName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataDesc (n_findMetadataDesc (nativeObj, mdName));
     }
     
     public MetadataDesc[] getAll()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         long nObjs[] = n_getAll (nativeObj);
         MetadataDesc objs[] = new MetadataDesc [nObjs.length];
         
@@ -88,17 +70,11 @@ public class MetadataSchema
     
     public String getStdSchemaName ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getStdSchemaName (nativeObj, STD_DST);
     }
     
     public MetadataSchema getStdSchema ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSchema (n_getStdSchema (nativeObj, STD_DST));
     }
     

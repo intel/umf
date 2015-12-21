@@ -22,15 +22,34 @@ public class MetadataDesc
         nativeObj = n_MetadataDesc ();
     }
     
-    /* TO DO: public MetadataDesc (String mdName, FieldDesc[] fields)
+    public MetadataDesc (String mdName, FieldDesc[] fields)
     {
-        nativeObj = n_MetadataDesc (mdName, fields);
+        long nObjs[] = new long [fields.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = fields[i].nativeObj;
+        }
+        nativeObj = n_MetadataDesc (mdName, nObjs);
     }
     
     public MetadataDesc (String mdName, FieldDesc[] fields, ReferenceDesc[] refs)
     {
-        nativeObj = n_MetadataDesc (mdName, fields, refs);
-    }*/
+        long fdNativeAddr[] = new long [fields.length];
+        long rdNativeAddr[] = new long [refs.length];
+        
+        for (int i = 0; i < fields.length; i++)
+        {
+            fdNativeAddr[i] = fields[i].nativeObj;
+        }
+        
+        for (int j = 0; j < refs.length; j++)
+        {
+            rdNativeAddr[j] = refs[j].nativeObj;
+        }
+        
+        nativeObj = n_MetadataDesc (mdName, fdNativeAddr, rdNativeAddr);
+    }
     
     public MetadataDesc (String mdName, long type)
     {
@@ -39,75 +58,48 @@ public class MetadataDesc
     
     public String getMetadataName ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getMetadataName (nativeObj);
     }
     
     public String getSchemaName ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getSchemaName (nativeObj);
     }
     
     public FieldDesc[] getFields ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getFields (nativeObj);
     }
     
     public ReferenceDesc[] getAllReferenceDescs ()
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getAllReferenceDescs (nativeObj);
     }
     
     public void declareCustomReference (String refName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         boolean isUnique = false;
         n_declareCustomReference (nativeObj, refName, isUnique);
     }
     
     public void declareCustomReference (String refName, boolean isUnique)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         n_declareCustomReference (nativeObj, refName, isUnique);
     }
     
     public ReferenceDesc getReferenceDesc (String refName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new ReferenceDesc (n_getReferenceDesc (nativeObj, refName));
     }
     
     public boolean getFieldDesc (FieldDesc field)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         String fieldName = "";
         return n_getFieldDesc (nativeObj, field, fieldName);
     }
     
     public boolean getFieldDesc (FieldDesc field, String fieldName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_getFieldDesc (nativeObj, field, fieldName);
     }
         
@@ -122,10 +114,9 @@ public class MetadataDesc
     
     private native long n_MetadataDesc ();
     private native long n_MetadataDesc (String mdName, long type);
-    /* TO DO: 
-     * private native long n_MetadataDesc (String mdName, FieldDesc[] fields);
-     * private native long n_MetadataDesc (String mdName, FieldDesc[] fields, ReferenceDesc[] refs);
-     */
+    private native long n_MetadataDesc (String mdName, long[] fieldDescAddr);
+    private native long n_MetadataDesc (String mdName, long[] fieldDescAddr, long[] refDescAddr);
+     
     private native static String n_getMetadataName (long nativeObj);
     private native static String n_getSchemaName (long nativeObj);
     private native static FieldDesc[] n_getFields (long nativeObj);

@@ -109,9 +109,6 @@ public class Metadata
 	
 	public boolean hasField (String fieldName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_hasField (nativeObj, fieldName);
 	}
 	
@@ -120,166 +117,106 @@ public class Metadata
 	
 	public boolean equals (Metadata other)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_equals (nativeObj, other.nativeObj);
 	}
 	
 	public boolean lessThan (Metadata other)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_lessThan (nativeObj, other.nativeObj);
 	}
 	
 	public Metadata getFirstReference (String mdName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return new Metadata (n_getFirstReference (nativeObj, mdName));
 	}
 	
 	public MetadataSet getReferencesByMetadata (String mdName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return new MetadataSet (n_getReferencesByMetadata (nativeObj, mdName));
 	}
 	
 	public MetadataSet getReferencesByName (String refName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return new MetadataSet (n_getReferencesByName (nativeObj, refName));
 	}
 	
 	public Reference[] getAllReferences ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_getAllReferences (nativeObj);
 	}
 	
 	public boolean isReference (long id)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    String refName = "";
 	    return n_isReferenceById (nativeObj, id, refName);
 	}
 	
 	public boolean isReference (long id, String refName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_isReferenceById (nativeObj, id, refName);
 	}
 	
 	public boolean isReference (Metadata md)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    String refName = "";
 	    return n_isReferenceByMd (nativeObj, md.nativeObj, refName);
 	}
 	
 	public boolean isReference (Metadata md, String refName)
     {
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return n_isReferenceByMd (nativeObj, md.nativeObj, refName);
     }
 	
 	public void addReference (Metadata md)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    String refName = "";
 	    n_addReference (nativeObj, md.nativeObj, refName);
 	}
 	
 	public void addReference (Metadata md, String refName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_addReference (nativeObj, md.nativeObj, refName);
 	}
 	
 	public void removeReference (long id)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    String refName = "";
 	    n_removeReferenceById (nativeObj, id, refName);
 	}
 	
 	public void removeReference (long id, String refName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_removeReferenceById (nativeObj, id, refName);
 	}
 	
 	public void removeReference (Metadata md)
     {
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    String refName = "";
 	    n_removeReferenceByMd (nativeObj, md.nativeObj, refName);
     }
 	
 	public void removeReference (Metadata md, String refName)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_removeReferenceByMd (nativeObj, md.nativeObj, refName);
 	}
 	
 	public void setFieldValue (String fieldName, Variant value)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_setFieldValue (nativeObj, fieldName, value.nativeObj);
 	}
 	
 	public void addValue (Variant value)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_addValue (nativeObj, value.nativeObj);
 	}
 	
 	public void validate ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    n_validate (nativeObj);
 	}
 	
 	public boolean isValid ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
 	    return n_isValid (nativeObj);
 	}
 	

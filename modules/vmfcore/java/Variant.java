@@ -77,13 +77,13 @@ import java.nio.ByteBuffer;
         n_Variant (nativeObj, other.nativeObj);
     }
 	
-	//setTo is analog for operator= 
+	//setTo() is analog for operator= 
 	public void setTo (int value)
 	{
 		n_setTo (nativeObj, value);
 	}
 	
-	//setTo is analog for operator=
+	//setTo() is analog for operator=
 	public void setTo (float value)
 	{
 		n_setTo (nativeObj, value);
@@ -116,58 +116,37 @@ import java.nio.ByteBuffer;
 	
 	public String toString ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_toString (nativeObj);
+        return n_toString (nativeObj);
 	}
 	
 	public void fromString (int type, String str)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		n_fromString (nativeObj, type, str);
+        n_fromString (nativeObj, type, str);
 	}
 	
 	public int getType ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_getType (nativeObj);
+	    return n_getType (nativeObj);
 	}
 	
 	public boolean isEmpty ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_isEmpty (nativeObj);
+	    return n_isEmpty (nativeObj);
 	}
 	
 	public String getTypeName ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		return n_getTypeName (nativeObj);
+	    return n_getTypeName (nativeObj);
 	}
 	
 	public void clear ()
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		n_setTo (nativeObj, n_Variant ());
+	    n_setTo (nativeObj, n_Variant ());
 	}
 	
 	public void convertTo (int type)
 	{
-	    if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-	    
-		n_convertTo (nativeObj, type);
+	    n_convertTo (nativeObj, type);
 	}
 	
 	public static String typeToString (int type)
@@ -185,17 +164,14 @@ import java.nio.ByteBuffer;
 		return n_isConvertible (srcType, tarType);
 	}
 	
-	public static String base64Encode (vmfRawBuffer buf)
+	public static String base64Encode (byte buf[])
 	{   
-		return n_base64Encode (buf.byteBuf, buf.size);
+		return n_base64Encode (buf, buf.length);
 	}
 	
-	public static vmfRawBuffer base64Decode (String base64Str)
+	public static byte[] base64Decode (String base64Str)
 	{
-		vmfRawBuffer buf = new vmfRawBuffer ();
-		int size[] = new int[1];
-		buf.byteBuf = n_base64Decode (base64Str, size);
-		buf.size = size[0]; 
+		byte buf[] = n_base64Decode (base64Str); 
 		return buf;
 	}
 	
@@ -226,7 +202,7 @@ import java.nio.ByteBuffer;
 	private native static String n_typeToString (int type);
 	private native static int n_typeFromString (String fieldType);
 	private native static boolean n_isConvertible (int srcType, int tarType);
-	private native static String n_base64Encode (ByteBuffer buf, long size);
-	private native static ByteBuffer n_base64Decode (String str, int size[]);
+	private native static String n_base64Encode (byte buf[], int length);
+	private native static byte[] n_base64Decode (String str);
 	private native static void n_delete (long nativeObj);
  }

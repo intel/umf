@@ -46,7 +46,7 @@ public class FieldValue extends Variant
 	
 	public void clear ()
 	{
-	    // TO DO implementation
+	    // TO DO: implementation
 	}
 	
 	@Override
