@@ -2,7 +2,6 @@
 
 public class MetadataInternal extends Metadata
 {
-    
     static
     {
         System.loadLibrary("vmf");

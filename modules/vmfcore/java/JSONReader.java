@@ -52,17 +52,19 @@ public class JSONReader implements IReader
     @Override
     protected void finalize () throws Throwable 
     {
-        n_delete (nativeObj);
+        if (nativeObj != 0)
+            n_delete (nativeObj);
+        
         super.finalize();
     }
 	
 	private native long n_JSONReader();
 	
-	private static native boolean n_parseAll ( long nativeObj, final String text, long nextId,
-                                               String filepath, String checksum,
-                                               MetadataStream.VideoSegment[] segments, 
-                                               MetadataSchema[] schemas,
-                                               MetadataInternal[] metadata );
+	private static native boolean n_parseAll (long nativeObj, final String text, long nextId,
+                                              String filepath, String checksum,
+                                              MetadataStream.VideoSegment[] segments, 
+                                              MetadataSchema[] schemas,
+                                              MetadataInternal[] metadata );
 	
 	private static native boolean n_parseSchemas (long nativeObj, final String text, MetadataSchema[] schemas );
 	
