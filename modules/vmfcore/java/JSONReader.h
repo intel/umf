@@ -18,7 +18,7 @@ JNIEXPORT jlong JNICALL Java_JSONReader_n_1JSONReader
 /*
  * Class:     JSONReader
  * Method:    n_parseAll
- * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[LVideoSegment;[LMetadataSchema;[LMetadataInternal;)Z
+ * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[LMetadataStream/VideoSegment;[LMetadataSchema;[LMetadataInternal;)Z
  */
 JNIEXPORT jboolean JNICALL Java_JSONReader_n_1parseAll
   (JNIEnv *, jclass, jlong, jstring, jlong, jstring, jstring, jobjectArray, jobjectArray, jobjectArray);
@@ -42,7 +42,7 @@ JNIEXPORT jboolean JNICALL Java_JSONReader_n_1parseMetadata
 /*
  * Class:     JSONReader
  * Method:    n_parseVideoSegments
- * Signature: (JLjava/lang/String;[LVideoSegment;)Z
+ * Signature: (JLjava/lang/String;[LMetadataStream/VideoSegment;)Z
  */
 JNIEXPORT jboolean JNICALL Java_JSONReader_n_1parseVideoSegments
   (JNIEnv *, jclass, jlong, jstring, jobjectArray);

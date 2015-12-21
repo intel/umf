@@ -186,18 +186,18 @@ JNIEXPORT jboolean JNICALL Java_Variant_n_1isConvertible
 /*
  * Class:     Variant
  * Method:    n_base64Encode
- * Signature: (Ljava/nio/ByteBuffer;J)Ljava/lang/String;
+ * Signature: ([BI)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_Variant_n_1base64Encode
-  (JNIEnv *, jclass, jobject, jlong);
+  (JNIEnv *, jclass, jbyteArray, jint);
 
 /*
  * Class:     Variant
  * Method:    n_base64Decode
- * Signature: (Ljava/lang/String;[I)Ljava/nio/ByteBuffer;
+ * Signature: (Ljava/lang/String;)[B
  */
-JNIEXPORT jobject JNICALL Java_Variant_n_1base64Decode
-  (JNIEnv *, jclass, jstring, jintArray);
+JNIEXPORT jbyteArray JNICALL Java_Variant_n_1base64Decode
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     Variant

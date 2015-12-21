@@ -25,6 +25,22 @@ JNIEXPORT jlong JNICALL Java_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2J
 
 /*
  * Class:     MetadataDesc
+ * Method:    n_MetadataDesc
+ * Signature: (Ljava/lang/String;[J)J
+ */
+JNIEXPORT jlong JNICALL Java_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J
+  (JNIEnv *, jobject, jstring, jlongArray);
+
+/*
+ * Class:     MetadataDesc
+ * Method:    n_MetadataDesc
+ * Signature: (Ljava/lang/String;[J[J)J
+ */
+JNIEXPORT jlong JNICALL Java_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J
+  (JNIEnv *, jobject, jstring, jlongArray, jlongArray);
+
+/*
+ * Class:     MetadataDesc
  * Method:    n_getMetadataName
  * Signature: (J)Ljava/lang/String;
  */

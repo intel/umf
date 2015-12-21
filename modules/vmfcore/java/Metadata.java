@@ -2,10 +2,10 @@
 
 public class Metadata
 {
-	static
-    {
+    static
+	{
         System.loadLibrary("vmf");
-    }
+	}
 	
 	protected final long nativeObj;
 	
@@ -221,16 +221,13 @@ public class Metadata
 	}
 	
 	
-    @Override
+	@Override
 	protected void finalize () throws Throwable 
 	{
         if (nativeObj != 0)
-        {
             n_delete (nativeObj);
-           
-	    }
-        
-	    super.finalize();
+	    
+        super.finalize();
 	}
    
     private native long n_Metadata (long mdDescriptionAddr);
