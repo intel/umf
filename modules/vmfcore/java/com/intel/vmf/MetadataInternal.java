@@ -18,5 +18,12 @@ public class MetadataInternal extends Metadata
         n_MetadataInternal (mdDesc.nativeObj);
     }
     
-    private native long n_MetadataInternal (long addr);
+    public MetadataInternal (MetadataInternal other)
+    {
+        super (other);
+        //n_MetadataInternal (Metadata.nativeObj, other.nativeObj);
+    }
+    
+    private native static long n_MetadataInternal (long addr);
+    private native static long n_MetadataInternal (long mdAddr, long otherObj);
 }

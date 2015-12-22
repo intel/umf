@@ -17,7 +17,7 @@ extern "C" {
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_Metadata
@@ -25,7 +25,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_Metadata
@@ -174,9 +174,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName
 /*
  * Class:     com_intel_vmf_Metadata
  * Method:    n_getAllReferences
- * Signature: (J)[Lcom/intel/vmf/Reference;
+ * Signature: (J)[J
  */
-JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences
   (JNIEnv *, jclass, jlong);
 
 /*

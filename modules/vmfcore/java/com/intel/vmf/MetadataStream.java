@@ -178,6 +178,11 @@ public class MetadataStream implements IQuery
         return n_add (nativeObj, md.nativeObj);
     }
     
+    public long add (MetadataInternal mdInternal)
+    {
+        return n_addInternal (nativeObj, mdInternal.nativeObj);
+    }
+    
     public boolean remove (long id)
     {
         return n_removeMdById (nativeObj, id);
@@ -237,7 +242,7 @@ public class MetadataStream implements IQuery
        //TO DO: implementation 
     }
     
-    public void sortMdSetById ()
+    public void sortById ()
     {
         n_sortMdSetById (nativeObj);
     }
@@ -396,7 +401,7 @@ public class MetadataStream implements IQuery
         super.finalize();
     }
     
-    private native long n_MetadataStream ();
+    private native static long n_MetadataStream ();
     private native static boolean n_open (long nativeObj, String filePath, int mode);
     private native static boolean n_reopen (long nativeObj, int mode);
     private native static boolean n_load (long nativeObj, String schemaName);
@@ -406,6 +411,7 @@ public class MetadataStream implements IQuery
     private native static void n_close (long nativeObj);
     private native static long n_getById (long nativeObj, long id);
     private native static long n_add (long nativeObj, long mdAddr);
+    private native static long n_addInternal (long nativeObj, long mdIntAddr);
     private native static boolean n_removeMdById (long nativeObj, long id);
     private native static void n_removeSet (long nativeObj, long setAddr);
     private native static void n_removeSchema (long nativeObj, long schemaAddr);

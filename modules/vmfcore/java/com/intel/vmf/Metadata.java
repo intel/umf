@@ -28,7 +28,7 @@ public class Metadata
 	
 	public Metadata (Metadata md)
 	{
-	    nativeObj = n_Metadata (md.nativeObj);
+	    nativeObj = n_MetadataCopy (md.nativeObj);
 	}
 	
 	public void clear ()
@@ -141,7 +141,15 @@ public class Metadata
 	
 	public Reference[] getAllReferences ()
 	{
-	    return n_getAllReferences (nativeObj);
+	    long nObjs[] = n_getAllReferences (nativeObj);
+	    Reference objs[] = new Reference [nObjs.length];
+	    
+	    for (int i = 0; i < nObjs.length; i++)
+        {
+            objs[i] = new Reference (nObjs[i]);
+        }
+	    
+	    return objs;
 	}
 	
 	public boolean isReference (long id)
@@ -228,8 +236,8 @@ public class Metadata
         super.finalize();
 	}
    
-    private native long n_Metadata (long mdDescriptionAddr);
-    private native long n_MetadataCopy (long other);
+    private native static long n_Metadata (long mdDescriptionAddr);
+    private native static long n_MetadataCopy (long other);
     //TO DO: private native static void n_clear (long nativeObj);
     private native static long n_getID (long nativeObj);
     private native static long n_getFrameIndex (long nativeObj);
@@ -250,7 +258,7 @@ public class Metadata
     private native static long n_getFirstReference (long nativeObj, String name);
     private native static long n_getReferencesByMetadata (long nativeObj, String name);
     private native static long n_getReferencesByName (long nativeObj, String name);
-    private native static Reference[] n_getAllReferences (long nativeObj);
+    private native static long[] n_getAllReferences (long nativeObj);
     private native static boolean n_isReferenceById (long nativeObj, long id, String refName);
     private native static boolean n_isReferenceByMd (long nativeObj, long md, String refName);
     private native static void n_addReference (long nativeObj, long md, String refName);

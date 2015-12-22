@@ -21,7 +21,7 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1MetadataStream
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_intel_vmf_MetadataStream
@@ -93,6 +93,14 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getById
  * Signature: (JJ)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1add
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_addInternal
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1addInternal
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
