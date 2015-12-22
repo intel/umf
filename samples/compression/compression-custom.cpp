@@ -70,6 +70,9 @@ int main(int argc, char** argv)
     cout << "Loading metadata..." << endl;
     readVideoFile(videoFile);
 
+    //The following action is optional
+    vmf::Compressor::unregister(compressor->getId());
+
     vmf::terminate();
 
     return 0;
