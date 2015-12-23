@@ -26,7 +26,7 @@ public class FieldValue extends Variant
 	
 	public FieldValue (FieldValue other)
 	{
-		n_FieldValue (nativeObj, other.nativeObj);
+		n_FieldValue (other.nativeObj);
 	}
 	
 	public String getName ()
@@ -58,8 +58,8 @@ public class FieldValue extends Variant
         super.finalize();
 	}
 	
-	private native long n_FieldValue ();
-	private static native void n_FieldValue (long nativeAddr, long other);
+	private static native long n_FieldValue ();
+	private static native void n_FieldValue (long other);
 	private native long n_FieldValue (String name, long variant);
 	private static native String n_getName (long nativeObj); 
 	private static native boolean n_isEqual (long nativeObj, long other);

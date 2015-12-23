@@ -284,7 +284,7 @@ public class MetadataStream implements IQuery
     
     public VideoSegment[] getAllVideoSegments ()
     {
-        long nObjs[] = n_getAllVideoSegment (nativeObj);
+        long nObjs[] = n_getAllVideoSegments (nativeObj);
         VideoSegment objs[] = new VideoSegment[nObjs.length];
         
         for (int i = 0; i < nObjs.length; i++)
@@ -295,18 +295,20 @@ public class MetadataStream implements IQuery
         return objs;
     }
     
-    public void convertTimestampToFrameIndex (long timestamp, long duration,
-                                              long frameIndex, long numOfFrames)
+    public long[] convertTimestampToFrameIndex (long timestamp, long duration,
+                                                long frameIndex, long numOfFrames)
     {
-        n_convertTimestampToFrameIndex (nativeObj, timestamp, duration,
-                                        frameIndex, numOfFrames);
+        long frameIndexAndNumFrames[] = new long [2];
+        n_convertTimestampToFrameIndex (nativeObj, timestamp, duration, frameIndexAndNumFrames);
+        return frameIndexAndNumFrames;
     }
     
-    public void convertFrameIndexToTimestamp (long frameIndex, long numOfFrames, 
-                                              long timestamp, long duration)
+    public long[] convertFrameIndexToTimestamp (long frameIndex, long numOfFrames, 
+                                                long timestamp, long duration)
     {
-        n_convertFrameIndexToTimestamp (nativeObj, frameIndex, numOfFrames,
-                                        timestamp, duration);
+        long timestampAndDuration[] = new long [2];
+        n_convertFrameIndexToTimestamp (nativeObj, frameIndex, numOfFrames, timestampAndDuration);
+        return timestampAndDuration;
     }
     
     //TO DO??: public long add(MetadataInternal mdInternal)
@@ -318,41 +320,31 @@ public class MetadataStream implements IQuery
     
     public MetadataSet queryByFrameIndex (long index)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryByFrameIndex (nativeObj, index));
+    }
+    
+    public MetadataSet queryByTime (long startTime, long endTime)
+    {
+        return new MetadataSet (n_queryByTime (nativeObj, startTime, endTime));
     }
     
     public MetadataSet queryBySchema (String schemaName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryBySchema (nativeObj, schemaName));
     }
     
     public MetadataSet queryByName (String name)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryByName (nativeObj, name));
     }
     
     public MetadataSet queryByNameAndValue (String mdName, FieldValue value)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryByNameAndValue (nativeObj, mdName, value.nativeObj));
     }
     
     public MetadataSet queryByNameAndFields (String mdName, FieldValue fields[])
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
@@ -364,25 +356,16 @@ public class MetadataStream implements IQuery
     
     public MetadataSet queryByReference (String refName)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryByReference (nativeObj, refName));
     }
     
     public MetadataSet queryByReference (String refName, FieldValue value)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         return new MetadataSet (n_queryByReference (nativeObj, refName, value.nativeObj));
     }
     
     public MetadataSet queryByReference (String refName, FieldValue[] fields)
     {
-        if (nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
         long nativeFieldValueObjs[] = new long [fields.length];
         for (int i = 0; i < fields.length; i++)
         {
@@ -431,11 +414,11 @@ public class MetadataStream implements IQuery
     private native static String n_getChecksum (long nativeObjAddr);
     private native static void n_setChecksum (long nativeObj, String checksum);
     private native static void n_addVideoSegment (long nativeObj, long newSegmentAddr);
-    private native static long[] n_getAllVideoSegment (long nativeObjAddr);
+    private native static long[] n_getAllVideoSegments (long nativeObjAddr);
     private native static void n_convertTimestampToFrameIndex (long nativeObj, long timestamp, long duration,
-                                                               long frameIndex, long numOfFrames);
+                                                               long frameIndexAndNumFramesArray[]);
     private native static void n_convertFrameIndexToTimestamp (long nativeObj, long frameIndex, long numOfFrames,
-                                                               long timestamp, long duration);
+                                                               long timestampAndDurationArray[]);
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static long n_queryBySchema (long nativeObj, String schemaName);

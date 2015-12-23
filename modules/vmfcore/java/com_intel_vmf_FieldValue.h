@@ -45,15 +45,15 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_intel_vmf_FieldValue
  * Method:    n_FieldValue
- * Signature: (JJ)V
+ * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__JJ
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_FieldValue

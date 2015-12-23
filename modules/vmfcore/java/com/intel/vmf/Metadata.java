@@ -7,7 +7,7 @@ public class Metadata
         System.loadLibrary("vmf");
 	}
 	
-	protected final long nativeObj;
+	public final long nativeObj;
 	
 	public static final long UNDEFINED_DURATION = 0;
 	

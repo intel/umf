@@ -360,7 +360,195 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addVideoSegment (JNI
  * Method:    n_getAllVideoSegment
  * Signature: (J)[J
  */
-JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllVideoSegment (JNIEnv *env, jclass, jlong self)
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllVideoSegments (JNIEnv *env, jclass, jlong self)
 {
     MetadataStream* obj = (MetadataStream*) self;
+    std::vector <std::shared_ptr<VideoSegment>> segments;
+    
+    segments = obj->getAllVideoSegments();
+    jlongArray nObjs = env->NewLongArray (segments.size());
+    
+    jlong* body = env->GetLongArrayElements (nObjs, 0);
+    int counter = 0;
+    for (auto it = segments.begin(); it != segments.end(); it++, counter++)
+        body [counter] = (jlong) (it->get()); 
+        
+    env->ReleaseLongArrayElements (nObjs, body, 0);
+    
+    return nObjs;
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_convertTimestampToFrameIndex
+ * Signature: (JJJJJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFrameIndex (JNIEnv *env, jclass, jlong self,
+                                                                                          jlong timestamp, jlong duration,
+                                                                                          jlongArray frameIndexAndNumOfFrames)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    jlong *body = (*env)->GetLongArrayElements(env, frameIndexAndNumOfFrames, 0);
+    obj->convertTimestampToFrameIndex ((long long)timestamp, (long long)duration, body[0], body[1]);
+    (*env)->ReleaseIntArrayElements(env, frameIndexAndNumOfFrames, body, 0);
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_convertFrameIndexToTimestamp
+ * Signature: (JJJJJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToTimestamp (JNIEnv *env, jclass, jlong self,
+                                                                                          jlong frameIndex, jlong numOfFrames,
+                                                                                          jlongArray timestampAndDuration);
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    jlong *body = (*env)->GetLongArrayElements(env, frameIndexAndNumOfFrames, 0);
+    obj->convertTimestampToFrameIndex ((long long)timestamp, (long long)duration, body[0], body[1]);
+    (*env)->ReleaseIntArrayElements(env, frameIndexAndNumOfFrames, body, 0);
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByFrameIndex
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByFrameIndex (JNIEnv *env, jclass, jlong self, jlong id)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    size_t index = (size_t) id;
+    return (jlong) new MetadataSet (obj->queryByFrameIndex (index));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByTime
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByTime (JNIEnv *env, jclass, jlong self, jlong startTime, jlong endTime)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    return (jlong) new MetadataSet (obj->queryByTime((long long) startTime, (long long) endTime));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryBySchema
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryBySchema (JNIEnv *env, jclass, jlong self, jstring schemaName)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    std::string sName (env->GetStringUTFChars (schemaName, NULL));
+    return (jlong) new MetadataSet (obj->queryBySchema(sName));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByName
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByName (JNIEnv *env, jclass, jlong self, jstring name)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    std::string sName (env->GetStringUTFChars (name, NULL));
+    return (jlong) new MetadataSet (obj->queryByName(sName));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByNameAndValue
+ * Signature: (JLjava/lang/String;J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndValue (JNIEnv *env, jclass, jlong self, jstring mdName,
+                                                                                  jlong fieldValueAddr)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    FieldValue* value = (FieldValue*) fieldValueAddr;
+    std::string sName (env->GetStringUTFChars (mdName, NULL));
+    return (jlong) new MetadataSet (obj->queryByNameAndValue (sName, (*value)));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByNameAndFields
+ * Signature: (JLjava/lang/String;[J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndFields (JNIEnv *env, jclass, jlong self, jstring mdName,
+                                                                                   jlongArray fieldValues)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    std::string sName (env->GetStringUTFChars (mdName, NULL));
+    jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
+    std::vector <FieldValue> values;
+    jsize len = env->GetArrayLength (fieldValues);
+    
+    for (int i = 0; i < len; i++)
+    {
+        FieldValue* addr = (FieldValue*) body[i];
+        values.push_back (*addr);
+    }
+    
+    env->ReleaseIntArrayElements (fieldValues, body, 0);
+    return (jlong) new MetadataSet (obj->queryByNameAndFields (sName, values));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByReference
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__JLjava_lang_String_2 (JNIEnv *env, jclass, jlong self, jstring name)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    std::string sName (env->GetStringUTFChars (name, NULL));
+    return (jlong) new MetadataSet (obj->queryByReference (sName));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByReference
+ * Signature: (JLjava/lang/String;J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__JLjava_lang_String_2J (JNIEnv *env, jclass, jlong self, jstring name,
+                                                                                                      jlong valueAddr)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    FieldValue* value = (FieldValue*) valueAddr;
+    std::string sName (env->GetStringUTFChars (name, NULL));
+    return (jlong) new MetadataSet (obj->queryByReference (sName, *value));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_queryByReference
+ * Signature: (JLjava/lang/String;[J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__JLjava_lang_String_2_3J (JNIEnv *env, jclass, jlong self, jstring name,
+                                                                                                        jlongArray fieldValues)
+{
+    MetadataStream* obj = (MetadataStream*) self;
+    std::string sName (env->GetStringUTFChars (name, NULL));
+    jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
+    std::vector <FieldValue> values;
+    jsize len = env->GetArrayLength (fieldValues);
+    
+    for (int i = 0; i < len; i++)
+    {
+        FieldValue* addr = (FieldValue*) body[i];
+        values.push_back (*addr);
+    }
+    
+    env->ReleaseIntArrayElements (fieldValues, body, 0);
+    return (jlong) new MetadataSet (obj->queryByReference (sName, values));
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_delete
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1delete (JNIEnv *env, jclass, jlong self)
+{
+    delete (MetadataStream*) self;
 }
