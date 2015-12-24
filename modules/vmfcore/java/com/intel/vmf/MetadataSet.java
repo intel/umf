@@ -26,8 +26,7 @@ public class MetadataSet implements IQuery
     
     public MetadataSet (MetadataSet other)
     {
-        nativeObj = n_MetadataSet ();
-        n_MetadataSet (nativeObj, other.nativeObj);
+        nativeObj = n_MetadataSet (other.nativeObj);
     }
     
     public void setTo (MetadataSet other)
@@ -119,8 +118,8 @@ public class MetadataSet implements IQuery
         super.finalize();
     }
     
-    private native long n_MetadataSet ();
-    private native static void n_MetadataSet (long nativeObj, long other);
+    private native static long n_MetadataSet ();
+    private native static long n_MetadataSet (long otherAddr);
     private native static void n_setTo (long nativeObj, long other);
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
@@ -131,6 +130,6 @@ public class MetadataSet implements IQuery
     private native static long n_queryByReference (long nativeObj, String refName);
     private native static long n_queryByReference (long nativeObj, String refName, long value);
     private native static long n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
-    private native static long n_shift (long nativeObjAddr, long nTarFrameIndex, long nSrcFrameIndex, long nNumOfFrames, long setFailure);
+    private native static long n_shift (long nativeObjAddr, long dstFrameIndex, long srcFrameIndex, long numOfFrames, long setFailure);
     private native static void n_delete (long nativeObj);
 }

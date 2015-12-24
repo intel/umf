@@ -123,7 +123,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, j
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName (JNIEnv *env, jclass, jlong self)
 {
     Metadata* obj = (Metadata*) self;
-    return (env->NewStringUTF(env, (obj->getSchemaName()).c_str()));
+    return (env->NewStringUTF((obj->getSchemaName()).c_str()));
 }
 
 /*
@@ -210,7 +210,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1lessThan (JNIEnv *env,
     Metadata* selfAddr = (Metadata*) self;
     Metadata* otherAddr = (Metadata*) other;
     
-    if (*selfAddr < *otherAddr)
+    if ((*selfAddr) < (*otherAddr))
         return JNI_TRUE;
     else
         return JNI_FALSE;

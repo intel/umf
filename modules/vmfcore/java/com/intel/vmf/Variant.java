@@ -73,8 +73,7 @@ import java.nio.ByteBuffer;
 	
 	public Variant (Variant other)
     {
-	    nativeObj = n_Variant ();
-        n_Variant (nativeObj, other.nativeObj);
+	    nativeObj = n_Variant (other.nativeObj);
     }
 	
 	//setTo() is analog for operator= 
@@ -184,8 +183,8 @@ import java.nio.ByteBuffer;
         super.finalize();
     }
 	
-	private native long n_Variant ();
-	private native static void n_Variant (long nativeObj, long other);
+	private native static long n_Variant ();
+	private native static long n_Variant (long other);
 	private native static void n_setTo (long nativeObj, int value);
 	private native static void n_setTo (long nativeObj, float value);
 	private native static void n_setTo (long nativeObj, int array[]);

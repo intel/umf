@@ -7,38 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#undef com_intel_vmf_FieldValue_type_unknown
-#define com_intel_vmf_FieldValue_type_unknown 0L
-#undef com_intel_vmf_FieldValue_type_char
-#define com_intel_vmf_FieldValue_type_char 1L
-#undef com_intel_vmf_FieldValue_type_integer
-#define com_intel_vmf_FieldValue_type_integer 2L
-#undef com_intel_vmf_FieldValue_type_real
-#define com_intel_vmf_FieldValue_type_real 3L
-#undef com_intel_vmf_FieldValue_type_string
-#define com_intel_vmf_FieldValue_type_string 4L
-#undef com_intel_vmf_FieldValue_type_vec2d
-#define com_intel_vmf_FieldValue_type_vec2d 5L
-#undef com_intel_vmf_FieldValue_type_vec3d
-#define com_intel_vmf_FieldValue_type_vec3d 6L
-#undef com_intel_vmf_FieldValue_type_vec4d
-#define com_intel_vmf_FieldValue_type_vec4d 7L
-#undef com_intel_vmf_FieldValue_type_rawbuffer
-#define com_intel_vmf_FieldValue_type_rawbuffer 8L
-#undef com_intel_vmf_FieldValue_type_char_vector
-#define com_intel_vmf_FieldValue_type_char_vector 9L
-#undef com_intel_vmf_FieldValue_type_integer_vector
-#define com_intel_vmf_FieldValue_type_integer_vector 10L
-#undef com_intel_vmf_FieldValue_type_real_vector
-#define com_intel_vmf_FieldValue_type_real_vector 11L
-#undef com_intel_vmf_FieldValue_type_string_vector
-#define com_intel_vmf_FieldValue_type_string_vector 12L
-#undef com_intel_vmf_FieldValue_type_vec2d_vector
-#define com_intel_vmf_FieldValue_type_vec2d_vector 13L
-#undef com_intel_vmf_FieldValue_type_vec3d_vector
-#define com_intel_vmf_FieldValue_type_vec3d_vector 14L
-#undef com_intel_vmf_FieldValue_type_vec4d_vector
-#define com_intel_vmf_FieldValue_type_vec4d_vector 15L
 /*
  * Class:     com_intel_vmf_FieldValue
  * Method:    n_FieldValue
@@ -50,9 +18,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__
 /*
  * Class:     com_intel_vmf_FieldValue
  * Method:    n_FieldValue
- * Signature: (J)V
+ * Signature: (J)J
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -61,7 +29,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J
  * Signature: (Ljava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J
-  (JNIEnv *, jobject, jstring, jlong);
+  (JNIEnv *, jclass, jstring, jlong);
 
 /*
  * Class:     com_intel_vmf_FieldValue

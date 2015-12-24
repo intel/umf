@@ -243,7 +243,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getAll (JNIEnv *env
  * Signature: (JJJJJJJ)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEnv *env, jclass, jlong self, jlong srcStreamAddr,
-                                                                           jlong srcSetAddr, jlong tarFrameIndex, jlong srcFrameIndex,
+                                                                           jlong srcSetAddr, jlong dstFrameIndex, jlong srcFrameIndex,
                                                                            jlong numOfFrames, jlong setFalureAddr)
 {
     MetadataStream* obj = (MetadataStream*) self;
@@ -251,7 +251,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEn
     MetadataSet* srcSet = (MetadataSet*) srcSetAddr;
     MetadataSet* setFalure = (MetadataSet*) setFalureAddr;
     
-    return (jboolean) obj->import (*srcStream, *srcSet, (long long)tarFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFalure);
+    return (jboolean) obj->import (*srcStream, *srcSet, (long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFalure);
 }
 
 /*
@@ -478,9 +478,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndField
                                                                                    jlongArray fieldValues)
 {
     MetadataStream* obj = (MetadataStream*) self;
+    std::vector <FieldValue> values;
+    
     std::string sName (env->GetStringUTFChars (mdName, NULL));
     jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
-    std::vector <FieldValue> values;
     jsize len = env->GetArrayLength (fieldValues);
     
     for (int i = 0; i < len; i++)
@@ -489,7 +490,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndField
         values.push_back (*addr);
     }
     
-    env->ReleaseIntArrayElements (fieldValues, body, 0);
+    env->ReleaseLongArrayElements (fieldValues, body, 0);
     return (jlong) new MetadataSet (obj->queryByNameAndFields (sName, values));
 }
 
