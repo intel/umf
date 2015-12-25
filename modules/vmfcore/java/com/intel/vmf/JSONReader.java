@@ -59,18 +59,13 @@ public class JSONReader implements IReader
     }
 	
 	private native long n_JSONReader();
-	
 	private static native boolean n_parseAll (long nativeObj, final String text, long nextId,
                                               String filepath, String checksum,
                                               MetadataStream.VideoSegment[] segments, 
                                               MetadataSchema[] schemas,
                                               MetadataInternal[] metadata );
-	
 	private static native boolean n_parseSchemas (long nativeObj, final String text, MetadataSchema[] schemas );
-	
 	private static native boolean n_parseMetadata (long nativeObj, final String text, final MetadataSchema[] schemas, MetadataInternal[] metadata );
-	
 	private static native boolean n_parseVideoSegments (long nativeObj, final String text, MetadataStream.VideoSegment[] segments );
-	
 	private static native void n_delete (long nativeObj);
 }

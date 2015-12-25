@@ -68,12 +68,28 @@ public class MetadataDesc
     
     public FieldDesc[] getFields ()
     {
-        return n_getFields (nativeObj);
+        long nObjAddrs[] = n_getFields (nativeObj);
+        FieldDesc objs[] = new FieldDesc [nObjAddrs.length];
+        
+        for (int i = 0; i < nObjAddrs.length; i++)
+        {
+            objs[i] = new FieldDesc (nObjAddrs[i]);
+        }
+        
+        return objs;
     }
     
     public ReferenceDesc[] getAllReferenceDescs ()
     {
-        return n_getAllReferenceDescs (nativeObj);
+        long nObjAddrs[] = n_getAllReferenceDescs (nativeObj);
+        ReferenceDesc objs[] = new ReferenceDesc [nObjAddrs.length];
+        
+        for (int i = 0; i < nObjAddrs.length; i++)
+        {
+            objs[i] = new ReferenceDesc (nObjAddrs[i]);
+        }
+        
+        return objs;
     }
     
     public void declareCustomReference (String refName)
@@ -95,12 +111,12 @@ public class MetadataDesc
     public boolean getFieldDesc (FieldDesc field)
     {
         String fieldName = "";
-        return n_getFieldDesc (nativeObj, field, fieldName);
+        return n_getFieldDesc (nativeObj, field.nativeObj, fieldName);
     }
     
     public boolean getFieldDesc (FieldDesc field, String fieldName)
     {
-        return n_getFieldDesc (nativeObj, field, fieldName);
+        return n_getFieldDesc (nativeObj, field.nativeObj, fieldName);
     }
         
     @Override
@@ -112,17 +128,16 @@ public class MetadataDesc
         super.finalize();
     }
     
-    private native long n_MetadataDesc ();
-    private native long n_MetadataDesc (String mdName, long type);
-    private native long n_MetadataDesc (String mdName, long[] fieldDescAddr);
-    private native long n_MetadataDesc (String mdName, long[] fieldDescAddr, long[] refDescAddr);
-     
+    private native static long n_MetadataDesc ();
+    private native static long n_MetadataDesc (String mdName, long type);
+    private native static long n_MetadataDesc (String mdName, long[] fieldDescAddr);
+    private native static long n_MetadataDesc (String mdName, long[] fieldDescAddr, long[] refDescAddr);
     private native static String n_getMetadataName (long nativeObj);
     private native static String n_getSchemaName (long nativeObj);
-    private native static FieldDesc[] n_getFields (long nativeObj);
-    private native static ReferenceDesc[] n_getAllReferenceDescs (long nativeObj);
+    private native static long[] n_getFields (long nativeObj);
+    private native static long[] n_getAllReferenceDescs (long nativeObj);
     private native static void n_declareCustomReference (long nativeObj, String refName, boolean isUnique);
     private native static long n_getReferenceDesc (long nativeObj, String refName);
-    private native static boolean n_getFieldDesc (long nativeObj, FieldDesc field, String fieldName);
+    private native static boolean n_getFieldDesc (long nativeObj, long fieldAddr, String fieldName);
     private native static void n_delete (long nativeObj);
 } 

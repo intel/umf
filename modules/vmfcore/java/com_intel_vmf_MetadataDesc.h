@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -21,7 +21,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__
  * Signature: (Ljava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2J
-  (JNIEnv *, jobject, jstring, jlong);
+  (JNIEnv *, jclass, jstring, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -29,7 +29,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  * Signature: (Ljava/lang/String;[J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J
-  (JNIEnv *, jobject, jstring, jlongArray);
+  (JNIEnv *, jclass, jstring, jlongArray);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  * Signature: (Ljava/lang/String;[J[J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J
-  (JNIEnv *, jobject, jstring, jlongArray, jlongArray);
+  (JNIEnv *, jclass, jstring, jlongArray, jlongArray);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -58,17 +58,17 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getSchemaName
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getFields
- * Signature: (J)[Lcom/intel/vmf/FieldDesc;
+ * Signature: (J)[J
  */
-JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields
   (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getAllReferenceDescs
- * Signature: (J)[Lcom/intel/vmf/ReferenceDesc;
+ * Signature: (J)[J
  */
-JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceDescs
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceDescs
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -90,10 +90,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getFieldDesc
- * Signature: (JLcom/intel/vmf/FieldDesc;Ljava/lang/String;)Z
+ * Signature: (JJLjava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc
-  (JNIEnv *, jclass, jlong, jobject, jstring);
+  (JNIEnv *, jclass, jlong, jlong, jstring);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
