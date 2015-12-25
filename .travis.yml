@@ -1,18 +1,24 @@
 # .travis.yml
 sudo: false
+git:
+  depth : 1
 language: cpp
 os: linux
-compiler: gcc #TODO + clang
+compiler:
+  - gcc
+  - clang
 addons:
   apt:
-    sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake'] #TODO + 'llvm-toolchain-precise-3.7'
-    packages: ['g++-4.8', 'cmake'] #TODO + 'clang-3.7'
+    sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+    packages: ['cmake', 'g++-4.8', 'clang-3.7']
 before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - export CC=gcc-4.8
-  - export CXX=g++-4.8
+  - if [ $CC  == gcc ];   then export CC=gcc-4.8;   fi
+  - if [ $CC  == clang ]; then export CC=clang-3.7; fi
+  - if [ $CXX == g++ ];     then export CXX=g++-4.8;     fi
+  - if [ $CXX == clang++ ]; then export CXX=clang++-3.7; fi
   - ldd --version
   - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=OFF ../vmf
   - make
