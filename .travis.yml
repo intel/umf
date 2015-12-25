@@ -30,5 +30,6 @@ script:
   - cd ./bin/
   - ./unit-tests
   - ./unit-tests-ds
+  - if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then cd ..; mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
 notifications:
   email: false
