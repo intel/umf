@@ -87,7 +87,7 @@ void XMPDataSource::terminate()
 }
 
 XMPDataSource::XMPDataSource()
-  : IDataSource(), xmp(nullptr), metadataSource(nullptr)
+  : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr)
 {
 
 }
@@ -95,6 +95,21 @@ XMPDataSource::XMPDataSource()
 XMPDataSource::~XMPDataSource()
 {
 
+void XMPDataSource::setCompressorById(const vmf_string &id)
+{
+    if(!id.empty())
+    {
+        compressor = Compressor::getById(id);
+        if(!compressor)
+        {
+            VMF_EXCEPTION(IncorrectParamException,
+                          "Unregistered compression algorithm: " + id);
+        }
+    }
+    else
+    {
+        compressor = nullptr;
+    }
 }
 
 static const string compressedDataPropName = "compressed_data";
@@ -148,27 +163,18 @@ void XMPDataSource::saveXMPstructs()
     //but there's no need to compare their sizes and write the smallest one.
     //Because due to RDF's verbosity it happens only when the source data is small.
     //That's why the economy wouldn't be significant.
-    if(!compressorId.empty())
+    if(compressor)
     {
         compressedXMP = std::make_shared<SXMPMeta>();
-        std::shared_ptr<Compressor> compressor = Compressor::getById(compressorId);
-        if(compressor)
-        {
-            string buffer;
-            XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
-            xmp->SerializeToBuffer(&buffer, options, 0, NULL);
-            vmf_rawbuffer compressed;
-            compressor->compress(buffer, compressed);
-            string encoded;
-            XMPUtils::EncodeToBase64 (compressed.data.get(), compressed.size, &encoded);
-            compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
-            compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
-        }
-        else
-        {
-            VMF_EXCEPTION(IncorrectParamException,
-                          "Unregistered compression algorithm: " + compressorId);
-        }
+        string buffer;
+        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+        xmp->SerializeToBuffer(&buffer, options, 0, NULL);
+        vmf_rawbuffer compressed;
+        compressor->compress(buffer, compressed);
+        string encoded;
+        XMPUtils::EncodeToBase64 (compressed.data.get(), compressed.size, &encoded);
+        compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
+        compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
     }
     else
     {

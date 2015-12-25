@@ -88,10 +88,7 @@ public:
 
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
-    virtual void setCompressorId(const vmf_string& id)
-    {
-        compressorId = id;
-    }
+    virtual void setCompressorById(const vmf_string& id);
 
     /*!
      * \brief Initializes XMPDataSource class dependecies
@@ -122,7 +119,7 @@ private:
     std::shared_ptr<XMPSchemaSource> schemaSource;
     vmf::MetaString metaFileName;
     vmf::MetadataStream::OpenMode openMode;
-    vmf_string compressorId;
+    std::shared_ptr<Compressor> compressor;
 };
 
 #ifdef _MSC_VER
