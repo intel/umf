@@ -376,7 +376,7 @@ MetaString XMPMetadataSource::findProperty(const MetaString& pathToSchema, const
     while(pIter.Next(nullptr, &currentPropertyPath))
     {
         MetaString currentPropertyName;
-        if (!xmp->GetStructField(VMF_NS, currentPropertyPath.c_str(), VMF_NS, PROPERTY_NAME, &currentPropertyName, kXMP_NoOptions))
+        if (!xmp->GetStructField(VMF_NS, currentPropertyPath.c_str(), VMF_NS, PROPERTY_NAME, &currentPropertyName, 0))
         {
             VMF_EXCEPTION(DataStorageException, "Broken property by path " + currentPropertyPath);
         }
@@ -453,7 +453,7 @@ void XMPMetadataSource::loadMetadataId(const MetaString& pathToMetadata, IdType&
     MetaString pathToId;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_ID, &pathToId);
     XMP_Int64 idValue;
-    if(!xmp->GetProperty_Int64(VMF_NS, pathToId.c_str(), &idValue, kXMP_NoOptions))
+    if(!xmp->GetProperty_Int64(VMF_NS, pathToId.c_str(), &idValue, 0))
     {
         VMF_EXCEPTION(DataStorageException, "Broken property by path " + pathToMetadata);
     }
