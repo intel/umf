@@ -52,6 +52,8 @@ class VMF_EXPORT XMPDataSource: public IDataSource {
 public:
     XMPDataSource();
 
+    ~XMPDataSource();
+
     virtual void openFile(const vmf::MetaString& fileName, vmf::MetadataStream::OpenMode mode);
 
     virtual void closeFile();
@@ -111,8 +113,8 @@ protected:
     virtual void metadataSourceCheck();
 
 private:
-    void loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp);
-    void saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp);
+    void loadXMPstructs();
+    void saveXMPstructs();
 
     SXMPFiles xmpFile;
     std::shared_ptr<SXMPMeta> xmp;

@@ -92,10 +92,15 @@ XMPDataSource::XMPDataSource()
 
 }
 
+XMPDataSource::~XMPDataSource()
+{
+
+}
+
 static const string compressedDataPropName = "compressed_data";
 static const string compressionAlgoPropName = "compression_algo";
 
-void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+void XMPDataSource::loadXMPstructs()
 {
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     //xmpFile.GetXMP(NULL, &buffer, NULL);
@@ -136,15 +141,16 @@ void XMPDataSource::loadXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>
 }
 
 
-void XMPDataSource::saveXMPstructs(SXMPFiles& xmpFile, std::shared_ptr<SXMPMeta>& xmp)
+void XMPDataSource::saveXMPstructs()
 {
-    std::shared_ptr<SXMPMeta> compressedXMP = std::make_shared<SXMPMeta>();
+    std::shared_ptr<SXMPMeta> compressedXMP;
     //Sometimes compressed&encoded data is bigger than the source data
     //but there's no need to compare their sizes and write the smallest one.
     //Because due to RDF's verbosity it happens only when the source data is small.
     //That's why the economy wouldn't be significant.
     if(!compressorId.empty())
     {
+        compressedXMP = std::make_shared<SXMPMeta>();
         std::shared_ptr<Compressor> compressor = Compressor::getById(compressorId);
         if(compressor)
         {
@@ -208,8 +214,7 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
             }
         }
 
-        //xmpFile.GetXMP(xmp.get());
-        loadXMPstructs(xmpFile, xmp);
+        loadXMPstructs();
 
         schemaSource = make_shared<XMPSchemaSource>(xmp);
         metadataSource = make_shared<XMPMetadataSource>(xmp);
@@ -332,9 +337,7 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     {
         metadataSource->remove(ids);
 
-        //xmpFile.PutXMP(*xmp);
-        saveXMPstructs(xmpFile, xmp);
-
+        saveXMPstructs();
         closeFile();
         openFile(this->metaFileName, this->openMode);
     }
@@ -405,8 +408,7 @@ void XMPDataSource::save(const IdType &id)
 
 void XMPDataSource::pushChanges()
 {
-    //xmpFile.PutXMP(*xmp);
-    saveXMPstructs(xmpFile, xmp);
+    saveXMPstructs();
 
     closeFile();
     openFile(this->metaFileName, this->openMode);
@@ -438,8 +440,7 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
 {
     try
     {
-        //xmpFile.GetXMP(xmp.get());
-        loadXMPstructs(xmpFile, xmp);
+        loadXMPstructs();
 
         MetaString checksum;
         xmpFile.ComputeChecksum(&checksum, &XMPPacketSize, &XMPPacketOffset);
