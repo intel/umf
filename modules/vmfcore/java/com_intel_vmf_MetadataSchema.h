@@ -15,7 +15,7 @@ extern "C" {
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema
-  (JNIEnv *, jobject, jstring, jstring);
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     com_intel_vmf_MetadataSchema
@@ -68,18 +68,18 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll
 /*
  * Class:     com_intel_vmf_MetadataSchema
  * Method:    n_getStdSchemaName
- * Signature: (JI)Ljava/lang/String;
+ * Signature: (I)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchemaName
-  (JNIEnv *, jclass, jlong, jint);
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_intel_vmf_MetadataSchema
  * Method:    n_getStdSchema
- * Signature: (JI)J
+ * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema
-  (JNIEnv *, jclass, jlong, jint);
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_intel_vmf_MetadataSchema

@@ -274,7 +274,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc (JNIE
         MetadataDesc* obj = (MetadataDesc*) self;
         FieldDesc* fieldDesc = (FieldDesc*) fieldDescAddr;
         std::string sName (env->GetStringUTFChars (fieldName, NULL));
-        return (jboolean) obj->getFieldDesc ();
+        return (jboolean) obj->getFieldDesc (*fieldDesc, sName);
     }
     catch(const std::exception &e)
     {

@@ -68,14 +68,14 @@ public class MetadataSchema
         return objs;
     }
     
-    public String getStdSchemaName ()
+    public static String getStdSchemaName ()
     {
-        return n_getStdSchemaName (nativeObj, STD_DST);
+        return n_getStdSchemaName (STD_DST);
     }
     
-    public MetadataSchema getStdSchema ()
+    public static MetadataSchema getStdSchema ()
     {
-        return new MetadataSchema (n_getStdSchema (nativeObj, STD_DST));
+        return new MetadataSchema (n_getStdSchema (STD_DST));
     }
     
     @Override
@@ -87,14 +87,14 @@ public class MetadataSchema
         super.finalize();
     }
     
-    private native long n_MetadataSchema (String name, String author);
+    private native static long n_MetadataSchema (String name, String author);
     private native static String n_getName (long nativeObj);
     private native static String n_getAuthor (long nativeObj);
     private native static long n_size (long nativeObj);
     private native static void n_add (long nativeObj, long mdDescAddr);
     private native static long n_findMetadataDesc (long nativeObj, String mdName);
     private native static long[] n_getAll (long nativeObj);
-    private native static String n_getStdSchemaName (long nativeObj, int kind);
-    private native static long n_getStdSchema (long nativeObj, int kind);
+    private native static String n_getStdSchemaName (int kind);
+    private native static long n_getStdSchema (int kind);
     private native static void n_delete (long nativeObj);
 }

@@ -58,7 +58,7 @@ public class JSONReader implements IReader
         super.finalize();
     }
 	
-	private native long n_JSONReader();
+	private static native long n_JSONReader();
 	private static native boolean n_parseAll (long nativeObj, final String text, long nextId,
                                               String filepath, String checksum,
                                               MetadataStream.VideoSegment[] segments, 
