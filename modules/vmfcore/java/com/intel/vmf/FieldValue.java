@@ -39,14 +39,14 @@ public class FieldValue// extends Variant
 		return n_getName (nativeObj); 
 	}
 	
-	public boolean isEqual (FieldValue other)
+	public boolean equals (FieldValue other)
 	{
-		return n_isEqual (nativeObj, other.nativeObj);
+		return n_equals (nativeObj, other.nativeObj);
 	}
 	
-	public void equals (FieldValue other)
+	public void setTo (FieldValue other)
 	{
-		n_equals (nativeObj, other.nativeObj);
+		n_setTo (nativeObj, other.nativeObj);
 	}
 	
 	public void clear ()
@@ -67,7 +67,7 @@ public class FieldValue// extends Variant
 	private static native long n_FieldValue (long other);
 	private static native long n_FieldValue (String name, long variant);
 	private static native String n_getName (long nativeObj); 
-	private static native boolean n_isEqual (long nativeObj, long other);
-	private static native void n_equals (long nativeObj, long other);
+	private static native void n_setTo (long nativeObj, long other);
+	private static native boolean n_equals (long nativeObj, long other);
 	private static native void n_delete (long nativeObj);	
 }

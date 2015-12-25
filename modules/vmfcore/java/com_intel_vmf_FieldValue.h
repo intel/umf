@@ -41,18 +41,18 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getName
 
 /*
  * Class:     com_intel_vmf_FieldValue
- * Method:    n_isEqual
- * Signature: (JJ)Z
+ * Method:    n_setTo
+ * Signature: (JJ)V
  */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEqual
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     com_intel_vmf_FieldValue
  * Method:    n_equals
- * Signature: (JJ)V
+ * Signature: (JJ)Z
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1equals
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
