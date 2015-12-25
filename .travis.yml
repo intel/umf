@@ -15,12 +15,13 @@ before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - if [ $CC  == gcc ];   then export CC=gcc-4.8;   fi
-  - if [ $CC  == clang ]; then export CC=clang-3.7; fi
-  - if [ $CXX == g++ ];     then export CXX=g++-4.8;     fi
+  - if [ $CC  == gcc     ]; then export CC=gcc-4.8;      fi
+  - if [ $CC  == clang   ]; then export CC=clang-3.7;    fi
+  - if [ $CXX == g++     ]; then export CXX=g++-4.8;     fi
   - if [ $CXX == clang++ ]; then export CXX=clang++-3.7; fi
   - ldd --version
-  - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=OFF ../vmf
+  - if [[ $CC  == gcc*  ]]; then VMF_SHARED=ON; else VMF_SHARED=OFF; fi
+  - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED ../vmf
   - make
   - cd ./bin/
   - ./unit-tests
