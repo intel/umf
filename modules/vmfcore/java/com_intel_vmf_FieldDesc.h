@@ -13,15 +13,15 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_intel_vmf_FieldDesc
  * Method:    n_FieldDesc
- * Signature: (Ljava/lang/String;JZ)J
+ * Signature: (Ljava/lang/String;IZ)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2JZ
-  (JNIEnv *, jobject, jstring, jlong, jboolean);
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ
+  (JNIEnv *, jclass, jstring, jint, jboolean);
 
 /*
  * Class:     com_intel_vmf_FieldDesc
@@ -54,6 +54,30 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional
   (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_FieldDesc
+ * Method:    n_setName
+ * Signature: (JLjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setName
+  (JNIEnv *, jclass, jlong, jstring);
+
+/*
+ * Class:     com_intel_vmf_FieldDesc
+ * Method:    n_setType
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setType
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_intel_vmf_FieldDesc
+ * Method:    n_setOptional
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setOptional
+  (JNIEnv *, jclass, jlong, jboolean);
 
 /*
  * Class:     com_intel_vmf_FieldDesc

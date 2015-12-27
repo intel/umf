@@ -88,8 +88,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jcla
     {
         throwJavaException(env, 0, method_name);
     }
-    
-    return 0;
 }
 
 /*
@@ -130,6 +128,19 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *, jc
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    std::shared_ptr<FieldValue>* p = (std::shared_ptr<FieldValue>*) self;
-    delete p;
+    static const char method_name[] = "FieldValue::n_1delete";
+    
+    try 
+    {
+        std::shared_ptr<FieldValue>* p = (std::shared_ptr<FieldValue>*) self;
+        delete (*p);
+    }
+    catch(const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    } 
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }

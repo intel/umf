@@ -18,34 +18,34 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONReader_n_1JSONReader
 /*
  * Class:     com_intel_vmf_JSONReader
  * Method:    n_parseAll
- * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[Lcom/intel/vmf/MetadataStream/VideoSegment;[Lcom/intel/vmf/MetadataSchema;[Lcom/intel/vmf/MetadataInternal;)Z
+ * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[J[J[J)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll
-  (JNIEnv *, jclass, jlong, jstring, jlong, jstring, jstring, jobjectArray, jobjectArray, jobjectArray);
+  (JNIEnv *, jclass, jlong, jstring, jlong, jstring, jstring, jlongArray, jlongArray, jlongArray);
 
 /*
  * Class:     com_intel_vmf_JSONReader
  * Method:    n_parseSchemas
- * Signature: (JLjava/lang/String;[Lcom/intel/vmf/MetadataSchema;)Z
+ * Signature: (JLjava/lang/String;[J)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas
-  (JNIEnv *, jclass, jlong, jstring, jobjectArray);
+  (JNIEnv *, jclass, jlong, jstring, jlongArray);
 
 /*
  * Class:     com_intel_vmf_JSONReader
  * Method:    n_parseMetadata
- * Signature: (JLjava/lang/String;[Lcom/intel/vmf/MetadataSchema;[Lcom/intel/vmf/MetadataInternal;)Z
+ * Signature: (JLjava/lang/String;[J[J)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata
-  (JNIEnv *, jclass, jlong, jstring, jobjectArray, jobjectArray);
+  (JNIEnv *, jclass, jlong, jstring, jlongArray, jlongArray);
 
 /*
  * Class:     com_intel_vmf_JSONReader
  * Method:    n_parseVideoSegments
- * Signature: (JLjava/lang/String;[Lcom/intel/vmf/MetadataStream/VideoSegment;)Z
+ * Signature: (JLjava/lang/String;[J)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments
-  (JNIEnv *, jclass, jlong, jstring, jobjectArray);
+  (JNIEnv *, jclass, jlong, jstring, jlongArray);
 
 /*
  * Class:     com_intel_vmf_JSONReader

@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_intel_vmf_ReferenceDesc
@@ -21,7 +21,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__
  * Signature: (Ljava/lang/String;ZZ)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__Ljava_lang_String_2ZZ
-  (JNIEnv *, jobject, jstring, jboolean, jboolean);
+  (JNIEnv *, jclass, jstring, jboolean, jboolean);
 
 /*
  * Class:     com_intel_vmf_ReferenceDesc

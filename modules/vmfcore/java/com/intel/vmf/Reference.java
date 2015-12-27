@@ -22,12 +22,12 @@ public class Reference
 		nativeObj = n_Reference();
 	}
 	
-	public Reference (ReferenceDesc desc, Metadata md)
+	public Reference (ReferenceDesc desc, Metadata md, boolean mdAsWeakPtr)
 	{	
-		if (md.nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-		
-		nativeObj = n_Reference (desc.nativeObj, md.nativeObj);
+	    if (mdAsWeakPtr == true)
+	        nativeObj = n_ReferenceWeak (desc.nativeObj, md.nativeObj);
+	    else
+	        nativeObj = n_Reference (desc.nativeObj, md.nativeObj);
 	}
 	
 	public void clear ()
@@ -35,7 +35,7 @@ public class Reference
 		//TO DO: implementation
 	}
 	
-	public Metadata getMetadata ()
+	public Metadata getReferenceMetadata ()
 	{
 		return new Metadata (n_getMetadata (nativeObj));
 	}
@@ -45,7 +45,7 @@ public class Reference
 		return new ReferenceDesc (n_getReferenceDescription (nativeObj));
 	}
 	
-	public void setMetadata (Metadata md)
+	public void setReferenceMetadata (Metadata md)
 	{
 		n_setMetadata (nativeObj, md.nativeObj);
 	}
@@ -59,10 +59,11 @@ public class Reference
         super.finalize();
     }
 	
-	private native long n_Reference();
-	private native long n_Reference (long refDescAddr, long mdAddr);
+	private native static long n_Reference();
+	private native static long n_Reference (long refDescAddr, long mdAddr);
+	private native static long n_ReferenceWeak (long refDescAddr, long mdAddr);
 	private native static long n_getMetadata (long nativeObj);
-	private native static void n_setMetadata (long nativeObj, long md);
+	private native static void n_setMetadata (long nativeObj, long mdAddr);
 	private native static long n_getReferenceDescription (long nativeObj);
 	private native static void n_delete (long nativeObj);
 }

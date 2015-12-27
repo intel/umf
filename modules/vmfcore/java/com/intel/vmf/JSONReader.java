@@ -24,29 +24,73 @@ public class JSONReader implements IReader
         return nativeObj;
     }
     
-    public boolean parseAll (final String text, long nextId,
-                             String filepath, String checksum,
-                             MetadataStream.VideoSegment[] segments,
-                             MetadataSchema[] schemas,
-                             MetadataInternal[] metadata)
+    public boolean parseAll (final String text, long nextId, String filepath, String checksum, 
+                             MetadataStream.VideoSegment[] segments, MetadataSchema[] schemas, MetadataInternal[] mdInt)
     {
+        long segNativeAddrs[] = new long [segments.length];
+        long schemaNativeAddrs[] = new long [schemas.length];
+        long mdIntNativeAddrs[] = new long [mdInt.length];
+        
+        for (int i = 0; i < segments.length; i++)
+        {
+            segNativeAddrs[i] = segments[i].nativeObj;
+        }
+        
+        for (int j = 0; j < schemas.length; j++)
+        {
+            schemaNativeAddrs[j] = schemas[j].nativeObj;
+        }
+        
+        for (int k = 0; k < mdInt.length; k++)
+        {
+            mdIntNativeAddrs[k] = mdInt[k].nativeObj;
+        }
+        
         return n_parseAll (nativeObj, text, nextId, filepath, 
-        		           checksum, segments, schemas, metadata);
+        		           checksum, segNativeAddrs, schemaNativeAddrs, 
+        		           mdIntNativeAddrs);
     }
 	
-    public boolean parseSchemas (final String text, MetadataSchema[] schemas)
+    public boolean parseSchemas (String text, MetadataSchema[] schemas)
     {
-        return n_parseSchemas (nativeObj, text, schemas);
+        long schemaNativeAddrs[] = new long [schemas.length];
+        
+        for (int j = 0; j < schemas.length; j++)
+        {
+            schemaNativeAddrs[j] = schemas[j].nativeObj;
+        }
+        
+        return n_parseSchemas (nativeObj, text, schemaNativeAddrs);
     }
 	
-    public boolean parseMetadata (final String text, final MetadataSchema[] schemas, MetadataInternal[] metadata)
+    public boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] mdInt)
     {
-        return n_parseMetadata (nativeObj, text, schemas, metadata);
+        long schemaNativeAddrs[] = new long [schemas.length];
+        long mdIntNativeAddrs[] = new long [mdInt.length];
+        
+        for (int j = 0; j < schemas.length; j++)
+        {
+            schemaNativeAddrs[j] = schemas[j].nativeObj;
+        }
+        
+        for (int k = 0; k < mdInt.length; k++)
+        {
+            mdIntNativeAddrs[k] = mdInt[k].nativeObj;
+        }
+        
+        return n_parseMetadata (nativeObj, text, schemaNativeAddrs, mdIntNativeAddrs);
     }
 	
-    public boolean parseVideoSegments (final String text, MetadataStream.VideoSegment[] segments)
+    public boolean parseVideoSegments (String text, MetadataStream.VideoSegment[] segments)
     {
-        return n_parseVideoSegments (nativeObj, text, segments);
+        long segNativeAddrs[] = new long [segments.length];
+        
+        for (int i = 0; i < segments.length; i++)
+        {
+            segNativeAddrs[i] = segments[i].nativeObj;
+        }
+        
+        return n_parseVideoSegments (nativeObj, text, segNativeAddrs);
     }
 	
     @Override
@@ -59,13 +103,11 @@ public class JSONReader implements IReader
     }
 	
 	private static native long n_JSONReader();
-	private static native boolean n_parseAll (long nativeObj, final String text, long nextId,
+	private static native boolean n_parseAll (long nativeObj, String text, long nextId,
                                               String filepath, String checksum,
-                                              MetadataStream.VideoSegment[] segments, 
-                                              MetadataSchema[] schemas,
-                                              MetadataInternal[] metadata );
-	private static native boolean n_parseSchemas (long nativeObj, final String text, MetadataSchema[] schemas );
-	private static native boolean n_parseMetadata (long nativeObj, final String text, final MetadataSchema[] schemas, MetadataInternal[] metadata );
-	private static native boolean n_parseVideoSegments (long nativeObj, final String text, MetadataStream.VideoSegment[] segments );
+                                              long[] segments, long[] schemas, long[] md);
+	private static native boolean n_parseSchemas (long nativeObj, String text, long[] schemas);
+	private static native boolean n_parseMetadata (long nativeObj, String text, long[] schemas, long[] metadata);
+	private static native boolean n_parseVideoSegments (long nativeObj, String text, long[] segments);
 	private static native void n_delete (long nativeObj);
 }

@@ -51,8 +51,8 @@ public class ReferenceDesc
         super.finalize();
     }
     
-    private native long n_ReferenceDesc ();
-    private native long n_ReferenceDesc (String refName, boolean unique, boolean custom);
+    private static native long n_ReferenceDesc ();
+    private static native long n_ReferenceDesc (String refName, boolean unique, boolean custom);
     private static native String n_getName (long nativeAddr);
     private static native boolean n_isUnique (long nativeObj);
     private static native boolean n_isCustom (long nativeObj);
