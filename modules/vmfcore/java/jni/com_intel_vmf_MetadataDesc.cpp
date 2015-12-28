@@ -245,7 +245,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1declareCustomReference
     {
         MetadataDesc* obj = (MetadataDesc*) self;
         std::string sName (env->GetStringUTFChars (refName, NULL));
-        obj->declareCustomReference (sName, (bool) isUnique);
+        obj->declareCustomReference (sName, (isUnique == 1) ? true : false);
     }
     catch(const std::exception &e)
     {

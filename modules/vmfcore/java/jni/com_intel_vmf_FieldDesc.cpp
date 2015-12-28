@@ -8,16 +8,18 @@
 using namespace vmf;
 
 /// throw java exception
-static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) 
+{
     std::string what = "unknown exception";
     jclass je = 0;
 
     if (e) {
         std::string exception_type = "std::exception";
 
-        if (dynamic_cast<const Exception*>(e)) {
+        if (dynamic_cast<const Exception*>(e)) 
+        {
             exception_type = "vmf::Exception";
-            //je = env->FindClass("org/opencv/core/CvException");
+            //je = env->FindClass("");
         }
 
         what = exception_type + ": " + e->what();
@@ -49,7 +51,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2JZ (JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional)
 {
     std::string sName (env->GetStringUTFChars (name, NULL));
-    std::shared_ptr<FieldDesc>* p = new std::shared_ptr<FieldDesc>(new FieldDesc (sName, (Variant::Type) type, (bool) isOptional));
+    std::shared_ptr<FieldDesc>* p = new std::shared_ptr<FieldDesc>(new FieldDesc(sName, (Variant::Type) type, (isOptional == 1) ? true : false));
     return (jlong) p;
 }
 
@@ -97,7 +99,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        std::string str = (**obj).name;
+        std::string str = (*(*obj)).name;
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)
@@ -227,7 +229,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setOptional (JNIEnv *env,
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        (*(*obj)).optional = (bool) isOptional;
+        (*(*obj)).optional = (isOptional == 1) ? true : false;
     }
     catch(const std::exception &e)
     {

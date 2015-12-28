@@ -46,7 +46,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__ (JNI
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__Ljava_lang_String_2ZZ (JNIEnv *env, jclass, jstring name, jboolean isUnique, jboolean isCustom)
 {
     std::string sName (env->GetStringUTFChars (name, NULL));
-    std::shared_ptr<ReferenceDesc>* p = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc (sName, (bool)isUnique, (bool)isCustom));
+    std::shared_ptr<ReferenceDesc>* p = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc(sName, (isUnique == 1) ? true : false, (isCustom == 1) ? true : false));
     return (jlong) p;
 }
 
