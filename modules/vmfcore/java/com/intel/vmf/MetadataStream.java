@@ -106,7 +106,7 @@ public class MetadataStream implements IQuery
         }
             
         private native static long n_VideoSegment ();
-        private native static long n_VideoSegment (String title, double fps, long startTime, long duration, long width, long height);
+        private native static long n_VideoSegment (String title, double fps, long startTime, long duration, int width, int height);
         private native static String n_getTitle (long nativeObj);
         private native static void n_setTitle (long nativeObj, String title);
         private native static double n_getFPS (long nativeObj);
