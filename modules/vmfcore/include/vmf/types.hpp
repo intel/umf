@@ -127,6 +127,13 @@ namespace vmf
                    static_cast< const std::vector<char> & >(other)));
         }
 
+        vmf_rawbuffer& operator=(vmf_rawbuffer&& other)
+        {
+            return static_cast<vmf_rawbuffer&>(
+                   std::vector<char>::operator=(
+                   static_cast< std::vector<char> && >(other)));
+        }
+
         vmf_rawbuffer(const char* str, const size_t len)
         {
             *this = (str != nullptr) ? vmf_rawbuffer(str, str + len) : vmf_rawbuffer(len);
