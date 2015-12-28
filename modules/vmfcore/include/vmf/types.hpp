@@ -117,7 +117,7 @@ namespace vmf
 
         vmf_rawbuffer(vmf_rawbuffer&& other)
         {
-            *this = std::move(other);
+            std::swap(*this, other);
         }
 
         vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
