@@ -142,6 +142,8 @@ bool MetadataStream::save(vmf_string compressorId)
 
             addedIds.clear();
 
+            datasSource->pushChanges();
+
             return true;
         }
         else
@@ -553,7 +555,6 @@ void MetadataStream::clear()
     m_sFilePath = "";
     m_oMetadataSet.clear();
     m_mapSchemas.clear();
-    removedSchemas.clear();
     removedIds.clear();
     addedIds.clear();
     videoSegments.clear();

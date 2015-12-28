@@ -150,6 +150,11 @@ public:
      * \brief Sets the compressor for compression operations at saving
      */
     virtual void setCompressorById(const vmf_string& id) = 0;
+
+    /*
+     *\brief Commits saved changes to file
+     */
+    virtual void pushChanges() = 0;
 };
 
 } /* vmf */

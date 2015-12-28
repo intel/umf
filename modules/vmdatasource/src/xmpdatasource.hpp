@@ -90,6 +90,8 @@ public:
 
     virtual void setCompressorById(const vmf_string& id);
 
+    virtual void pushChanges();
+
     /*!
      * \brief Initializes XMPDataSource class dependecies
      * \throws DataStorageException
@@ -102,8 +104,6 @@ public:
     static void terminate();
 
 protected:
-
-    virtual void pushChanges();
 
     virtual void schemaSourceCheck();
 
