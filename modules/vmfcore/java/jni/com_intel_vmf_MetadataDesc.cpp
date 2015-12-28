@@ -1,6 +1,32 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_MetadataDesc.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -70,7 +96,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
     for (int i = 0; i < lenRefs; i++)
     {
        ReferenceDesc* pRefDesc = (ReferenceDesc*) refArray[i];
-       std::shared_ptr<ReferenceDesc> spRefDesc = pRefDesc;
+       std::shared_ptr<ReferenceDesc> spRefDesc(pRefDesc);
        rdVec.push_back (spRefDesc);
     }
     
@@ -147,7 +173,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields (JNIEn
     {
         MetadataDesc* obj = (MetadataDesc*) self;
         std::vector<FieldDesc> vec = obj->getFields ();
-        jlongArray nObjs = env->NewLongArray (vec.size());
+        jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
         for (int i = 0; i < vec.size(); i++)
@@ -183,7 +209,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceD
     {
         MetadataDesc* obj = (MetadataDesc*) self;
         std::vector<std::shared_ptr<ReferenceDesc>> vec = obj->getAllReferenceDescs ();
-        jlongArray nObjs = env->NewLongArray (vec.size());
+        jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
         for (int i = 0; i < vec.size(); i++)
@@ -229,8 +255,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1declareCustomReference
     {
         throwJavaException(env, 0, method_name);
     }
-    
-    return 0;
 }
 
 /*

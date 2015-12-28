@@ -1,6 +1,33 @@
 #include<string>
 #include<vector>
-#include "../com_intel_vmf_ReferenceDesc.h"
+//#include "vmf/metadatastream.hpp"
+#include "vmf/jsonreader.hpp"
+#include "../com_intel_vmf_JSONReader.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_JSONReader
@@ -18,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONReader_n_1JSONReader (JNIEnv *env
  * Method:    n_parseAll
  * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[J[J[J)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll (JNIEnv *, jclass, jlong self, jstring text, jlong nextID, jstring path, jstring checksum, jlongArray segments, jlongArray schemas, jlongArray md)
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll (JNIEnv *env, jclass, jlong self, jstring text, jlong nextID, jstring path, jstring checksum, jlongArray segments, jlongArray schemas, jlongArray md)
 {
     static const char method_name[] = "JSONReader::n_1parseAll";
     
@@ -224,7 +251,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONReader_n_1delete (JNIEnv *env, jcl
     try 
     {
         std::shared_ptr<JSONReader>* p = (std::shared_ptr<JSONReader>*) self;
-        delete (*p);
+        delete p;
     }
     catch(const std::exception &e)
     {

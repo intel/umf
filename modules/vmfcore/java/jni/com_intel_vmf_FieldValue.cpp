@@ -1,6 +1,34 @@
 #include<string>
 #include<vector>
+#include <memory>
+#include <stdexcept>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_FieldValue.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_FieldValue
@@ -95,7 +123,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jcla
  * Method:    n_equals
  * Signature: (JJ)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *, jclass, jlong selfAddr, jlong otherAddr)
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "FieldValue::n_1equals";
     
@@ -133,7 +161,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete (JNIEnv *env, jcl
     try 
     {
         std::shared_ptr<FieldValue>* p = (std::shared_ptr<FieldValue>*) self;
-        delete (*p);
+        delete p;
     }
     catch(const std::exception &e)
     {

@@ -1,6 +1,32 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_MetadataSet.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_MetadataSet
@@ -40,7 +66,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo (JNIEnv *, jclass
  * Method:    n_queryByFrameIndex
  * Signature: (JJ)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNIEnv *, jclass, jlong self, jlong id)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNIEnv *env, jclass, jlong self, jlong id)
 {
     static const char method_name[] = "MetadataSet::n_1queryByFrameIndex";
     
@@ -185,7 +211,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields (
         std::vector <FieldValue> values;
     
         std::string sName (env->GetStringUTFChars (mdName, NULL));
-        jlong* array= (*env)->GetLongArrayElements (env, fieldValues, 0);
+        jlong* array= env->GetLongArrayElements (fieldValues, 0);
         jsize len = env->GetArrayLength (fieldValues);
     
         for (int i = 0; i < len; i++)
@@ -277,7 +303,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     {
         MetadataSet* obj = (MetadataSet*) self;
         std::string sName (env->GetStringUTFChars (refName, NULL));
-        jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
+        jlong *body = env->GetLongArrayElements (fieldValues, 0);
         std::vector <FieldValue> values;
         jsize len = env->GetArrayLength (fieldValues);
     
@@ -287,7 +313,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
             values.push_back (*addr);
         }
     
-        env->ReleaseIntArrayElements (fieldValues, body, 0);
+        env->ReleaseLongArrayElements (fieldValues, body, 0);
         return (jlong) new MetadataSet (obj->queryByReference (sName, values));
     }
     catch(const std::exception &e)

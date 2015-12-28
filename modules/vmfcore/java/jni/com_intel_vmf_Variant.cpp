@@ -1,6 +1,33 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Variant.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+  std::string what = "unknown exception";
+  jclass je = 0;
+
+  if(e) {
+    std::string exception_type = "std::exception";
+
+    if(dynamic_cast<const Exception*>(e)) {
+      exception_type = "vmf::Exception";
+      //je = env->FindClass("org/opencv/core/CvException");
+    }
+
+    what = exception_type + ": " + e->what();
+  }
+
+  if(!je) je = env->FindClass("java/lang/Exception");
+  env->ThrowNew(je, what.c_str());
+
+  //LOGE("%s caught %s", method, what.c_str());
+  (void)method;        // avoid "unused" warning
+}
+
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_Variant
@@ -58,7 +85,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I (JNIEnv *env, j
     
     for (int i = 0; i < len; i++)
     {
-        int elem = (int) body[i];
+        int elem = (int) array[i];
         vecValues.push_back (elem);
     }
     
@@ -80,7 +107,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, j
     
     for (int i = 0; i < len; i++)
     {
-        float elem = (float) body[i];
+        float elem = (float) array[i];
         vecValues.push_back (elem);
     }
     
@@ -175,7 +202,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString (JNIEnv *env, jc
  */
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1getType (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "Variant::n_1getType"
+    static const char method_name[] = "Variant::n_1getType";
     
     try 
     {
@@ -303,9 +330,8 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1typeFromString (JNIEnv *env
      
     try 
     {
-        Variant::Type Type = (Variant::Type) type;
-        std::string Type (env->GetStringUTFChars (type, NULL));
-        return (jint) Variant::typeFromString (Type);
+        std::string sType (env->GetStringUTFChars (type, NULL));
+        return (jint) Variant::typeFromString (sType);
     }
     catch(const std::exception &e)
     {
@@ -356,9 +382,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode (JNIEnv *en
     try 
     {
         char* array = (char*) env->GetByteArrayElements (buf, 0);
-        std::string str = Variant::base64encode(array, (size_t) length);
-        env->ReleaseByteArrayElements (buf, array, 0);
-        return env->NewStringUTF (str.c_str())
+        vmf_rawbuffer rb(array, (size_t)length);
+        std::string str = Variant::base64encode(rb);
+        env->ReleaseByteArrayElements (buf, (jbyte*)array, 0);
+        return env->NewStringUTF(str.c_str());
     }
     catch(const std::exception &e)
     {
@@ -385,7 +412,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
         std::string str (env->GetStringUTFChars (src, NULL));
         vmf_rawbuffer buf = Variant::base64decode (str);
         jbyteArray byteArray = env->NewByteArray ((long)buf.size);
-        jbyte* array = env->GetByteArrayElements (byteArray);;
+        jbyte* array = env->GetByteArrayElements (byteArray, 0);
         
         for (int i = 0; i < buf.size; i++)
         {

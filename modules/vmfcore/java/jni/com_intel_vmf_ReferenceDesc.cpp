@@ -1,6 +1,31 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_ReferenceDesc.h"
+
+using namespace vmf;
+
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_ReferenceDesc
@@ -38,7 +63,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_ReferenceDesc_n_1getName (JNIEnv *e
     {
         std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
         std::string str = (*(*obj)).name;
-        return env->NewStringUTF (str.c_str())
+        return env->NewStringUTF(str.c_str());
     }
     catch(const std::exception &e)
     {
@@ -90,7 +115,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_ReferenceDesc_n_1isCustom (JNIEnv 
     
     try 
     {
-        std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
+        std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
         jboolean isCustom = (jboolean)(*(*obj)).isCustom;
         return isCustom;
     }
@@ -111,14 +136,14 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_ReferenceDesc_n_1isCustom (JNIEnv 
  * Method:    n_delete
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_ReferenceDesc_n_1delete (JNIEnv *, jclass, jlong)
+JNIEXPORT void JNICALL Java_com_intel_vmf_ReferenceDesc_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "ReferenceDesc::n_1delete";
     
     try 
     {
         std::shared_ptr<ReferenceDesc>* p = (std::shared_ptr<ReferenceDesc>*) self;
-        delete (*p);
+        delete p;
     }
     catch(const std::exception &e)
     {

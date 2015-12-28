@@ -1,5 +1,6 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Metadata.h"
 
 using namespace vmf;
@@ -112,7 +113,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env,
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, jclass, jlong self)
 {
     Metadata* obj = (Metadata*) self;
-    return (env->NewStringUTF(env, (obj->getName()).c_str()));
+    return (env->NewStringUTF((obj->getName()).c_str()));
 }
 
 /*
@@ -147,14 +148,14 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getFieldNames (JNI
     Metadata* obj = (Metadata*) self;
     std::vector<std::string> vecNames = obj->getFieldNames();
     
-    jclass stringClass = env->FindClass(env, "java/lang/String");
-    jobjectArray objArray = env->NewObjectArray(vecNames.size(), stringClass, NULL);
+    jclass stringClass = env->FindClass("java/lang/String");
+    jobjectArray objArray = env->NewObjectArray((jsize)vecNames.size(), stringClass, NULL);
     
     int counter = 0;
     for (auto it = vecNames.begin(); it != vecNames.end(); it++, counter++)
     {
-        jstring str = env->NewStringUTF(env, it->c_str());
-        env->SetObjectArrayElement(env, objArray, counter, str);
+        jstring str = env->NewStringUTF(it->c_str());
+        env->SetObjectArrayElement(objArray, counter, str);
     }
     
     return objArray;
@@ -259,23 +260,21 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
  * Method:    n_getAllReferences
  * Signature: (J)[Lcom/intel/vmf/Reference;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences (JNIEnv *env, jclass, jlong self)
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences(JNIEnv *env, jclass, jlong self)
 {
     Metadata* obj = (Metadata*) self;
-    std::vector<vmf::Reference> refs = obj->getAllReferences();
+    std::vector<Reference> refs = obj->getAllReferences();
     
-    /*jclass refClass = env->FindClass(env, "com/intel/vmf/Reference");
-    jobjectArray objArray = (jobjectArray)env->NewObjectArray (env, refs.size(), refClass, 0); 
-     
-    jmethodID constructor = env->GetMethodID (env, refClass, "<init>", "(J)V");
-    int counter = 0;
-    for (std::vector<vmf::Reference>::iterator it = refs.begin(); refs != refs.end(); it++, counter++)
+    jlongArray nObjs = env->NewLongArray((jsize)refs.size());
+    jlong* array = env->GetLongArrayElements(nObjs, 0);
+
+    for (int i = 0; i < refs.size(); i++)
     {
-        vmf::Reference* vmfRef = new vmf::Reference (it->getReferenceDescription(), it->getReferenceMetadata ());
-        jobject ref =  env->NewObject (env, refClass, constructor, (jlong)vmfRef);
-        env->SetObjectArrayElement (env, objArray, counter, ref);
+        array[i] = (jlong) new std::shared_ptr<Reference>(new Reference(refs[i].getReferenceDescription(), refs[i].getReferenceMetadata()));
     }
-    return objArray;*/
+   
+    env->ReleaseLongArrayElements(nObjs, array, 0);
+    return nObjs;
 }
 
 /*

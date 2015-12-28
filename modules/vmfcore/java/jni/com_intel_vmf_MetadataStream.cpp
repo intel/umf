@@ -1,6 +1,33 @@
 #include<string>
 #include<vector>
+#include <memory>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_MetadataStream.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_MetadataStream
@@ -21,7 +48,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1open (JNIEnv *en
 {
     MetadataStream* obj = (MetadataStream*) self;
     std::string sPath (env->GetStringUTFChars (filePath, NULL));
-    return (jboolean) obj->open(sPath, ((int)mode));
+    return (jboolean)obj->open(sPath, (MetadataStream::OpenMode) mode);
 }
 
 /*
@@ -32,7 +59,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1open (JNIEnv *en
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1reopen (JNIEnv *env, jclass, jlong self, jint mode)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    return (jboolean) obj->reopen(((int)mode));
+    return (jboolean)obj->reopen(((MetadataStream::OpenMode)mode));
 }
 
 /*
@@ -213,14 +240,14 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllSchema
     MetadataStream* obj = (MetadataStream*) self;
     std::vector <std::string> vecNames = obj->getAllSchemaNames();
     
-    jclass stringClass = env->FindClass(env, "java/lang/String");
-    jobjectArray objArray = env->NewObjectArray(vecNames.size(), stringClass, NULL);
+    jclass stringClass = env->FindClass("java/lang/String");
+    jobjectArray objArray = env->NewObjectArray((jsize)vecNames.size(), stringClass, NULL);
     
     int counter = 0;
     for (auto it = vecNames.begin(); it != vecNames.end(); it++, counter++)
     {
-        jstring str = env->NewStringUTF(env, it->c_str())
-        env->SetObjectArrayElement(env, objArray, counter, str);
+        jstring str = env->NewStringUTF(it->c_str());
+        env->SetObjectArrayElement(objArray, counter, str);
     }
     
     return objArray;
@@ -259,7 +286,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEn
  * Method:    n_sortMdSetById
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1sortMdSetById (JNIEnv *, jclass, jlong)
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1sortMdSetById (JNIEnv *, jclass, jlong self)
 {
     MetadataStream* obj = (MetadataStream*) self;
     obj->sortById();
@@ -274,7 +301,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1serialize (JNIEnv
 {
     MetadataStream* obj = (MetadataStream*) self;
     IWriter* writer = (IWriter*) IWriterAddr;
-    jstring str = env->NewStringUTF (env, (obj->serialize ((*writer))).c_str ());
+    jstring str = env->NewStringUTF ((obj->serialize ((*writer))).c_str ());
     return str;
 }
 
@@ -296,10 +323,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1deserialize (JNIEnv 
  * Method:    n_computeChecksum
  * Signature: (J)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__J (JNIEnv *env, jclass, jlong self);
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__J (JNIEnv *env, jclass, jlong self)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    jstring str = env->NewStringUTF (env, (obj->computeChecksum()).c_str ());
+    jstring str = env->NewStringUTF ((obj->computeChecksum()).c_str ());
     return str;
 }
 
@@ -311,7 +338,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__JJJ (JNIEnv *env, jclass, jlong self, jlong XMPPacketSize, jlong XMPPacketOffset)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    jstring str = env->NewStringUTF (env, (obj->computeChecksum((long long)XMPPacketSize, (long long) XMPPacketOffset)).c_str ());
+    jstring str = env->NewStringUTF ((obj->computeChecksum((long long)XMPPacketSize, (long long) XMPPacketOffset)).c_str ());
     return str;
 }
 
@@ -323,7 +350,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1getChecksum (JNIEnv *env, jclass, jlong self)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    jstring str = env->NewStringUTF (env, (obj->getChecksum()).c_str ());
+    jstring str = env->NewStringUTF ((obj->getChecksum()).c_str ());
     return str;
 }
 
@@ -347,11 +374,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1setChecksum (JNIEnv 
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addVideoSegment (JNIEnv *env, jclass, jlong self, jlong segmentAddr)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    VideoSegment* segment = (VideoSegment*) segmentAddr;
-    int w = 0;
-    int h = 0;
+    MetadataStream::VideoSegment* segment = (MetadataStream::VideoSegment*)segmentAddr;
+    long w = 0;
+    long h = 0;
     segment->getResolution (w, h);
-    std::shared_ptr <VideoSegment> spSegment = std::make_shared <VideoSegment> (segment->getTitle(), segment->getFPS(), segment->getTime(), segment->getDuration (), w, h);
+    std::shared_ptr <MetadataStream::VideoSegment> spSegment = std::make_shared <MetadataStream::VideoSegment>(segment->getTitle(), segment->getFPS(), segment->getTime(), segment->getDuration(), w, h);
     obj->addVideoSegment (spSegment);
 }
 
@@ -363,10 +390,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addVideoSegment (JNI
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllVideoSegments (JNIEnv *env, jclass, jlong self)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    std::vector <std::shared_ptr<VideoSegment>> segments;
+    std::vector <std::shared_ptr<MetadataStream::VideoSegment>> segments;
     
     segments = obj->getAllVideoSegments();
-    jlongArray nObjs = env->NewLongArray (segments.size());
+    jlongArray nObjs = env->NewLongArray ((jsize)segments.size());
     
     jlong* body = env->GetLongArrayElements (nObjs, 0);
     int counter = 0;
@@ -388,9 +415,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFr
                                                                                           jlongArray frameIndexAndNumOfFrames)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    jlong *body = (*env)->GetLongArrayElements(env, frameIndexAndNumOfFrames, 0);
+    jlong *body = env->GetLongArrayElements (frameIndexAndNumOfFrames, 0);
     obj->convertTimestampToFrameIndex ((long long)timestamp, (long long)duration, body[0], body[1]);
-    (*env)->ReleaseIntArrayElements(env, frameIndexAndNumOfFrames, body, 0);
+    env->ReleaseLongArrayElements(frameIndexAndNumOfFrames, body, 0);
 }
 
 /*
@@ -400,12 +427,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFr
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToTimestamp (JNIEnv *env, jclass, jlong self,
                                                                                           jlong frameIndex, jlong numOfFrames,
-                                                                                          jlongArray timestampAndDuration);
+                                                                                          jlongArray timestampAndDuration)
 {
     MetadataStream* obj = (MetadataStream*) self;
-    jlong *body = (*env)->GetLongArrayElements(env, frameIndexAndNumOfFrames, 0);
-    obj->convertTimestampToFrameIndex ((long long)timestamp, (long long)duration, body[0], body[1]);
-    (*env)->ReleaseIntArrayElements(env, frameIndexAndNumOfFrames, body, 0);
+    jlong *body = env->GetLongArrayElements(timestampAndDuration, 0);
+    obj->convertFrameIndexToTimestamp((long long)frameIndex, (long long)numOfFrames, body[0], body[1]);
+    env->ReleaseLongArrayElements(timestampAndDuration, body, 0);
 }
 
 /*
@@ -481,7 +508,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndField
     std::vector <FieldValue> values;
     
     std::string sName (env->GetStringUTFChars (mdName, NULL));
-    jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
+    jlong *body =env->GetLongArrayElements (fieldValues, 0);
     jsize len = env->GetArrayLength (fieldValues);
     
     for (int i = 0; i < len; i++)
@@ -530,7 +557,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__J
 {
     MetadataStream* obj = (MetadataStream*) self;
     std::string sName (env->GetStringUTFChars (name, NULL));
-    jlong *body = (*env)->GetLongArrayElements (env, fieldValues, 0);
+    jlong *body = env->GetLongArrayElements (fieldValues, 0);
     std::vector <FieldValue> values;
     jsize len = env->GetArrayLength (fieldValues);
     
@@ -540,7 +567,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__J
         values.push_back (*addr);
     }
     
-    env->ReleaseIntArrayElements (fieldValues, body, 0);
+    env->ReleaseLongArrayElements (fieldValues, body, 0);
     return (jlong) new MetadataSet (obj->queryByReference (sName, values));
 }
 

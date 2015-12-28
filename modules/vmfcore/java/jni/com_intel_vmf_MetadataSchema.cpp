@@ -1,6 +1,32 @@
 #include<string>
 #include<vector>
+#include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_MetadataSchema.h"
+
+using namespace vmf;
+
+/// throw java exception
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+    std::string what = "unknown exception";
+    jclass je = 0;
+
+    if (e) {
+        std::string exception_type = "std::exception";
+
+        if (dynamic_cast<const Exception*>(e)) {
+            exception_type = "vmf::Exception";
+            //je = env->FindClass("org/opencv/core/CvException");
+        }
+
+        what = exception_type + ": " + e->what();
+    }
+
+    if (!je) je = env->FindClass("java/lang/Exception");
+    env->ThrowNew(je, what.c_str());
+
+    //LOGE("%s caught %s", method, what.c_str());
+    (void)method;        // avoid "unused" warning
+}
 
 /*
  * Class:     com_intel_vmf_MetadataSchema
@@ -108,9 +134,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1add (JNIEnv *env, jc
     try 
     {
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
-        MetadataDesc* mdDesc = (MetadataDesc*) mdDescAddr;
-        std::shared_ptr<MetadataDesc> spMdDesc = mdDesc;
-        (*obj)->add (spMdDesc);
+        std::shared_ptr<MetadataDesc>* mdDesc = (std::shared_ptr<MetadataDesc>*) mdDescAddr;
+        
+        (*obj)->add(*mdDesc);
     }
     catch(const std::exception &e)
     {
@@ -136,9 +162,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc (J
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
         std::string sName (env->GetStringUTFChars (mdName, NULL));
         const std::shared_ptr<MetadataDesc> spMdDesc = (*obj)->findMetadataDesc (sName);
-        std::shared_ptr<MetadataDesc> retVal = new std::shared_ptr<MetadataDesc> (spMdDesc);
-        jlong addr = reinterpret_cast <jlong> (retVal);
-        return addr;
+        
+        return (jlong) new std::shared_ptr<MetadataDesc> (spMdDesc);
     }
     catch(const std::exception &e)
     {
@@ -166,7 +191,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll (JNIEnv
     {
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
         std::vector<std::shared_ptr<MetadataDesc>> spMdDescVec = (*obj)->getAll ();
-        jlongArray nObjs = env->NewLongArray (spMdDescVec.size());
+        jlongArray nObjs = env->NewLongArray ((jsize)spMdDescVec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
         for (int i = 0; i < spMdDescVec.size(); i++)
@@ -227,7 +252,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema (JNIEn
     
     try 
     {
-        return (jlong) new std::shared_ptr<MetadataSchema> (MetadataSchema::getStdSchema ((MetadataSchema::StdSchemaKind)));
+        return (jlong) new std::shared_ptr<MetadataSchema> (MetadataSchema::getStdSchema ((MetadataSchema::StdSchemaKind) kind));
     }
     catch(const std::exception &e)
     {
@@ -246,14 +271,14 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema (JNIEn
  * Method:    n_delete
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1delete (JNIEnv *, jclass, jlong self)
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1delete";
     
     try 
     {
         std::shared_ptr<MetadataSchema>* p = (std::shared_ptr<MetadataSchema>*) self;
-        delete (*p);
+        delete p;
     }
     catch(const std::exception &e)
     {
