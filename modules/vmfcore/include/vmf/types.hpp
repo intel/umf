@@ -112,7 +112,7 @@ namespace vmf
         vmf_rawbuffer() : std::vector<char>()
         { }
 
-        explicit vmf_rawbuffer(const vmf_rawbuffer& other) : std::vector<char>(other)
+        vmf_rawbuffer(const vmf_rawbuffer& other) : std::vector<char>(other)
         { }
 
         vmf_rawbuffer(vmf_rawbuffer&& other)
