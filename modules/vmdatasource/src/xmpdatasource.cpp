@@ -345,9 +345,15 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     {
         metadataSource->remove(ids);
 
-        saveXMPstructs();
-        closeFile();
-        openFile(this->metaFileName, this->openMode);
+        //instead of saving to file just put everything to buffer and get back
+        string tempBuffer;
+        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+        xmp->SerializeToBuffer(&tempBuffer, options, 0, NULL);
+
+        xmp = make_shared<SXMPMeta>();
+        xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
+        schemaSource = make_shared<XMPSchemaSource>(xmp);
+        metadataSource = make_shared<XMPMetadataSource>(xmp);
     }
     catch(const XMP_Error& e)
     {
