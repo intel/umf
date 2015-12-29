@@ -93,7 +93,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll (JNIEnv *en
         env->ReleaseLongArrayElements (schemas, schemasArray, 0);
         env->ReleaseLongArrayElements (md, mdIntArray, 0);
         
-        return (jboolean) (*obj)->parseAll (sText, (int64_t)nextID, sPath, sChecksum, vecSegments, vecSchemas, vecMdInt);
+        return (jboolean) (*obj)->parseAll (sText, (vmf::IdType)nextID, sPath, sChecksum, vecSegments, vecSchemas, vecMdInt);
     }
     catch(const std::exception &e)
     {
