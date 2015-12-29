@@ -73,4 +73,8 @@ TEST(TestVmfRawBuffer, Constructors)
     vmf::vmf_rawbuffer sizeRb(str.size());
     ASSERT_EQ(sizeRb.size(), str.size());
     ASSERT_EQ(std::string(sizeRb.data(), sizeRb.size()), std::string(str.size(), '\0'));
+
+    vmf::vmf_rawbuffer beginEndRb(str.data(), str.data()+str.size());
+    ASSERT_EQ(beginEndRb.size(), str.size());
+    ASSERT_EQ(std::string(beginEndRb.data(), beginEndRb.size()), str);
 }
