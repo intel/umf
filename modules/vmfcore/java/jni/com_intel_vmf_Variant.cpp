@@ -38,7 +38,8 @@ static void throwJavaException(JNIEnv *env, const std::exception *e, const char 
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__ (JNIEnv *, jclass)
 {
-    return (jlong) new Variant ();
+    std::shared_ptr <Variant>* p = new std::shared_ptr <Variant>(new Variant());
+    return (jlong) p;
 } 
 
 /*
@@ -48,8 +49,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__ (JNIEnv *, jclas
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *, jclass, jlong otherAddr)
 {
-    Variant* other = (Variant*) otherAddr;
-    return (jlong) new Variant (*other);
+    std::shared_ptr <Variant>* other = (std::shared_ptr <Variant>*)otherAddr;
+    std::shared_ptr <Variant>* p = new std::shared_ptr <Variant>(new Variant(**other));
+    return (jlong) p;
 }
 
 /*
@@ -59,8 +61,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *, jcla
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI (JNIEnv *env, jclass, jlong self, jint value)
 {
-    Variant* obj = (Variant*) self;
-    (*obj) = (int) value;
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    (**obj) = (int) value;
 }
 
 /*
@@ -70,8 +72,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI (JNIEnv *env, jcl
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF (JNIEnv *env, jclass, jlong self, jfloat value)
 {
-    Variant* obj = (Variant*) self;
-    (*obj) = (float) value;
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    (**obj) = (float) value;
 }
 
 /*
@@ -81,19 +83,18 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF (JNIEnv *env, jcl
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I (JNIEnv *env, jclass, jlong self, jintArray values)
 {
-    Variant* obj = (Variant*) self;
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
     std::vector <int> vecValues;
-    jint *array = env->GetIntArrayElements (values, 0);
+    jint *cArray = env->GetIntArrayElements (values, 0);
     jsize len = env->GetArrayLength (values);
     
     for (int i = 0; i < len; i++)
     {
-        int elem = (int) array[i];
-        vecValues.push_back (elem);
+        vecValues.push_back((int)cArray[i]);
     }
     
-    env->ReleaseIntArrayElements (values, array, 0);
-    (*obj) = vecValues;
+    env->ReleaseIntArrayElements (values, cArray, 0);
+    (**obj) = vecValues;
 }
 
 /*
@@ -103,7 +104,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I (JNIEnv *env, j
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, jclass, jlong self, jfloatArray values)
 {
-    Variant* obj = (Variant*) self;
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
     std::vector <float> vecValues;
     jfloat* array = env->GetFloatArrayElements (values, 0);
     jsize len = env->GetArrayLength (values);
@@ -115,7 +116,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, j
     }
     
     env->ReleaseFloatArrayElements (values, array, 0);
-    (*obj) = vecValues;
+    (**obj) = vecValues;
 }
 
 /*
@@ -125,8 +126,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, j
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2 (JNIEnv *env, jclass, jlong self, jstring str)
 {
-    Variant* obj = (Variant*) self;
-    (*obj) = env->GetStringUTFChars (str, NULL);
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    (**obj) = env->GetStringUTFChars (str, NULL);
 }
 
 /*
@@ -136,9 +137,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ (JNIEnv *env, jclass, jlong self, jlong other)
 {
-    Variant* obj = (Variant*) self;
-    Variant* newObj = (Variant*) other;
-    (*obj) = (*newObj);
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    std::shared_ptr <Variant>* otherObj = (std::shared_ptr <Variant>*)other;
+    (**obj) = (**otherObj);
 }
 
 /*
@@ -148,10 +149,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ (JNIEnv *env, jcl
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals (JNIEnv *env, jclass, jlong self, jlong other)
 {
-    Variant* obj = (Variant*) self;
-    Variant* newObj = (Variant*) other;
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    std::shared_ptr <Variant>* otherObj = (std::shared_ptr <Variant>*)other;
     
-    if ((*obj) == (*newObj))
+    if ((**obj) == (**otherObj))
         return JNI_TRUE;
     else
         return JNI_FALSE;
@@ -164,8 +165,8 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals (JNIEnv *env, jc
  */
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString (JNIEnv *env, jclass, jlong self)
 {
-    Variant* obj = (Variant*) self;
-    std::string str = obj->toString ();
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    std::string str = (*obj)->toString ();
     return env->NewStringUTF (str.c_str());
 }
 
@@ -180,11 +181,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString (JNIEnv *env, jc
     
     try 
     {
-        Variant* obj = (Variant*) self;
+        std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
         std::string str (env->GetStringUTFChars (value, NULL));
         Variant::Type Type = (Variant::Type) type;
         if (Type >= Variant::Type::type_unknown && Type <= Variant::Type::type_vec4d_vector)
-            obj->fromString (Type, str);
+            (*obj)->fromString (Type, str);
         else
             throwJavaException(env, 0, method_name);
     } 
@@ -209,8 +210,8 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1getType (JNIEnv *env, jclas
     
     try 
     {
-        Variant* obj = (Variant*) self;
-        return (jint) obj->getType ();
+        std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+        return (jint) (*obj)->getType ();
     }
     catch(const std::exception &e)
     {
@@ -235,8 +236,8 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isEmpty (JNIEnv *env, j
     
     try 
     {
-        Variant* obj = (Variant*) self;
-        return (jboolean) obj->isEmpty ();
+        std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+        return (jboolean) (*obj)->isEmpty ();
     }
     catch(const std::exception &e)
     {
@@ -257,8 +258,8 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isEmpty (JNIEnv *env, j
  */
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1getTypeName (JNIEnv *env, jclass, jlong self)
 {
-    Variant* obj = (Variant*) self;
-    std::string str = obj->getTypeName ();
+    std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+    std::string str = (*obj)->getTypeName ();
     return env->NewStringUTF (str.c_str());
 }
 
@@ -274,10 +275,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo (JNIEnv *env, jcl
     try 
     {
         Variant::Type Type = (Variant::Type) type;
-        if (Type >= Variant::Type::type_unknown && Type <= Variant::Type::type_vec4d_vector)
+        if ((Type >= Variant::Type::type_unknown) && (Type <= Variant::Type::type_vec4d_vector))
         {
-            Variant* obj = (Variant*) self;
-            obj->convertTo (Type);
+            std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+            (*obj)->convertTo (Type);
         }
         else
             throwJavaException(env, 0, method_name);
@@ -386,7 +387,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode (JNIEnv *en
     {
         char* array = (char*) env->GetByteArrayElements (buf, 0);
         vmf_rawbuffer rb(array, (size_t)length);
+
         std::string str = Variant::base64encode(rb);
+
         env->ReleaseByteArrayElements (buf, (jbyte*)array, 0);
         return env->NewStringUTF(str.c_str());
     }
@@ -443,5 +446,19 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-   delete (Variant*) self;
+    static const char method_name[] = "Variant::n_1delete";
+
+    try
+    {
+        std::shared_ptr<Variant>* p = (std::shared_ptr<Variant>*) self;
+        delete p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
