@@ -62,7 +62,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo (JNIEnv *, jclass
 {
     std::shared_ptr<MetadataSet>* self = (std::shared_ptr<MetadataSet>*)selfAddr;
     std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
-    (**self) = (**other);
+    MetadataSet tmp = (*(*other));
+    (*(*self)) = tmp;
 }
 
 /*
