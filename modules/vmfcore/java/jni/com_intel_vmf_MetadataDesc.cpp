@@ -5,27 +5,30 @@
 
 using namespace vmf;
 
-/// throw java exception
-static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method)
+{
     std::string what = "unknown exception";
     jclass je = 0;
 
-    if (e) {
+    if (e)
+    {
         std::string exception_type = "std::exception";
 
-        if (dynamic_cast<const Exception*>(e)) {
+        if (dynamic_cast<const Exception*>(e))
+        {
             exception_type = "vmf::Exception";
-            //je = env->FindClass("org/opencv/core/CvException");
+            je = env->FindClass("com/intel/vmf/VmfException");
         }
 
         what = exception_type + ": " + e->what();
     }
 
-    if (!je) je = env->FindClass("java/lang/Exception");
+    if (!je)
+        je = env->FindClass("java/lang/Exception");
+
     env->ThrowNew(je, what.c_str());
 
-    //LOGE("%s caught %s", method, what.c_str());
-    (void)method;        // avoid "unused" warning
+    VMF_LOG_ERROR(what.c_str());
 }
 
 /*
@@ -77,15 +80,15 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  * Method:    n_MetadataDesc
  * Signature: (Ljava/lang/String;[J[J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs, jlongArray refDesc)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs, jlongArray refDescs)
 {
     std::string sName (env->GetStringUTFChars (mdName, NULL));
     std::vector <FieldDesc> fdVec;
     std::vector<std::shared_ptr<ReferenceDesc>> rdVec;
     jlong* descArray = env->GetLongArrayElements (fieldDescs, 0);
-    jlong* refArray = env->GetLongArrayElements (refDesc, 0);
+    jlong* refArray = env->GetLongArrayElements (refDescs, 0);
     jsize lenDescs = env->GetArrayLength (fieldDescs);
-    jsize lenRefs = env->GetArrayLength (refDesc);
+    jsize lenRefs = env->GetArrayLength (refDescs);
     
     for (int i = 0; i < lenDescs; i++)
     {
@@ -101,7 +104,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
     }
     
     env->ReleaseLongArrayElements (fieldDescs, descArray, 0);
-    env->ReleaseLongArrayElements (refDesc, refArray, 0);
+    env->ReleaseLongArrayElements (refDescs, refArray, 0);
     return (jlong) new MetadataDesc (sName, fdVec, rdVec);  
 }
 

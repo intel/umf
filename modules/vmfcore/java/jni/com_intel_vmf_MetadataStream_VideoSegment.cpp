@@ -5,26 +5,30 @@
 
 using namespace vmf;
 
-static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) 
+{
     std::string what = "unknown exception";
     jclass je = 0;
 
-    if (e) {
+    if (e) 
+    {
         std::string exception_type = "std::exception";
 
-        if (dynamic_cast<const Exception*>(e)) {
+        if (dynamic_cast<const Exception*>(e)) 
+        {
             exception_type = "vmf::Exception";
-            //je = env->FindClass("org/opencv/core/CvException");
+            je = env->FindClass("com/intel/vmf/VmfException");
         }
 
         what = exception_type + ": " + e->what();
     }
 
-    if (!je) je = env->FindClass("java/lang/Exception");
+    if (!je) 
+        je = env->FindClass("java/lang/Exception");
+    
     env->ThrowNew(je, what.c_str());
 
-    //LOGE("%s caught %s", method, what.c_str());
-    (void)method;
+    VMF_LOG_ERROR(what.c_str());
 }
 
 /*
@@ -255,20 +259,41 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 }
 
 /*
- * Class:     com_intel_vmf_MetadataStream_VideoSegment
- * Method:    n_getResolution
- * Signature: (JJJ)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution (JNIEnv *env, jclass, jlong self, jlong, jlong)
+* Class:     com_intel_vmf_MetadataStream_VideoSegment
+* Method:    n_getResolution
+* Signature: (J[J)V
+*/
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution (JNIEnv *env, jclass, jlong self, jintArray resolutionArray)
 {
 
+    static const char method_name[] = "MetadataStream::VideoSegment::n_1getResolution";
+
+    try
+    {
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+        jint* cArray = env->GetIntArrayElements (resolutionArray, 0);
+        jsize len = env->GetArrayLength (resolutionArray);
+        
+        if (len == 2)
+            (*obj)->getResolution ((long&)cArray[0], (long&)cArray[1]);
+        else
+            throwJavaException (env, 0, method_name);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
- * Class:     com_intel_vmf_MetadataStream_VideoSegment
- * Method:    n_setResolution
- * Signature: (JJJ)V
- */
+* Class:     com_intel_vmf_MetadataStream_VideoSegment
+* Method:    n_setResolution
+* Signature: (JII)V
+*/
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setResolution (JNIEnv *env, jclass, jlong self, jint w, jint h)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setResolution";

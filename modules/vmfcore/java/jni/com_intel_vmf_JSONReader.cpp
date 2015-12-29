@@ -1,32 +1,34 @@
 #include<string>
 #include<vector>
-//#include "vmf/metadatastream.hpp"
 #include "vmf/jsonreader.hpp"
 #include "../com_intel_vmf_JSONReader.h"
 
 using namespace vmf;
 
-/// throw java exception
-static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method) {
+static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method)
+{
     std::string what = "unknown exception";
     jclass je = 0;
 
-    if (e) {
+    if (e)
+    {
         std::string exception_type = "std::exception";
 
-        if (dynamic_cast<const Exception*>(e)) {
+        if (dynamic_cast<const Exception*>(e))
+        {
             exception_type = "vmf::Exception";
-            //je = env->FindClass("org/opencv/core/CvException");
+            je = env->FindClass("com/intel/vmf/VmfException");
         }
 
         what = exception_type + ": " + e->what();
     }
 
-    if (!je) je = env->FindClass("java/lang/Exception");
+    if (!je)
+        je = env->FindClass("java/lang/Exception");
+
     env->ThrowNew(je, what.c_str());
 
-    //LOGE("%s caught %s", method, what.c_str());
-    (void)method;        // avoid "unused" warning
+    VMF_LOG_ERROR(what.c_str());
 }
 
 /*

@@ -35,13 +35,13 @@ public class MetadataStream implements IQuery
         public VideoSegment (String title, double fps, long startTime)
         {
             long duration = 0;
-            long width = 0;
-            long height = 0;
+            int width = 0;
+            int height = 0;
                 
             nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
         }
             
-        public VideoSegment (String title, double fps, long startTime, long duration, long width, long height)
+        public VideoSegment (String title, double fps, long startTime, long duration, int width, int height)
         {
             nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
         }
@@ -86,12 +86,14 @@ public class MetadataStream implements IQuery
             n_setTime (nativeObj, startTime);
         }
             
-        public void getResolution (long width, long height)
+        public int[] getResolution ()
         {
-            n_getResolution (nativeObj, width, height);
+            int resolutionArray[] = new int [2];
+            n_getResolution (nativeObj, resolutionArray);
+            return resolutionArray;
         }
             
-        public void setResolution(long width, long height)
+        public void setResolution (int width, int height)
         {
             n_setResolution (nativeObj, width, height);
         }
@@ -115,8 +117,8 @@ public class MetadataStream implements IQuery
         private native static void n_setDuration (long nativeObj, long duration);
         private native static long n_getTime (long nativeObj);
         private native static void n_setTime (long nativeObj, long startTime);
-        private native static void n_getResolution (long nativeObj, long width, long height);
-        private native static void n_setResolution (long nativeObj, long width, long height);
+        private native static void n_getResolution (long nativeObj, int resolutionArray[]);
+        private native static void n_setResolution (long nativeObj, int width, int height);
         private native static void n_delete (long nativeObj);
     }
     

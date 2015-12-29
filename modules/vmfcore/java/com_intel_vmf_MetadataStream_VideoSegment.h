@@ -18,9 +18,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
 /*
  * Class:     com_intel_vmf_MetadataStream_VideoSegment
  * Method:    n_VideoSegment
- * Signature: (Ljava/lang/String;DJJJJ)J
+ * Signature: (Ljava/lang/String;DJJII)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJJJ
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJII
   (JNIEnv *, jclass, jstring, jdouble, jlong, jlong, jint, jint);
 
 /*
@@ -90,15 +90,15 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 /*
  * Class:     com_intel_vmf_MetadataStream_VideoSegment
  * Method:    n_getResolution
- * Signature: (JJJ)V
+ * Signature: (J[I)V
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution
-  (JNIEnv *, jclass, jlong, jint, jint);
+  (JNIEnv *, jclass, jlong, jintArray);
 
 /*
  * Class:     com_intel_vmf_MetadataStream_VideoSegment
  * Method:    n_setResolution
- * Signature: (JJJ)V
+ * Signature: (JII)V
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setResolution
   (JNIEnv *, jclass, jlong, jint, jint);
