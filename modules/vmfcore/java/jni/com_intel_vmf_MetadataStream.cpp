@@ -405,7 +405,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__JJJ (JNIEnv *env, jclass, jlong self, jlong XMPPacketSize, jlong XMPPacketOffset)
 {
     std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-    std::string result = (*obj)->computeChecksum((long long)XMPPacketSize, (long long)XMPPacketOffset);
+    std::string result = (*obj)->computeChecksum((long long&)XMPPacketSize, (long long&)XMPPacketOffset);
     return env->NewStringUTF(result.c_str());;
 }
 
@@ -483,7 +483,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFr
     jlong *cArray = env->GetLongArrayElements (frameIndexAndNumOfFrames, 0);
     jsize len = env->GetArrayLength(frameIndexAndNumOfFrames);
     if (len == 2)
-        (*obj)->convertTimestampToFrameIndex((long long)timestamp, (long long)duration, (long long)cArray[0], (long long)cArray[1]);
+        (*obj)->convertTimestampToFrameIndex((long long)timestamp, (long long)duration, (long long&)cArray[0], (long long&)cArray[1]);
     else
         throwJavaException(env, 0, method_name);
 
@@ -506,7 +506,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToT
     jsize len = env->GetArrayLength (timestampAndDuration);
 
     if (len == 2)
-        (*obj)->convertFrameIndexToTimestamp((long long)frameIndex, (long long)numOfFrames, (long long)cArray[0], (long long)cArray[1]);
+        (*obj)->convertFrameIndexToTimestamp((long long)frameIndex, (long long)numOfFrames, (long long&)cArray[0], (long long&)cArray[1]);
     else
         throwJavaException (env, 0, method_name);
 
