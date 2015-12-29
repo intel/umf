@@ -197,7 +197,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll (JNIEnv
         jlongArray nObjs = env->NewLongArray ((jsize)spMdDescVec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
-        for (int i = 0; i < spMdDescVec.size(); i++)
+        for (std::size_t i = 0; i < spMdDescVec.size(); i++)
         {
             body[i] = (jlong) new std::shared_ptr<MetadataDesc> (spMdDescVec[i]);
         }

@@ -179,7 +179,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields (JNIEn
         jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
-        for (int i = 0; i < vec.size(); i++)
+        for (std::size_t i = 0; i < vec.size(); i++)
         {
             body[i] = (jlong) new FieldDesc (vec[i].name, vec[i].type, vec[i].optional);
         }
@@ -215,7 +215,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceD
         jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
         
-        for (int i = 0; i < vec.size(); i++)
+        for (std::size_t i = 0; i < vec.size(); i++)
         {
             body[i] = (jlong) vec[i].get();
         }
