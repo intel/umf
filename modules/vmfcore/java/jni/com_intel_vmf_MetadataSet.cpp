@@ -38,7 +38,8 @@ static void throwJavaException(JNIEnv *env, const std::exception *e, const char 
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv *env, jclass)
 {
-    return (jlong) new MetadataSet ();
+    std::shared_ptr<MetadataSet>* p = new std::shared_ptr<MetadataSet>(new MetadataSet());
+    return (jlong) p;
 }
 
 /*
@@ -48,8 +49,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv 
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv *, jclass, jlong otherAddr)
 {
-    MetadataSet* other = (MetadataSet*) otherAddr;
-    return (jlong) new MetadataSet (*other);
+    std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
+    return (jlong) new std::shared_ptr<MetadataSet> (new MetadataSet (**other));
 }
 
 /*
@@ -59,9 +60,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo (JNIEnv *, jclass, jlong selfAddr, jlong otherAddr)
 {
-    MetadataSet* self = (MetadataSet*) selfAddr;
-    MetadataSet* other = (MetadataSet*) otherAddr;
-    *self = *other;
+    std::shared_ptr<MetadataSet>* self = (std::shared_ptr<MetadataSet>*)selfAddr;
+    std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
+    (**self) = (**other);
 }
 
 /*
@@ -75,9 +76,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNI
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         size_t index = (size_t) id;
-        return (jlong) new MetadataSet (obj->queryByFrameIndex (index));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByFrameIndex(index)));
     }
     catch(const std::exception &e)
     {
@@ -102,8 +103,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByTime (JNIEnv *e
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
-        return (jlong) new MetadataSet (obj->queryByTime((long long) startTime, (long long) endTime));
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByTime((long long)startTime, (long long)endTime)));
     }
     catch(const std::exception &e)
     {
@@ -128,9 +129,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryBySchema (JNIEnv 
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::string sName (env->GetStringUTFChars (schemaName, NULL));
-        return (jlong) new MetadataSet (obj->queryBySchema(sName));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryBySchema(sName)));
     }
     catch(const std::exception &e)
     {
@@ -155,9 +156,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByName (JNIEnv *e
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::string sName (env->GetStringUTFChars (mdName, NULL));
-        return (jlong) new MetadataSet (obj->queryByName(sName));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByName(sName)));
     }
     catch(const std::exception &e)
     {
@@ -182,10 +183,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndValue (J
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
-        FieldValue* value = (FieldValue*) fieldValueAddr;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        std::shared_ptr<FieldValue>* value = (std::shared_ptr<FieldValue>*)fieldValueAddr;
         std::string sName (env->GetStringUTFChars (mdName, NULL));
-        return (jlong) new MetadataSet (obj->queryByNameAndValue (sName, (*value)));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByNameAndValue(sName, (**value))));
     }
     catch(const std::exception &e)
     {
@@ -210,21 +211,21 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields (
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::vector <FieldValue> values;
     
         std::string sName (env->GetStringUTFChars (mdName, NULL));
-        jlong* array= env->GetLongArrayElements (fieldValues, 0);
+        jlong* cArray= env->GetLongArrayElements (fieldValues, 0);
         jsize len = env->GetArrayLength (fieldValues);
     
         for (int i = 0; i < len; i++)
         {
-            FieldValue* addr = (FieldValue*) array[i];
-            values.push_back (*addr);
+            std::shared_ptr<FieldValue>* addr = (std::shared_ptr<FieldValue>*)cArray[i];
+            values.push_back (**addr);
         }
     
-        env->ReleaseLongArrayElements (fieldValues, array, 0);
-        return (jlong) new MetadataSet (obj->queryByNameAndFields (sName, values));
+        env->ReleaseLongArrayElements (fieldValues, cArray, 0);
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet ((*obj)->queryByNameAndFields(sName, values)));
     }
     catch(const std::exception &e)
     {
@@ -249,9 +250,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::string sName (env->GetStringUTFChars (refName, NULL));
-        return (jlong) new MetadataSet (obj->queryByReference (sName));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByReference(sName)));
     }
     catch(const std::exception &e)
     {
@@ -276,10 +277,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
-        FieldValue* value = (FieldValue*) valueAddr;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        std::shared_ptr<FieldValue>* value = (std::shared_ptr<FieldValue>*)valueAddr;
         std::string sName (env->GetStringUTFChars (refName, NULL));
-        return (jlong) new MetadataSet (obj->queryByReference (sName, *value));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByReference(sName, **value)));
     }
     catch(const std::exception &e)
     {
@@ -304,7 +305,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::string sName (env->GetStringUTFChars (refName, NULL));
         jlong *body = env->GetLongArrayElements (fieldValues, 0);
         std::vector <FieldValue> values;
@@ -312,12 +313,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     
         for (int i = 0; i < len; i++)
         {
-            FieldValue* addr = (FieldValue*) body[i];
-            values.push_back (*addr);
+            std::shared_ptr<FieldValue>* addr = (std::shared_ptr<FieldValue>*)body[i];
+            values.push_back (**addr);
         }
     
         env->ReleaseLongArrayElements (fieldValues, body, 0);
-        return (jlong) new MetadataSet (obj->queryByReference (sName, values));
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByReference(sName, values)));
     }
     catch(const std::exception &e)
     {
@@ -342,10 +343,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
     
     try 
     {
-        MetadataSet* obj = (MetadataSet*) self;
-        MetadataSet* setFailure = (MetadataSet*) setFailureAddr;
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        std::shared_ptr<MetadataSet>* setFailure = (std::shared_ptr<MetadataSet>*)setFailureAddr;
         
-        return (jlong) obj->shift((long long) dstFrameIndex, (long long) srcFrameIndex, (long long) numOfFrames, setFailure);
+        return (jlong) (*obj)->shift((long long) dstFrameIndex, (long long) srcFrameIndex, (long long) numOfFrames, (*setFailure).get());
     }
     catch(const std::exception &e)
     {
@@ -366,5 +367,19 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    delete (MetadataSet*) self;
+    static const char method_name[] = "MetadataSet::n_1delete";
+
+    try
+    {
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        delete obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
