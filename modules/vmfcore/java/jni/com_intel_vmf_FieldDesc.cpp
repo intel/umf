@@ -127,8 +127,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jcl
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        jint type = (jint)((*(*obj)).type);
-        return type;
+        return (jint)((*(*obj)).type);
     }
     catch(const std::exception &e)
     {
@@ -154,8 +153,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *e
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        jboolean isOptional = (jboolean)(*(*obj)).optional;
-        return isOptional;
+        return (jboolean)(*(*obj)).optional;
     }
     catch(const std::exception &e)
     {

@@ -38,10 +38,8 @@ static void throwJavaException(JNIEnv *env, const std::exception *e, const char 
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata (JNIEnv *env, jclass, jlong mdDescAddr)
 {
-    MetadataDesc* addr = (MetadataDesc*) mdDescAddr;
-    const std::shared_ptr <MetadataDesc>  spDesc = std::make_shared <MetadataDesc>(addr->getMetadataName(), addr->getFields(), addr->getAllReferenceDescs());
-    
-    return (jlong) new Metadata (spDesc);
+    std::shared_ptr <MetadataDesc>* addr = (std::shared_ptr <MetadataDesc>*) mdDescAddr;
+    return (jlong) new std::shared_ptr<Metadata>(new Metadata(*addr));
 }
 
 /*
@@ -49,10 +47,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata (JNIEnv *env, jc
  * Method:    n_MetadataCopy
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env, jclass, jlong other)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env, jclass, jlong otherAddr)
 {
-    Metadata* otherAddr = (Metadata*) other;
-    return (jlong) new Metadata (*otherAddr);
+    std::shared_ptr <Metadata>* other = (std::shared_ptr <Metadata>*) otherAddr;
+    return (jlong) new std::shared_ptr<Metadata> (new Metadata (**other));
 }
 
 /*
@@ -62,8 +60,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (jlong) obj->getId();
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (jlong) (*obj)->getId();
 }
 
 /*
@@ -73,8 +71,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID (JNIEnv *env, jclas
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (jlong) obj->getFrameIndex ();
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (jlong) (*obj)->getFrameIndex ();
 }
 
 /*
@@ -84,8 +82,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex (JNIEnv *en
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (jlong) obj->getNumOfFrames ();
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (jlong) (*obj)->getNumOfFrames ();
 }
 
 /*
@@ -95,8 +93,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames (JNIEnv *e
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env, jclass, jlong self, jlong frameIndex, jlong numOfFrames)
 {
-    Metadata* obj = (Metadata*) self;
-    obj->setFrameIndex ((long long) frameIndex, (long long) numOfFrames);
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    (*obj)->setFrameIndex ((long long) frameIndex, (long long) numOfFrames);
 }
 
 /*
@@ -106,8 +104,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env, jclass, jlong self, jlong time, jlong duration)
 {
-    Metadata* obj = (Metadata*) self;
-    obj->setTimestamp((long long) time, (long long) duration);
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    (*obj)->setTimestamp((long long) time, (long long) duration);
 }
 
 /*
@@ -117,8 +115,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env,
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (jlong) obj->getTime();
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (jlong) (*obj)->getTime();
 }
 
 /*
@@ -128,8 +126,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime (JNIEnv *env, jcl
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (jlong) obj->getDuration();
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (jlong) (*obj)->getDuration();
 }
 
 /*
@@ -139,8 +137,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env,
  */
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (env->NewStringUTF((obj->getName()).c_str()));
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (env->NewStringUTF(((*obj)->getName()).c_str()));
 }
 
 /*
@@ -150,8 +148,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, j
  */
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName (JNIEnv *env, jclass, jlong self)
 {
-    Metadata* obj = (Metadata*) self;
-    return (env->NewStringUTF((obj->getSchemaName()).c_str()));
+    std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+    return (env->NewStringUTF(((*obj)->getSchemaName()).c_str()));
 }
 
 /*
