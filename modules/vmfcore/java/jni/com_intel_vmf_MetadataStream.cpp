@@ -405,8 +405,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__JJJ (JNIEnv *env, jclass, jlong self, jlong XMPPacketSize, jlong XMPPacketOffset)
 {
     std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-    jstring str = env->NewStringUTF (((*obj)->computeChecksum ((long long)XMPPacketSize, (long long) XMPPacketOffset)).c_str ());
-    return str;
+    std::string result = (*obj)->computeChecksum((long long)XMPPacketSize, (long long)XMPPacketOffset);
+    return env->NewStringUTF(result.c_str());;
 }
 
 /*
