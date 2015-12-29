@@ -16,6 +16,7 @@
  */
 
 #include "vmf/compressor_zlib.hpp"
+#include <cstdint>
 #include "zlib.h"
 
 namespace vmf {
@@ -30,10 +31,10 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
 
     // We should also keep the size of source data
     // for further decompression
-    std::vector<u_char> destBuf(destBound + startingBlockSize);
+    std::vector<std::uint8_t> destBuf(destBound + startingBlockSize);
 
     *((vmf_integer*)destBuf.data()) = vmf_integer(srcLen);
-    u_char* toCompress = destBuf.data() + startingBlockSize;
+    std::uint8_t* toCompress = destBuf.data() + startingBlockSize;
 
     //level should be default or from 0 to 9 (regulates speed/size ratio)
     int level = Z_DEFAULT_COMPRESSION;
@@ -62,11 +63,11 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
     //input data also keeps the size of source data
     //since zlib doesn't save it at compression time
     size_t  compressedSize = input.size - startingBlockSize;
-    u_char* compressedBuf = (u_char*)input.data.get();
+    std::uint8_t* compressedBuf = (std::uint8_t*)input.data.get();
     size_t decompressedSize = *((vmf_integer*)compressedBuf);
     compressedBuf += startingBlockSize;
     size_t gotDecompressedSize = decompressedSize;
-    std::vector<u_char> decompressedBuf(decompressedSize);
+    std::vector<std::uint8_t> decompressedBuf(decompressedSize);
     int rcode = uncompress(decompressedBuf.data(), &gotDecompressedSize, compressedBuf, compressedSize);
     if(rcode != Z_OK)
     {
