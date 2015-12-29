@@ -47,7 +47,6 @@ namespace vmf
         enum Type
         {
             type_unknown = 0,
-            type_char,
             type_integer,
             type_real,
             type_string,
@@ -55,7 +54,6 @@ namespace vmf
             type_vec3d,
             type_vec4d,
             type_rawbuffer,
-            type_char_vector,
             type_integer_vector,
             type_real_vector,
             type_string_vector,
@@ -92,7 +90,6 @@ namespace vmf
     const vmf_##T& get_##T() const; \
     operator const vmf_##T& () const;
 
-        DECLARE_VMF_TYPE( char )
         DECLARE_VMF_TYPE( integer )
         DECLARE_VMF_TYPE( real )
         DECLARE_VMF_TYPE( string)
@@ -107,7 +104,6 @@ namespace vmf
     const std::vector<vmf_##T>& get_##T##_vector() const; \
     operator const std::vector<vmf_##T>& () const;
 
-        DECLARE_VECTOR_VMF_TYPE( char )
         DECLARE_VECTOR_VMF_TYPE( integer )
         DECLARE_VECTOR_VMF_TYPE( real )
         DECLARE_VECTOR_VMF_TYPE( string )
@@ -295,9 +291,6 @@ namespace vmf
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
-            case vmf::Variant::type_char:
-                limit = (T)std::numeric_limits<vmf::vmf_char>::lowest();
-                break;
             case vmf::Variant::type_integer:
                 limit = (T)std::numeric_limits<vmf::vmf_integer>::lowest();
                 break;
@@ -326,9 +319,6 @@ namespace vmf
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
-            case vmf::Variant::type_char:
-                limit = (T)std::numeric_limits<vmf::vmf_char>::max();
-                break;
             case vmf::Variant::type_integer:
                 limit = (T)std::numeric_limits<vmf::vmf_integer>::max();
                 break;
