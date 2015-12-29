@@ -483,7 +483,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFr
     jlong *cArray = env->GetLongArrayElements (frameIndexAndNumOfFrames, 0);
     jsize len = env->GetArrayLength(frameIndexAndNumOfFrames);
     if (len == 2)
-        (*obj)->convertTimestampToFrameIndex((long long)timestamp, (long long)duration, cArray[0], cArray[1]);
+        (*obj)->convertTimestampToFrameIndex((long long)timestamp, (long long)duration, (long long)cArray[0], (long long)cArray[1]);
     else
         throwJavaException(env, 0, method_name);
 
@@ -506,7 +506,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToT
     jsize len = env->GetArrayLength (timestampAndDuration);
 
     if (len == 2)
-        (*obj)->convertFrameIndexToTimestamp ((long long)frameIndex, (long long)numOfFrames, cArray[0], cArray[1]);
+        (*obj)->convertFrameIndexToTimestamp((long long)frameIndex, (long long)numOfFrames, (long long)cArray[0], (long long)cArray[1]);
     else
         throwJavaException (env, 0, method_name);
 
