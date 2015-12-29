@@ -568,7 +568,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences (JN
 
         for (std::size_t i = 0; i < refs.size(); i++)
         {
-            cArray[i] = (jlong) new std::shared_ptr<Reference>(new Reference((std::shared_ptr<ReferenceDesc>&) refs[i].getReferenceDescription(), (std::weak_ptr<Metadata>&) refs[i].getReferenceMetadata()));
+            std::shared_ptr<ReferenceDesc> rd = refs[i].getReferenceDescription();
+            std::weak_ptr<Metadata> md = refs[i].getReferenceMetadata();
+            cArray[i] = (jlong) new std::shared_ptr<Reference>(new Reference(rd, md));
         }
    
         env->ReleaseLongArrayElements(nObjs, cArray, 0);
