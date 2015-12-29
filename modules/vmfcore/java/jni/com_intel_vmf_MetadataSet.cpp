@@ -58,13 +58,13 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv
  * Method:    n_setTo
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo (JNIEnv *, jclass, jlong selfAddr, jlong otherAddr)
+/*JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo (JNIEnv *, jclass, jlong selfAddr, jlong otherAddr)
 {
     std::shared_ptr<MetadataSet>* self = (std::shared_ptr<MetadataSet>*)selfAddr;
     std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
     MetadataSet tmp = (*(*other));
     (*(*self)) = tmp;
-}
+}*/
 
 /*
  * Class:     com_intel_vmf_MetadataSet
