@@ -17,7 +17,6 @@
 
 #include "compress_common.hpp"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -29,6 +28,7 @@ const string GPS_DESC = "gps";
 const string GPS_COORD_LAT_FIELD = "lat";
 const string GPS_COORD_LNG_FIELD = "lng";
 const string GPS_SCHEMA_NAME = "gps_coords_schema";
+const double PI = 3.14159265358979323846;
 
 void writeMetadataStream(MetadataStream& mdStream, const vmf_string& videoFile)
 {
@@ -58,9 +58,9 @@ void writeMetadataStream(MetadataStream& mdStream, const vmf_string& videoFile)
     const int nPoints = 32768;
     for(int i = 0; i < nPoints; i++)
     {
-        float lat =   37.235 + cos(i/25.0*2.0*M_PI) * 0.001;
-        float lng = -115.811 + sin(i/25.0*2.0*M_PI) * 0.001;
-        long int time = i;
+        float lat =   37.235 + cos(i/25.0*2.0*PI) * 0.001;
+        float lng = -115.811 + sin(i/25.0*2.0*PI) * 0.001;
+        long long time = i;
         cout << "Adding metadata item 'lat " << lat << " lng " << lng << "'";
         cout << " with associated time " << time << endl;
 
@@ -111,7 +111,7 @@ void readVideoFile(const vmf_string& videoFile)
         vmf_real lng = metadataItem->getFieldValue(GPS_COORD_LNG_FIELD);
         cout << "\tGPS coordinates are: lat " << lat << " lng " << lng << endl;
 
-        long int time = metadataItem->getTime();
+        long long time = metadataItem->getTime();
         cout << "\tAssociated time is: " << time << endl;
     }
 
