@@ -58,8 +58,8 @@ void writeMetadataStream(MetadataStream& mdStream, const vmf_string& videoFile)
     const int nPoints = 32768;
     for(int i = 0; i < nPoints; i++)
     {
-        float lat =   37.235 + cos(i/25.0*2.0*PI) * 0.001;
-        float lng = -115.811 + sin(i/25.0*2.0*PI) * 0.001;
+        float lat = float(  37.235 + cos(i/25.0*2.0*PI) * 0.001);
+        float lng = float(-115.811 + sin(i/25.0*2.0*PI) * 0.001);
         long long time = i;
         cout << "Adding metadata item 'lat " << lat << " lng " << lng << "'";
         cout << " with associated time " << time << endl;
