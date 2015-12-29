@@ -112,41 +112,39 @@ namespace vmf
         vmf_rawbuffer() : std::vector<char>()
         { }
 
+        vmf_rawbuffer(const std::vector<char>& vec) : std::vector<char>(vec)
+        { }
+
+        vmf_rawbuffer(std::vector<char>&& rVec) : std::vector<char>(rVec)
+        { }
+
         vmf_rawbuffer(const vmf_rawbuffer& other) : std::vector<char>(other)
         { }
 
-        vmf_rawbuffer(vmf_rawbuffer&& other)
-        {
-            std::swap(*this, other);
-        }
+        vmf_rawbuffer(vmf_rawbuffer&& other) : std::vector<char>(static_cast< std::vector<char> && >(other))
+        { }
 
         vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
         {
-            return static_cast<vmf_rawbuffer&>(
-                   std::vector<char>::operator=(
-                   static_cast< const std::vector<char> & >(other)));
+            std::vector<char>::operator=( static_cast< const std::vector<char> & >(other) );
+            return *this;
         }
 
         vmf_rawbuffer& operator=(vmf_rawbuffer&& other)
         {
-            return static_cast<vmf_rawbuffer&>(
-                   std::vector<char>::operator=(
-                   static_cast< std::vector<char> && >(other)));
+            std::vector<char>::operator=( static_cast< std::vector<char> && >(other) );
+            return *this;
         }
 
-        vmf_rawbuffer(const char* str, const size_t len)
+        vmf_rawbuffer(const char* ptr, const size_t len)
         {
-            *this = (str != nullptr) ? vmf_rawbuffer(str, str + len) : vmf_rawbuffer(len);
+            *this = (ptr != nullptr) ? vmf_rawbuffer(ptr, ptr + len) : vmf_rawbuffer(len);
         }
 
-    private:
-        // These constructors are private
-        // because a Variant value can be converted to both size_t and vmf_rawbuffer
-        vmf_rawbuffer(const size_t len) : std::vector<char>(len)
+        explicit vmf_rawbuffer(const size_t len) : std::vector<char>(len)
         { }
 
-        vmf_rawbuffer(const char* strBegin,
-                      const char* strEnd) : std::vector<char>(strBegin, strEnd)
+        vmf_rawbuffer(const char* ptrBegin, const char* ptrEnd) : std::vector<char>(ptrBegin, ptrEnd)
         { }
     };
 
