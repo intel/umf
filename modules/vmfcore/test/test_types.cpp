@@ -17,7 +17,7 @@
 
 #include "test_precomp.hpp"
 
-TEST(TestVmfRawBuffer, operatorEq)
+TEST(TestVmfRawBuffer, operatorAssign)
 {
     vmf::vmf_rawbuffer buf;
 
@@ -31,7 +31,7 @@ TEST(TestVmfRawBuffer, operatorEq)
 }
 
 
-TEST(TestVmfRawBuffer, operatorEqMove)
+TEST(TestVmfRawBuffer, operatorAssignMove)
 {
     std::string s = "Some string containing text";
 
