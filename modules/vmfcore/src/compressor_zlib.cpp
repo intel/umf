@@ -38,7 +38,8 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
 
     //level should be default or from 0 to 9 (regulates speed/size ratio)
     int level = Z_DEFAULT_COMPRESSION;
-    int rcode = compress2(toCompress, &destLength, (const Bytef*)input.c_str(), srcLen, level);
+    int rcode = compress2(toCompress, (uLongf*)&destLength,
+                          (const Bytef*)input.c_str(), srcLen, level);
     destLength += startingBlockSize;
 
     if(rcode != Z_OK)
@@ -68,7 +69,8 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
     compressedBuf += startingBlockSize;
     size_t gotDecompressedSize = decompressedSize;
     std::vector<std::uint8_t> decompressedBuf(decompressedSize);
-    int rcode = uncompress(decompressedBuf.data(), &gotDecompressedSize, compressedBuf, compressedSize);
+    int rcode = uncompress(decompressedBuf.data(), (uLongf*)&gotDecompressedSize,
+                           compressedBuf, compressedSize);
     if(rcode != Z_OK)
     {
         if(rcode == Z_MEM_ERROR)
