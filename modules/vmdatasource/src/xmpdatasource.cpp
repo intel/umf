@@ -101,7 +101,7 @@ void XMPDataSource::setCompressor(const vmf_string &id)
 {
     if(!id.empty())
     {
-        compressor = Compressor::getInstance(id);
+        compressor = Compressor::create(id);
         if(!compressor)
         {
             VMF_EXCEPTION(IncorrectParamException,
@@ -127,7 +127,7 @@ void XMPDataSource::loadXMPstructs()
         compressedXMP->GetProperty(VMF_NS, compressionAlgoPropName.c_str(), &algo, NULL);
         if(!algo.empty())
         {
-            std::shared_ptr<Compressor> decompressor = Compressor::getInstance(algo);
+            std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
             if(decompressor)
             {
                 string encoded;

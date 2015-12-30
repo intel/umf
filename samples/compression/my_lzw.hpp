@@ -28,6 +28,11 @@ public:
 
     virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output);
 
+    std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new MyLZWCompressor);
+    }
+
     virtual vmf::vmf_string getId()
     {
         return "com.intel.vmf.compressor.example.my_lzw";

@@ -48,6 +48,12 @@ public:
     virtual void decompress(const vmf_rawbuffer& input, vmf_string& output) = 0;
 
     /*!
+     * \brief Create new instance of the compressor
+     * \return Smart pointer to ICompressor instance
+     */
+    virtual std::shared_ptr<Compressor> createNewInstance() const = 0;
+
+    /*!
      * \brief Get the ID of current algorithm
      */
     virtual vmf_string getId() = 0;
@@ -76,11 +82,11 @@ public:
     static void unregister(const vmf_string& id);
 
     /*!
-     * \brief Gets instance of compression identified by id registered before
+     * \brief Creates new instance of compression identified by id registered before
      * \param id String identifying compression algorithm
      * \return Smart pointer to ICompressor instance
      */
-    static std::shared_ptr<Compressor> getInstance(const vmf_string& id);
+    static std::shared_ptr<Compressor> create(const vmf_string& id);
 };
 
 } /* vmf */

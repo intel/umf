@@ -25,7 +25,7 @@ std::string ReaderBase::decompress(const std::string& input)
     std::string decompressed;
     if(!compressorId.empty())
     {
-        std::shared_ptr<Compressor> compressor = Compressor::getInstance(compressorId);
+        std::shared_ptr<Compressor> compressor = Compressor::create(compressorId);
         if(compressor)
         {
             // Compressed binary data should be represented in base64

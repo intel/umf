@@ -49,6 +49,15 @@ public:
     virtual void decompress(const vmf_rawbuffer& input, vmf_string &output);
 
     /*!
+     * \brief Create new instance of the compressor
+     * \return Smart pointer to ICompressor instance
+     */
+    virtual std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new CompressorDummy);
+    }
+
+    /*!
      * \brief Get the ID of current algorithm
      */
     virtual vmf_string getId()

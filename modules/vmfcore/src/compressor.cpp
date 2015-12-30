@@ -41,11 +41,11 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 }
 
 
-std::shared_ptr<Compressor> Compressor::getInstance(const vmf_string &id)
+std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
-        return cmap.at(id);
+        return cmap.at(id)->createNewInstance();
     else
         return std::shared_ptr<Compressor>();
 }
