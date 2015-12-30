@@ -115,6 +115,14 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift
 
 /*
  * Class:     com_intel_vmf_MetadataSet
+ * Method:    n_getSize
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataSet
  * Method:    n_delete
  * Signature: (J)V
  */

@@ -419,14 +419,14 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
         vmf_rawbuffer buf = Variant::base64decode (str);
         jsize size = (jsize)(buf.size);
         jbyteArray byteArray = env->NewByteArray (size);
-        jbyte* array = env->GetByteArrayElements (byteArray, 0);
+        jbyte* cArray = env->GetByteArrayElements (byteArray, 0);
         
-        for (std::size_t i = 0; i < buf.size; i++)
+        for (std::size_t i = 0; i < (buf.size); i++)
         {
-            array[i] = buf.data[i];
+            cArray[i] = (jbyte)(buf.data[i]);
         }
         
-        env->ReleaseByteArrayElements (byteArray, array, 0);
+        env->ReleaseByteArrayElements (byteArray, cArray, 0);
         return byteArray;
     }
     catch(const std::exception &e)

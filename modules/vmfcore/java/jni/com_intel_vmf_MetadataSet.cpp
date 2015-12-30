@@ -363,6 +363,32 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
 
 /*
  * Class:     com_intel_vmf_MetadataSet
+ * Method:    n_getSize
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataSet::n_1getSize";
+    
+    try 
+    {
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        return (jlong) (*obj)->size();
+    }
+    catch(const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    } 
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+    
+    return 0;
+}
+
+/*
+ * Class:     com_intel_vmf_MetadataSet
  * Method:    n_delete
  * Signature: (J)V
  */

@@ -109,6 +109,11 @@ public class MetadataSet implements IQuery
         return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, setFailure.nativeObj);
     }
     
+    public long getSize ()
+    {
+        return n_getSize (nativeObj);
+    }
+    
     @Override
     protected void finalize () throws Throwable 
     {
@@ -131,5 +136,6 @@ public class MetadataSet implements IQuery
     private native static long n_queryByReference (long nativeObj, String refName, long value);
     private native static long n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
     private native static long n_shift (long nativeObjAddr, long dstFrameIndex, long srcFrameIndex, long numOfFrames, long setFailure);
+    private native static long n_getSize (long nativeObj);
     private native static void n_delete (long nativeObj);
 }
