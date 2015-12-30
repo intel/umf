@@ -50,11 +50,6 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
         return std::shared_ptr<Compressor>();
 }
 
-void Compressor::unregister(std::shared_ptr<Compressor> compressor)
-{
-    unregister(compressor->getId());
-}
-
 void Compressor::unregister(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();

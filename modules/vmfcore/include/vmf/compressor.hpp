@@ -71,12 +71,6 @@ public:
 
     /*!
      * \brief Unregisters previously registered compression algorithm
-     * \param compressor
-     */
-    static void unregister(std::shared_ptr<Compressor> compressor);
-
-    /*!
-     * \brief Unregisters previously registered compression algorithm
      * \param id String id of the compression algorithm
      */
     static void unregister(const vmf_string& id);
