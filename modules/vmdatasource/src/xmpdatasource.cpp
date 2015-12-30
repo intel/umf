@@ -174,7 +174,7 @@ void XMPDataSource::saveXMPstructs()
         vmf_rawbuffer compressed;
         compressor->compress(buffer, compressed);
         string encoded;
-        XMPUtils::EncodeToBase64 (compressed.data.get(), compressed.size, &encoded);
+        XMPUtils::EncodeToBase64 (compressed.data(), compressed.size(), &encoded);
         compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
         compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
     }

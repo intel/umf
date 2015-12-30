@@ -71,8 +71,8 @@ void MyLZWCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
     }
 
     //load codes from raw buffer to vector<int>
-    size_t nCodes = input.size/sizeof(int);
-    int* bufCodes = (int*)input.data.get();
+    size_t nCodes = input.size()/sizeof(int);
+    int* bufCodes = (int*)input.data();
     vector<int> codes;
     copy_n(bufCodes, nCodes,  std::back_inserter(codes));
 

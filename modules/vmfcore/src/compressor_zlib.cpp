@@ -63,8 +63,8 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //input data also keeps the size of source data
     //since zlib doesn't save it at compression time
-    size_t  compressedSize = input.size - startingBlockSize;
-    std::uint8_t* compressedBuf = (std::uint8_t*)input.data.get();
+    size_t  compressedSize = input.size() - startingBlockSize;
+    std::uint8_t* compressedBuf = (std::uint8_t*)input.data();
     size_t decompressedSize = size_t(*((vmf_integer*)compressedBuf));
     compressedBuf += startingBlockSize;
     size_t gotDecompressedSize = decompressedSize;

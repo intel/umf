@@ -28,7 +28,7 @@ void CompressorDummy::compress(const vmf_string &input, vmf_rawbuffer& output)
 void CompressorDummy::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //copies code to another buffer and writes result
-    output = std::move(MetaString(input.data.get(), input.size));
+    output = std::move(MetaString(input.data(), input.size()));
 }
 
 class DummyCompressorRegistrator
