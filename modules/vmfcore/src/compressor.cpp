@@ -53,7 +53,15 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 void Compressor::unregister(const vmf_string &id)
 {
     CompressorsMap& cmap = getMapInstance();
-    cmap.erase(id);
+    if(cmap.find(id) != cmap.end())
+    {
+        cmap.erase(id);
+    }
+    else
+    {
+        VMF_EXCEPTION(IncorrectParamException,
+                      "Unregistered compression algorithm: " + id);
+    }
 }
 
 } /* vmf */
