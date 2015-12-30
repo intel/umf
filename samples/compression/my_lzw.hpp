@@ -28,7 +28,7 @@ public:
 
     virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output);
 
-    virtual const vmf::vmf_string getId()
+    virtual vmf::vmf_string getId()
     {
         return "com.intel.vmf.compressor.example.my_lzw";
     }

@@ -50,7 +50,7 @@ public:
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const vmf_string getId() = 0;
+    virtual vmf_string getId() = 0;
 
     /*!
      * \brief Default destructor
@@ -59,13 +59,13 @@ public:
 
     /*!
      * \brief Registers new algorithm before its use in decompression.
-     * \param impl Pointer to the implementation of the algorithm
+     * \param compressor Pointer to the implementation of the algorithm
      */
     static void registerNew(std::shared_ptr<Compressor> compressor);
 
     /*!
      * \brief Unregisters previously registered compression algorithm
-     * \param impl
+     * \param compressor
      */
     static void unregister(std::shared_ptr<Compressor> compressor);
 

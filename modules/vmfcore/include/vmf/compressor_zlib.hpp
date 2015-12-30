@@ -54,7 +54,7 @@ public:
     /*!
      * \brief Get the ID of current algorithm
      */
-    virtual const vmf_string getId()
+    virtual vmf_string getId()
     {
         return "com.intel.vmf.compressor.zlib";
     }
