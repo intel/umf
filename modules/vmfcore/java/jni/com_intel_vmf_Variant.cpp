@@ -417,7 +417,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
     {
         std::string str (env->GetStringUTFChars (src, NULL));
         vmf_rawbuffer buf = Variant::base64decode (str);
-        jbyteArray byteArray = env->NewByteArray ((long)buf.size);
+        jbyteArray byteArray = env->NewByteArray ((jsize)buf.size);
         jbyte* array = env->GetByteArrayElements (byteArray, 0);
         
         for (std::size_t i = 0; i < buf.size; i++)
