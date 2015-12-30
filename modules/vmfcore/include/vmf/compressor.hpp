@@ -61,13 +61,13 @@ public:
      * \brief Registers new algorithm before its use in decompression.
      * \param impl Pointer to the implementation of the algorithm
      */
-    static void registerNew(std::shared_ptr<Compressor> impl);
+    static void registerNew(std::shared_ptr<Compressor> compressor);
 
     /*!
      * \brief Unregisters previously registered compression algorithm
      * \param impl
      */
-    static void unregister(std::shared_ptr<Compressor> impl);
+    static void unregister(std::shared_ptr<Compressor> compressor);
 
     /*!
      * \brief Unregisters previously registered compression algorithm

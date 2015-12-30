@@ -29,15 +29,15 @@ CompressorsMap& getMapInstance()
     return registeredCompressors;
 }
 
-void Compressor::registerNew(std::shared_ptr<Compressor> impl)
+void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
-    if(!impl)
+    if(!compressor)
     {
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
     CompressorsMap& cmap = getMapInstance();
-    cmap[impl->getId()] = impl;
+    cmap[compressor->getId()] = compressor;
 }
 
 
@@ -50,9 +50,9 @@ std::shared_ptr<Compressor> Compressor::getInstance(const vmf_string &id)
         return std::shared_ptr<Compressor>();
 }
 
-void Compressor::unregister(std::shared_ptr<Compressor> impl)
+void Compressor::unregister(std::shared_ptr<Compressor> compressor)
 {
-    unregister(impl->getId());
+    unregister(compressor->getId());
 }
 
 void Compressor::unregister(const vmf_string &id)
