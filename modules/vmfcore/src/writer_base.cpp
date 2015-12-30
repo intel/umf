@@ -25,7 +25,7 @@ std::string WriterBase::compress(const std::string& input)
     std::string compressed;
     if(!compressorId.empty())
     {
-        std::shared_ptr<Compressor> compressor = Compressor::getById(compressorId);
+        std::shared_ptr<Compressor> compressor = Compressor::getInstance(compressorId);
         if(compressor)
         {
             vmf_rawbuffer compressedBuf;

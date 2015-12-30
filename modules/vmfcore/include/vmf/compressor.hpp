@@ -80,7 +80,7 @@ public:
      * \param id String identifying compression algorithm
      * \return Smart pointer to ICompressor instance
      */
-    static std::shared_ptr<Compressor> getById(const vmf_string& id);
+    static std::shared_ptr<Compressor> getInstance(const vmf_string& id);
 };
 
 } /* vmf */
