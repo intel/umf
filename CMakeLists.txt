@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 # must go before the `project()` command
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug" CACHE STRING "Configs" FORCE)
 
 project(vmf)
 
@@ -34,6 +34,10 @@ endif()
 
 if(CMAKE_GENERATOR MATCHES "Makefiles|Ninja" AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if(DEFINED CMAKE_BUILD_TYPE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
