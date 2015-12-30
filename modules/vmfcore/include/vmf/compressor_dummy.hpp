@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef COMPRESSOR_DUMMY_HPP
-#define COMPRESSOR_DUMMY_HPP
+#ifndef VMF_COMPRESSOR_DUMMY_HPP
+#define VMF_COMPRESSOR_DUMMY_HPP
 
 #include "compressor.hpp"
 
@@ -59,5 +59,5 @@ public:
 
 } /* vmf */
 
-#endif /* COMPRESSOR_DUMMY_HPP */
+#endif /* VMF_COMPRESSOR_DUMMY_HPP */
 

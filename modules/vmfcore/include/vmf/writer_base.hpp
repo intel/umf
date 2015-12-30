@@ -22,8 +22,8 @@
 
 #pragma once
 
-#ifndef WRITER_BASE_HPP
-#define WRITER_BASE_HPP
+#ifndef VMF_WRITER_BASE_HPP
+#define VMF_WRITER_BASE_HPP
 
 #include "iwriter.hpp"
 
@@ -49,4 +49,4 @@ protected:
 
 }//vmf
 
-#endif /* WRITER_BASE_HPP */
+#endif /* VMF_WRITER_BASE_HPP */

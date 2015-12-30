@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef COMPRESSOR_ZLIB_HPP
-#define COMPRESSOR_ZLIB_HPP
+#ifndef VMF_COMPRESSOR_ZLIB_HPP
+#define VMF_COMPRESSOR_ZLIB_HPP
 
 #include "compressor.hpp"
 
@@ -62,4 +62,4 @@ public:
 
 } /* vmf */
 
-#endif /* COMPRESSOR_ZLIB_HPP */
+#endif /* VMF_COMPRESSOR_ZLIB_HPP */

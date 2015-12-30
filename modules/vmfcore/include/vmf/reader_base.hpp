@@ -22,8 +22,8 @@
 
 #pragma once
 
-#ifndef READER_BASE_HPP
-#define READER_BASE_HPP
+#ifndef VMF_READER_BASE_HPP
+#define VMF_READER_BASE_HPP
 
 #include "ireader.hpp"
 
@@ -53,4 +53,4 @@ protected:
 
 }//vmf
 
-#endif /* READER_BASE_HPP */
+#endif /* VMF_READER_BASE_HPP */

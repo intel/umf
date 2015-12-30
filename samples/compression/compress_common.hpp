@@ -15,12 +15,12 @@
  *
  */
 
-#ifndef COMPRESS_COMMON_HPP
-#define COMPRESS_COMMON_HPP
+#ifndef VMF_COMPRESS_COMMON_HPP
+#define VMF_COMPRESS_COMMON_HPP
 
 #include "vmf/vmf.hpp"
 
 void writeMetadataStream(vmf::MetadataStream& mdStream, const vmf::vmf_string& videoFile);
 void readVideoFile(const vmf::vmf_string& videoFile);
 
-#endif //COMPRESS_COMMON_HPP
+#endif //VMF_COMPRESS_COMMON_HPP

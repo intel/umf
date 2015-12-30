@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef COMPRESSOR_HPP
-#define COMPRESSOR_HPP
+#ifndef VMF_COMPRESSOR_HPP
+#define VMF_COMPRESSOR_HPP
 
 /*!
 * \file compressor.hpp
@@ -55,10 +55,7 @@ public:
     /*!
      * \brief Default destructor
      */
-    virtual ~Compressor()
-    {
-
-    }
+    virtual ~Compressor() { }
 
     /*!
      * \brief Registers new algorithm before its use in decompression.
@@ -88,4 +85,4 @@ public:
 
 } /* vmf */
 
-#endif /* COMPRESSOR_HPP */
+#endif /* VMF_COMPRESSOR_HPP */
