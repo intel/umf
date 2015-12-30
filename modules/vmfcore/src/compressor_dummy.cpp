@@ -22,13 +22,13 @@ namespace vmf {
 void CompressorDummy::compress(const vmf_string &input, vmf_rawbuffer& output)
 {
     //copies input to another buffer and writes result
-    output = std::move(vmf_rawbuffer(input.c_str(), input.size()));
+    output = vmf_rawbuffer(input.c_str(), input.size());
 }
 
 void CompressorDummy::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
     //copies code to another buffer and writes result
-    output = std::move(MetaString(input.data(), input.size()));
+    output = vmf_string(input.data(), input.size());
 }
 
 class DummyCompressorRegistrator
