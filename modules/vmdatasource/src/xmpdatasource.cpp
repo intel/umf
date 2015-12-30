@@ -97,7 +97,7 @@ XMPDataSource::~XMPDataSource()
 
 }
 
-void XMPDataSource::setCompressorById(const vmf_string &id)
+void XMPDataSource::setCompressor(const vmf_string &id)
 {
     if(!id.empty())
     {

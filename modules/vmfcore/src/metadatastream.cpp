@@ -111,7 +111,7 @@ bool MetadataStream::save(vmf_string compressorId)
     {
         if( m_eMode == ReadWrite && !m_sFilePath.empty() )
         {
-            dataSource->setCompressorById(compressorId);
+            dataSource->setCompressor(compressorId);
             dataSource->remove(removedIds);
             removedIds.clear();
 

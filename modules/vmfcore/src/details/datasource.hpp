@@ -147,9 +147,9 @@ public:
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
 
     /*
-     * \brief Sets the compressor for compression operations at saving
+     * \brief Sets registered compressor for compression operations at saving
      */
-    virtual void setCompressorById(const vmf_string& id) = 0;
+    virtual void setCompressor(const vmf_string& id) = 0;
 
     /*
      *\brief Commits saved changes to file
