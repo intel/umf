@@ -120,7 +120,6 @@ static const string compressionAlgoPropName = "compression_algo";
 void XMPDataSource::loadXMPstructs()
 {
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
-    //xmpFile.GetXMP(NULL, &buffer, NULL);
     xmpFile.GetXMP(compressedXMP.get());
     if(compressedXMP->DoesPropertyExist(VMF_NS, compressionAlgoPropName.c_str()))
     {
@@ -182,7 +181,6 @@ void XMPDataSource::saveXMPstructs()
     {
         compressedXMP = xmp;
     }
-    //xmpFile.PutXMP(buffer.c_str(), buffer.size());
     if(xmpFile.CanPutXMP(*compressedXMP))
     {
         xmpFile.PutXMP(*compressedXMP);
@@ -302,7 +300,6 @@ void XMPDataSource::saveSchema(const MetaString& schemaName, const MetadataStrea
     try
     {
         metadataSource->saveSchema(schemaName, stream);
-        //pushChanges();
     }
     catch(const XMP_Error& e)
     {
@@ -390,7 +387,6 @@ void XMPDataSource::clear()
     {
         metadataSource->clear();
         schemaSource->clear();
-        //pushChanges();
     }
     catch(const XMP_Error& e)
     {
@@ -416,7 +412,6 @@ IdType XMPDataSource::loadId()
 void XMPDataSource::save(const IdType &id)
 {
     xmp->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, id);
-    //pushChanges();
 }
 
 
@@ -447,7 +442,6 @@ void XMPDataSource::schemaSourceCheck()
 void XMPDataSource::removeSchema(const MetaString &schemaName)
 {
     schemaSource->remove(schemaName);
-    //pushChanges();
 }
 
 std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& XMPPacketOffset)
@@ -485,7 +479,6 @@ std::string XMPDataSource::loadChecksum()
 void XMPDataSource::saveChecksum(const MetaString& checksum)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
-    //pushChanges();
 }
 
 void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
@@ -538,8 +531,6 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
             }
         });
     }
-
-    //pushChanges();
 }
 
 void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
