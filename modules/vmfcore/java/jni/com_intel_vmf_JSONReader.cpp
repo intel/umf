@@ -207,7 +207,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNIEn
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments (JNIEnv *env, jclass, jlong self, jstring text, jlongArray segments)
 {
-    static const char method_name[] = "JSONReader::n_1parseMetadata";
+    static const char method_name[] = "JSONReader::n_1VideoSegments";
     
     try 
     {
