@@ -56,7 +56,7 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
         }
     }
 
-    output = std::move(vmf_rawbuffer((const char*)destBuf.data(), destLength));
+    output = vmf_rawbuffer((const char*)destBuf.data(), destLength);
 }
 
 void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
@@ -91,7 +91,7 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
                       "The size of decompressed data doesn't match to source size");
     }
 
-    output = std::move(vmf_string((const char*)decompressedBuf.data(), decompressedSize));
+    output = vmf_string((const char*)decompressedBuf.data(), decompressedSize);
 }
 
 class ZLibCompressorRegistrator

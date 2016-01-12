@@ -57,7 +57,7 @@ void MyLZWCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
         codes.push_back(dictionary[w]); //*result++ = dictionary[w];
 
     //according to C++ standard, this should be correct way to convert vector to array
-    output = std::move(vmf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int)));
+    output = vmf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int));
 }
 
 void MyLZWCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
