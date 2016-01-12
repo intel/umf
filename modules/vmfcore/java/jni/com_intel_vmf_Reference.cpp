@@ -2,34 +2,9 @@
 #include<vector>
 #include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Reference.h"
+#include "throwJavaException.hpp"
 
 using namespace vmf;
-
-static void throwJavaException(JNIEnv *env, const std::exception *e, const char *method)
-{
-    std::string what = "unknown exception";
-    jclass je = 0;
-
-    if (e)
-    {
-        std::string exception_type = "std::exception";
-
-        if (dynamic_cast<const Exception*>(e))
-        {
-            exception_type = "vmf::Exception";
-            je = env->FindClass("com/intel/vmf/VmfException");
-        }
-
-        what = exception_type + ": " + e->what();
-    }
-
-    if (!je)
-        je = env->FindClass("java/lang/Exception");
-
-    env->ThrowNew(je, what.c_str());
-
-    VMF_LOG_ERROR(what.c_str());
-}
 
 /*
  * Class:     com_intel_vmf_Reference
