@@ -120,5 +120,3 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *en
         throwJavaException(env, 0, method_name);
     }
 }
-
- 
