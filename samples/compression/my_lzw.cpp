@@ -62,45 +62,52 @@ void MyLZWCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
 
 void MyLZWCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
 {
-    // Build the dictionary.
-    int dictSize = 256;
-    std::map< int, std::string > dictionary;
-    for (int i = 0; i < 256; i++)
+    if(input.empty())
     {
-        dictionary[i] = std::string(1, i);
+        output = vmf_string();
     }
-
-    //load codes from raw buffer to vector<int>
-    size_t nCodes = input.size()/sizeof(int);
-    int* bufCodes = (int*)input.data();
-    vector<int> codes;
-    copy_n(bufCodes, nCodes,  std::back_inserter(codes));
-
-    size_t idx = 0;
-    std::string w(1, codes[idx++]); //std::string w(1, *begin++);
-    output = w;
-    std::string entry;
-    for ( ; idx < nCodes; idx++)
+    else
     {
-        int k = codes[idx]; //int k = *begin;
-        if (dictionary.count(k))
+        // Build the dictionary.
+        int dictSize = 256;
+        std::map< int, std::string > dictionary;
+        for (int i = 0; i < 256; i++)
         {
-            entry = dictionary[k];
-        }
-        else if (k == dictSize)
-        {
-            entry = w + w[0];
-        }
-        else
-        {
-            throw std::runtime_error("LZW decompression error: bad input index");
+            dictionary[i] = std::string(1, i);
         }
 
-        output += entry;
+        //load codes from raw buffer to vector<int>
+        size_t nCodes = input.size()/sizeof(int);
+        int* bufCodes = (int*)input.data();
+        vector<int> codes;
+        copy_n(bufCodes, nCodes,  std::back_inserter(codes));
 
-        // Add w+entry[0] to the dictionary.
-        dictionary[dictSize++] = w + entry[0];
+        size_t idx = 0;
+        std::string w(1, codes[idx++]); //std::string w(1, *begin++);
+        output = w;
+        std::string entry;
+        for ( ; idx < nCodes; idx++)
+        {
+            int k = codes[idx]; //int k = *begin;
+            if (dictionary.count(k))
+            {
+                entry = dictionary[k];
+            }
+            else if (k == dictSize)
+            {
+                entry = w + w[0];
+            }
+            else
+            {
+                throw std::runtime_error("LZW decompression error: bad input index");
+            }
 
-        w = entry;
+            output += entry;
+
+            // Add w+entry[0] to the dictionary.
+            dictionary[dictSize++] = w + entry[0];
+
+            w = entry;
+        }
     }
 }
