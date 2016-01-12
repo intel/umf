@@ -1329,3 +1329,110 @@ TEST_F(TestSaveLoadUtils, Checksum)
     ASSERT_EQ(checksum1, checksum2);
 }
 
+
+//Bad compressor that increases the size of input data
+class BloatingCompressor : public vmf::Compressor
+{
+public:
+    static const int factor = 5;
+
+    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output)
+    {
+        output.clear();
+        for(auto it = input.begin(); it != input.end(); ++it)
+        {
+            for(int i = 0; i < factor; i++)
+                output.push_back(*it);
+        }
+    }
+
+    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output)
+    {
+        output.clear();
+        for(auto it = input.begin(); it != input.end();)
+        {
+            char c = *it++;
+            for(int i = 1; i < factor; i++)
+            {
+                char cc = *it++;
+                if(cc != c)
+                {
+                    throw std::runtime_error("Incorrect input to bloating compressor");
+                }
+            }
+            output.push_back(c);
+        }
+    }
+
+    std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new BloatingCompressor);
+    }
+
+    virtual vmf::vmf_string getId()
+    {
+        return "com.intel.vmf.compressor.test.bloating";
+    }
+};
+
+
+class TestSaveLoadCompression : public ::testing::TestWithParam<std::string>
+{
+protected:
+    void SetUp()
+    {
+        copyFile(TEST_FILE_SRC, TEST_FILE);
+        vmf::initialize();
+        //register bloating compressor
+        std::shared_ptr<vmf::Compressor> bloating = std::make_shared<BloatingCompressor>();
+        vmf::Compressor::registerNew(bloating);
+    }
+
+    void TearDown()
+    {
+        vmf::terminate();
+    }
+};
+
+
+TEST_P(TestSaveLoadCompression, Checksum)
+{
+    std::string name = GetParam();
+
+    std::string checksum1, checksum2;
+    {
+        vmf::MetadataStream stream;
+
+        ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
+
+        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        checksum1 = stream.computeChecksum();
+        stream.setChecksum(checksum1);
+        if(name == "unregistered")
+        {
+            ASSERT_FALSE(stream.save(name));
+        }
+        else
+        {
+            ASSERT_TRUE(stream.save(name));
+        }
+        stream.close();
+    }
+
+    if(name != "unregistered")
+    {
+        vmf::MetadataStream stream;
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite));
+        checksum2 = stream.getChecksum();
+        stream.close();
+
+        ASSERT_EQ(checksum1, checksum2);
+    }
+}
+
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompression,
+                        ::testing::Values("com.intel.vmf.compressor.dummy",
+                                          "com.intel.vmf.compressor.zlib",
+                                          "unregistered",
+                                          "com.intel.vmf.compressor.test.bloating"));
