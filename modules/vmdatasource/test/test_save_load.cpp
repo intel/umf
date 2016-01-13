@@ -1390,6 +1390,7 @@ protected:
 
     void TearDown()
     {
+        vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
         vmf::terminate();
     }
 };

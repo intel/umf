@@ -90,7 +90,7 @@ protected:
 };
 
 
-TEST_P(TestCompressor, LossesOnCompression)
+TEST_P(TestCompressor, CreateByName)
 {
     std::string name = GetParam();
 
@@ -102,7 +102,17 @@ TEST_P(TestCompressor, LossesOnCompression)
     else
     {
         ASSERT_NE(compressor, std::shared_ptr<Compressor>());
+    }
+}
 
+
+TEST_P(TestCompressor, LossesOnCompression)
+{
+    std::string name = GetParam();
+
+    if(name != "unregistered")
+    {
+        compressor = vmf::Compressor::create(name);
         int nChars = 0;
         do
         {
@@ -123,13 +133,11 @@ TEST_P(TestCompressor, DummyDecompression)
 {
     std::string name = GetParam();
 
-    compressor = vmf::Compressor::create(name);
-
     //we can only expect undefined behaviour
     //on other compressors when decompressing random data
     if(name == "com.intel.vmf.compressor.dummy")
     {
-        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
+        compressor = vmf::Compressor::create(name);
 
         int nChars = 0;
         do
@@ -150,15 +158,9 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 {
     std::string name = GetParam();
 
-    compressor = vmf::Compressor::create(name);
-    if(name == "unregistered")
+    if(name != "unregistered")
     {
-        ASSERT_EQ(compressor, std::shared_ptr<Compressor>());
-    }
-    else
-    {
-        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
-
+        compressor = vmf::Compressor::create(name);
         vmf_rawbuffer compressed;
         std::string result;
         ASSERT_NO_THROW(compressor->decompress(compressed, result));
