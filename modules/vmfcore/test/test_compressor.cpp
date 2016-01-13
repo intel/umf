@@ -97,11 +97,11 @@ TEST_P(TestCompressor, LossesOnCompression)
     compressor = vmf::Compressor::create(name);
     if(name == "unregistered")
     {
-        ASSERT_EQ(compressor, nullptr);
+        ASSERT_EQ(compressor, std::shared_ptr<Compressor>());
     }
     else
     {
-        ASSERT_NE(compressor, nullptr);
+        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
 
         int nChars = 0;
         do
@@ -129,7 +129,7 @@ TEST_P(TestCompressor, DummyDecompression)
     //on other compressors when decompressing random data
     if(name == "com.intel.vmf.compressor.dummy")
     {
-        ASSERT_NE(compressor, nullptr);
+        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
 
         int nChars = 0;
         do
@@ -153,11 +153,11 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
     compressor = vmf::Compressor::create(name);
     if(name == "unregistered")
     {
-        ASSERT_EQ(compressor, nullptr);
+        ASSERT_EQ(compressor, std::shared_ptr<Compressor>());
     }
     else
     {
-        ASSERT_NE(compressor, nullptr);
+        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
 
         vmf_rawbuffer compressed;
         std::string result;
