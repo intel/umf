@@ -82,6 +82,13 @@ public:
      * \return Smart pointer to Compressor instance
      */
     static std::shared_ptr<Compressor> create(const vmf_string& id);
+
+    /*!
+     * \brief getRegisteredIds Returns a list of currently registered compressors,
+     * both built-in ones or user-defined
+     * \return A list of registered compressors IDs
+     */
+    static std::vector<vmf_string> getRegisteredIds();
 };
 
 } /* vmf */

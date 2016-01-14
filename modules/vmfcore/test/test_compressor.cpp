@@ -176,6 +176,23 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 }
 
 
+TEST_P(TestCompressor, CheckRegisteredIds)
+{
+    std::vector<vmf_string> regIds = vmf::Compressor::getRegisteredIds();
+    std::set<vmf_string> registeredIds(regIds.begin(), regIds.end());
+    std::set<vmf_string> knownIds = {"com.intel.vmf.compressor.dummy",
+                                     "com.intel.vmf.compressor.zlib",
+                                     "com.intel.vmf.compressor.test.bloating"};
+    for(auto it = knownIds.begin(); it != knownIds.end(); it++)
+    {
+        ASSERT_NE(registeredIds.find(*it), registeredIds.end());
+        registeredIds.erase(*it);
+    }
+
+    ASSERT_TRUE(registeredIds.empty());
+}
+
+
 //Compressor class to pass fake Id to registerNew() method
 class FakeCompressor : public CompressorDummy
 {

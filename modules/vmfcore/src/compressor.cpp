@@ -41,6 +41,20 @@ CompressorsMap& getMapInstance(CompressorType type)
 }
 
 
+std::vector<vmf_string> Compressor::getRegisteredIds()
+{
+    std::vector<vmf_string> result;
+    for(CompressorType type: {USER, BUILTIN})
+    {
+        for(auto it = getMapInstance(type).begin(); it != getMapInstance(type).end(); it++)
+        {
+            result.push_back(it->first);
+        }
+    }
+    return result;
+}
+
+
 void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
     if(!compressor)
