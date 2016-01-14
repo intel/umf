@@ -104,11 +104,11 @@ TEST_P(TestCompressor, CreateByName)
     compressor = vmf::Compressor::create(name);
     if(name == "unregistered")
     {
-        ASSERT_EQ(compressor, std::shared_ptr<Compressor>());
+        ASSERT_EQ(compressor, nullptr);
     }
     else
     {
-        ASSERT_NE(compressor, std::shared_ptr<Compressor>());
+        ASSERT_NE(compressor, nullptr);
     }
 }
 

@@ -17,8 +17,18 @@
 
 #include <stdexcept>
 #include "vmf/compressor.hpp"
+#include "vmf/compressor_dummy.hpp"
+#include "vmf/compressor_zlib.hpp"
 
 namespace vmf {
+
+typedef std::map< vmf_string, std::shared_ptr<Compressor> > CompressorsMap;
+
+CompressorsMap& getMapInstance()
+{
+    static CompressorsMap registeredCompressors;
+    return registeredCompressors;
+}
 
 void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
@@ -27,23 +37,38 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
-    Compressor::Map& cmap = getMapInstance();
+    CompressorsMap& cmap = getMapInstance();
     cmap[compressor->getId()] = compressor;
 }
 
 
 std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
-    Compressor::Map& cmap = getMapInstance();
-    if(cmap.find(id) != cmap.end())
-        return cmap.at(id)->createNewInstance();
-    else
-        return std::shared_ptr<Compressor>();
+    //do that to prevent user from unregistering standard compressors
+    static std::shared_ptr<Compressor> dummy(std::make_shared<CompressorDummy>());
+    static std::shared_ptr<Compressor>  zlib(std::make_shared<CompressorZlib>());
+    CompressorsMap& cmap = getMapInstance();
+
+    std::shared_ptr<Compressor> current;
+    if(id == dummy->getId())
+    {
+        current = dummy;
+    }
+    else if(id == zlib->getId())
+    {
+        current = zlib;
+    }
+    else if(cmap.find(id) != cmap.end())
+    {
+        current = cmap.at(id);
+    }
+
+    return current ? current->createNewInstance() : nullptr;
 }
 
 void Compressor::unregister(const vmf_string &id)
 {
-    Compressor::Map& cmap = getMapInstance();
+    CompressorsMap& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
     {
         cmap.erase(id);

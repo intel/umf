@@ -34,8 +34,6 @@ namespace vmf
 class VMF_EXPORT Compressor
 {
 public:
-    typedef std::map< MetaString, std::shared_ptr<Compressor> > Map;
-
     /*!
      * \brief Compress data
      * \param [in] input input text data
@@ -84,9 +82,6 @@ public:
      * \return Smart pointer to ICompressor instance
      */
     static std::shared_ptr<Compressor> create(const vmf_string& id);
-
-private:
-    static Compressor::Map& getMapInstance();
 };
 
 } /* vmf */
