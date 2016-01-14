@@ -142,6 +142,8 @@ public:
 
     /*!
     * \brief Save loaded data to media file
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return Save operation result
     */
     bool save(vmf_string compressorId = vmf_string());
@@ -150,6 +152,8 @@ public:
     /*!
     * \brief Save the in-memory metadata to a different video file.
     * \param sFilePath the path of the new file.
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return true if succeed.
     */
     bool saveTo(const std::string& sFilePath, vmf_string compressorId = vmf_string() );

@@ -50,7 +50,7 @@ public:
 
     /*!
      * \brief Create new instance of the compressor
-     * \return Smart pointer to ICompressor instance
+     * \return Smart pointer to Compressor instance
      */
     virtual std::shared_ptr<Compressor> createNewInstance() const = 0;
 
@@ -72,14 +72,14 @@ public:
 
     /*!
      * \brief Unregisters previously registered compression algorithm
-     * \param id String id of the compression algorithm
+     * \param id String ID of the compression algorithm
      */
     static void unregister(const vmf_string& id);
 
     /*!
-     * \brief Creates new instance of compression identified by id registered before
+     * \brief Creates new instance of previously registered compressor identified by ID
      * \param id String identifying compression algorithm
-     * \return Smart pointer to ICompressor instance
+     * \return Smart pointer to Compressor instance
      */
     static std::shared_ptr<Compressor> create(const vmf_string& id);
 };
