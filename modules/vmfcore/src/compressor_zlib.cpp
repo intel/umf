@@ -117,17 +117,4 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
     }
 }
 
-
-class ZLibCompressorRegistrator
-{
-public:
-    ZLibCompressorRegistrator()
-    {
-        std::shared_ptr<Compressor> c(new CompressorZlib);
-        Compressor::registerNew(c);
-    }
-};
-
-static ZLibCompressorRegistrator zcr;
-
 } /* vmf */

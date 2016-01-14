@@ -15,20 +15,26 @@
  *
  */
 
+#include <stdexcept>
+#include "vmf/compressor.hpp"
 #include "vmf/compressor_dummy.hpp"
+#include "vmf/compressor_zlib.hpp"
 
 namespace vmf {
 
-void CompressorDummy::compress(const vmf_string &input, vmf_rawbuffer& output)
+Compressor::Map& Compressor::getMapInstance()
 {
-    //copies input to another buffer and writes result
-    output = vmf_rawbuffer(input.c_str(), input.size());
-}
-
-void CompressorDummy::decompress(const vmf_rawbuffer& input, vmf_string& output)
-{
-    //copies code to another buffer and writes result
-    output = vmf_string(input.data(), input.size());
+    static Compressor::Map registeredCompressors;
+    //register standard compressors
+    if(registeredCompressors.empty())
+    {
+        std::shared_ptr<Compressor> c;
+        c = std::make_shared<CompressorDummy>();
+        registeredCompressors[c->getId()] = c;
+        c = std::make_shared<CompressorZlib>();
+        registeredCompressors[c->getId()] = c;
+    }
+    return registeredCompressors;
 }
 
 } /* vmf */

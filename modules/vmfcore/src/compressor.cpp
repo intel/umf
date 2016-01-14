@@ -16,18 +16,9 @@
  */
 
 #include <stdexcept>
-#include <map>
 #include "vmf/compressor.hpp"
 
 namespace vmf {
-
-typedef std::map< MetaString, std::shared_ptr<Compressor> > CompressorsMap;
-
-CompressorsMap& getMapInstance()
-{
-    static CompressorsMap registeredCompressors;
-    return registeredCompressors;
-}
 
 void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
@@ -36,14 +27,14 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
-    CompressorsMap& cmap = getMapInstance();
+    Compressor::Map& cmap = getMapInstance();
     cmap[compressor->getId()] = compressor;
 }
 
 
 std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
-    CompressorsMap& cmap = getMapInstance();
+    Compressor::Map& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
         return cmap.at(id)->createNewInstance();
     else
@@ -52,7 +43,7 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 
 void Compressor::unregister(const vmf_string &id)
 {
-    CompressorsMap& cmap = getMapInstance();
+    Compressor::Map& cmap = getMapInstance();
     if(cmap.find(id) != cmap.end())
     {
         cmap.erase(id);
