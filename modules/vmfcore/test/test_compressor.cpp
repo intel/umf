@@ -176,6 +176,46 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 }
 
 
+//Compressor class to pass fake Id to registerNew() method
+class FakeCompressor : public CompressorDummy
+{
+public:
+    std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new BloatingCompressor);
+    }
+
+    virtual vmf::vmf_string getId()
+    {
+        return id;
+    }
+
+    void setId(vmf_string s)
+    {
+        id = s;
+    }
+
+private:
+    vmf_string id;
+};
+
+
+TEST_P(TestCompressor, TryRegisterExisting)
+{
+    std::string name = GetParam();
+    std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
+    std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(name);
+    if(name == "unregistered")
+    {
+        ASSERT_NO_THROW(vmf::Compressor::registerNew(fake));
+    }
+    else
+    {
+        ASSERT_THROW(vmf::Compressor::registerNew(fake), IncorrectParamException);
+    }
+}
+
+
 INSTANTIATE_TEST_CASE_P(UnitTest, TestCompressor,
                         ::testing::Values("com.intel.vmf.compressor.dummy",
                                           "com.intel.vmf.compressor.zlib",

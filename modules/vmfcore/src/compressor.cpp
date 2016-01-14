@@ -23,12 +23,23 @@
 namespace vmf {
 
 typedef std::map< vmf_string, std::shared_ptr<Compressor> > CompressorsMap;
+enum CompressorType {USER=0, BUILTIN=1};
 
-CompressorsMap& getMapInstance()
+CompressorsMap& getMapInstance(CompressorType type)
 {
-    static CompressorsMap registeredCompressors;
-    return registeredCompressors;
+    //do that to prevent user from unregistering standard compressors
+    static CompressorsMap compressors[2];
+    if(compressors[BUILTIN].empty())
+    {
+        //register standard compressors
+        static std::shared_ptr<Compressor> dummy(std::make_shared<CompressorDummy>());
+        static std::shared_ptr<Compressor>  zlib(std::make_shared<CompressorZlib>());
+        compressors[BUILTIN][dummy->getId()] = dummy;
+        compressors[BUILTIN][ zlib->getId()] = zlib;
+    }
+    return compressors[type];
 }
+
 
 void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
@@ -37,38 +48,38 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
-    CompressorsMap& cmap = getMapInstance();
+    if(create(compressor->getId()))
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Compressor with that ID is already registered");
+    }
+
+    CompressorsMap& cmap = getMapInstance(USER);
     cmap[compressor->getId()] = compressor;
 }
 
 
 std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
-    //do that to prevent user from unregistering standard compressors
-    static std::shared_ptr<Compressor> dummy(std::make_shared<CompressorDummy>());
-    static std::shared_ptr<Compressor>  zlib(std::make_shared<CompressorZlib>());
-    CompressorsMap& cmap = getMapInstance();
+    CompressorsMap& userMap    = getMapInstance(USER);
+    CompressorsMap& builtinMap = getMapInstance(BUILTIN);
 
     std::shared_ptr<Compressor> current;
-    if(id == dummy->getId())
+    if(builtinMap.find(id) != builtinMap.end())
     {
-        current = dummy;
+        current = builtinMap.at(id);
     }
-    else if(id == zlib->getId())
+    else if(userMap.find(id) != userMap.end())
     {
-        current = zlib;
-    }
-    else if(cmap.find(id) != cmap.end())
-    {
-        current = cmap.at(id);
+        current = userMap.at(id);
     }
 
     return current ? current->createNewInstance() : nullptr;
 }
 
+
 void Compressor::unregister(const vmf_string &id)
 {
-    CompressorsMap& cmap = getMapInstance();
+    CompressorsMap& cmap = getMapInstance(USER);
     if(cmap.find(id) != cmap.end())
     {
         cmap.erase(id);
