@@ -12,17 +12,17 @@ public class MetadataDesc
     protected MetadataDesc (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public MetadataDesc ()
     {
-        nativeObj = n_MetadataDesc ();
+        this (n_MetadataDesc ());
     }
     
-    public MetadataDesc (String mdName, FieldDesc[] fields)
+    public MetadataDesc (String mdName, FieldDesc...fields)
     {
         long nObjs[] = new long [fields.length];
         
@@ -53,7 +53,7 @@ public class MetadataDesc
     
     public MetadataDesc (String mdName, long type)
     {
-        nativeObj = n_MetadataDesc (mdName, type);
+        this (n_MetadataDesc (mdName, type));
     }
     
     public String getMetadataName ()
@@ -118,7 +118,7 @@ public class MetadataDesc
     {
         return n_getFieldDesc (nativeObj, field.nativeObj, fieldName);
     }
-        
+    
     @Override
     protected void finalize () throws Throwable 
     {

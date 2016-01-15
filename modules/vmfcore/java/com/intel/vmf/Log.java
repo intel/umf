@@ -8,19 +8,16 @@ public class Log
     }
     
     public static final int LOG_INFO = 0;
-    
     public static final int LOG_WARNING = 1;
-    
     public static final int LOG_ERROR = 2;
-    
     public static final int LOG_NO_MESSAGE = 3;
     
-    static void logToFile (String file)
+    static void setLogToFile (String file)
     {
         n_logToFile (file);
     }
     
-    static void logToConsole ()
+    static void setLogToConsole ()
     {
         n_logToConsole ();
     }

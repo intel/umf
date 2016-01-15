@@ -6,7 +6,7 @@ public class MetadataSchema
     {
         System.loadLibrary("vmf");
     }
-    
+
     protected final long nativeObj;
     
     public static final int STD_DST = 0;
@@ -14,7 +14,7 @@ public class MetadataSchema
     protected MetadataSchema (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
@@ -27,7 +27,7 @@ public class MetadataSchema
     
     public MetadataSchema (String name, String author)
     {
-        nativeObj = n_MetadataSchema (name, author);
+        this (n_MetadataSchema (name, author));
     }
     
     public String getName ()
@@ -35,7 +35,7 @@ public class MetadataSchema
         return n_getName (nativeObj);
     }
     
-    public String getAuthor()
+    public String getAuthor ()
     {
         return n_getAuthor (nativeObj);
     }

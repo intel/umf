@@ -17,14 +17,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal
 
 /*
  * Class:     com_intel_vmf_MetadataInternal
- * Method:    n_MetadataInternalCopy
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_intel_vmf_MetadataInternal
  * Method:    n_MetadataInternalByMD
  * Signature: (J)J
  */

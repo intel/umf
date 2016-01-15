@@ -57,30 +57,6 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional
 
 /*
  * Class:     com_intel_vmf_FieldDesc
- * Method:    n_setName
- * Signature: (JLjava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setName
-  (JNIEnv *, jclass, jlong, jstring);
-
-/*
- * Class:     com_intel_vmf_FieldDesc
- * Method:    n_setType
- * Signature: (JI)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setType
-  (JNIEnv *, jclass, jlong, jint);
-
-/*
- * Class:     com_intel_vmf_FieldDesc
- * Method:    n_setOptional
- * Signature: (JZ)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1setOptional
-  (JNIEnv *, jclass, jlong, jboolean);
-
-/*
- * Class:     com_intel_vmf_FieldDesc
  * Method:    n_delete
  * Signature: (J)V
  */

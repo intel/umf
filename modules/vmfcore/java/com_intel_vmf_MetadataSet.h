@@ -14,24 +14,8 @@ extern "C" {
  * Method:    n_MetadataSet
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet
   (JNIEnv *, jclass);
-
-/*
- * Class:     com_intel_vmf_MetadataSet
- * Method:    n_MetadataSet
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_intel_vmf_MetadataSet
- * Method:    n_setTo
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1setTo
-  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataSet

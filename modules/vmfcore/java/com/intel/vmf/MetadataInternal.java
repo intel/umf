@@ -1,6 +1,6 @@
 package com.intel.vmf;
 
-public class MetadataInternal// extends Metadata
+public class MetadataInternal
 {
     static
     {
@@ -12,24 +12,31 @@ public class MetadataInternal// extends Metadata
     protected MetadataInternal (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public MetadataInternal (MetadataDesc mdDesc)
     {
-        nativeObj = n_MetadataInternal (mdDesc.nativeObj);
+        this (n_MetadataInternal (mdDesc.nativeObj));
     }
     
-    public MetadataInternal (MetadataInternal other)
-    {
-        nativeObj = n_MetadataInternalCopy (other.nativeObj);
-    }
+    /*
+     * public MetadataInternal (MetadataInternal other)
+     * {
+     *  nativeObj = n_MetadataInternalCopy (other.nativeObj);
+     * }
+     */
     
     public MetadataInternal (Metadata md)
     {
-        nativeObj = n_MetadataInternalByMD (md.nativeObj);
+        this (n_MetadataInternalByMD (md.nativeObj));
+    }
+    
+    public void clear ()
+    {
+        throw new java.lang.UnsupportedOperationException("Not Yet Implemented");
     }
     
     @Override
@@ -42,7 +49,7 @@ public class MetadataInternal// extends Metadata
     }
     
     private native static long n_MetadataInternal (long mdDescAddr);
-    private native static long n_MetadataInternalCopy (long otherAddr);
+    //private native static long n_MetadataInternalCopy (long otherAddr);
     private native static long n_MetadataInternalByMD (long mdAddr);
     private native static void n_delete (long nativeObj);
 }

@@ -21,14 +21,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata
 
 /*
  * Class:     com_intel_vmf_Metadata
- * Method:    n_MetadataCopy
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_intel_vmf_Metadata
  * Method:    n_getID
  * Signature: (J)J
  */
@@ -138,6 +130,14 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals
   (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_Metadata
+ * Method:    n_findField
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1findField
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_intel_vmf_Metadata

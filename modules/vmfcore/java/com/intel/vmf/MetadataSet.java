@@ -14,32 +14,34 @@ public class MetadataSet implements IQuery
     protected MetadataSet (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException ("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public MetadataSet ()
     {
-        nativeObj = n_MetadataSet ();
+        this (n_MetadataSet ());
     }
     
-    public MetadataSet (MetadataSet other)
-    {
-        nativeObj = n_MetadataSet (other.nativeObj);
-    }
+    /*public MetadataSet (MetadataSet other)
+     *{
+     *  nativeObj = n_MetadataSet (other.nativeObj);
+     *}
+    */
     
-    public void setTo (MetadataSet other)
-    {
-        if (other.nativeObj == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
-        
-        n_setTo (nativeObj, other.nativeObj);
-    }
+    /*public void setTo (MetadataSet other)
+     * {
+     *  if (other.nativeObj == 0)
+     *       throw new java.lang.IllegalArgumentException("Native object address is NULL");
+     *  
+     *   n_setTo (nativeObj, other.nativeObj);
+     *}
+    */
     
     /*TO DO:
-    public MetadataSet query (filter){}
-    public MetadataSet queryByReference (Metadata md, filter){}
+     * public MetadataSet query (filter){}
+     * public MetadataSet queryByReference (Metadata md, filter){}
     */
     
     public MetadataSet queryByFrameIndex (long index)
@@ -124,8 +126,8 @@ public class MetadataSet implements IQuery
     }
     
     private native static long n_MetadataSet ();
-    private native static long n_MetadataSet (long otherAddr);
-    private native static void n_setTo (long nativeObj, long other);
+    //private native static long n_MetadataSet (long otherAddr);
+    //private native static void n_setTo (long nativeObj, long other);
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static long n_queryBySchema (long nativeObj, String schemaName);

@@ -1,8 +1,8 @@
 package com.intel.vmf;
 
-public class FieldValue// extends Variant
+public class FieldValue
 {
-	static
+    static
     {
         System.loadLibrary ("vmf");
     }
@@ -10,29 +10,29 @@ public class FieldValue// extends Variant
 	protected final long nativeObj;
 	
 	protected FieldValue (long addr)
-    {
-	    //super (addr);
+	{
 	    if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
 	
 	public FieldValue ()
 	{
-	    nativeObj = n_FieldValue ();
+	    this (n_FieldValue ());
 	}
 	
 	public FieldValue (String newName, Variant variant)
-    { 
-        //super (variant.nativeObj);
-	    nativeObj = n_FieldValue (newName, variant.nativeObj);
+	{ 
+	    this (n_FieldValue (newName, variant.nativeObj));
     }
 	
-	public FieldValue (FieldValue other)
-	{
-	    nativeObj = n_FieldValue (other.nativeObj);
-	}
+	/*
+	 * public FieldValue (FieldValue other)
+	 * {
+	 * nativeObj = n_FieldValue (other.nativeObj);
+	 * }
+	 */
 	
 	public String getName ()
 	{
@@ -44,14 +44,14 @@ public class FieldValue// extends Variant
 		return n_equals (nativeObj, other.nativeObj);
 	}
 	
-	public void setTo (FieldValue other)
+	public void setTo (Variant value)
 	{
-		n_setTo (nativeObj, other.nativeObj);
+		n_setTo (nativeObj, value.nativeObj);
 	}
 	
 	public void clear ()
 	{
-	    // TO DO: implementation
+	    setTo (new Variant());
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class FieldValue// extends Variant
 	}
 	
 	private static native long n_FieldValue ();
-	private static native long n_FieldValue (long other);
+	//private static native long n_FieldValue (long other);
 	private static native long n_FieldValue (String name, long variant);
 	private static native String n_getName (long nativeObj); 
 	private static native void n_setTo (long nativeObj, long other);

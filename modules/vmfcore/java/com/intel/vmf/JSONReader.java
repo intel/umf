@@ -1,6 +1,5 @@
 package com.intel.vmf;
 
-//import java.util.String;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
@@ -9,7 +8,6 @@ public class JSONReader implements IReader
     static
     {
         System.loadLibrary("vmf");
-        //System.loadLibrary("gnustl_shared");
     }
 
     protected final long nativeObj;

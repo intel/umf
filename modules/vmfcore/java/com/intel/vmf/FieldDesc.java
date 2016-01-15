@@ -12,19 +12,28 @@ public class FieldDesc
     protected FieldDesc (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public FieldDesc ()
     {
-        nativeObj = n_FieldDesc ();
+        this (n_FieldDesc());
     }
 	
-    public FieldDesc (String newName, int newType, boolean isOptional)
+    public FieldDesc (String name, int type)
     {
-        nativeObj = n_FieldDesc (newName, newType, isOptional);
+        boolean isOptional = false;
+        nativeObj = n_FieldDesc (name, type, isOptional);
+        
+        if (nativeObj == 0)
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
+    }
+    
+    public FieldDesc (String name, int type, boolean isOptional)
+    {
+        this (n_FieldDesc (name, type, isOptional));
     }
 	
     public boolean equals (FieldDesc other)
@@ -46,22 +55,7 @@ public class FieldDesc
     {
         return n_isOptional (nativeObj);
     }
-    
-    public void setName (String name)
-    {
-        n_setName (nativeObj, name);
-    }
-    
-    public void setType (int type)
-    {
-        n_setType (nativeObj, type);
-    }
-    
-    public void setOptional (boolean flag)
-    {
-        n_setOptional (nativeObj, flag);
-    }
-    
+
     @Override
     protected void finalize () throws Throwable 
     {
@@ -72,13 +66,10 @@ public class FieldDesc
     }
     
     private static native long n_FieldDesc ();
-    private static native long n_FieldDesc (String newName, int newType, boolean isOptional);
+    private static native long n_FieldDesc (String name, int type, boolean isOptional);
     private static native boolean n_equals (long nativeObjAddr, long otherAddr);
     private static native String n_getName (long nativeAddr);
     private static native int n_getType (long nativeAddr);
     private static native boolean n_isOptional (long nativeAddr);
-    private static native void n_setName (long nativeAddr, String name);
-    private static native void n_setType (long nativeObj, int type);
-    private static native void n_setOptional (long nativeObj, boolean flag);
     private static native void n_delete (long nativeAddr);
 }

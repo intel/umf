@@ -18,14 +18,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__
 /*
  * Class:     com_intel_vmf_FieldValue
  * Method:    n_FieldValue
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_intel_vmf_FieldValue
- * Method:    n_FieldValue
  * Signature: (Ljava/lang/String;J)J
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J
