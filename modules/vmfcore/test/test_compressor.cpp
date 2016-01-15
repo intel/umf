@@ -193,7 +193,7 @@ class FakeCompressor : public CompressorDummy
 public:
     std::shared_ptr<Compressor> createNewInstance() const
     {
-        return std::shared_ptr<Compressor>(new BloatingCompressor);
+        return std::shared_ptr<Compressor>(new FakeCompressor);
     }
 
     virtual vmf::vmf_string getId()
