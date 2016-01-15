@@ -38,8 +38,8 @@ class VMF_EXPORT ReaderBase : public IReader
 {
 public:
     /*!
-     * \brief ReaderBase
-     * \param _compressorId
+     * \brief Constructor taking ID of compressor to be used at data reading
+     * \param _compressorId String identifying compression algorithm
      */
     ReaderBase(vmf_string _compressorId = vmf_string()) : IReader(), compressorId(_compressorId)
     { }

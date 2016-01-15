@@ -37,6 +37,10 @@ namespace vmf
 class VMF_EXPORT WriterBase : public IWriter
 {
 public:
+    /*!
+     * \brief Constructor taking ID of compressor to be used at data writing
+     * \param _compressorId String identifying compression algorithm
+     */
     WriterBase(vmf_string _compressorId = vmf_string()) : IWriter(), compressorId(_compressorId)
     { }
 

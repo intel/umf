@@ -35,27 +35,27 @@ class VMF_EXPORT Compressor
 {
 public:
     /*!
-     * \brief Compress data
+     * \brief Compresses data
      * \param [in] input input text data
      * \param [out] output where to put binary compressed data
      */
     virtual void compress(const vmf_string& input, vmf_rawbuffer& output) = 0;
 
     /*!
-     * \brief Decompress data
+     * \brief Decompresses data
      * \param [in] input binary compressed input data
      * \param [out] output where to put decompressed text data
      */
     virtual void decompress(const vmf_rawbuffer& input, vmf_string& output) = 0;
 
     /*!
-     * \brief Create new instance of the compressor
+     * \brief Creates a new instance of the compressor
      * \return Smart pointer to Compressor instance
      */
     virtual std::shared_ptr<Compressor> createNewInstance() const = 0;
 
     /*!
-     * \brief Get the ID of current algorithm
+     * \brief Gets the ID of current algorithm
      */
     virtual vmf_string getId() = 0;
 
@@ -84,7 +84,7 @@ public:
     static std::shared_ptr<Compressor> create(const vmf_string& id);
 
     /*!
-     * \brief getRegisteredIds Returns a list of currently registered compressors,
+     * \brief Returns a list of currently registered compressors,
      * both built-in ones or user-defined
      * \return A list of registered compressors IDs
      */
