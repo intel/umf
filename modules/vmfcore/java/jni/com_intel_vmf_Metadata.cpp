@@ -1,5 +1,6 @@
 #include<string>
 #include<vector>
+#include <map>
 #include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Metadata.h"
 #include "throwJavaException.hpp"
@@ -336,7 +337,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFieldValue (JNIEnv *en
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
         return (jlong) new std::shared_ptr <Variant>(new Variant((*obj)->getFieldValue (sName)));
     }
     catch (const std::exception &e)
@@ -363,7 +367,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField (JNIEnv *env,
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
         return (jboolean) (*obj)->hasField (sName);
     }
     catch (const std::exception &e)
@@ -410,6 +417,37 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals (JNIEnv *env, j
 }
 
 /*
+* Class:     com_intel_vmf_Metadata
+* Method:    n_findField
+* Signature: (JLjava/lang/String;)J
+*/
+/*JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1findField (JNIEnv *env, jclass, jlong self, jstring name)
+{
+    static const char method_name[] = "Metadata::n_1findField";
+
+    try
+    {
+        std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
+       
+        return (jlong) new std::shared_ptr <FieldValue>(new FieldValue(*((*obj)->findField(sName))));
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}*/
+
+/*
  * Class:     com_intel_vmf_Metadata
  * Method:    n_lessThan
  * Signature: (JJ)Z
@@ -452,7 +490,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference (JNIEnv
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
+
         std::shared_ptr <Metadata>* md = new std::shared_ptr <Metadata>(new Metadata (*((*obj)->getFirstReference(sName))));
         return (jlong) md;
     }
@@ -480,7 +522,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByMetadata (
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
         std::shared_ptr <MetadataSet>* mdSet = new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->getReferencesByMetadata (sName)));
         return (jlong) mdSet;
     }
@@ -508,7 +553,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
         std::shared_ptr <MetadataSet>* mdSet = new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->getReferencesByName(sName)));
         return (jlong) mdSet;
     }
@@ -575,7 +623,11 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceById (JNIEn
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
+
         return (jboolean) (*obj)->isReference ((long long)id, sName);
     }
     catch (const std::exception &e)
@@ -603,7 +655,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceByMd (JNIEn
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
-        std::string sName(env->GetStringUTFChars(name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
     
         return (jboolean) (*obj)->isReference (*md, sName);
     }
@@ -632,7 +687,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference (JNIEnv *env,
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
     
         (*obj)->addReference (*md, sName);
     }
@@ -658,7 +716,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById (JNIEn
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
         (*obj)->removeReference((long long) id, sName);
     }
     catch (const std::exception &e)
@@ -684,7 +745,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd (JNIEn
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
-        std::string sName (env->GetStringUTFChars (name, NULL));
+        const char* str = env->GetStringUTFChars(name, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(name, str);
     
         (*obj)->removeReference(*md, sName);
     }
@@ -711,7 +775,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*)variantAddr;
-        std::string sName (env->GetStringUTFChars (fieldName, NULL));
+        const char* str = env->GetStringUTFChars(fieldName, NULL);
+        std::string sName(str);
+
+        env->ReleaseStringUTFChars(fieldName, str);
         (*obj)->setFieldValue (sName, (**variant));
     }
     catch (const std::exception &e)

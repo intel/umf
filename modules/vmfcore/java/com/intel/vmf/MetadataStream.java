@@ -301,20 +301,19 @@ public class MetadataStream implements IQuery
         return objs;
     }
     
-    public long[] convertTimestampToFrameIndex (long timestamp, long duration,
-                                                long frameIndex, long numOfFrames)
+    public long convertDurationToNumOfFrames (long timestamp, long duration)
     {
-        long frameIndexAndNumFrames[] = new long [2];
-        n_convertTimestampToFrameIndex (nativeObj, timestamp, duration, frameIndexAndNumFrames);
-        return frameIndexAndNumFrames;
+        return n_convertDurationToNumOfFrames (nativeObj, timestamp, duration);
     }
     
-    public long[] convertFrameIndexToTimestamp (long frameIndex, long numOfFrames, 
-                                                long timestamp, long duration)
+    public long convertTimestampToFrameIndex (long timestamp)
     {
-        long timestampAndDuration[] = new long [2];
-        n_convertFrameIndexToTimestamp (nativeObj, frameIndex, numOfFrames, timestampAndDuration);
-        return timestampAndDuration;
+        return n_convertTimestampToFrameIndex (nativeObj, timestamp);
+    }
+    
+    public long convertFrameIndexToTimestamp (long frameIndex)
+    {
+        return n_convertFrameIndexToTimestamp (nativeObj, frameIndex);;
     }
     
     /*

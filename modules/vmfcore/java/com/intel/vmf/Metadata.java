@@ -113,11 +113,13 @@ public class Metadata
         return n_hasField (nativeObj, fieldName);
     }
 
-    public FieldValue findField (String fieldName)
-    {
-        return new FieldValue (n_findField (nativeObj, fieldName));
-    }
-
+    /*
+     *public FieldValue findField (String fieldName)
+     *{
+     *   return new FieldValue (n_findField (nativeObj, fieldName));
+     *}
+    */
+    
     public boolean equals (Metadata other)
     {
         return n_equals (nativeObj, other.nativeObj);
@@ -257,7 +259,7 @@ public class Metadata
     private native static long n_getFieldValue (long nativeObj, String name);
     private native static boolean n_hasField (long nativeObj, String name);
     private native static boolean n_equals (long nativeObj, long other);
-    private native static long n_findField (long nativeObj, String fieldName);
+    //???private native static long n_findField (long nativeObj, String fieldName);
     private native static boolean n_lessThan (long nativeObj, long other);
     private native static long n_getFirstReference (long nativeObj, String name);
     private native static long n_getReferencesByMetadata (long nativeObj, String name);

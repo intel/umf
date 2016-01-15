@@ -235,12 +235,69 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 
 /*
 * Class:     com_intel_vmf_MetadataStream_VideoSegment
+* Method:    n_getWidth
+* Signature: (J)I
+*/
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getWidth(JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataStream::VideoSegment::n_1getWidth";
+
+    try
+    {
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+        long w = 0, h = 0;
+
+        (*obj)->getResolution(w, h);
+        return (jint) w;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_MetadataStream_VideoSegment
+* Method:    n_getHeight
+* Signature: (J)I
+*/
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getHeight (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataStream::VideoSegment::n_1getHeight";
+
+    try
+    {
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+        long w = 0, h = 0;
+
+        (*obj)->getResolution(w, h);
+        return (jint) h;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_MetadataStream_VideoSegment
 * Method:    n_getResolution
 * Signature: (J[J)V
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution (JNIEnv *env, jclass, jlong self, jintArray resolutionArray)
 {
-
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getResolution";
 
     try
