@@ -27,7 +27,7 @@ public class MetadataInternal
      * {
      *  nativeObj = n_MetadataInternalCopy (other.nativeObj);
      * }
-     */
+    */
     
     public MetadataInternal (Metadata md)
     {

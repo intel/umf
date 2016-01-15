@@ -89,11 +89,19 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 
 /*
  * Class:     com_intel_vmf_MetadataStream_VideoSegment
- * Method:    n_getResolution
- * Signature: (J[I)V
+ * Method:    n_getWidth
+ * Signature: (J)I
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution
-  (JNIEnv *, jclass, jlong, jintArray);
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getWidth
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataStream_VideoSegment
+ * Method:    n_getHeight
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getHeight
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataStream_VideoSegment

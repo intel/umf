@@ -1,7 +1,5 @@
 package com.intel.vmf;
 
-import java.nio.ByteBuffer;
-
  public class Variant
  {
     static

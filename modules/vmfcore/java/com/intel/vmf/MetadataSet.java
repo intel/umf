@@ -6,11 +6,11 @@ public class MetadataSet implements IQuery
     {
         System.loadLibrary("vmf");
     }
-    
+
     protected final long nativeObj;
-    
+
     public static final long FRAME_COUNT_ALL = Long.MAX_VALUE;
-    
+
     protected MetadataSet (long addr)
     {
         if (addr == 0)
@@ -18,19 +18,21 @@ public class MetadataSet implements IQuery
         
         nativeObj = addr;
     }
-    
+
     public MetadataSet ()
     {
         this (n_MetadataSet ());
     }
-    
-    /*public MetadataSet (MetadataSet other)
+
+    /*
+     * public MetadataSet (MetadataSet other)
      *{
      *  nativeObj = n_MetadataSet (other.nativeObj);
      *}
     */
-    
-    /*public void setTo (MetadataSet other)
+
+    /*
+     * public void setTo (MetadataSet other)
      * {
      *  if (other.nativeObj == 0)
      *       throw new java.lang.IllegalArgumentException("Native object address is NULL");
@@ -38,8 +40,9 @@ public class MetadataSet implements IQuery
      *   n_setTo (nativeObj, other.nativeObj);
      *}
     */
-    
-    /*TO DO:
+
+    /*
+     * TO DO:
      * public MetadataSet query (filter){}
      * public MetadataSet queryByReference (Metadata md, filter){}
     */
@@ -114,6 +117,11 @@ public class MetadataSet implements IQuery
     public long getSize ()
     {
         return n_getSize (nativeObj);
+    }
+    
+    public void clear ()
+    {
+        throw new java.lang.UnsupportedOperationException("Not Yet Implemented");
     }
     
     @Override

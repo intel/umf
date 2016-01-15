@@ -6,10 +6,4 @@ public class VmfException extends RuntimeException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return super.toString();
-    }
 }

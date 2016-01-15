@@ -22,14 +22,14 @@ public class MetadataStream implements IQuery
         protected VideoSegment (long addr)
         {
             if (addr == 0)
-                throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+                throw new java.lang.IllegalArgumentException ("Native object address is NULL");
                 
             nativeObj = addr;
         }
             
         public VideoSegment ()
         {
-            nativeObj = n_VideoSegment ();
+            this (n_VideoSegment ());
         }
             
         public VideoSegment (String title, double fps, long startTime)
@@ -43,7 +43,7 @@ public class MetadataStream implements IQuery
             
         public VideoSegment (String title, double fps, long startTime, long duration, int width, int height)
         {
-            nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
+            this (n_VideoSegment (title, fps, startTime, duration, width, height));
         }
             
         public String getTitle ()
@@ -86,11 +86,14 @@ public class MetadataStream implements IQuery
             n_setTime (nativeObj, startTime);
         }
             
-        public int[] getResolution ()
+        public int getWidth ()
         {
-            int resolutionArray[] = new int [2];
-            n_getResolution (nativeObj, resolutionArray);
-            return resolutionArray;
+            return n_getWidth (nativeObj);
+        }
+        
+        public int getHeight ()
+        {
+            return n_getHeight (nativeObj);
         }
             
         public void setResolution (int width, int height)
@@ -117,7 +120,8 @@ public class MetadataStream implements IQuery
         private native static void n_setDuration (long nativeObj, long duration);
         private native static long n_getTime (long nativeObj);
         private native static void n_setTime (long nativeObj, long startTime);
-        private native static void n_getResolution (long nativeObj, int resolutionArray[]);
+        private native static int n_getWidth (long nativeObj);
+        private native static int n_getHeight (long nativeObj);
         private native static void n_setResolution (long nativeObj, int width, int height);
         private native static void n_delete (long nativeObj);
     }
@@ -125,14 +129,14 @@ public class MetadataStream implements IQuery
     protected MetadataStream (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException ("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public MetadataStream ()
     {
-        nativeObj = n_MetadataStream ();
+        this (n_MetadataStream ());
     }
     
     public boolean open (String filePath, int mode)
@@ -241,7 +245,7 @@ public class MetadataStream implements IQuery
     
     public void clear ()
     {
-       //TO DO: implementation 
+        throw new java.lang.UnsupportedOperationException("Not Yet Implemented"); 
     }
     
     public void sortById ()
@@ -313,11 +317,10 @@ public class MetadataStream implements IQuery
         return timestampAndDuration;
     }
     
-    //TO DO??: public long add(MetadataInternal mdInternal)
-    
-    /*TO DO:
-    public MetadataSet query (filter){}
-    public MetadataSet queryByReference (Metadata md, filter){}
+    /*
+     * TO DO:
+     *public MetadataSet query (filter){}
+     *public MetadataSet queryByReference (Metadata md, filter){}
     */
     
     public MetadataSet queryByFrameIndex (long index)
@@ -430,6 +433,5 @@ public class MetadataStream implements IQuery
     private native static long n_queryByReference (long nativeObj, String refName);
     private native static long n_queryByReference (long nativeObj, String refName, long value);
     private native static long n_queryByReference (long nativeObj, String refName, long nativeFieldValueObjs[]);
-    //TO DO??: public long add(MetadataInternal mdInternal)
     private native static void n_delete (long nativeObj);
 }
