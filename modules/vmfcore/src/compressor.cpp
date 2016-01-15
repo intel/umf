@@ -46,9 +46,9 @@ std::vector<vmf_string> Compressor::getRegisteredIds()
     std::vector<vmf_string> result;
     for(CompressorType type: {USER, BUILTIN})
     {
-        for(auto it = getMapInstance(type).begin(); it != getMapInstance(type).end(); it++)
+        for(const auto& c : getMapInstance(type))
         {
-            result.push_back(it->first);
+            result.push_back(c.first);
         }
     }
     return result;

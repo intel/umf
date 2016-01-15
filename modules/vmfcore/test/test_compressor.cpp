@@ -183,13 +183,7 @@ TEST_P(TestCompressor, CheckRegisteredIds)
     std::set<vmf_string> knownIds = {"com.intel.vmf.compressor.dummy",
                                      "com.intel.vmf.compressor.zlib",
                                      "com.intel.vmf.compressor.test.bloating"};
-    for(auto it = knownIds.begin(); it != knownIds.end(); it++)
-    {
-        ASSERT_NE(registeredIds.find(*it), registeredIds.end());
-        registeredIds.erase(*it);
-    }
-
-    ASSERT_TRUE(registeredIds.empty());
+    ASSERT_EQ(registeredIds, knownIds);
 }
 
 
