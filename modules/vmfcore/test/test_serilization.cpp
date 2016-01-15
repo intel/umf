@@ -25,7 +25,7 @@ enum SerializerType
 
 using namespace vmf;
 
-class TestSerialization : public ::testing::TestWithParam<SerializerType>
+class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string> >
 {
 protected:
     void SetUp()
@@ -187,7 +187,7 @@ TEST_P(TestSerialization, Parse_schema)
 
 TEST_P(TestSerialization, Parse_schemasArray)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter());
@@ -214,7 +214,7 @@ TEST_P(TestSerialization, Parse_schemasArray)
 
 TEST_P(TestSerialization, Parse_schemasAll)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter());
@@ -240,7 +240,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
 /*
 TEST_P(TestSerialization, Parse_metadata)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter());
@@ -268,7 +268,7 @@ TEST_P(TestSerialization, Parse_metadata)
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter());
@@ -304,7 +304,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
 
 TEST_P(TestSerialization, Parse_metadataAll)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter());
@@ -340,16 +340,17 @@ TEST_P(TestSerialization, Parse_metadataAll)
 
 TEST_P(TestSerialization, Parse_All)
 {
-    SerializerType type = GetParam();
+    SerializerType type     = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new XMLWriter(compressorId));
+        reader.reset(new XMLReader(compressorId));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new JSONWriter(compressorId));
+        reader.reset(new JSONReader(compressorId));
     }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -371,4 +372,9 @@ TEST_P(TestSerialization, Parse_All)
     });
 }
 
-INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization, ::testing::Values(TypeXML, TypeJson) );
+
+//don't check for incorrect compressors
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
+                        ::testing::Combine(::testing::Values(TypeXML, TypeJson),
+                                           ::testing::Values("com.intel.vmf.compressor.dummy",
+                                                             "com.intel.vmf.compressor.zlib")));
