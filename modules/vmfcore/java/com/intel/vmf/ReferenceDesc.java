@@ -12,19 +12,19 @@ public class ReferenceDesc
     protected ReferenceDesc (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public ReferenceDesc ()
-	{
-        nativeObj = n_ReferenceDesc ();
-	}
+    {
+        this (n_ReferenceDesc ());
+    }
     
     public ReferenceDesc (String refName, boolean unique, boolean custom) 
     {
-        nativeObj = n_ReferenceDesc (refName, unique, custom);
+        this (n_ReferenceDesc (refName, unique, custom));
     }
     
     public String getName ()

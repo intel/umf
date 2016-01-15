@@ -29,7 +29,7 @@ package com.intel.vmf;
     protected Variant (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
