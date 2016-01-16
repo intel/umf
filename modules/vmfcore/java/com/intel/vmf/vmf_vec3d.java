@@ -12,19 +12,19 @@ public class vmf_vec3d
     protected vmf_vec3d (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public vmf_vec3d ()
     {
-        nativeObj = n_vmf_vec3d ();
+        this (n_vmf_vec3d ());
     }
     
     public vmf_vec3d (double x, double y, double z)
     {
-        nativeObj = n_vmf_vec3d (x, y, z);
+        this (n_vmf_vec3d (x, y, z));
     }
     
     public void setTo (vmf_vec3d other)

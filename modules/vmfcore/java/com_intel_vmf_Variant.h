@@ -66,10 +66,26 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_setTo
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
  * Signature: (JF)V
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF
   (JNIEnv *, jclass, jlong, jfloat);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
+ * Signature: (JD)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD
+  (JNIEnv *, jclass, jlong, jdouble);
 
 /*
  * Class:     com_intel_vmf_Variant
@@ -82,10 +98,34 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_setTo
+ * Signature: (J[J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3J
+  (JNIEnv *, jclass, jlong, jlongArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
  * Signature: (J[F)V
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F
   (JNIEnv *, jclass, jlong, jfloatArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
+ * Signature: (J[D)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D
+  (JNIEnv *, jclass, jlong, jdoubleArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
+ * Signature: (J[B)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B
+  (JNIEnv *, jclass, jlong, jbyteArray);
 
 /*
  * Class:     com_intel_vmf_Variant
@@ -98,9 +138,65 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_setTo
+ * Signature: (J[Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String_2
+  (JNIEnv *, jclass, jlong, jobjectArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec2d
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec3d
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3d
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec4d
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4d
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec2dArray
+ * Signature: (J[J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2dArray
+  (JNIEnv *, jclass, jlong, jlongArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec3dArray
+ * Signature: (J[J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3dArray
+  (JNIEnv *, jclass, jlong, jlongArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setToVec4dArray
+ * Signature: (J[J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4dArray
+  (JNIEnv *, jclass, jlong, jlongArray);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_set
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1set
   (JNIEnv *, jclass, jlong, jlong);
 
 /*

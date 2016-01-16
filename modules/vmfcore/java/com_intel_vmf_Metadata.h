@@ -133,14 +133,6 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals
 
 /*
  * Class:     com_intel_vmf_Metadata
- * Method:    n_findField
- * Signature: (JLjava/lang/String;)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1findField
-  (JNIEnv *, jclass, jlong, jstring);
-
-/*
- * Class:     com_intel_vmf_Metadata
  * Method:    n_lessThan
  * Signature: (JJ)Z
  */

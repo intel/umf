@@ -12,19 +12,19 @@ public class vmf_vec4d
     protected vmf_vec4d (long addr)
     {
         if (addr == 0)
-            throw new java.lang.UnsupportedOperationException("Native object address is NULL");
+            throw new java.lang.IllegalArgumentException("Native object address is NULL");
         
         nativeObj = addr;
     }
     
     public vmf_vec4d ()
     {
-        nativeObj = n_vmf_vec4d ();
+        this (n_vmf_vec4d ());
     }
     
     public vmf_vec4d (double x, double y, double z, double w)
     {
-        nativeObj = n_vmf_vec4d (x, y, z, w);
+        this (n_vmf_vec4d (x, y, z, w));
     }
     
     public void setTo (vmf_vec4d other)

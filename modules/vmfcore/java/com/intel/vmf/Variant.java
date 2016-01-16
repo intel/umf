@@ -6,7 +6,7 @@ package com.intel.vmf;
     {
         System.loadLibrary("vmf");
     }
-	
+
     public static final int type_unknown = 0;
     public static final int type_char = 1;
     public static final int type_integer = 2;
@@ -36,64 +36,179 @@ package com.intel.vmf;
     
     public Variant ()
     {
-        nativeObj = n_Variant ();
+        this (n_Variant ());
     }
 
     public Variant (int value)
     {
-	    nativeObj = n_Variant ();
-	    n_setTo (nativeObj, value);
+        this (n_Variant ());
+        n_setTo (nativeObj, value);
     }
 
     public Variant (float value)
     {
-        nativeObj = n_Variant ();
+        this (n_Variant ());
         n_setTo (nativeObj, value);
     }
     
-    public Variant (int[] array)
+    public Variant (double value)
     {
-        nativeObj = n_Variant ();
-        n_setTo (nativeObj, array);
-    }
-    
-    public Variant (float[] array)
-    {
-        nativeObj = n_Variant ();
-        n_setTo (nativeObj, array);
+        this (n_Variant ());
+        n_setTo (nativeObj, value);
     }
     
     public Variant (String str)
     {
-        nativeObj = n_Variant ();
+        this (n_Variant ());
         n_setTo (nativeObj, str);
     }
 
-    public Variant (Variant other)
+    public Variant (vmf_vec2d vec2d)
     {
-        nativeObj = n_Variant (other.nativeObj);
+        this (n_Variant ());
+        n_setToVec2d (nativeObj, vec2d.nativeObj);
     }
-
-    //setTo() is analog for operator= 
+    
+    public Variant (vmf_vec3d vec3d)
+    {
+        this (n_Variant ());
+        n_setToVec3d (nativeObj, vec3d.nativeObj);
+    }
+    
+    public Variant (vmf_vec4d vec4d)
+    {
+        this (n_Variant ());
+        n_setToVec4d (nativeObj, vec4d.nativeObj);
+    }
+    
+    public Variant (int array[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, array);
+    }
+    
+    public Variant (long array[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, array);
+    }
+    
+    public Variant (double array[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, array);
+    }
+    
+    public Variant (float array[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, array);
+    }
+    
+    public Variant (String array[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, array);
+    }
+    
+    public Variant (byte buffer[])
+    {
+        this (n_Variant ());
+        n_setTo (nativeObj, buffer);
+    }
+    
+    public Variant (vmf_vec2d vec2d[])
+    {
+        this (n_Variant ());
+        
+        long nObjs[] = new long [vec2d.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec2d[i].nativeObj;
+        }
+        
+        n_setToVec2dArray (nativeObj, nObjs);
+    }
+    
+    public Variant (vmf_vec3d vec3d[])
+    {
+        this (n_Variant ());
+        
+        long nObjs[] = new long [vec3d.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec3d[i].nativeObj;
+        }
+        
+        n_setToVec3dArray (nativeObj, nObjs);
+    }
+    
+    public Variant (vmf_vec4d vec4d[])
+    {
+        this (n_Variant ());
+        
+        long nObjs[] = new long [vec4d.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec4d[i].nativeObj;
+        }
+        
+        n_setToVec4dArray (nativeObj, nObjs);
+    }
+    
+   /*
+    * public Variant (Variant other)
+    *{
+    *    this (n_Variant (other.nativeObj));
+    *}
+   */
+    
     public void setTo (int value)
     {
         n_setTo (nativeObj, value);
     }
     
-    //setTo() is analog for operator=
     public void setTo (float value)
     {
         n_setTo (nativeObj, value);
     }
     
-    public void setTo (int[] array)
+    public void setTo (double value)
+    {
+        n_setTo (nativeObj, value);
+    }
+    
+    public void setTo (long value)
+    {
+        n_setTo (nativeObj, value);
+    }
+    
+    public void setTo (int array[])
     {
         n_setTo (nativeObj, array);
     }
 
-    public void setTo (float[] array)
+    public void setTo (float array[])
     {
         n_setTo (nativeObj, array);
+    }
+    
+    public void setTo (long array[])
+    {
+        n_setTo (nativeObj, array);
+    }
+    
+    public void setTo (double array[])
+    {
+        n_setTo (nativeObj, array);
+    }
+    
+    public void setTo (byte buffer[])
+    {
+        n_setTo (nativeObj, buffer);
     }
     
     public void setTo (String str)
@@ -101,9 +216,50 @@ package com.intel.vmf;
         n_setTo (nativeObj, str);
     }
     
+    public void setTo (String str[])
+    {
+        n_setTo (nativeObj, str);
+    }
+    
+    public void setTo (vmf_vec2d vec[])
+    {
+        long nObjs[] = new long [vec.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec[i].nativeObj;
+        }
+        
+        n_setToVec2dArray (nativeObj, nObjs);
+    }
+    
+    public void setTo (vmf_vec3d vec[])
+    {
+        long nObjs[] = new long [vec.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec[i].nativeObj;
+        }
+        
+        n_setToVec3dArray (nativeObj, nObjs);
+    }
+    
+    public void setTo (vmf_vec4d vec[])
+    {
+        long nObjs[] = new long [vec.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
+        {
+            nObjs[i] = vec[i].nativeObj;
+        }
+        
+        n_setToVec4dArray (nativeObj, nObjs);
+    }
+    
     public void setTo (Variant other)
     {
-        n_setTo (nativeObj, other.nativeObj);
+        n_set (nativeObj, other.nativeObj);
     }
 
     public boolean equals (Variant other)
@@ -183,12 +339,24 @@ package com.intel.vmf;
 
     private native static long n_Variant ();
     private native static long n_Variant (long other);
-    private native static void n_setTo (long nativeObj, int value);
-    private native static void n_setTo (long nativeObj, float value);
-    private native static void n_setTo (long nativeObj, int array[]);
-    private native static void n_setTo (long nativeObj, float array[]);
-    private native static void n_setTo (long nativeObj, String str);
-    private native static void n_setTo (long nativeObj, long other);
+    private native static void n_setTo (long nativeAddr, int value);
+    private native static void n_setTo (long nativeAddr, long value);
+    private native static void n_setTo (long nativeAddr, float value);
+    private native static void n_setTo (long nativeAddr, double value);
+    private native static void n_setTo (long nativeAddr, int array[]);
+    private native static void n_setTo (long nativeAddr, long array[]);
+    private native static void n_setTo (long nativeAddr, float array[]);
+    private native static void n_setTo (long nativeAddr, double array[]);
+    private native static void n_setTo (long nativeAddr, byte buffer[]);
+    private native static void n_setTo (long nativeAddr, String str);
+    private native static void n_setTo (long nativeAddr, String str[]);
+    private native static void n_setToVec2d (long nativeAddr, long vec2dAddr);
+    private native static void n_setToVec3d (long nativeAddr, long vec3dAddr);
+    private native static void n_setToVec4d (long nativeAddr, long vec4dAddr);
+    private native static void n_setToVec2dArray (long nativeObj, long vec2dAddr[]);
+    private native static void n_setToVec3dArray (long nativeObj, long vec3dAddr[]);
+    private native static void n_setToVec4dArray (long nativeObj, long vec4dAddr[]);
+    private native static void n_set (long nativeAddr, long otherAddr);
     private native static boolean n_equals (long nativeObj, long other);
     private native static String n_toString (long nativeObj);
     private native static void n_fromString (long nativeObj, int type, String str);

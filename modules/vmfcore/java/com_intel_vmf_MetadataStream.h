@@ -250,18 +250,34 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllVideoSeg
 /*
  * Class:     com_intel_vmf_MetadataStream
  * Method:    n_convertTimestampToFrameIndex
- * Signature: (JJJ[J)V
+ * Signature: (JJJ)J
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFrameIndex
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlongArray);
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1convertTimestampToFrameIndex
+  (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_convertDurationToNumOfFrames
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1convertDurationToNumOfFrames
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataStream
  * Method:    n_convertFrameIndexToTimestamp
- * Signature: (JJJ[J)V
+ * Signature: (JJJ)J
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToTimestamp
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlongArray);
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1convertFrameIndexToTimestamp
+  (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_convertNumOfFramesToDuration
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1convertNumOfFramesToDuration
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
  * Class:     com_intel_vmf_MetadataStream

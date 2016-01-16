@@ -306,14 +306,19 @@ public class MetadataStream implements IQuery
         return n_convertDurationToNumOfFrames (nativeObj, timestamp, duration);
     }
     
-    public long convertTimestampToFrameIndex (long timestamp)
+    public long convertTimestampToFrameIndex (long timestamp, long duration)
     {
-        return n_convertTimestampToFrameIndex (nativeObj, timestamp);
+        return n_convertTimestampToFrameIndex (nativeObj, timestamp, duration);
     }
     
-    public long convertFrameIndexToTimestamp (long frameIndex)
+    public long convertFrameIndexToTimestamp (long frameIndex, long numOfFrames)
     {
-        return n_convertFrameIndexToTimestamp (nativeObj, frameIndex);;
+        return n_convertFrameIndexToTimestamp (nativeObj, frameIndex, numOfFrames);
+    }
+    
+    public long convertNumOfFramesToDuration (long frameIndex, long numOfFrames)
+    {
+        return n_convertNumOfFramesToDuration (nativeObj, frameIndex, numOfFrames);
     }
     
     /*
@@ -419,10 +424,12 @@ public class MetadataStream implements IQuery
     private native static void n_setChecksum (long nativeObj, String checksum);
     private native static void n_addVideoSegment (long nativeObj, long newSegmentAddr);
     private native static long[] n_getAllVideoSegments (long nativeObjAddr);
-    private native static void n_convertTimestampToFrameIndex (long nativeObj, long timestamp, long duration,
-                                                               long frameIndexAndNumFramesArray[]);
-    private native static void n_convertFrameIndexToTimestamp (long nativeObj, long frameIndex, long numOfFrames,
-                                                               long timestampAndDurationArray[]);
+    
+    private native static long n_convertTimestampToFrameIndex (long nativeObj, long timestamp, long duration);
+    private native static long n_convertDurationToNumOfFrames (long nativeObj, long timestamp, long duration);
+    private native static long n_convertFrameIndexToTimestamp (long nativeObj, long frameIndex, long numOfFrames);
+    private native static long n_convertNumOfFramesToDuration (long nativeObj, long frameIndex, long numOfFrames);
+    
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static long n_queryBySchema (long nativeObj, String schemaName);

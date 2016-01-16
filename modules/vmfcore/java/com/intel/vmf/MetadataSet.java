@@ -27,17 +27,7 @@ public class MetadataSet implements IQuery
     /*
      * public MetadataSet (MetadataSet other)
      *{
-     *  nativeObj = n_MetadataSet (other.nativeObj);
-     *}
-    */
-
-    /*
-     * public void setTo (MetadataSet other)
-     * {
-     *  if (other.nativeObj == 0)
-     *       throw new java.lang.IllegalArgumentException("Native object address is NULL");
-     *  
-     *   n_setTo (nativeObj, other.nativeObj);
+     *  this (n_MetadataSet (other.nativeObj));
      *}
     */
 
@@ -135,7 +125,6 @@ public class MetadataSet implements IQuery
     
     private native static long n_MetadataSet ();
     //private native static long n_MetadataSet (long otherAddr);
-    //private native static void n_setTo (long nativeObj, long other);
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static long n_queryBySchema (long nativeObj, String schemaName);

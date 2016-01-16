@@ -25,14 +25,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1Reference__JJ
 
 /*
  * Class:     com_intel_vmf_Reference
- * Method:    n_ReferenceWeak
- * Signature: (JJ)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1ReferenceWeak
-  (JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     com_intel_vmf_Reference
  * Method:    n_getMetadata
  * Signature: (J)J
  */
