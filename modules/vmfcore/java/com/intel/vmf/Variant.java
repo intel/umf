@@ -336,26 +336,30 @@ package com.intel.vmf;
 
         super.finalize();
     }
-
+    
     private native static long n_Variant ();
-    private native static long n_Variant (long other);
+    //private native static long n_Variant (long other);
+    
     private native static void n_setTo (long nativeAddr, int value);
     private native static void n_setTo (long nativeAddr, long value);
     private native static void n_setTo (long nativeAddr, float value);
     private native static void n_setTo (long nativeAddr, double value);
+    private native static void n_setTo (long nativeAddr, String str);
+    
     private native static void n_setTo (long nativeAddr, int array[]);
     private native static void n_setTo (long nativeAddr, long array[]);
     private native static void n_setTo (long nativeAddr, float array[]);
     private native static void n_setTo (long nativeAddr, double array[]);
     private native static void n_setTo (long nativeAddr, byte buffer[]);
-    private native static void n_setTo (long nativeAddr, String str);
     private native static void n_setTo (long nativeAddr, String str[]);
+    
     private native static void n_setToVec2d (long nativeAddr, long vec2dAddr);
     private native static void n_setToVec3d (long nativeAddr, long vec3dAddr);
     private native static void n_setToVec4d (long nativeAddr, long vec4dAddr);
     private native static void n_setToVec2dArray (long nativeObj, long vec2dAddr[]);
     private native static void n_setToVec3dArray (long nativeObj, long vec3dAddr[]);
     private native static void n_setToVec4dArray (long nativeObj, long vec4dAddr[]);
+    
     private native static void n_set (long nativeAddr, long otherAddr);
     private native static boolean n_equals (long nativeObj, long other);
     private native static String n_toString (long nativeObj);

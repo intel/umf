@@ -44,16 +44,8 @@ extern "C" {
  * Method:    n_Variant
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant
   (JNIEnv *, jclass);
-
-/*
- * Class:     com_intel_vmf_Variant
- * Method:    n_Variant
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J
-  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_Variant
@@ -86,6 +78,14 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD
   (JNIEnv *, jclass, jlong, jdouble);
+
+/*
+ * Class:     com_intel_vmf_Variant
+ * Method:    n_setTo
+ * Signature: (JLjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
+  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_intel_vmf_Variant
@@ -126,14 +126,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B
   (JNIEnv *, jclass, jlong, jbyteArray);
-
-/*
- * Class:     com_intel_vmf_Variant
- * Method:    n_setTo
- * Signature: (JLjava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
-  (JNIEnv *, jclass, jlong, jstring);
 
 /*
  * Class:     com_intel_vmf_Variant
