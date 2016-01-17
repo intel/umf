@@ -27,7 +27,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *,
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *env, jclass, jlong other)
 {
     std::shared_ptr<FieldValue>* obj = (std::shared_ptr<FieldValue>*) other;
-    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue ((*(obj->get()))));
+    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue (**obj));
     return (jlong) p;
 }
 
@@ -39,8 +39,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J (JNIEnv *env, jclass, jstring name, jlong variantAddr)
 {
     std::shared_ptr<Variant>* obj = (std::shared_ptr<Variant>*) variantAddr;
-    std::string sName (env->GetStringUTFChars (name, NULL));
-    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue (sName, (*(obj->get()))));
+    const char* tmp = env->GetStringUTFChars(name, NULL);
+    std::string sName(tmp);
+    
+    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue (sName, (**obj)));
+
+    env->ReleaseStringUTFChars(name, tmp);
     return (jlong) p;
 }
 
@@ -84,7 +88,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jcla
     {
         std::shared_ptr<FieldValue>* self = (std::shared_ptr<FieldValue>*) selfAddr;
         std::shared_ptr<FieldValue>* other = (std::shared_ptr<FieldValue>*) otherAddr;
-        *(*self) = *(*other);
+        (**self) = (**other);
     }
     catch(const std::exception &e)
     {
@@ -110,10 +114,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *env,
         std::shared_ptr<FieldValue>* self = (std::shared_ptr<FieldValue>*) selfAddr;
         std::shared_ptr<FieldValue>* other = (std::shared_ptr<FieldValue>*) otherAddr;
         
-        if (*(*self) == *(*other))
-            return JNI_TRUE;
-        else
-            return JNI_FALSE;
+        return (**self == **other) ? JNI_TRUE : JNI_FALSE;     
     }
     catch(const std::exception &e)
     {
