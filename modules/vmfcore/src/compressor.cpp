@@ -102,15 +102,21 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 
 void Compressor::unregister(const vmf_string &id)
 {
-    CompressorsMap& cmap = getMapInstance(USER);
-    if(cmap.find(id) != cmap.end())
+    CompressorsMap& userMap    = getMapInstance(USER);
+    CompressorsMap& builtinMap = getMapInstance(BUILTIN);
+    if(userMap.find(id) != userMap.end())
     {
-        cmap.erase(id);
+        userMap.erase(id);
+    }
+    else if(builtinMap.find(id) != builtinMap.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException,
+                      "Unregistered compression algorithm: " + id);
     }
     else
     {
         VMF_EXCEPTION(IncorrectParamException,
-                      "Unregistered compression algorithm: " + id);
+                      "The algorithm \"" + id + "\" is built-in, impossible to unregister it");
     }
 }
 
