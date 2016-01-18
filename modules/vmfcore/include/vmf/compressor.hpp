@@ -67,12 +67,14 @@ public:
     /*!
      * \brief Registers new algorithm before its use in decompression.
      * \param compressor Pointer to the implementation of the algorithm
+     * \throw IncorrectParamException is thrown for a compressor with already registered ID
      */
     static void registerNew(std::shared_ptr<Compressor> compressor);
 
     /*!
      * \brief Unregisters previously registered compression algorithm
      * \param id String ID of the compression algorithm
+     * \throw IncorrectParamException is thrown for unknown (not built-in and not-registered) IDs
      */
     static void unregister(const vmf_string& id);
 
@@ -80,6 +82,7 @@ public:
      * \brief Creates new instance of previously registered compressor identified by ID
      * \param id String identifying compression algorithm
      * \return Smart pointer to Compressor instance
+     * \throw IncorrectParamException is thrown for unknown (not built-in and not-registered) IDs
      */
     static std::shared_ptr<Compressor> create(const vmf_string& id);
 
