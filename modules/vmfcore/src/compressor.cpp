@@ -78,17 +78,14 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 
 std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
-    CompressorsMap& userMap    = getMapInstance(USER);
-    CompressorsMap& builtinMap = getMapInstance(BUILTIN);
-
     std::shared_ptr<Compressor> current;
-    if(builtinMap.find(id) != builtinMap.end())
+    for(CompressorType type: {USER, BUILTIN})
     {
-        current = builtinMap.at(id);
-    }
-    else if(userMap.find(id) != userMap.end())
-    {
-        current = userMap.at(id);
+        auto& m = getMapInstance(type);
+        if(m.find(id) != m.end())
+        {
+            current = m.at(id);
+        }
     }
 
     if(current)
