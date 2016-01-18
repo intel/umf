@@ -100,11 +100,6 @@ void XMPDataSource::setCompressor(const vmf_string &id)
     if(!id.empty())
     {
         compressor = Compressor::create(id);
-        if(!compressor)
-        {
-            VMF_EXCEPTION(IncorrectParamException,
-                          "Unregistered compression algorithm: " + id);
-        }
     }
     else
     {
@@ -126,22 +121,14 @@ void XMPDataSource::loadXMPstructs()
         if(!algo.empty())
         {
             std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
-            if(decompressor)
-            {
-                string encoded;
-                compressedXMP->GetProperty(VMF_NS, compressedDataPropName.c_str(), &encoded, NULL);
-                string decoded;
-                XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
-                vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
-                string theData;
-                decompressor->decompress(compressed, theData);
-                xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
-            }
-            else
-            {
-                VMF_EXCEPTION(IncorrectParamException,
-                              "Unregistered compression algorithm: " + algo);
-            }
+            string encoded;
+            compressedXMP->GetProperty(VMF_NS, compressedDataPropName.c_str(), &encoded, NULL);
+            string decoded;
+            XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
+            vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
+            string theData;
+            decompressor->decompress(compressed, theData);
+            xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
         }
         else
         {

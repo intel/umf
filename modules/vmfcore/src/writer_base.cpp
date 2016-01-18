@@ -26,19 +26,11 @@ std::string WriterBase::compress(const std::string& input)
     if(!compressorId.empty())
     {
         std::shared_ptr<Compressor> compressor = Compressor::create(compressorId);
-        if(compressor)
-        {
-            vmf_rawbuffer compressedBuf;
-            compressor->compress(input, compressedBuf);
-            // Compressed binary data should be represented in base64
-            // because of '\0' symbols
-            compressed = Variant::base64encode(compressedBuf);
-        }
-        else
-        {
-            VMF_EXCEPTION(IncorrectParamException,
-                          "Unregistered compression algorithm: " + compressorId);
-        }
+        vmf_rawbuffer compressedBuf;
+        compressor->compress(input, compressedBuf);
+        // Compressed binary data should be represented in base64
+        // because of '\0' symbols
+        compressed = Variant::base64encode(compressedBuf);
     }
     else
     {

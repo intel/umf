@@ -62,9 +62,13 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
-    if(create(compressor->getId()))
+    for(CompressorType type: {USER, BUILTIN})
     {
-        VMF_EXCEPTION(IncorrectParamException, "Compressor with that ID is already registered");
+        auto& m = getMapInstance(type);
+        if(m.find(compressor->getId()) != m.end())
+        {
+            VMF_EXCEPTION(IncorrectParamException, "Compressor with that ID is already registered");
+        }
     }
 
     CompressorsMap& cmap = getMapInstance(USER);
@@ -87,7 +91,15 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
         current = userMap.at(id);
     }
 
-    return current ? current->createNewInstance() : nullptr;
+    if(current)
+    {
+        return current->createNewInstance();
+    }
+    else
+    {
+        VMF_EXCEPTION(IncorrectParamException,
+                      "Unregistered compression algorithm: " + id);
+    }
 }
 
 

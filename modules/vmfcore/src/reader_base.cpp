@@ -25,19 +25,11 @@ std::string ReaderBase::decompress(const std::string& input)
     std::string decompressed;
     if(!compressorId.empty())
     {
-        std::shared_ptr<Compressor> compressor = Compressor::create(compressorId);
-        if(compressor)
-        {
-            // Compressed binary data should be represented in base64
-            // because of '\0' symbols
-            vmf_rawbuffer compressed = Variant::base64decode(input);
-            compressor->decompress(compressed, decompressed);
-        }
-        else
-        {
-            VMF_EXCEPTION(IncorrectParamException,
-                          "Unregistered compression algorithm: " + compressorId);
-        }
+        std::shared_ptr<Compressor> decompressor = Compressor::create(compressorId);
+        // Compressed binary data should be represented in base64
+        // because of '\0' symbols
+        vmf_rawbuffer compressed = Variant::base64decode(input);
+        decompressor->decompress(compressed, decompressed);
     }
     else
     {

@@ -101,14 +101,13 @@ TEST_P(TestCompressor, CreateByName)
 {
     std::string name = GetParam();
 
-    compressor = vmf::Compressor::create(name);
     if(name == "unregistered")
     {
-        ASSERT_EQ(compressor, nullptr);
+        ASSERT_THROW(compressor = vmf::Compressor::create(name), IncorrectParamException);
     }
     else
     {
-        ASSERT_NE(compressor, nullptr);
+        ASSERT_NE(compressor = vmf::Compressor::create(name), nullptr);
     }
 }
 
