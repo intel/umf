@@ -85,7 +85,7 @@ protected:
     std::string generateData(int nChars)
     {
         std::string result;
-        srand(0);
+        srand(0); result.reserve(nChars);
         for(int i = 0; i < nChars; i++)
         {
             result.push_back( (char)(rand()%256) );
@@ -219,6 +219,7 @@ TEST_P(TestCompressor, TryRegisterExisting)
     if(name == "unregistered")
     {
         ASSERT_NO_THROW(vmf::Compressor::registerNew(fake));
+        ASSERT_NO_THROW(vmf::Compressor::unregister(name));
     }
     else
     {
