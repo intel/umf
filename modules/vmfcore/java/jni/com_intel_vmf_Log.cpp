@@ -15,8 +15,10 @@ using namespace vmf;
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1logToFile (JNIEnv *env, jclass, jstring file)
 {
-    std::string sPath(env->GetStringUTFChars(file, NULL));
+    const char* path = env->GetStringUTFChars(file, NULL);
+    std::string sPath(path);
     Log::logToFile(sPath);
+    env->ReleaseStringUTFChars(file, path);
 }
 
 /*

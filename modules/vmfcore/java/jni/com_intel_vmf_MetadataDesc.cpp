@@ -24,9 +24,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__ (JNIEn
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2J (JNIEnv *env, jclass, jstring mdName, jlong type)
 {
-    std::string sName (env->GetStringUTFChars (mdName, NULL));
+    const char* tmp = env->GetStringUTFChars(mdName, NULL);
+    std::string sName(tmp);
    
     std::shared_ptr<MetadataDesc>* p = new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, (Variant::Type) type));
+
+    env->ReleaseStringUTFChars(mdName, tmp);
     return (jlong) p;
 }
 
@@ -37,7 +40,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs)
 {
-    std::string sName (env->GetStringUTFChars (mdName, NULL));
+    const char* tmp = env->GetStringUTFChars(mdName, NULL);
+    std::string sName(tmp);
     std::vector <FieldDesc> descs;
     jlong* cArray = env->GetLongArrayElements (fieldDescs, 0);
     jsize len = env->GetArrayLength (fieldDescs);
@@ -49,6 +53,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
     }
     
     env->ReleaseLongArrayElements (fieldDescs, cArray, 0);
+    env->ReleaseStringUTFChars(mdName, tmp);
     return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, descs));
 }
 
@@ -59,7 +64,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs, jlongArray refDescs)
 {
-    std::string sName (env->GetStringUTFChars (mdName, NULL));
+    const char* tmp = env->GetStringUTFChars(mdName, NULL);
+    std::string sName(tmp);
     std::vector <FieldDesc> fdVec;
     std::vector<std::shared_ptr<ReferenceDesc>> rdVec;
     jlong* descArray = env->GetLongArrayElements (fieldDescs, 0);
@@ -81,6 +87,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
     
     env->ReleaseLongArrayElements (fieldDescs, descArray, 0);
     env->ReleaseLongArrayElements (refDescs, refArray, 0);
+    env->ReleaseStringUTFChars(mdName, tmp);
     return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, fdVec, rdVec));
 }
 
@@ -223,8 +230,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1declareCustomReference
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
-        std::string sName (env->GetStringUTFChars (refName, NULL));
-        (*obj)->declareCustomReference (sName, (isUnique == 1) ? true : false);
+        const char* tmp = env->GetStringUTFChars(refName, NULL);
+        std::string sName(tmp);
+        (*obj)->declareCustomReference (sName, (isUnique == JNI_TRUE) ? true : false);
+        env->ReleaseStringUTFChars(refName, tmp);
     }
     catch(const std::exception &e)
     {
@@ -248,8 +257,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc (JNI
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
-        std::string sName (env->GetStringUTFChars (refName, NULL));
+        const char* tmp = env->GetStringUTFChars(refName, NULL);
+        std::string sName(tmp);
         std::shared_ptr<ReferenceDesc> sp = (*obj)->getReferenceDesc(sName);
+
+        env->ReleaseStringUTFChars(refName, tmp);
         return (jlong) new std::shared_ptr<ReferenceDesc>(new ReferenceDesc (sp->name, sp->isUnique, sp->isCustom));
     }
     catch(const std::exception &e)
@@ -277,7 +289,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc (JNIE
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
         std::shared_ptr<FieldDesc>* fieldDesc = (std::shared_ptr<FieldDesc>*)fieldDescAddr;
-        std::string sName (env->GetStringUTFChars (fieldName, NULL));
+        const char* tmp = env->GetStringUTFChars(fieldName, NULL);
+        std::string sName(tmp);
+        env->ReleaseStringUTFChars(fieldName, tmp);
         return (jboolean) (*obj)->getFieldDesc (**fieldDesc, sName);
     }
     catch(const std::exception &e)

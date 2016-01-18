@@ -13,10 +13,15 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema (JNIEnv *env, jclass, jstring name, jstring author)
 {
-    std::string sName (env->GetStringUTFChars (name, NULL));
-    std::string sAuthor (env->GetStringUTFChars (author, NULL));
+    const char* cName = env->GetStringUTFChars(name, NULL);
+    std::string sName(cName);
+    const char* cAuthor = env->GetStringUTFChars(author, NULL);
+    std::string sAuthor(cAuthor);
     
     std::shared_ptr<MetadataSchema>* p = new std::shared_ptr<MetadataSchema>(new MetadataSchema (sName, sAuthor));
+
+    env->ReleaseStringUTFChars(name, cName);
+    env->ReleaseStringUTFChars(author, cAuthor);
     return (jlong) p;
 }
 
@@ -138,9 +143,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc (J
     try 
     {
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
-        std::string sName (env->GetStringUTFChars (mdName, NULL));
+        const char* tmp = env->GetStringUTFChars(mdName, NULL);
+        std::string sName(tmp);
         const std::shared_ptr<MetadataDesc> spMdDesc = (*obj)->findMetadataDesc (sName);
-        
+        env->ReleaseStringUTFChars(mdName, tmp);
         return (jlong) new std::shared_ptr<MetadataDesc> (spMdDesc);
     }
     catch(const std::exception &e)

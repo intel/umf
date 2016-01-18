@@ -25,8 +25,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJJJ (JNIEnv *env, jclass, jstring title, jdouble fps,
                                                                                                                        jlong startTime, jlong duration, jint width, jint height)
 {
-    std::string sTitle (env->GetStringUTFChars(title, NULL));
+    const char* tmp = env->GetStringUTFChars(title, NULL);
+    std::string sTitle(tmp);
+    
     std::shared_ptr<MetadataStream::VideoSegment>* p = new std::shared_ptr<MetadataStream::VideoSegment>(new MetadataStream::VideoSegment(sTitle, (double)fps, (long long)startTime, (long long)duration, (long)width, (long)height));
+    env->ReleaseStringUTFChars(title, tmp);
     return (jlong) p;
 }
 
@@ -70,8 +73,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
-        std::string sTitle(env->GetStringUTFChars (title, NULL));
+        const char* tmp = env->GetStringUTFChars(title, NULL);
+        std::string sTitle(tmp);
         (*obj)->setTitle (sTitle);
+        env->ReleaseStringUTFChars(title, tmp);
     }
     catch (const std::exception &e)
     {

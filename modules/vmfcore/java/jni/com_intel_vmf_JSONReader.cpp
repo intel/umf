@@ -34,9 +34,13 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll (JNIEnv *en
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
         std::vector <std::shared_ptr<MetadataInternal>> vecMdInt;
         
-        std::string sText (env->GetStringUTFChars (text, NULL));
-        std::string sPath (env->GetStringUTFChars (path, NULL));
-        std::string sChecksum (env->GetStringUTFChars (checksum, NULL));
+        const char* str = env->GetStringUTFChars(text, NULL);
+        const char* file = env->GetStringUTFChars(path, NULL);
+        const char* sum = env->GetStringUTFChars(checksum, NULL);
+
+        std::string sText (str);
+        std::string sPath(file);
+        std::string sChecksum(sum);
         
         jlong* segmentsArray = env->GetLongArrayElements (segments, 0);
         jlong* schemasArray = env->GetLongArrayElements (schemas, 0);
@@ -67,6 +71,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseAll (JNIEnv *en
         env->ReleaseLongArrayElements (segments, segmentsArray, 0);
         env->ReleaseLongArrayElements (schemas, schemasArray, 0);
         env->ReleaseLongArrayElements (md, mdIntArray, 0);
+
+        env->ReleaseStringUTFChars(text, str);
+        env->ReleaseStringUTFChars(path, file);
+        env->ReleaseStringUTFChars(checksum, sum);
         
         return (jboolean) (*obj)->parseAll (sText, (IdType&)nextID, sPath, sChecksum, vecSegments, vecSchemas, vecMdInt);
     }
@@ -94,7 +102,8 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas (JNIEnv
     try 
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
-        std::string sText (env->GetStringUTFChars (text, NULL));
+        const char* tmp = env->GetStringUTFChars(text, NULL);
+        std::string sText (tmp);
         
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
         
@@ -108,7 +117,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas (JNIEnv
         }
         
         env->ReleaseLongArrayElements (schemas, schemasArray, 0);
-        
+        env->ReleaseStringUTFChars(text, tmp);
         return (jboolean) (*obj)->parseSchemas (sText, vecSchemas);
     }
     catch (const std::exception &e)
@@ -135,7 +144,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNIEn
     try 
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
-        std::string sText (env->GetStringUTFChars (text, NULL));
+
+        const char* tmp = env->GetStringUTFChars(text, NULL);
+        std::string sText(tmp);
         
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
         std::vector <std::shared_ptr<MetadataInternal>> vecMdInt;
@@ -160,6 +171,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNIEn
         
         env->ReleaseLongArrayElements (schemas, schemasArray, 0);
         env->ReleaseLongArrayElements (md, mdIntArray, 0);
+        env->ReleaseStringUTFChars (text, tmp);
         
         return (jboolean) (*obj)->parseMetadata (sText, vecSchemas, vecMdInt);
     }
@@ -187,7 +199,8 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments (
     try 
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
-        std::string sText (env->GetStringUTFChars (text, NULL));
+        const char* tmp = env->GetStringUTFChars(text, NULL);
+        std::string sText(tmp);
         
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
         
@@ -201,7 +214,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments (
         }
         
         env->ReleaseLongArrayElements (segments, segmentsArray, 0);
-        
+        env->ReleaseStringUTFChars (text, tmp);
         return (jboolean) (*obj)->parseVideoSegments (sText, vecSegments);
     }
     catch (const std::exception &e)

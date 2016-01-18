@@ -26,8 +26,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ(JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional)
 {
-    std::string sName (env->GetStringUTFChars (name, NULL));
+    const char* tmp = env->GetStringUTFChars(name, NULL);
+    std::string sName(tmp);
+
     std::shared_ptr<FieldDesc>* p = new std::shared_ptr<FieldDesc>(new FieldDesc(sName, (Variant::Type) type, (isOptional == JNI_TRUE) ? true : false));
+
+    env->ReleaseStringUTFChars(name, tmp);
     return (jlong) p;
 }
 
@@ -45,7 +49,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, 
         std::shared_ptr<FieldDesc>* self = (std::shared_ptr<FieldDesc>*) selfAddr;
         std::shared_ptr<FieldDesc>* other = (std::shared_ptr<FieldDesc>*) otherAddr;
         
-        return ((*(*self) == *(*other)) ? JNI_TRUE : JNI_FALSE);
+        return (**self == **other) ? JNI_TRUE : JNI_FALSE;
     }
     catch(const std::exception &e)
     {
@@ -72,7 +76,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        std::string str = (*(*obj)).name;
+        std::string str = (**obj).name;
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)
@@ -99,7 +103,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jcl
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        return (jint)((*(*obj)).type);
+        return (jint)((**obj).type);
     }
     catch(const std::exception &e)
     {
@@ -125,7 +129,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *e
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
-        return (jboolean)(*(*obj)).optional;
+        return (jboolean)(**obj).optional;
     }
     catch(const std::exception &e)
     {

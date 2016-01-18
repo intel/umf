@@ -104,8 +104,11 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
 
-        std::string sPath (env->GetStringUTFChars (path, NULL));
-        std::string sChecksum (env->GetStringUTFChars (checksum, NULL));
+        const char* file = env->GetStringUTFChars(path, NULL);
+        const char* sum = env->GetStringUTFChars(checksum, NULL);
+
+        std::string sPath(file);
+        std::string sChecksum(sum);
 
         jlong* segmentsArray = env->GetLongArrayElements (segAddrs, 0);
         jlong* schemasArray = env->GetLongArrayElements (schemaAddrs, 0);
@@ -127,6 +130,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
 
         env->ReleaseLongArrayElements(segAddrs, segmentsArray, 0);
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
+
+        env->ReleaseStringUTFChars(path, file);
+        env->ReleaseStringUTFChars(checksum, sum);
 
         std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set));
         return env->NewStringUTF(str.c_str());
