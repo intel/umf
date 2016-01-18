@@ -308,7 +308,6 @@ void XMPDataSource::save(const std::shared_ptr<vmf::MetadataSchema>& schema)
     try
     {
         schemaSource->save(schema);
-        //pushChanges();
     }
     catch(const XMP_Error& e)
     {
@@ -327,7 +326,12 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     {
         metadataSource->remove(ids);
 
-        //instead of saving to file just put everything to buffer and get back
+        /* TODO:
+         * Existing implementation requires metadata re-reading here,
+         * so a quick workaround is made below:
+         * instead of saving to file we just put everything to buffer and get back.
+         * To be fixed to eliminate re-reading in long term future.
+         */
         string tempBuffer;
         XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
         xmp->SerializeToBuffer(&tempBuffer, options, 0, NULL);
