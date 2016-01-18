@@ -206,7 +206,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD(JNIEnv *env, jcla
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jclass, jlong self, jlong value)
 {
-    static const char method_name[] = "Variant::n_1setTo__JD";
+    static const char method_name[] = "Variant::n_1setTo__JJ";
 
     try
     {
@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jcla
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String_2(JNIEnv *env, jclass, jlong self, jobjectArray stringArray)
 {
-    static const char method_name[] = "Variant::n_1setTo__JD";
+    static const char method_name[] = "Variant::n_1setTo__J_3Ljava_lang_String_2";
 
     try
     {
