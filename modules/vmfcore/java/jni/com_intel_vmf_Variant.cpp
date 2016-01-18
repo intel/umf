@@ -159,7 +159,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
         const char* tmp = env->GetStringUTFChars(str, NULL);
-        std::string value(tmp);
+        vmf_string value(tmp);
         (**obj) = value;
 
         env->ReleaseStringUTFChars(str, tmp);
