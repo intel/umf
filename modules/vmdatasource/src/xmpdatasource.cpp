@@ -21,8 +21,6 @@
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
 
-#include <XMP.incl_cpp>
-#include <XMP.hpp>
 #include <XMPUtils.hpp>
 
 #define VMF_GLOBAL_NEXT_ID "next-id"
