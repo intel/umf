@@ -511,8 +511,8 @@ bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::sha
 
     if(text.empty())
     {
-	VMF_LOG_ERROR("Empty input XML string");
-	return false;
+        VMF_LOG_ERROR("Empty input XML string");
+        return false;
     }
 
     segments.clear();
@@ -520,73 +520,73 @@ bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::sha
     xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
     if (ctxt == NULL)
     {
-	VMF_LOG_ERROR("Failed to allocate XML parser context");
-	return false;
+        VMF_LOG_ERROR("Failed to allocate XML parser context");
+        return false;
     }
     xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
 
     //xmlDocPtr doc = xmlParseMemory(text.c_str(), (int)text.size());
     if(doc == NULL)
     {
-	VMF_LOG_ERROR("Can't create XML document");
-	return false;
+        VMF_LOG_ERROR("Can't create XML document");
+        return false;
     }
 
     xmlNodePtr root = xmlDocGetRootElement(doc);
     if(root == NULL)
     {
-	VMF_LOG_ERROR("XML tree has no root element");
-	return false;
+        VMF_LOG_ERROR("XML tree has no root element");
+        return false;
     }
 
     if( (char*)root->name == std::string(TAG_VIDEO_SEGMENT) )
     {
-	try
-	{
-	    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(root);
-	    segments.push_back(spSegment);
-	}
-	catch(Exception& e)
-	{
-	    VMF_LOG_ERROR("Exception: %s", e.what());
-	    return false;
-	}
+        try
+        {
+            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(root);
+            segments.push_back(spSegment);
+        }
+        catch(Exception& e)
+        {
+            VMF_LOG_ERROR("Exception: %s", e.what());
+            return false;
+        }
     }
     else if( (char*)root->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY) )
     {
-	for(xmlNodePtr node = root->children; node; node = node->next)
-	    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
-	    {
-		try
-		{
-		    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
-		    segments.push_back(spSegment);
-		}
-		catch(Exception& e)
-		{
-		    VMF_LOG_ERROR("Exception: %s", e.what());
-		    return false;
-		}
-	    }
+        for(xmlNodePtr node = root->children; node; node = node->next)
+            if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
+            {
+                try
+                {
+                    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
+                    segments.push_back(spSegment);
+                }
+                catch(Exception& e)
+                {
+                    VMF_LOG_ERROR("Exception: %s", e.what());
+                    return false;
+                }
+            }
     }
     else if( (char*)root->name == std::string(TAG_VMF) )
     {
-	for(xmlNodePtr rootChildNode = root->children; rootChildNode; rootChildNode = rootChildNode->next)
-	    if(rootChildNode->type == XML_ELEMENT_NODE && (char*)rootChildNode->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
-		for(xmlNodePtr node = rootChildNode->children; node; node = node->next)
-		    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
-		    {
-			try
-			{
-			    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
-			    segments.push_back(spSegment);
-			}
-			catch(Exception& e)
-			{
-			    VMF_LOG_ERROR("Exception: %s", e.what());
-			    return false;
-			}
-		    }
+        for(xmlNodePtr rootChildNode = root->children; rootChildNode; rootChildNode = rootChildNode->next)
+            if(rootChildNode->type == XML_ELEMENT_NODE && (char*)rootChildNode->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
+                for(xmlNodePtr node = rootChildNode->children; node; node = node->next)
+                    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
+                    {
+                        try
+                        {
+                            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
+                            segments.push_back(spSegment);
+                        }
+                        catch(Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception: %s", e.what());
+                            return false;
+                        }
+                    }
     }
 
     xmlFreeDoc(doc);
