@@ -22,15 +22,15 @@ public class FieldValue
         this (n_FieldValue ());
     }
 
-    public FieldValue (String newName, Variant variant)
+    public FieldValue (String name, Variant variant)
     { 
-        this (n_FieldValue (newName, variant.nativeObj));
+        this (n_FieldValue (name, variant.nativeObj));
     }
 
     /*
      * public FieldValue (FieldValue other)
      * {
-     * nativeObj = n_FieldValue (other.nativeObj);
+     *  nativeObj = n_FieldValue (other.nativeObj);
      * }
      */
 
@@ -44,14 +44,21 @@ public class FieldValue
         return n_equals (nativeObj, other.nativeObj);
     }
 
+    /*
     public void setTo (Variant value)
+    {
+        n_setToVariant (nativeObj, value.nativeObj);
+    }
+    */
+    
+    public void setTo (FieldValue value)
     {
         n_setTo (nativeObj, value.nativeObj);
     }
-
+    
     public void clear ()
     {
-        setTo (new Variant());
+        setTo (new FieldValue());
     }
 
     @Override
@@ -68,6 +75,7 @@ public class FieldValue
     private static native long n_FieldValue (String name, long variant);
     private static native String n_getName (long nativeObj); 
     private static native void n_setTo (long nativeObj, long other);
+    //private static native void n_setToVariant (long nativeObj, long other);
     private static native boolean n_equals (long nativeObj, long other);
     private static native void n_delete (long nativeObj);	
 }
