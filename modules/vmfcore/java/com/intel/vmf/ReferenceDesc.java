@@ -22,6 +22,13 @@ public class ReferenceDesc
         this (n_ReferenceDesc ());
     }
     
+    public ReferenceDesc (String refName) 
+    {
+        boolean unique = false;
+        boolean custom = false;
+        nativeObj = n_ReferenceDesc (refName, unique, custom);
+    }
+    
     public ReferenceDesc (String refName, boolean unique, boolean custom) 
     {
         this (n_ReferenceDesc (refName, unique, custom));
