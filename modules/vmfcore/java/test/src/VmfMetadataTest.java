@@ -39,6 +39,9 @@ public class VmfMetadataTest
     
     protected MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
     
+    protected Metadata md1;
+    protected Metadata md2;
+    
     @Before
     public static void setUp ()
     {
