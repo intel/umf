@@ -74,7 +74,7 @@ public:
     /*!
      * \brief Unregisters previously registered compression algorithm
      * \param id String ID of the compression algorithm
-     * \throw IncorrectParamException is thrown for unknown (not built-in and not-registered) IDs
+     * \throw IncorrectParamException is thrown for unknown or built-in IDs
      */
     static void unregister(const vmf_string& id);
 
