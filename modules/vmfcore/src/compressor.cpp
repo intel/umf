@@ -108,7 +108,7 @@ void Compressor::unregister(const vmf_string &id)
     {
         userMap.erase(id);
     }
-    else if(builtinMap.find(id) != builtinMap.end())
+    else if(builtinMap.find(id) == builtinMap.end())
     {
         VMF_EXCEPTION(IncorrectParamException,
                       "Unregistered compression algorithm: " + id);
