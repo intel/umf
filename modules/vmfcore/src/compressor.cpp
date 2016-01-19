@@ -23,7 +23,7 @@
 namespace vmf {
 
 typedef std::map< vmf_string, std::shared_ptr<Compressor> > CompressorsMap;
-enum CompressorType {USER=0, BUILTIN=1};
+enum CompressorType {BUILTIN=0, USER=1};
 
 CompressorsMap& getMapInstance(CompressorType type)
 {
@@ -44,7 +44,7 @@ CompressorsMap& getMapInstance(CompressorType type)
 std::vector<vmf_string> Compressor::getRegisteredIds()
 {
     std::vector<vmf_string> result;
-    for(CompressorType type: {USER, BUILTIN})
+    for(CompressorType type: {BUILTIN, USER})
     {
         for(const auto& c : getMapInstance(type))
         {
@@ -62,7 +62,7 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
-    for(CompressorType type: {USER, BUILTIN})
+    for(CompressorType type: {BUILTIN, USER})
     {
         auto& m = getMapInstance(type);
         if(m.find(compressor->getId()) != m.end())
@@ -79,12 +79,12 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 {
     std::shared_ptr<Compressor> current;
-    for(CompressorType type: {USER, BUILTIN})
+    for(CompressorType type: {BUILTIN, USER})
     {
         auto& m = getMapInstance(type);
         if(m.find(id) != m.end())
         {
-            current = m.at(id);
+            current = m.at(id); break;
         }
     }
 
