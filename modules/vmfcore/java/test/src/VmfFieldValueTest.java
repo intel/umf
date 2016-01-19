@@ -12,13 +12,13 @@ public class VmfFieldValueTest
     }
     
     @BeforeClass
-    public static void setUp()
+    public static void init()
     {
         Vmf.initialize();
     }
     
     @AfterClass
-    public static void tearDown()
+    public static void terminate()
     {
         Vmf.terminate();
     }
