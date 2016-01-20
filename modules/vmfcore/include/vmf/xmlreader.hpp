@@ -40,13 +40,13 @@ namespace vmf
 * class XMLReader
 * \brief XMLReader class is a %IReader interface implementation for XML format representation
 */
-class VMF_EXPORT XMLReader : public ReaderBase
+class VMF_EXPORT XMLReader : public IReader
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    XMLReader(vmf_string _compressorId = vmf_string());
+    XMLReader();
 
     /*!
     * \brief Class destructor
@@ -67,6 +67,8 @@ public:
         std::vector<std::shared_ptr<MetadataInternal>>& metadata );
 
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+    virtual vmf_string decompress(const std::string &input);
 };
 
 }//vmf

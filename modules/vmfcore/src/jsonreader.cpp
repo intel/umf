@@ -266,12 +266,14 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader(vmf_string _compressorId) : ReaderBase(_compressorId) { }
+JSONReader::JSONReader() : IReader() { }
 JSONReader::~JSONReader(){ }
 
 bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
-    if(text.empty())
+    std::string decompressed = decompress(text);
+
+    if(decompressed.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -282,7 +284,7 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
     JSONNode root(JSON_NODE);
     try
     {
-        root = libjson::parse(text);
+        root = libjson::parse(decompressed);
     }
     catch(...)
     {
@@ -348,7 +350,9 @@ bool JSONReader::parseMetadata(const std::string& text,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    if(text.empty())
+    std::string decompressed = decompress(text);
+
+    if(decompressed.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -359,7 +363,7 @@ bool JSONReader::parseMetadata(const std::string& text,
     JSONNode root;
     try
     {
-        root = libjson::parse(text);
+        root = libjson::parse(decompressed);
     }
     catch(...)
     {
@@ -487,10 +491,12 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
 
 bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
-    if(text.empty())
+    std::string decompressed = decompress(text);
+
+    if(decompressed.empty())
     {
-	VMF_LOG_ERROR("Empty input JSON string");
-	return false;
+        VMF_LOG_ERROR("Empty input JSON string");
+        return false;
     }
 
     segments.clear();
@@ -498,18 +504,18 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
     JSONNode root(JSON_NODE);
     try
     {
-	root = libjson::parse(text);
+        root = libjson::parse(decompressed);
     }
     catch(...)
     {
-	VMF_LOG_ERROR("JSON document has no root element");
-	return false;
+        VMF_LOG_ERROR("JSON document has no root element");
+        return false;
     }
 
     if(root.size() != 1)
     {
-	VMF_LOG_ERROR("More than one JSON root");
-	return false;
+        VMF_LOG_ERROR("More than one JSON root");
+        return false;
     }
 
     JSONNode localRootNode = root[0];
@@ -558,6 +564,47 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
 		}
     }
     return true;
+}
+
+vmf_string JSONReader::decompress(const std::string& input)
+{
+    JSONNode root;
+    try
+    {
+        root = libjson::parse(input);
+    }
+    catch(...)
+    {
+        VMF_LOG_ERROR("Can't get JSON root");
+        return vmf_string();
+    }
+
+    auto algoIt = root.find(ATTR_COMPRESSION_ALGO);
+    auto dataIt = root.find(TAG_COMPRESSED_DATA);
+
+    if(algoIt != root.end())
+    {
+        std::string algo = algoIt->as_string();
+        if(algo.empty())
+        {
+            VMF_LOG_ERROR("Algorithm name isn't specified");
+            return vmf_string();
+        }
+
+        std::string encoded = dataIt->as_string();
+        std::string decompressed;
+        std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
+        // Compressed binary data should be represented in base64
+        // because of '\0' symbols
+        vmf_rawbuffer compressed = Variant::base64decode(encoded);
+        decompressor->decompress(compressed, decompressed);
+
+        return decompressed;
+    }
+    else
+    {
+        return input;
+    }
 }
 
 }//vmf

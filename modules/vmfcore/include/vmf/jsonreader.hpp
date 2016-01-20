@@ -41,13 +41,13 @@ namespace vmf
 * class JSONReader
 * \brief JSONReader class is a %IReader interface implementation for JSON format representation
 */
-class VMF_EXPORT JSONReader : public ReaderBase
+class VMF_EXPORT JSONReader : public IReader
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader(vmf_string _compressorId = vmf_string());
+    JSONReader();
 
     /*!
     * \brief Class destructor
@@ -67,6 +67,8 @@ public:
         std::vector<std::shared_ptr<MetadataInternal>>& metadata);
 
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+    virtual vmf_string decompress(const std::string &input);
 };
 
 }//vmf

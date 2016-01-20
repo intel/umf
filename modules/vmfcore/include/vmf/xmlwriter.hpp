@@ -40,7 +40,7 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLWriter(vmf_string _compressorId = vmf_string());
+    XMLWriter(const vmf_string& _compressorId = vmf_string());
 
     /*!
     * \brief Class destructor
@@ -58,6 +58,8 @@ public:
                               const MetadataSet& set);
     virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
+
+    virtual std::string compress(const std::string& input);
 
 private:
     // hiding API that may be removed soon

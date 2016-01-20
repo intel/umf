@@ -169,7 +169,7 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-JSONWriter::JSONWriter(vmf_string _compressorId) : WriterBase(_compressorId) { }
+JSONWriter::JSONWriter(const vmf_string& _compressorId) : WriterBase(_compressorId) { }
 JSONWriter::~JSONWriter() { }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
@@ -362,11 +362,11 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
 
     std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
     {
-	if( spSegment == nullptr )
-	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-	JSONNode segmentNode(JSON_NODE);
-	add(segmentNode, spSegment);
-	segmentsArrayNode.push_back(segmentNode);
+        if( spSegment == nullptr )
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+        JSONNode segmentNode(JSON_NODE);
+        add(segmentNode, spSegment);
+        segmentsArrayNode.push_back(segmentNode);
     });
 
     JSONNode root(JSON_NODE);
@@ -374,6 +374,25 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
 
     std::string formatted = root.write_formatted();
     return compress(formatted);
+}
+
+
+vmf_string JSONWriter::compress(const std::string& input)
+{
+    if(!WriterBase::compressorId.empty())
+    {
+        std::string compressed = WriterBase::compress(input);
+
+        JSONNode root;
+        root.push_back(JSONNode(ATTR_COMPRESSION_ALGO, WriterBase::compressorId));
+        root.push_back(JSONNode(TAG_COMPRESSED_DATA, compressed));
+
+        return root.write_formatted();
+    }
+    else
+    {
+        return input;
+    }
 }
 
 }//vmf

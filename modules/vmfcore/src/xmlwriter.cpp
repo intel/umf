@@ -186,7 +186,7 @@ static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::V
     }
 }
 
-XMLWriter::XMLWriter(vmf_string _compressorId) : WriterBase(_compressorId) {}
+XMLWriter::XMLWriter(const vmf_string &_compressorId) : WriterBase(_compressorId) {}
 XMLWriter::~XMLWriter() {}
 
 std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
@@ -484,6 +484,56 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
     xmlMemoryDump();
 
     return compress(outputString);
+}
+
+
+vmf::vmf_string XMLWriter::compress(const std::string& input)
+{
+    if(!WriterBase::compressorId.empty())
+    {
+        std::string compressed = WriterBase::compress(input);
+
+        xmlDocPtr doc = xmlNewDoc(NULL);
+
+        xmlNodePtr compressedNode = xmlNewDocNode(doc, NULL, BAD_CAST TAG_COMPRESSED_DATA,
+                                                  BAD_CAST compressed.data());
+        if(compressedNode == NULL)
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for compressed data");
+        }
+
+        if(xmlNewProp(compressedNode, BAD_CAST ATTR_COMPRESSION_ALGO,
+                      BAD_CAST WriterBase::compressorId.data()) == NULL)
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (compression algo)");
+        }
+
+        if(xmlDocSetRootElement(doc, compressedNode) != 0)
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
+        }
+
+        xmlChar *buf;
+        int size;
+        xmlDocDumpMemory(doc, &buf, &size);
+        if(buf == NULL)
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
+        }
+
+        std::string outputString = (char*)buf;
+
+        xmlFree(buf);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+
+        return outputString;
+    }
+    else
+    {
+        return input;
+    }
 }
 
 }//vmf
