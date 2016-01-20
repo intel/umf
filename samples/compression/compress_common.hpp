@@ -20,7 +20,7 @@
 
 #include "vmf/vmf.hpp"
 
-void writeMetadataStream(vmf::MetadataStream& mdStream, const vmf::vmf_string& videoFile);
+void generateMetadata(vmf::MetadataStream& mdStream);
 void readVideoFile(const vmf::vmf_string& videoFile);
 
 #endif //VMF_COMPRESS_COMMON_HPP

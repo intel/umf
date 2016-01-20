@@ -30,14 +30,9 @@ const string GPS_COORD_LNG_FIELD = "lng";
 const string GPS_SCHEMA_NAME = "gps_coords_schema";
 const double PI = 3.14159265358979323846;
 
-void writeMetadataStream(MetadataStream& mdStream, const vmf_string& videoFile)
+void generateMetadata(MetadataStream& mdStream)
 {
-    // Open metadata stream
-    if (!mdStream.open(videoFile, vmf::MetadataStream::ReadWrite))
-    {
-        std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
-        exit(1);
-    }
+    mdStream.clear();
 
     // Create a GPS metadata field descriptions
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));

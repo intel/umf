@@ -44,7 +44,14 @@ int main(int argc, char** argv)
     vmf::vmf_string videoFile(argv[1]);
 
     vmf::MetadataStream mdStream;
-    writeMetadataStream(mdStream, videoFile);
+    // Open metadata stream
+    if (!mdStream.open(videoFile, vmf::MetadataStream::ReadWrite))
+    {
+        std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
+        exit(1);
+    }
+
+    generateMetadata(mdStream);
 
     cout << "Saving metadata..." << endl << endl;
 
