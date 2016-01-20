@@ -32,8 +32,6 @@ const double PI = 3.14159265358979323846;
 
 void generateMetadata(MetadataStream& mdStream)
 {
-    mdStream.clear();
-
     // Create a GPS metadata field descriptions
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));
 
@@ -72,7 +70,7 @@ void generateMetadata(MetadataStream& mdStream)
     }
 }
 
-void readVideoFile(const vmf_string& videoFile)
+void readAndDumpMetadata(const vmf_string& videoFile)
 {
     cout << "Opening file name '" << videoFile << "'" << endl;
 
@@ -84,30 +82,44 @@ void readVideoFile(const vmf_string& videoFile)
         exit(1);
     }
 
-    // When loading decompression is performed automatically
-    // for registered and built-in compressors
-    cout << "Loading schema '" << GPS_SCHEMA_NAME << "'" << endl;
-    if (!loadStream.load(GPS_SCHEMA_NAME))
+    // Get all schemas
+    vector<string> schemas = loadStream.getAllSchemaNames();
+    // and dump all the related data to console
+    for(size_t sNum = 0; sNum < schemas.size(); sNum++)
     {
-        cerr << "Can't load schema " << GPS_SCHEMA_NAME << endl;
-        exit(1);
-    }
-
-    // Select all metadata items from loaded schema
-    auto dataSet = loadStream.queryBySchema(GPS_SCHEMA_NAME);
-
-    // and print them to console
-    for (size_t i = 0; i < dataSet.size(); i++)
-    {
-        cout << "Getting item " << i << endl;
-        auto metadataItem = dataSet[i];
-
-        vmf_real lat = metadataItem->getFieldValue(GPS_COORD_LAT_FIELD);
-        vmf_real lng = metadataItem->getFieldValue(GPS_COORD_LNG_FIELD);
-        cout << "\tGPS coordinates are: lat " << lat << " lng " << lng << endl;
-
-        long long time = metadataItem->getTime();
-        cout << "\tAssociated time is: " << time << endl;
+        string sName = schemas[sNum];
+        cout << "* (" << sNum << ") [schema]: " << sName << endl;
+        if(!loadStream.load(sName))
+        {
+            cerr << "Error loading schema " << sName << endl;
+            exit(1);
+        }
+        vector< shared_ptr<MetadataDesc> > mDescs;
+        mDescs = loadStream.getSchema(sName)->getAll();
+        for(size_t setNum = 0; setNum < mDescs.size(); setNum++)
+        {
+            auto mDesc = mDescs[setNum];
+            string setName = mDesc->getMetadataName();
+            MetadataSet mdSet = loadStream.queryByName(setName);
+            cout << "\t* (" << sNum << "." << setNum << ") [set]: ";
+            cout << setName << "(" << mdSet.size() << " items)" << endl;
+            if(mdSet.empty()) continue;
+            vector<string> fields(mdSet[0]->getFieldNames());
+            int itemNum = 0;
+            for(auto item = mdSet.begin(); item != mdSet.end(); item++)
+            {
+                cout << "\t\t* (" << sNum << "." << setNum << "." << ++itemNum << ") { ";
+                const char * separator = "";
+                for (auto f = fields.begin(); f != fields.end(); f++)
+                {
+                    cout << separator << *f << "=";
+                    try { cout << (*item)->getFieldValue(*f).toString(); }
+                    catch(vmf::Exception& e) { cout << '<' << e.what() << '>'; }
+                    separator = ", ";
+                }
+                cout << " }" << endl;
+            }
+        }
     }
 
     // Close metadata stream

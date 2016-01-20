@@ -50,7 +50,6 @@ int main(int argc, char** argv)
         std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
         exit(1);
     }
-
     generateMetadata(mdStream);
 
     cout << "Saving metadata..." << endl << endl;
@@ -65,7 +64,7 @@ int main(int argc, char** argv)
     mdStream.close();
 
     cout << "Loading metadata..." << endl;
-    readVideoFile(videoFile);
+    readAndDumpMetadata(videoFile);
 
     vmf::terminate();
 

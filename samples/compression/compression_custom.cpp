@@ -81,7 +81,7 @@ int main(int argc, char** argv)
     mdStream.close();
 
     cout << "Loading metadata..." << endl;
-    readVideoFile(videoFile);
+    readAndDumpMetadata(videoFile);
 
     //The following action is optional
     vmf::Compressor::unregister(compressor->getId());
