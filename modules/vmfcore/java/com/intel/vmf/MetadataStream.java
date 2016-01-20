@@ -283,9 +283,9 @@ public class MetadataStream implements IQuery
         n_setChecksum (nativeObj, checksum);
     }
     
-    public void addVideoSegment (VideoSegment newSegment)
+    public void addVideoSegment (VideoSegment segment)
     {
-        n_addVideoSegment (nativeObj, newSegment.nativeObj);
+        n_addVideoSegment (nativeObj, segment.nativeObj);
     }
     
     public VideoSegment[] getAllVideoSegments ()
