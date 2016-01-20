@@ -104,7 +104,7 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
     }
 }
 
-bool MetadataStream::save(vmf_string compressorId)
+bool MetadataStream::save(const vmf_string &compressorId)
 {
     dataSourceCheck();
     try
@@ -178,7 +178,7 @@ bool MetadataStream::reopen( OpenMode eMode )
     return false;
 }
 
-bool MetadataStream::saveTo(const std::string& sFilePath, vmf_string compressorId)
+bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
 {
     if( m_eMode != InMemory )
         throw std::runtime_error("The previous file has not been closed!");
