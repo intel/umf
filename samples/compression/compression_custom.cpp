@@ -59,10 +59,17 @@ int main(int argc, char** argv)
 
     // Trying to load or save file with unregistered compressor
     // doesn't produce exceptions, just returns false
-    if(!mdStream.save("unknown_compressor_ID"))
+    if(mdStream.save("unknown_compressor_ID"))
     {
-        mdStream.save(compressor->getId());
+        cout << "VMF error: it shouldn't allow saving with unregistered compressor" << endl;
     }
+    else
+    {
+        cout << "VMF is right: it can't use unregistered compressor!" << endl;
+    }
+
+    mdStream.save(compressor->getId());
+
 
     // Close metadata stream
     mdStream.close();
