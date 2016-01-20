@@ -2,6 +2,7 @@ import junit.framework.*;
 import com.intel.vmf.FieldDesc;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import com.intel.vmf.Vmf;
 
 public class VmfFieldDescTest 
 {

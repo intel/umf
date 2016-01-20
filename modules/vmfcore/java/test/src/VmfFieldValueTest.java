@@ -1,5 +1,6 @@
 import junit.framework.*;
 import com.intel.vmf.FieldValue;
+import com.intel.vmf.Vmf;
 import com.intel.vmf.Variant;
 import static org.junit.Assert.*;
 import org.junit.Test;

@@ -1,7 +1,9 @@
 import junit.framework.*;
-import com.intel.vmf.FieldValue;
 import com.intel.vmf.Variant;
-import com.sun.org.apache.xml.internal.security.signature.Reference;
+import com.intel.vmf.Vmf;
+import com.intel.vmf.vmf_vec2d;
+import com.intel.vmf.vmf_vec3d;
+import com.intel.vmf.vmf_vec4d;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -125,6 +127,4 @@ public class VmfVariantTest
         
         assertEquals("vec4d[]", var2.getTypeName());
      }
-    
-    
 }

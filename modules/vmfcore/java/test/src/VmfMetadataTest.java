@@ -1,7 +1,12 @@
 import junit.framework.*;
 import com.intel.vmf.FieldValue;
+import com.intel.vmf.Metadata;
+import com.intel.vmf.MetadataSet;
+import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.FieldDesc;
 import com.intel.vmf.Variant;
-import com.sun.org.apache.xml.internal.security.signature.Reference;
+import com.intel.vmf.Vmf;
+import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -45,8 +50,8 @@ public class VmfMetadataTest
     @Before
     public static void setUp ()
     {
-        Metadata md1 = new Metadata(mdDesc);
-        Metadata md2 = new Metadata(mdDesc);
+        md1 = new Metadata(mdDesc);
+        md2 = new Metadata(mdDesc);
     }
     
     @Test
