@@ -55,9 +55,6 @@ public class VmfMetadataStreamTest
         stream = new MetadataStream ();
         schema = new MetadataSchema ("test_schema");
         schema.add (mdDesc);
-        
-        md1 = new Metadata(mdDesc);
-        md2 = new Metadata(mdDesc);
     }
     
     @Test
@@ -66,15 +63,20 @@ public class VmfMetadataStreamTest
         System.out.println("Inside VmfMetadataStreamTest.testNotNull()");
         
         assertNotNull(stream);
-        assertNotNull(schema);  
-        assertNotNull(md1);
-        assertNotNull(md2);
+        assertNotNull(schema);
+        assertNotNull(mdDesc1);
     }
     
     @Test
     public void testSaveLoadAndQueries()
     {
         System.out.println("Inside VmfMetadataStreamTest.testSaveLoadAndQueries()");
+        
+        md1 = new Metadata(mdDesc);
+        md2 = new Metadata(mdDesc);
+        
+        assertNotNull(md1);
+        assertNotNull(md2);
         
         assertTrue (stream.open(videoFile, MetadataStream.ReadWrite));
         
