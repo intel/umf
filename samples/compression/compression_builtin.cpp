@@ -52,8 +52,7 @@ int main(int argc, char** argv)
     mdStream.save("com.intel.vmf.compressor.zlib");
 
     // Alternative way:
-    //shared_ptr<ICompressor> compressor = make_shared<ZLibCompressor>();
-    //mdStream.save(compressor->getId());
+    //mdStream.save(CompressorZlib::getId());
 
     // Close metadata stream
     mdStream.close();
