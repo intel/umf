@@ -32,7 +32,6 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
-#include "reader_base.hpp"
 
 namespace vmf
 {
