@@ -278,7 +278,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const MetaString& path
     {
         MetaString name;
         if (!metadata->GetStructField(VMF_NS, currentReferencePath.c_str(), VMF_NS, REFERENCE_NAME, &name, NULL))
-            VMF_EXCEPTION(IncorrectParamException, "XMP element has invalid reference name.")
+            VMF_EXCEPTION(IncorrectParamException, "XMP element has invalid reference name.");
 
         bool isUnique = false;
         if (metadata->GetStructField(VMF_NS, currentReferencePath.c_str(), VMF_NS, REFERENCE_UNIQUE, NULL, NULL))
