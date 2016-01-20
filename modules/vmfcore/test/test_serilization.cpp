@@ -165,14 +165,15 @@ protected:
 TEST_P(TestSerialization, Parse_schema)
 {
     SerializerType type = GetParam();
+    vmf_string compressorId = std::get<1>(GetParam());
     if(type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if(type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
 
@@ -188,14 +189,15 @@ TEST_P(TestSerialization, Parse_schema)
 TEST_P(TestSerialization, Parse_schemasArray)
 {
     SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
 
@@ -215,14 +217,15 @@ TEST_P(TestSerialization, Parse_schemasArray)
 TEST_P(TestSerialization, Parse_schemasAll)
 {
     SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -241,14 +244,15 @@ TEST_P(TestSerialization, Parse_schemasAll)
 TEST_P(TestSerialization, Parse_metadata)
 {
     SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
 
@@ -269,14 +273,15 @@ TEST_P(TestSerialization, Parse_metadata)
 TEST_P(TestSerialization, Parse_metadataArray)
 {
     SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
 
@@ -305,14 +310,15 @@ TEST_P(TestSerialization, Parse_metadataArray)
 TEST_P(TestSerialization, Parse_metadataAll)
 {
     SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
+        writer.reset(new XMLWriter(compressorId));
         reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
+        writer.reset(new JSONWriter(compressorId));
         reader.reset(new JSONReader());
     }
 
@@ -345,12 +351,12 @@ TEST_P(TestSerialization, Parse_All)
     if (type == TypeXML)
     {
         writer.reset(new XMLWriter(compressorId));
-        reader.reset(new XMLReader(compressorId));
+        reader.reset(new XMLReader());
     }
     else if (type == TypeJson)
     {
         writer.reset(new JSONWriter(compressorId));
-        reader.reset(new JSONReader(compressorId));
+        reader.reset(new JSONReader());
     }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -377,4 +383,5 @@ TEST_P(TestSerialization, Parse_All)
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
                                            ::testing::Values("com.intel.vmf.compressor.dummy",
-                                                             "com.intel.vmf.compressor.zlib")));
+                                                             "com.intel.vmf.compressor.zlib",
+                                                             "")));
