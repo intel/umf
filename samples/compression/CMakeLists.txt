@@ -16,10 +16,10 @@ endif()
 include_directories(${VMF_INCLUDE_DIR})
 link_directories(${VMF_LIB_DIR})
 
-add_executable(compression-builtin compression-builtin.cpp compress_common.cpp)
+add_executable(compression-builtin compression_builtin.cpp compress_common.cpp)
 target_link_libraries(compression-builtin ${VMF_LIBS})
 set_target_properties(compression-builtin PROPERTIES FOLDER "samples")
 
-add_executable(compression-custom compression-custom.cpp compress_common.cpp my_lzw.cpp)
+add_executable(compression-custom compression_custom.cpp compress_common.cpp my_lzw.cpp)
 target_link_libraries(compression-custom ${VMF_LIBS})
 set_target_properties(compression-custom PROPERTIES FOLDER "samples")
