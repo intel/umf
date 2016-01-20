@@ -108,15 +108,29 @@ public class MetadataDesc
         return new ReferenceDesc (n_getReferenceDesc (nativeObj, refName));
     }
     
-    public boolean getFieldDesc (FieldDesc field)
+    public FieldDesc getFieldDesc ()
     {
         String fieldName = "";
-        return n_getFieldDesc (nativeObj, field.nativeObj, fieldName);
+        long nObj[] = new long [1];
+        FieldDesc field = new FieldDesc ();
+        nObj[0] = field.nativeObj;
+        
+        if (n_getFieldDesc (nativeObj, nObj, fieldName))
+            return field;
+        else
+            return null;
     }
     
-    public boolean getFieldDesc (FieldDesc field, String fieldName)
+    public FieldDesc getFieldDesc (String fieldName)
     {
-        return n_getFieldDesc (nativeObj, field.nativeObj, fieldName);
+        long nObj[] = new long [1];
+        FieldDesc field = new FieldDesc ();
+        nObj[0] = field.nativeObj;
+        
+        if (n_getFieldDesc (nativeObj, nObj, fieldName))
+            return field;
+        else
+            return null;
     }
     
     @Override
@@ -138,6 +152,6 @@ public class MetadataDesc
     private native static long[] n_getAllReferenceDescs (long nativeObj);
     private native static void n_declareCustomReference (long nativeObj, String refName, boolean isUnique);
     private native static long n_getReferenceDesc (long nativeObj, String refName);
-    private native static boolean n_getFieldDesc (long nativeObj, long fieldAddr, String fieldName);
+    private native static boolean n_getFieldDesc (long nativeObj, long nObj[], String fieldName);
     private native static void n_delete (long nativeObj);
 } 

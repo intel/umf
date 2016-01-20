@@ -54,6 +54,7 @@ public class VmfMetadataStreamTest
     {
         stream = new MetadataStream ();
         schema = new MetadataSchema ("test_schema");
+        assertNotNull(schema);
         schema.add (mdDesc);
     }
     
@@ -63,7 +64,6 @@ public class VmfMetadataStreamTest
         System.out.println("Inside VmfMetadataStreamTest.testNotNull()");
         
         assertNotNull(stream);
-        assertNotNull(schema);
         assertNotNull(mdDesc1);
     }
     

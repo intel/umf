@@ -90,10 +90,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getFieldDesc
- * Signature: (JJLjava/lang/String;)Z
+ * Signature: (J[JLjava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc
-  (JNIEnv *, jclass, jlong, jlong, jstring);
+  (JNIEnv *, jclass, jlong, jlongArray, jstring);
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
