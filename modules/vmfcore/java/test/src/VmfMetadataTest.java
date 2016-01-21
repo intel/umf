@@ -30,19 +30,19 @@ public class VmfMetadataTest
         Vmf.terminate();
     }
     
-    protected MetadataSchema schema = new MetadataSchema ("test_schema")
+    final protected MetadataSchema schema = new MetadataSchema ("test_schema")
     
-    protected FieldDesc fields[] = new FieldDesc [3];
+    final protected FieldDesc fields[] = new FieldDesc [3];
     fields[0] = new FieldDesc ("name", Variant.type_string, false);
     fields[1] = new FieldDesc ("last name", Variant.type_string, false);
     fields[2] = new FieldDesc ("age", Variant.type_integer, false);
     
-    protected ReferenceDesc refs[] = new ReferenceDesc [3];
+    final protected ReferenceDesc refs[] = new ReferenceDesc [3];
     refs[0] = new ReferenceDesc ("friend");
     refs[1] = new ReferenceDesc ("colleague", false, true);
     refs[2] = new ReferenceDesc ("spouse", true);
     
-    protected MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
+    final protected MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
     
     protected Metadata md1;
     protected Metadata md2;
@@ -52,17 +52,6 @@ public class VmfMetadataTest
     {
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
-    }
-    
-    @Test
-    public void testNotNull()
-    {
-        System.out.println("Inside VmfMetadataTest.testNotNull()");
-
-        assertNotNull(fields);
-        assertNotNull(mdDesc);
-        assertNotNull(md1);
-        assertNotNull(md2);
     }
     
     @Test

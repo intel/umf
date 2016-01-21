@@ -13,11 +13,6 @@ import org.junit.Test;
 
 public class VmfMetadataStreamTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     @BeforeClass
     public static void init()
     {
@@ -30,21 +25,23 @@ public class VmfMetadataStreamTest
         Vmf.terminate();
     }
     
-    String videoFile = "D:/Projects/intel_vmf/vmf/data/BlueSquare.avi";
+    protected final String videoFile = "D:/Projects/intel_vmf/vmf/data/BlueSquare.avi";
     protected MetadataStream stream;
-    protected MetadataSchema schema;
+    protected final MetadataSchema schema = new MetadataSchema ("test_schema");
     
-    protected FieldDesc fields[] = new FieldDesc [3];
+    protected final FieldDesc fields[] = new FieldDesc [3];
     fields[0] = new FieldDesc ("name", Variant.type_string, false);
     fields[1] = new FieldDesc ("last name", Variant.type_string, false);
     fields[2] = new FieldDesc ("age", Variant.type_integer, false);
     
-    protected ReferenceDesc refs[] = new ReferenceDesc [3];
+    protected final ReferenceDesc refs[] = new ReferenceDesc [3];
     refs[0] = new ReferenceDesc ("friend");
     refs[1] = new ReferenceDesc ("colleague", false, true);
     refs[2] = new ReferenceDesc ("spouse", true);
     
-    protected MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
+    protected final MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
+    
+    schema.add (mdDesc);
     
     protected Metadata md1;
     protected Metadata md2;
@@ -53,18 +50,6 @@ public class VmfMetadataStreamTest
     public static void setUp ()
     {
         stream = new MetadataStream ();
-        schema = new MetadataSchema ("test_schema");
-        assertNotNull(schema);
-        schema.add (mdDesc);
-    }
-    
-    @Test
-    public void testNotNull()
-    {
-        System.out.println("Inside VmfMetadataStreamTest.testNotNull()");
-        
-        assertNotNull(stream);
-        assertNotNull(mdDesc1);
     }
     
     @Test
@@ -114,8 +99,8 @@ public class VmfMetadataStreamTest
         md2.addReference(md1, "spouse");
         md2.addReference(md1, "friend");
         
-        MetadataSet mdSet = stream.getAll();
-        assertEquals(2, mdSet.getSize());
+        MetadataSet mdSet1 = stream.getAll();
+        assertEquals(2, mdSet1.getSize());
         
         stream.save();
         stream.close();
@@ -124,24 +109,24 @@ public class VmfMetadataStreamTest
         
         stream.load ("test_schema");
         
-        MetadataSet mds = stream.queryBySchema("test_schema");
-        assertEquals(2, mds.getSize());
+        MetadataSet mdSet2 = stream.queryBySchema("test_schema");
+        assertEquals(2, mdSet2.getSize());
         
-        MetadataSet p1 = mds.queryByName("person");
-        assertEquals(2, p1.getSize());
+        MetadataSet mdSet3 = mdSet2.queryByName("person");
+        assertEquals(2, mdSet3.getSize());
         
         Metadata md = properties[0];
         String names[] = md->getFieldNames();
         
         assertEquals(3, names.length);
         
-        MetadataSet p2 = stream.queryByName ("person");
-        assertEquals(2, p2.getSize());
+        MetadataSet mdSet4 = stream.queryByName ("person");
+        assertEquals(2, mdSet4.getSize());
         
         FieldValue fv = new FieldValue("name", var1);
         
-        MetadataSet p3 = stream.queryByNameAndValue ("person", fv);
-        assertEquals(2, p3.getSize());
+        MetadataSet mdSet5 = stream.queryByNameAndValue ("person", fv);
+        assertEquals(2, mdSet5.getSize());
         
         var1.setTo ("John");
         var2.setTo ("Sean");
@@ -163,22 +148,36 @@ public class VmfMetadataStreamTest
         fvs[0] = new FieldValue("last name", var2);
         fvs[1] = new FieldValue("age", var3);
         
-        MetadataSet p4 = stream.queryByNameAndFields ("person", fvs);
-        assertEquals(3, p4.getSize());
+        MetadataSet mdSet6 = stream.queryByNameAndFields ("person", fvs);
+        assertEquals(3, mdSet6.getSize());
         
-        MetadataSet p5 = md2.queryByReference ("person");
-        assertEquals(5, p5.getSize());
+        MetadataSet mdSet7 = stream.queryByReference ("person");
+        assertEquals(5, mdSet7.getSize());
         
-        MetadataSet p6 = md2.queryByReference ("person", fv);
-        assertEquals(5, p6.getSize());
+        MetadataSet mdSet8 = stream.queryByReference ("person", fv);
+        assertEquals(5, mdSet8.getSize());
         
-        MetadataSet p7 = md2.queryByReference ("person", fvs);
-        assertEquals(5, p7.getSize());
+        MetadataSet mdSet9 = stream.queryByReference ("person", fvs);
+        assertEquals(5, mdSet9.getSize());
         
         IWriter formater = new XMLWriter ();
         
         String serialized = stream.serialize (formater);
         assertFalse (serialized.isEmpty());
+        
+        stream.remove (mdSet6);
+        mdSet6 = stream.queryByNameAndFields ("person", fvs);
+        assertEquals(0, mdSet6.getSize());
+        
+        stream.add(md1);
+        stream.add(md2);
+        
+        stream.remove(schema);
+        mdSet = stream.queryBySchema("test_schema");
+        assertEquals(0, mdSet.getSize());
+        
+        mdSet = stream.getAll();
+        assertEquals(0, mdSet.getSize());
     }
     
     @Test
@@ -186,7 +185,7 @@ public class VmfMetadataStreamTest
     {
         System.out.println("Inside VmfMetadataStreamTest.testVideoSegments()");
         
-        Metadata.VideoSegment s1 = new Metadata.VideoSegment();
+        Metadata.VideoSegment s1 = new Metadata.VideoSegment("holiday", 35, 30);
         Metadata.VideoSegment s2 = new Metadata.VideoSegment();
         Metadata.VideoSegment s3 = new Metadata.VideoSegment();
         

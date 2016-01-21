@@ -10,11 +10,6 @@ import org.junit.Test;
 
 public class VmfVariantTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     @BeforeClass
     public static void init()
     {
@@ -27,8 +22,8 @@ public class VmfVariantTest
         Vmf.terminate();
     }
     
-    Variant var1;
-    Variant var2;
+    protected Variant var1;
+    protected Variant var2;
     
     @Before
     public static void setUp ()

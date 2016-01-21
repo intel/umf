@@ -11,11 +11,6 @@ import org.junit.Test;
 
 public class VmfMetadataSchemaTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     @BeforeClass
     public static void init()
     {

@@ -6,11 +6,6 @@ import com.intel.vmf.Vmf;
 
 public class VmfFieldDescTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     protected FieldDesc tmp1 = new FieldDesc ();
     protected FieldDesc tmp2 = new FieldDesc ("string", Variant.type_string);
     protected FieldDesc tmp3 = new FieldDesc ("integer", Variant.type_integer, true);
@@ -32,23 +27,6 @@ public class VmfFieldDescTest
     public static void tearDown()
     {
         Vmf.terminate();
-    }
-    
-    @Test
-    public void testNotNull()
-    {
-        System.out.println("Inside VmfFieldDescTest.testNotNull()");
-
-        assertNotNull(tmp1);
-        assertNotNull(tmp2);
-        assertNotNull(tmp3);
-        assertNotNull(tmp4);
-        assertNotNull(tmp5);
-        assertNotNull(tmp6);
-        assertNotNull(tmp7);
-        assertNotNull(tmp8);
-        assertNotNull(tmp9);
-        assertNotNull(tmp10);
     }
     
    @Test

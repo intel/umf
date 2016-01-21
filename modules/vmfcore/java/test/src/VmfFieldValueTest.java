@@ -7,11 +7,6 @@ import org.junit.Test;
 
 public class VmfFieldValueTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     @BeforeClass
     public static void init()
     {
@@ -28,17 +23,6 @@ public class VmfFieldValueTest
     protected FieldValue tmp1 = new FieldValue();
     protected FieldValue tmp2 = new FieldValue("fieldName", var);
     protected FieldValue tmp3 = new FieldValue("fieldName", var);
-    
-    @Test
-    public void testNotNull()
-    {
-        System.out.println("Inside VmfFieldValueTest.testNotNull()");
-
-        assertNotNull(var);
-        assertNotNull(tmp1);
-        assertNotNull(tmp2);
-        assertNotNull(tmp3);
-    }
     
     @Test
     public void testEquals ()
