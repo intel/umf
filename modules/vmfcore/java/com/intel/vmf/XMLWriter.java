@@ -14,12 +14,14 @@ public class XMLWriter implements IWriter
         nativeObj = n_XMLWriter();
     }
     
+    @Override
     public long getNativeAddr()
     {
         return nativeObj;
     }
     
-    public String store (MetadataSchema[] schemas)
+    @Override
+    public String store (MetadataSchema... schemas)
     {
         long schemaNativeAddrs[] = new long [schemas.length];
         
@@ -31,17 +33,19 @@ public class XMLWriter implements IWriter
         return n_storeSchemas (nativeObj, schemaNativeAddrs);
     }
 
+    @Override
     public String store (MetadataSet set)
     {
         return n_storeMetadataSet (nativeObj, set.nativeObj);
     }
 
+    @Override
     public String store (long nextId,
-                  String filepath,
-                  String checksum,
-                  MetadataStream.VideoSegment[] segments,
-                  MetadataSchema[] schemas,
-                  MetadataSet set)
+                         String filepath,
+                         String checksum,
+                         MetadataStream.VideoSegment[] segments,
+                         MetadataSchema[] schemas,
+                         MetadataSet set)
     {
         long segNativeAddrs[] = new long [segments.length];
         long schemaNativeAddrs[] = new long [schemas.length];
@@ -59,12 +63,14 @@ public class XMLWriter implements IWriter
         return n_storeAll (nativeObj, nextId, filepath, checksum, segNativeAddrs, schemaNativeAddrs, set.nativeObj);
     }
 
+    @Override
     public String store (MetadataStream.VideoSegment segment)
     {
         return n_storeSegment (nativeObj, segment.nativeObj);
     }
 
-    public String store (MetadataStream.VideoSegment[] segments)
+    @Override
+    public String store (MetadataStream.VideoSegment... segments)
     {
         long segNativeAddrs[] = new long [segments.length];
         

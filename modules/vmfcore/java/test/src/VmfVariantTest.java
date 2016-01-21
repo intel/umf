@@ -33,15 +33,6 @@ public class VmfVariantTest
     }
     
     @Test
-    public void testNotNull()
-    {
-        System.out.println("Inside VmfVariantTest.testNotNull()");
-        
-        assertNotNull(var1);
-        assertNotNull(var2);    
-    }
-    
-    @Test
     public void testSetTo()
     {
         System.out.println("Inside VmfVariantTest.testSetTo()");

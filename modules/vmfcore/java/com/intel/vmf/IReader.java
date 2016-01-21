@@ -10,9 +10,9 @@ interface IReader
                       MetadataSchema[] schemas,
                       MetadataInternal[] metadata);
 				   
-    boolean parseSchemas (String text, MetadataSchema[] schemas);
+    boolean parseSchemas (String text, MetadataSchema... schemas);
 	
     boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] metadata);
 	
-    boolean parseVideoSegments (String text, MetadataStream.VideoSegment[] segments);
+    boolean parseVideoSegments (String text, MetadataStream.VideoSegment... segments);
 }

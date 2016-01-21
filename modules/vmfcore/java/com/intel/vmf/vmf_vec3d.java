@@ -27,14 +27,26 @@ public class vmf_vec3d
         this (n_vmf_vec3d (x, y, z));
     }
     
-    public void setTo (vmf_vec3d other)
+    /*
+     * public void setTo (vmf_vec3d other)
+     *{
+     *    n_setTo (nativeObj, other.nativeObj);
+     *}
+    */
+    
+    public double getX()
     {
-        n_setTo (nativeObj, other.nativeObj);
+        return n_getX(nativeObj);
     }
     
-    public double[] get()
+    public double getY()
     {
-        return n_get (nativeObj);
+        return n_getY(nativeObj);
+    }
+    
+    public double getZ()
+    {
+        return n_getZ(nativeObj);
     }
     
     @Override
@@ -48,7 +60,9 @@ public class vmf_vec3d
     
     private native static long n_vmf_vec3d ();
     private native static long n_vmf_vec3d (double x, double y, double z);
-    private native static void n_setTo (long nativeAddr, long otherAddr);
-    private native static double[] n_get (long nativeAddr);
+    //private native static void n_setTo (long nativeAddr, long otherAddr);
+    private native static double n_getX (long nativeAddr);
+    private native static double n_getY (long nativeAddr);
+    private native static double n_getZ (long nativeAddr);
     private native static void n_delete (long nativeAddr);
 }

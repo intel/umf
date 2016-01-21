@@ -4,7 +4,7 @@ interface IWriter
 {
     long getNativeAddr();
     
-    String store (MetadataSchema[] schemas);
+    String store (MetadataSchema... schemas);
 
     String store (MetadataSet set);
 
@@ -17,5 +17,5 @@ interface IWriter
 
     String store (MetadataStream.VideoSegment segment);	
 
-    String store (MetadataStream.VideoSegment[] segments);	
+    String store (MetadataStream.VideoSegment... segments);	
 }

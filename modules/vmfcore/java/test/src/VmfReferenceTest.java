@@ -26,6 +26,7 @@ public class VmfReferenceTest
     {
         Vmf.terminate();
     }
+    
     protected final FieldDesc fds[] = new FieldDesc [3];
     fds[0] = new FieldDesc ("name", Variant.type_string, false);
     fds[1] = new FieldDesc ("last name", Variant.type_string, false);

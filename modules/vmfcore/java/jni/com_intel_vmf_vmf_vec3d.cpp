@@ -43,22 +43,80 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1setTo (JNIEnv *, jclass,
 
 /*
 * Class:     com_intel_vmf_vmf_vec3d
-* Method:    n_get
-* Signature: (J)[D
+* Method:    n_getX
+* Signature: (J)D
 */
-JNIEXPORT jdoubleArray JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1get (JNIEnv *env, jclass, jlong self)
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getX(JNIEnv *env, jclass, jlong self)
 {
-    std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+    static const char method_name[] = "vmf_vec3d::n_1getX";
 
-    jdoubleArray values = env->NewDoubleArray(3);
-    jdouble* cArray = env->GetDoubleArrayElements(values, 0);
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        return (jdouble)((**obj).x);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 
-    cArray[0] = (jdouble)((**obj).x);
-    cArray[1] = (jdouble)((**obj).y);
-    cArray[2] = (jdouble)((**obj).z);
+    return 0;
+}
 
-    env->ReleaseDoubleArrayElements(values, cArray, 0);
-    return values;
+/*
+* Class:     com_intel_vmf_vmf_vec3d
+* Method:    n_getY
+* Signature: (J)D
+*/
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getY(JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "vmf_vec3d::n_1getY";
+
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        return (jdouble)((**obj).y);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_vmf_vec3d
+* Method:    n_getZ
+* Signature: (J)D
+*/
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getZ (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "vmf_vec3d::n_1getZ";
+
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        return (jdouble)((**obj).z);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -68,7 +126,20 @@ JNIEXPORT jdoubleArray JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1get (JNIEnv *env
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    std::shared_ptr<vmf_vec3d>* p = (std::shared_ptr<vmf_vec3d>*) self;
-    delete p;
+    static const char method_name[] = "vmf_vec3d::n_1delete";
+
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* p = (std::shared_ptr<vmf_vec3d>*) self;
+        delete p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
   

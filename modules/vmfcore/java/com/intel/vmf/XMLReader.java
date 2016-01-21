@@ -17,11 +17,13 @@ public class XMLReader implements IReader
         nativeObj = n_XMLReader();
     }
 	
+    @Override
     public long getNativeAddr()
     {
         return nativeObj;
     }
     
+    @Override
     public boolean parseAll (final String text, long nextId, String filepath, String checksum, 
                              MetadataStream.VideoSegment[] segments, MetadataSchema[] schemas, MetadataInternal[] mdInt)
     {
@@ -49,7 +51,8 @@ public class XMLReader implements IReader
         		           mdIntNativeAddrs);
     }
 	
-    public boolean parseSchemas (String text, MetadataSchema[] schemas)
+    @Override
+    public boolean parseSchemas (String text, MetadataSchema... schemas)
     {
         long schemaNativeAddrs[] = new long [schemas.length];
         
@@ -61,6 +64,7 @@ public class XMLReader implements IReader
         return n_parseSchemas (nativeObj, text, schemaNativeAddrs);
     }
 	
+    @Override
     public boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] mdInt)
     {
         long schemaNativeAddrs[] = new long [schemas.length];
@@ -79,7 +83,8 @@ public class XMLReader implements IReader
         return n_parseMetadata (nativeObj, text, schemaNativeAddrs, mdIntNativeAddrs);
     }
 	
-    public boolean parseVideoSegments (String text, MetadataStream.VideoSegment[] segments)
+    @Override
+    public boolean parseVideoSegments (String text, MetadataStream.VideoSegment... segments)
     {
         long segNativeAddrs[] = new long [segments.length];
         
