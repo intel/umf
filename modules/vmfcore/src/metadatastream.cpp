@@ -114,21 +114,6 @@ bool MetadataStream::save()
             dataSource->remove(removedIds);
             removedIds.clear();
 
-            for(auto p = m_mapSchemas.begin(); p != m_mapSchemas.end(); ++p)
-            {
-                dataSource->saveSchema(p->first, *this);
-                dataSource->save(p->second);
-            }
-
-	        dataSource->saveVideoSegments(videoSegments);
-
-            dataSource->save(nextId);
-
-            if(!m_sChecksumMedia.empty())
-                dataSource->saveChecksum(m_sChecksumMedia);
-
-            addedIds.clear();
-
             for(auto schemaPtr = removedSchemas.begin(); schemaPtr != removedSchemas.end(); schemaPtr++)
             {
                 dataSource->removeSchema(schemaPtr->first);
@@ -138,6 +123,21 @@ bool MetadataStream::save()
                 }
             }
             removedSchemas.clear();
+
+            for(auto p = m_mapSchemas.begin(); p != m_mapSchemas.end(); ++p)
+            {
+                dataSource->saveSchema(p->first, *this);
+                dataSource->save(p->second);
+            }
+
+            dataSource->saveVideoSegments(videoSegments);
+
+            dataSource->save(nextId);
+
+            if(!m_sChecksumMedia.empty())
+                dataSource->saveChecksum(m_sChecksumMedia);
+
+            addedIds.clear();
 
             return true;
         }
