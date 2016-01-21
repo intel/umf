@@ -4,6 +4,7 @@ import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
@@ -40,15 +41,15 @@ public class VmfMetadataSetTest
     
     protected final MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
     
-    protected final Metadata md1 = new Metadata (mdDesc);
-    protected final Metadata md2 = new Metadata (mdDesc);
-    protected final Metadata md3 = new Metadata (mdDesc);
-    
     protected MetadataSet mdSet1;
     
     @Before
     public static void setUp ()
     {
+        Metadata md1 = new Metadata (mdDesc);
+        Metadata md2 = new Metadata (mdDesc);
+        Metadata md3 = new Metadata (mdDesc);
+        
         schema = new MetadataSchema ("test_schema");
         stream = new MetadataStream ();
         

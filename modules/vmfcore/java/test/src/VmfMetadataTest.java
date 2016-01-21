@@ -4,6 +4,7 @@ import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
