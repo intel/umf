@@ -43,7 +43,7 @@ public class VmfReferenceDescTest
     @Test
     public void testReferenceDesc ()
     {
-        System.out.println("Inside VmfReferenceDescTest.testSettersGetters()");
+        System.out.println("Inside VmfReferenceDescTest.testReferenceDesc()");
         
         assertEquals("friend", ref1.getName ());
         assertEquals("colleague", ref2.getName());

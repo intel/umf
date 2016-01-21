@@ -25,18 +25,34 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD
 
 /*
  * Class:     com_intel_vmf_vmf_vec4d
- * Method:    n_setTo
- * Signature: (JJ)V
+ * Method:    n_getX
+ * Signature: (J)D
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_intel_vmf_vmf_vec4d
- * Method:    n_get
- * Signature: (J)[D
+ * Method:    n_getY
+ * Signature: (J)D
  */
-JNIEXPORT jdoubleArray JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1get
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_vmf_vec4d
+ * Method:    n_getZ
+ * Signature: (J)D
+ */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_vmf_vec4d
+ * Method:    n_getW
+ * Signature: (J)D
+ */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW
   (JNIEnv *, jclass, jlong);
 
 /*

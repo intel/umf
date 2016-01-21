@@ -27,14 +27,21 @@ public class vmf_vec2d
         this (n_vmf_vec2d (x, y));
     }
     
-    public void setTo (vmf_vec2d other)
+    /*
+     * public void setTo (vmf_vec4d other)
+     *{
+     *    n_setTo (nativeObj, other.nativeObj);
+     *}
+    */
+    
+    public double getX()
     {
-        n_setTo (nativeObj, other.nativeObj);
+        return n_getX (nativeObj);
     }
     
-    public double[] get()
+    public double getY()
     {
-        return n_get (nativeObj);
+        return n_getY (nativeObj);
     }
     
     @Override
@@ -48,7 +55,8 @@ public class vmf_vec2d
     
     private native static long n_vmf_vec2d ();
     private native static long n_vmf_vec2d (double x, double y);
-    private native static void n_setTo (long nativeAddr, long otherAddr);
-    private native static double[] n_get (long nativeAddr);
+    //private native static void n_setTo (long nativeAddr, long otherAddr);
+    private native static double n_getX (long nativeAddr);
+    private native static double n_getY (long nativeAddr);
     private native static void n_delete (long nativeAddr);
 }
