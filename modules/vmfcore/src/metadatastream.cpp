@@ -131,13 +131,13 @@ bool MetadataStream::save()
 
             for(auto schemaPtr = removedSchemas.begin(); schemaPtr != removedSchemas.end(); schemaPtr++)
             {
+                dataSource->removeSchema(schemaPtr->first);
                 if(schemaPtr->first == "")
                 {
-                    dataSource->removeSchema("");
                     break;
                 }
-                dataSource->removeSchema(schemaPtr->first);
             }
+            removedSchemas.clear();
 
             return true;
         }
@@ -550,6 +550,7 @@ void MetadataStream::clear()
     m_sFilePath = "";
     m_oMetadataSet.clear();
     m_mapSchemas.clear();
+    removedSchemas.clear();
     removedIds.clear();
     addedIds.clear();
     videoSegments.clear();
