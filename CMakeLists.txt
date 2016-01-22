@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 # must go before the `project()` command
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug" CACHE STRING "Configs" FORCE)
 
 project(vmf)
 
@@ -26,26 +26,32 @@ if(WIN32)
   set(BUILD_INSTALLER ON)
 endif()
 
-if(UNIX)
+if(CMAKE_COMPILER_IS_GNUCXX)
   option(CODE_COVERAGE "Whether or not to build with code coverage info (disables samples)" OFF)
+else()
+  set(CODE_COVERAGE OFF)
 endif()
 
 if(CMAKE_GENERATOR MATCHES "Makefiles|Ninja" AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(UNIX AND CODE_COVERAGE)
+if(DEFINED CMAKE_BUILD_TYPE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
   set(BUILD_SAMPLES OFF)
   set(BUILD_QT_SAMPLES OFF)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gp -fprofile-arcs -ftest-coverage")
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # The version number.
-set(VMF_VERSION_MAJOR "2")
+set(VMF_VERSION_MAJOR "3")
 set(VMF_VERSION_MINOR "0")
-set(VMF_VERSION_TYPE  "") # dev, alpha, beta
+set(VMF_VERSION_TYPE  "dev") # dev, alpha, beta
 
 # reporting build settings
 message(STATUS "*** VMF build configuration ***")
@@ -61,6 +67,9 @@ message(STATUS "    BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 message(STATUS "    BUILD_SAMPLES: ${BUILD_SAMPLES}")
 message(STATUS "    BUILD_QT_SAMPLES: ${BUILD_QT_SAMPLES}")
 message(STATUS "    BUILD_TESTS: ${BUILD_TESTS}")
+if(CMAKE_COMPILER_IS_GNUCXX)
+  message(STATUS "    CODE_COVERAGE: ${CODE_COVERAGE}")
+endif()
 
 #if(WIN32)
     SET(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE INTERNAL "Install path prefix" FORCE)

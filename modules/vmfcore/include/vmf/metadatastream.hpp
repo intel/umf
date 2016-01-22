@@ -31,6 +31,7 @@
 #include "metadatainternal.hpp"
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
+#include "statistics.hpp"
 #include "iquery.hpp"
 #include <map>
 #include <memory>
@@ -337,6 +338,45 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
+    /*!
+    * \brief Function used to notify stream about statistics-related events
+    * \param mode [in] operation mode, exactly one of IStatisticsOperation::Mode
+    * \param spMetadata [in] pointer to metadata object
+    * \param fieldName [in] name of changed field (currently is for Change mode only)
+    */
+    void handleStatistics( IStatisticsOperation::Mode mode, const std::shared_ptr< Metadata > spMetadata, const std::string& fieldName = "" ) const;
+
+    /*!
+    * \brief Function used to notify stream about statistics-related events
+    * \param mode [in] operation mode, exactly one of IStatisticsOperation::Mode
+    * \param id [in] metadata id
+    * \param fieldName [in] name of changed field (currently is for Change change only)
+    */
+    void handleStatistics( IStatisticsOperation::Mode mode, const IdType& id, const std::string& fieldName = "" ) const;
+
+    /*!
+    * \brief Set statistics object for metadata schema
+    * \param statistics [in] pointer to statistics object
+    * \param schemaName [in] schema name
+    */
+    void setStatistics( std::shared_ptr< Statistics > statistics, const std::string& schemaName );
+
+    /*!
+    * \brief Register user-defined statistics operation for use
+    * \param operation [in] pointer to user-defined statistics operation object
+    * \return operation type; multiple calls with the same input pointer will return the same type value
+    * \throw NullPointerException when input pointer is nullptr
+    */
+    static unsigned registerUserOperation( std::shared_ptr< IStatisticsOperation > operation );
+
+    /*!
+    * \brief Find previously registered user-defined statistics operation
+    * \param operationType [in] operation type which assigned upon registration
+    * \return pointer to statistics operation object
+    * \throw OutOfRangeException when input type wasn't assigned by registration call
+    */
+    static std::shared_ptr< IStatisticsOperation > findUserOperation( unsigned operationType /*, unsigned dataType*/ );
+
 protected:
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
@@ -357,6 +397,8 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
+
+    static std::vector< std::shared_ptr< IStatisticsOperation >> m_userOperations;
 };
 
 }

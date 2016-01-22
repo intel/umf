@@ -170,7 +170,6 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
 
 DECLARE_INT_TEST(Max_integer, integer, (vmf::vmf_integer) 0x7FFFFFFFFFFFFFFF)
 DECLARE_INT_TEST(Min_integer, integer, (vmf::vmf_integer) 0xFFFFFFFFFFFFFFFF)
-DECLARE_INT_TEST(Char, char, (vmf::vmf_char) 'X')
 
 
 TEST(TestSaveLoadMetadataTyped, DoublePos)
@@ -315,7 +314,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
         ASSERT_EQ(1, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_rawbuffer, value.getType());
-        bool result = TEST_VALUE == (vmf::vmf_rawbuffer) value;
+        bool result = TEST_VALUE == value.get_rawbuffer();
         ASSERT_TRUE(result);
     }
 
@@ -324,12 +323,6 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 
 TEST(TestSaveLoadMetadataTyped, Vectors)
 {
-    std::vector<vmf::vmf_char> test_char_value;
-    test_char_value.push_back('t');
-    test_char_value.push_back('e');
-    test_char_value.push_back('s');
-    test_char_value.push_back('t');
-
     std::vector<vmf::vmf_integer> test_integer_value;
     test_integer_value.push_back(42);
     test_integer_value.push_back(24);
@@ -366,7 +359,6 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema("test_schema"));
     std::vector<vmf::FieldDesc> fields;
-    fields.push_back(vmf::FieldDesc("test_char", vmf::Variant::type_char_vector));
     fields.push_back(vmf::FieldDesc("test_integer", vmf::Variant::type_integer_vector));
     fields.push_back(vmf::FieldDesc("test_real", vmf::Variant::type_real_vector));
     fields.push_back(vmf::FieldDesc("test_string", vmf::Variant::type_string_vector));
@@ -383,7 +375,6 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
-        md->setFieldValue("test_char", test_char_value);
         md->setFieldValue("test_integer", test_integer_value);
         md->setFieldValue("test_real", test_real_value);
         md->setFieldValue("test_string", test_string_value);
@@ -407,12 +398,10 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         vmf::MetadataSet property = schema.queryByName("test_desc");
         ASSERT_EQ(1, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(7, md->getFieldNames().size());
+        ASSERT_EQ(6, md->getFieldNames().size());
 
-        vmf::Variant value = md->getFieldValue("test_char");
-        ASSERT_EQ(vmf::Variant::type_char_vector, value.getType());
-        bool result = std::equal(test_char_value.begin(), test_char_value.end(), value.get_char_vector().begin());
-        ASSERT_TRUE(result);
+        vmf::Variant value;
+        bool result;
 
         value = md->getFieldValue("test_integer");
         ASSERT_EQ(vmf::Variant::type_integer_vector, value.getType());

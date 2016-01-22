@@ -73,6 +73,17 @@ public:
     */
     virtual ~Metadata(void);
 
+    // Require C++ 11
+    /*!
+    * \brief Assign operator
+    * \param oMetadata [in] object to assign
+    * \return assigned metadata object
+    * \details Operator explicitly deleted to guarantee that Metadata objects
+    * can't be assigned in user code, which is an invalid operation for objects
+    * which have assigned Id
+    */
+    Metadata& operator = ( const Metadata& oMetadata ) = delete;
+
     /*!
     * \brief Get metadata item identifier
     * \return metadata numeric identifier

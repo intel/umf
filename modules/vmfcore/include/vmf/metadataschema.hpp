@@ -32,6 +32,7 @@
 #include <memory>
 
 #include "metadatadesc.hpp"
+#include "statistics.hpp"
 
 namespace vmf
 {
@@ -110,12 +111,25 @@ public:
     */
     static std::shared_ptr< MetadataSchema > getStdSchema(StdSchemaKind kind = STD_DST);
 
+    /*!
+    * \brief Set statistics object for metadata schema
+    * \param statistics [in] pointer to statistics object
+    */
+    void setStatistics(std::shared_ptr< Statistics > statistics);
+
+    /*!
+    * \brief Get statistics object from metadata schema
+    * \return pointer to statistics object
+    */
+    std::shared_ptr< Statistics > getStatistics() const;
+
 protected:
     bool load( const std::string& sSchemaFilePath );
 
 private:
     std::string m_sName;
     std::string m_sAuthor;
+    std::shared_ptr< Statistics > m_statistics;
 };
 
 
@@ -128,11 +142,6 @@ private:
     auto desc = std::make_shared< vmf::MetadataDesc >( _name, fields ); \
     schema->add( desc );\
 };
-
-#define VMF_FIELD_CHAR_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_char, isOptional ));
-#define VMF_FIELD_CHAR( name ) VMF_FIELD_CHAR_( name, false )
-#define VMF_FIELD_CHAR_OPT( name ) VMF_FIELD_CHAR_( name, true )
 
 #define VMF_FIELD_STR_( name, isOptional ) \
     fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_string, isOptional ));

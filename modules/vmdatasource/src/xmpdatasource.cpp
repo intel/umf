@@ -441,29 +441,29 @@ void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream
 	XMP_Int32 width, height;
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_NAME, &tmpPath);
-	if(!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &segmentTitle, kXMP_NoOptions) )
+	if(!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &segmentTitle, 0) )
 	    VMF_EXCEPTION(DataStorageException, "Broken video segment's title");
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_FPS, &tmpPath);
-	if(!xmp->GetProperty_Float(VMF_NS, tmpPath.c_str(), &fps, kXMP_NoOptions) )
+	if(!xmp->GetProperty_Float(VMF_NS, tmpPath.c_str(), &fps, 0) )
 	    VMF_EXCEPTION(DataStorageException, "Broken video segment's FPS");
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_TIME, &tmpPath);
-	if(!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &timestamp, kXMP_NoOptions) )
+	if(!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &timestamp, 0) )
 	    VMF_EXCEPTION(DataStorageException, "Broken video segment's timestamp");
 
 	std::shared_ptr<MetadataStream::VideoSegment> segment = std::make_shared<MetadataStream::VideoSegment>(segmentTitle, fps, timestamp);
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_DURATION, &tmpPath);
-	if(xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &duration, kXMP_NoOptions) )
+	if(xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &duration, 0) )
 	    segment->setDuration(duration);
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_W, &tmpPath);
 
-	if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &width, kXMP_NoOptions) )
+	if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &width, 0) )
 	{
 	    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_H, &tmpPath);
-	    if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &height, kXMP_NoOptions))
+	    if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &height, 0))
 		segment->setResolution((long)width, (long)height);
 	}
 	segments.push_back(segment);
