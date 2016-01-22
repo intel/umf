@@ -142,7 +142,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
 
             addedIds.clear();
 
-            datasSource->pushChanges();
+            dataSource->pushChanges();
 
             return true;
         }
