@@ -20,7 +20,7 @@
 namespace vmf
 {
 MetadataSchema::MetadataSchema( const std::string& sName, const std::string& sAuthor )
-    : m_sName(sName), m_sAuthor(sAuthor)
+    : m_sName(sName), m_sAuthor(sAuthor), m_statistics(nullptr)
 {
     if (sName.empty())
     {
@@ -86,6 +86,17 @@ std::vector<std::shared_ptr< MetadataDesc >> MetadataSchema::getAll() const
     });
 
     return set;
+}
+
+void MetadataSchema::setStatistics(std::shared_ptr< Statistics > statistics)
+{
+    m_statistics = statistics;
+    m_statistics->setSchemaName( m_sName );
+}
+
+std::shared_ptr< Statistics > MetadataSchema::getStatistics() const
+{
+    return m_statistics;
 }
 
 } // namespace vmf

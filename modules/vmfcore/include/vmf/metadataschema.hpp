@@ -32,6 +32,7 @@
 #include <memory>
 
 #include "metadatadesc.hpp"
+#include "statistics.hpp"
 
 namespace vmf
 {
@@ -110,12 +111,25 @@ public:
     */
     static std::shared_ptr< MetadataSchema > getStdSchema(StdSchemaKind kind = STD_DST);
 
+    /*!
+    * \brief Set statistics object for metadata schema
+    * \param statistics [in] pointer to statistics object
+    */
+    void setStatistics(std::shared_ptr< Statistics > statistics);
+
+    /*!
+    * \brief Get statistics object from metadata schema
+    * \return pointer to statistics object
+    */
+    std::shared_ptr< Statistics > getStatistics() const;
+
 protected:
     bool load( const std::string& sSchemaFilePath );
 
 private:
     std::string m_sName;
     std::string m_sAuthor;
+    std::shared_ptr< Statistics > m_statistics;
 };
 
 

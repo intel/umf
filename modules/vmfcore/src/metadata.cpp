@@ -21,15 +21,16 @@
 namespace vmf
 {
 Metadata::Metadata( const std::shared_ptr< MetadataDesc >& spDescription )
-    : m_Id( INVALID_ID )
-    , m_nFrameIndex(UNDEFINED_FRAME_INDEX)
-    , m_nNumOfFrames(UNDEFINED_FRAMES_NUMBER)
-    , m_nTimestamp(UNDEFINED_TIMESTAMP)
-    , m_nDuration(UNDEFINED_DURATION)
+    : std::vector< vmf::FieldValue >()
+    , m_Id( INVALID_ID )
+    , m_nFrameIndex( UNDEFINED_FRAME_INDEX )
+    , m_nNumOfFrames( UNDEFINED_FRAMES_NUMBER )
+    , m_nTimestamp( UNDEFINED_TIMESTAMP )
+    , m_nDuration( UNDEFINED_DURATION )
     , m_sName( "" )
     , m_sSchemaName( "" )
     , m_spDesc( spDescription )
-    , m_pStream(nullptr)
+    , m_pStream( nullptr )
 {
     if (!m_spDesc)
     {
@@ -41,10 +42,19 @@ Metadata::Metadata( const std::shared_ptr< MetadataDesc >& spDescription )
 }
 
 Metadata::Metadata( const Metadata& oMetadata )
+    : std::vector< vmf::FieldValue >( oMetadata )
+    , m_Id( oMetadata.m_Id )
+    , m_nFrameIndex( oMetadata.m_nFrameIndex )
+    , m_nNumOfFrames( oMetadata.m_nNumOfFrames )
+    , m_nTimestamp( oMetadata.m_nTimestamp )
+    , m_nDuration( oMetadata.m_nDuration )
+    , m_sName( oMetadata.m_sName )
+    , m_sSchemaName( oMetadata.m_sSchemaName )
+    , m_vReferences( oMetadata.m_vReferences )
+    , m_spDesc( oMetadata.m_spDesc )
+    , m_pStream( nullptr )
 {
-    // Use default implementation of operator =.
-    *this = oMetadata;
-    m_pStream = nullptr;
+// we couldn't use *this assignment, since operator=() has been deleted
 }
 
 Metadata::~Metadata(void)
@@ -443,10 +453,14 @@ void Metadata::addValue( const vmf::Variant& value )
     }
 
     this->emplace_back( FieldValue( "", value ) );
+
+    // we don't update statisticss here since emplace created new item - this is an initial record fill
 }
 
 void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant& value )
 {
+    bool valueChanged = false;
+
     // Check field against description
     if( m_spDesc == nullptr )
     {
@@ -466,7 +480,12 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
     {
         if( it != this->end() )
         {
-            *it = vmf::FieldValue( sFieldName, value );
+            vmf::FieldValue newValue( sFieldName, value );
+            if( !(*it == newValue) )
+            {
+                *it = newValue;
+                valueChanged = true;
+            }
         }
         else
         {
@@ -482,12 +501,23 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
 
         if( it != this->end() )
         {
-            *it = vmf::FieldValue( sFieldName, varNew );
+            vmf::FieldValue newValue( sFieldName, varNew );
+            if( !(*it == newValue) )
+            {
+                *it = newValue;
+                valueChanged = true;
+            }
         }
         else
         {
             this->emplace_back( FieldValue( sFieldName, varNew ) );
         }
+    }
+
+    // update statistics
+    if( valueChanged && (m_pStream != nullptr) && (m_Id != INVALID_ID) )
+    {
+        m_pStream->handleStatistics( IStatisticsOperation::Change, m_Id, sFieldName );
     }
 }
 

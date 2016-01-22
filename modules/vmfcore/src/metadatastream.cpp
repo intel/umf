@@ -311,6 +311,9 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
         }
     });
     m_oMetadataSet.push_back(spMetadata);
+
+    // update statistics
+    handleStatistics( IStatisticsOperation::Add, spMetadata );
 }
 
 bool MetadataStream::remove( const IdType& id )
@@ -326,7 +329,12 @@ bool MetadataStream::remove( const IdType& id )
     // Found it, let's remove it
     if( it != m_oMetadataSet.end() )
     {
-        (*it)->setStreamRef(nullptr);
+        std::shared_ptr< Metadata > spMetadata = *it;
+
+        // update statistics
+        handleStatistics( IStatisticsOperation::Remove, spMetadata );
+
+        spMetadata->setStreamRef(nullptr);
         m_oMetadataSet.erase( it );
 
         // Also remove any reference to it. There might be other shared pointers pointing to this object, so that
@@ -832,6 +840,112 @@ void MetadataStream::convertFrameIndexToTimestamp(
     if (i == videoSegments.size())
         timestamp = Metadata::UNDEFINED_TIMESTAMP, duration = Metadata::UNDEFINED_DURATION;
 }
+
+void MetadataStream::handleStatistics(
+    IStatisticsOperation::Mode mode,
+    const IdType& id,
+    const std::string& fieldName ) const
+{
+    const std::shared_ptr< Metadata > spMetadata = getById( id );
+    if( !spMetadata ) return;
+
+    handleStatistics( mode, spMetadata, fieldName );
+}
+
+void MetadataStream::handleStatistics(
+    IStatisticsOperation::Mode mode,
+    const std::shared_ptr< Metadata > spMetadata,
+    const std::string& fieldName ) const
+{
+    if( !spMetadata ) return;
+
+    const std::shared_ptr< MetadataDesc > spDesc = spMetadata->getDesc();
+    if( !spDesc ) return;
+
+    const std::shared_ptr< MetadataSchema > spSchema = getSchema( spDesc->getSchemaName() );
+    if( !spSchema ) return;
+
+    std::shared_ptr< Statistics > statistics = spSchema->getStatistics();
+    switch( mode )
+    {
+    case IStatisticsOperation::Add:
+    case IStatisticsOperation::Remove:
+        if( statistics )
+        {
+            statistics->handleMetadata( mode, spMetadata );
+        }
+        return;
+    case IStatisticsOperation::Change:
+        if( statistics )
+        {
+            statistics->handleMetadataField( mode, spMetadata, fieldName );
+        }
+        return;
+    default:
+        VMF_EXCEPTION(InternalErrorException, "Unknown statistics operation type: only Add/Remove/Change are accepted");
+    }
+}
+
+void MetadataStream::setStatistics( std::shared_ptr< Statistics > statistics, const std::string& schemaName )
+{
+    // TODO: on schema/stream add/remove/load events, set also these schema statistics params accordingly
+
+    if( statistics == nullptr )
+    {
+        VMF_EXCEPTION(NullPointerException, "Statistics object pointer is empty!" );
+    }
+
+    const std::shared_ptr< MetadataSchema > spSchema = getSchema( schemaName );
+    if( spSchema == nullptr )
+    {
+        VMF_EXCEPTION(NotFoundException, "Metadata schema is not in the stream");
+    }
+
+    statistics->setMetadataStream( this );
+    spSchema->setStatistics( statistics );
+}
+
+unsigned MetadataStream::registerUserOperation( std::shared_ptr< IStatisticsOperation > operation )
+{
+    const unsigned userBegin = unsigned(IStatisticsOperation::_UserBegin);
+
+    if( operation == nullptr )
+    {
+        VMF_EXCEPTION(NullPointerException, "Operation pointer is empty!" );
+    }
+
+    auto it = std::find_if( m_userOperations.begin(), m_userOperations.end(),
+                            [&]( const std::shared_ptr< IStatisticsOperation >& spOperation )->bool
+    {
+        return spOperation == operation;
+    });
+
+    if( it != m_userOperations.end() )
+    {
+        return userBegin + std::distance( m_userOperations.begin(), it );
+    }
+    else
+    {
+        unsigned type = userBegin + m_userOperations.size();
+        m_userOperations.push_back( operation );
+        return type;
+    }
+}
+
+std::shared_ptr< IStatisticsOperation > MetadataStream::findUserOperation( unsigned operationType /*, unsigned dataType*/ )
+{
+    const unsigned userBegin = unsigned(IStatisticsOperation::_UserBegin);
+
+    unsigned index = 0;
+    if( (operationType < userBegin) || ((index = operationType-userBegin) >= m_userOperations.size()) )
+    {
+        VMF_EXCEPTION(OutOfRangeException, "Invalid user operation type!" );
+    }
+
+    return m_userOperations[index];
+}
+
+std::vector< std::shared_ptr< IStatisticsOperation >> MetadataStream::m_userOperations;
 
 }//namespace vmf
 
