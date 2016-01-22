@@ -114,13 +114,25 @@ bool MetadataStream::save()
             dataSource->remove(removedIds);
             removedIds.clear();
 
-            for(auto p = m_mapSchemas.begin(); p != m_mapSchemas.end(); ++p)
+            for(auto& schemaPtr : removedSchemas)
             {
-                dataSource->saveSchema(p->first, *this);
-                dataSource->save(p->second);
+                dataSource->removeSchema(schemaPtr.first);
+                // Empty schema name is used to delete all schemas in the file
+                // That's why there's no need to continue the loop
+                if(schemaPtr.first == "")
+                {
+                    break;
+                }
+            }
+            removedSchemas.clear();
+
+            for(auto& p : m_mapSchemas)
+            {
+                dataSource->saveSchema(p.first, *this);
+                dataSource->save(p.second);
             }
 
-	        dataSource->saveVideoSegments(videoSegments);
+            dataSource->saveVideoSegments(videoSegments);
 
             dataSource->save(nextId);
 
@@ -128,16 +140,6 @@ bool MetadataStream::save()
                 dataSource->saveChecksum(m_sChecksumMedia);
 
             addedIds.clear();
-
-            for(auto schemaPtr = removedSchemas.begin(); schemaPtr != removedSchemas.end(); schemaPtr++)
-            {
-                if(schemaPtr->first == "")
-                {
-                    dataSource->removeSchema("");
-                    break;
-                }
-                dataSource->removeSchema(schemaPtr->first);
-            }
 
             return true;
         }
@@ -550,6 +552,7 @@ void MetadataStream::clear()
     m_sFilePath = "";
     m_oMetadataSet.clear();
     m_mapSchemas.clear();
+    removedSchemas.clear();
     removedIds.clear();
     addedIds.clear();
     videoSegments.clear();

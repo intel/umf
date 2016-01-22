@@ -100,6 +100,7 @@ protected:
     vmf::vmf_string TEST_FIELD_NAME;
 };
 
+
 TEST_F(TestRemoving, RemoveOne)
 {
     vmf::MetadataStream newStream;
@@ -142,6 +143,7 @@ TEST_F(TestRemoving, RemoveOne)
     newStream2.close();
 }
 
+
 TEST_F(TestRemoving, RemoveSet)
 {
     {
@@ -166,6 +168,7 @@ TEST_F(TestRemoving, RemoveSet)
     }
 }
 
+
 TEST_F(TestRemoving, RemoveAll)
 {
     {
@@ -187,6 +190,7 @@ TEST_F(TestRemoving, RemoveAll)
         newStream.close();
     }
 }
+
 
 TEST_F(TestRemoving, RemoveWithReferences)
 {
@@ -220,6 +224,7 @@ TEST_F(TestRemoving, RemoveWithReferences)
     }
 }
 
+
 class TestRemovingSchema : public TestRemoving
 {
 protected:
@@ -239,6 +244,7 @@ protected:
 
     vmf::vmf_string TEST_SCHEMA_NAME_2;
 };
+
 
 TEST_F(TestRemovingSchema, RemoveOneSchema)
 {
@@ -260,6 +266,7 @@ TEST_F(TestRemovingSchema, RemoveOneSchema)
     }
 }
 
+
 TEST_F(TestRemovingSchema, RemoveUnknownSchema)
 {
     vmf::MetadataStream newStream;
@@ -268,6 +275,7 @@ TEST_F(TestRemovingSchema, RemoveUnknownSchema)
     std::shared_ptr<vmf::MetadataSchema> schemaForRemoving(new vmf::MetadataSchema("Invalid schema") );
     EXPECT_THROW(newStream.remove(schemaForRemoving), vmf::Exception);
 }
+
 
 TEST_F(TestRemovingSchema, RemoveAllSchemas)
 {
@@ -289,6 +297,7 @@ TEST_F(TestRemovingSchema, RemoveAllSchemas)
         newStream.close();
     }
 }
+
 
 TEST_F(TestRemovingSchema, RemoveAll)
 {
@@ -314,6 +323,138 @@ TEST_F(TestRemovingSchema, RemoveAll)
         newStream.close();
     }
 }
+
+
+TEST_F(TestRemovingSchema, RemoveAllAddSchema)
+{
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.load();
+        newStream.remove();
+        newStream.save();
+        newStream.close();
+
+        std::shared_ptr<vmf::MetadataSchema> newSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            VMF_FIELD_INT(TEST_FIELD_NAME);
+        VMF_METADATA_END(newSchema);
+
+        newStream.reopen(vmf::MetadataStream::ReadWrite);
+        newStream.addSchema(newSchema);
+        newStream.save();
+        newStream.close();
+    }
+
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        bool result = newStream.load(TEST_SCHEMA_NAME);
+        ASSERT_TRUE( result );
+        std::shared_ptr<vmf::MetadataSchema> schema = newStream.getSchema(TEST_SCHEMA_NAME);
+        std::vector< std::shared_ptr<vmf::MetadataDesc> > descs = schema->getAll();
+        ASSERT_EQ(descs.size(), 1);
+        std::shared_ptr<vmf::MetadataDesc> desc = descs[0];
+        ASSERT_EQ(desc->getMetadataName(), TEST_PROPERTY_NAME2);
+        newStream.close();
+    }
+}
+
+
+TEST_F(TestRemovingSchema, RemoveOneAddSchema)
+{
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.load();
+        auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
+        newStream.remove(schemaForRemoving);
+        newStream.save();
+        newStream.close();
+
+        std::shared_ptr<vmf::MetadataSchema> newSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            VMF_FIELD_INT(TEST_FIELD_NAME);
+        VMF_METADATA_END(newSchema);
+
+        newStream.reopen(vmf::MetadataStream::ReadWrite);
+        newStream.addSchema(newSchema);
+        newStream.save();
+        newStream.close();
+    }
+
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        bool result = newStream.load(TEST_SCHEMA_NAME);
+        ASSERT_TRUE( result );
+        std::shared_ptr<vmf::MetadataSchema> schema = newStream.getSchema(TEST_SCHEMA_NAME);
+        std::vector< std::shared_ptr<vmf::MetadataDesc> > descs = schema->getAll();
+        ASSERT_EQ(descs.size(), 1);
+        std::shared_ptr<vmf::MetadataDesc> desc = descs[0];
+        ASSERT_EQ(desc->getMetadataName(), TEST_PROPERTY_NAME2);
+        newStream.close();
+    }
+}
+
+
+TEST_F(TestRemovingSchema, RemoveOneAddSchemaBeforeSaving)
+{
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.load();
+        auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
+        newStream.remove(schemaForRemoving);
+
+        std::shared_ptr<vmf::MetadataSchema> newSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            VMF_FIELD_INT(TEST_FIELD_NAME);
+        VMF_METADATA_END(newSchema);
+        newStream.addSchema(newSchema);
+
+        newStream.save();
+        newStream.close();
+    }
+
+    {
+        vmf::MetadataStream newStream;
+        newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        bool result = newStream.load(TEST_SCHEMA_NAME);
+        ASSERT_TRUE( result );
+        std::shared_ptr<vmf::MetadataSchema> schema = newStream.getSchema(TEST_SCHEMA_NAME);
+        std::vector< std::shared_ptr<vmf::MetadataDesc> > descs = schema->getAll();
+        ASSERT_EQ(descs.size(), 1);
+        std::shared_ptr<vmf::MetadataDesc> desc = descs[0];
+        ASSERT_EQ(desc->getMetadataName(), TEST_PROPERTY_NAME2);
+        newStream.close();
+    }
+}
+
+
+TEST_F(TestRemovingSchema, RemoveOneAddSchemaNoSaving)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    newStream.load();
+    auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
+    newStream.remove(schemaForRemoving);
+
+    std::shared_ptr<vmf::MetadataSchema> newSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+    VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+        VMF_FIELD_INT(TEST_FIELD_NAME);
+    VMF_METADATA_END(newSchema);
+    newStream.addSchema(newSchema);
+
+    std::shared_ptr<vmf::MetadataSchema> schema = newStream.getSchema(TEST_SCHEMA_NAME);
+    ASSERT_NE(schema, nullptr);
+    std::vector< std::shared_ptr<vmf::MetadataDesc> > descs = schema->getAll();
+    ASSERT_EQ(descs.size(), 1);
+    std::shared_ptr<vmf::MetadataDesc> desc = descs[0];
+    ASSERT_EQ(desc->getMetadataName(), TEST_PROPERTY_NAME2);
+    newStream.close();
+}
+
 
 TEST_F(TestRemovingSchema, RemovingWithReferences)
 {
