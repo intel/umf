@@ -42,6 +42,36 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv
 }*/
 
 /*
+* Class:     com_intel_vmf_MetadataSet
+* Method:    n_getElement
+* Signature: (JJ)J
+*/
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement(JNIEnv *env, jclass, jlong self, jlong number)
+{
+    static const char method_name[] = "MetadataSet::n_1getElement";
+
+    try
+    {
+        std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((number >= 0) && ((**obj).size() > (size_t)number))
+            return (jlong) new std::shared_ptr<Metadata> ((**obj)[number]);
+        else
+            throwJavaException(env, 0, method_name);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
  * Class:     com_intel_vmf_MetadataSet
  * Method:    n_queryByFrameIndex
  * Signature: (JJ)J

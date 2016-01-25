@@ -18,84 +18,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLReader_n_1XMLReader (JNIEnv *env, 
 }
 
 /*
- * Class:     com_intel_vmf_XMLReader
- * Method:    n_parseAll
- * Signature: (JLjava/lang/String;JLjava/lang/String;Ljava/lang/String;[J[J[J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseAll(JNIEnv *env, jclass, jlong self, jstring text, jlong nextID, jstring path, jstring checksum, jlongArray segments, jlongArray schemas, jlongArray md)
-{
-    static const char method_name[] = "XMLReader::n_1parseAll";
-
-    try
-    {
-        std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
-
-        std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
-        std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
-        std::vector <std::shared_ptr<MetadataInternal>> vecMdInt;
-
-        const char* str = env->GetStringUTFChars(text, NULL);
-        const char* file = env->GetStringUTFChars(path, NULL);
-        const char* sum = env->GetStringUTFChars(checksum, NULL);
-
-        std::string sText(str);
-        std::string sPath(file);
-        std::string sChecksum(sum);
-
-        jlong* segmentsArray = env->GetLongArrayElements(segments, 0);
-        jlong* schemasArray = env->GetLongArrayElements(schemas, 0);
-        jlong* mdIntArray = env->GetLongArrayElements(md, 0);
-
-        jsize lenSegments = env->GetArrayLength(segments);
-        jsize lenSchemas = env->GetArrayLength(schemas);
-        jsize lenMd = env->GetArrayLength(md);
-
-        for (int i = 0; i < lenSegments; i++)
-        {
-            std::shared_ptr<MetadataStream::VideoSegment>* pSpSegment = (std::shared_ptr<MetadataStream::VideoSegment>*) segmentsArray[i];
-            vecSegments.push_back(*pSpSegment);
-        }
-
-        for (int j = 0; j < lenSchemas; j++)
-        {
-            std::shared_ptr<MetadataSchema>* pSpSchema = (std::shared_ptr<MetadataSchema>*) schemasArray[j];
-            vecSchemas.push_back(*pSpSchema);
-        }
-
-        for (int k = 0; k < lenMd; k++)
-        {
-            std::shared_ptr<MetadataInternal>* pSpMdInt = (std::shared_ptr<MetadataInternal>*) mdIntArray[k];
-            vecMdInt.push_back(*pSpMdInt);
-        }
-
-        env->ReleaseLongArrayElements(segments, segmentsArray, 0);
-        env->ReleaseLongArrayElements(schemas, schemasArray, 0);
-        env->ReleaseLongArrayElements(md, mdIntArray, 0);
-
-        env->ReleaseStringUTFChars(text, str);
-        env->ReleaseStringUTFChars(path, file);
-        env->ReleaseStringUTFChars(checksum, sum);
-
-        return (jboolean)(*obj)->parseAll(sText, (IdType&)nextID, sPath, sChecksum, vecSegments, vecSchemas, vecMdInt);
-    }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
-    return 0;
-}
-
-/*
- * Class:     com_intel_vmf_XMLReader
- * Method:    n_parseSchemas
- * Signature: (JLjava/lang/String;[J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemas)
+* Class:     com_intel_vmf_XMLReader
+* Method:    n_parseSchemas
+* Signature: (JLjava/lang/String;)[J
+*/
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEnv *env, jclass, jlong self, jstring text)
 {
     static const char method_name[] = "XMLReader::n_1parseSchemas";
 
@@ -104,21 +31,26 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEnv 
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
-
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
 
-        jlong* schemasArray = env->GetLongArrayElements(schemas, 0);
-        jsize lenSchemas = env->GetArrayLength(schemas);
-
-        for (int j = 0; j < lenSchemas; j++)
-        {
-            std::shared_ptr<MetadataSchema>* pSpSchema = (std::shared_ptr<MetadataSchema>*) schemasArray[j];
-            vecSchemas.push_back(*pSpSchema);
-        }
-
-        env->ReleaseLongArrayElements(schemas, schemasArray, 0);
         env->ReleaseStringUTFChars(text, tmp);
-        return (jboolean)(*obj)->parseSchemas(sText, vecSchemas);
+
+        bool result = (*obj)->parseSchemas(sText, vecSchemas);
+
+        if (result == JNI_TRUE)
+        {
+            jsize length = (jsize)vecSchemas.size();
+            jlongArray schemaNativeAddrs = env->NewLongArray(length);
+            jlong* schemaArray = env->GetLongArrayElements(schemaNativeAddrs, 0);
+
+            for (int j = 0; j < length; j++)
+                schemaArray[j] = (jlong)new std::shared_ptr<MetadataSchema>(vecSchemas[j]);
+
+            env->ReleaseLongArrayElements(schemaNativeAddrs, schemaArray, 0);
+            return schemaNativeAddrs;
+        }
+        else
+            throwJavaException(env, 0, method_name);
     }
     catch (const std::exception &e)
     {
@@ -133,46 +65,41 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEnv 
 }
 
 /*
- * Class:     com_intel_vmf_XMLReader
- * Method:    n_parseMetadata
- * Signature: (JLjava/lang/String;[J[J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata(JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemas, jlongArray md)
+* Class:     com_intel_vmf_XMLReader
+* Method:    n_parseMetadata
+* Signature: (JLjava/lang/String;)[J
+*/
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIEnv *env, jclass, jlong self, jstring text)
 {
     static const char method_name[] = "XMLReader::n_1parseMetadata";
 
     try
     {
         std::shared_ptr <XMLReader>* obj = (std::shared_ptr <XMLReader>*) self;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
-
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
         std::vector <std::shared_ptr<MetadataInternal>> vecMdInt;
 
-        jlong* schemasArray = env->GetLongArrayElements(schemas, 0);
-        jlong* mdIntArray = env->GetLongArrayElements(md, 0);
+        env->ReleaseStringUTFChars(text, tmp);
 
-        jsize lenSchemas = env->GetArrayLength(schemas);
-        jsize lenMd = env->GetArrayLength(md);
+        bool result = (*obj)->parseMetadata(sText, vecSchemas, vecMdInt);
 
-        for (int j = 0; j < lenSchemas; j++)
+        if (result == JNI_TRUE)
         {
-            std::shared_ptr<MetadataSchema>* pSpSchema = (std::shared_ptr<MetadataSchema>*) schemasArray[j];
-            vecSchemas.push_back(*pSpSchema);
+            jsize length = (jsize)vecMdInt.size();
+            jlongArray mdIntNativeAddrs = env->NewLongArray(length);
+            jlong* mdIntArray = env->GetLongArrayElements(mdIntNativeAddrs, 0);
+
+            for (int i = 0; i < length; i++)
+                mdIntArray[i] = (jlong)new std::shared_ptr<MetadataInternal>(vecMdInt[i]);
+
+            env->ReleaseLongArrayElements(mdIntNativeAddrs, mdIntArray, 0);
+            return mdIntNativeAddrs;
         }
-
-        for (int k = 0; k < lenMd; k++)
-        {
-            std::shared_ptr<MetadataInternal>* pSpMdInt = (std::shared_ptr<MetadataInternal>*) mdIntArray[k];
-            vecMdInt.push_back(*pSpMdInt);
-        }
-
-        env->ReleaseLongArrayElements (schemas, schemasArray, 0);
-        env->ReleaseLongArrayElements (md, mdIntArray, 0);
-        env->ReleaseStringUTFChars (text, tmp);
-
-        return (jboolean)(*obj)->parseMetadata(sText, vecSchemas, vecMdInt);
+        else
+            throwJavaException(env, 0, method_name);
     }
     catch (const std::exception &e)
     {
@@ -187,34 +114,41 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata(JNIEnv 
 }
 
 /*
- * Class:     com_intel_vmf_XMLReader
- * Method:    n_parseVideoSegments
- * Signature: (JLjava/lang/String;[J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments (JNIEnv *env, jclass, jlong self, jstring text, jlongArray segments)
+* Class:     com_intel_vmf_XMLReader
+* Method:    n_parseVideoSegments
+* Signature: (JLjava/lang/String;)[J
+*/
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments (JNIEnv *env, jclass, jlong self, jstring text)
 {
-    static const char method_name[] = "XMLReader::n_1VideoSegments";
+    static const char method_name[] = "XMLReader::n_1parseVideoSegments";
 
     try
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
-
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
 
-        jlong* segmentsArray = env->GetLongArrayElements(segments, 0);
-        jsize lenSegments = env->GetArrayLength(segments);
-
-        for (int i = 0; i < lenSegments; i++)
-        {
-            std::shared_ptr<MetadataStream::VideoSegment>* pSpSegment = (std::shared_ptr<MetadataStream::VideoSegment>*) segmentsArray[i];
-            vecSegments.push_back(*pSpSegment);
-        }
-
-        env->ReleaseLongArrayElements(segments, segmentsArray, 0);
         env->ReleaseStringUTFChars(text, tmp);
-        return (jboolean)(*obj)->parseVideoSegments (sText, vecSegments);
+
+        bool result = (*obj)->parseVideoSegments(sText, vecSegments);
+
+
+        if (result == JNI_TRUE)
+        {
+            jsize length = (jsize)vecSegments.size();
+            jlongArray segmentsNativeAddrs = env->NewLongArray(length);
+            jlong* segmentsArray = env->GetLongArrayElements(segmentsNativeAddrs, 0);
+
+            for (int i = 0; i < length; i++)
+                segmentsArray[i] = (jlong) new std::shared_ptr<MetadataStream::VideoSegment>(vecSegments[i]);
+
+            env->ReleaseLongArrayElements(segmentsNativeAddrs, segmentsArray, 0);
+            return segmentsNativeAddrs;
+        }
+        else
+            throwJavaException(env, 0, method_name);
     }
     catch (const std::exception &e)
     {

@@ -22,6 +22,7 @@
 #include <cmath>
 #include <limits>
 #include <iomanip>
+#include <iostream>
 
 
 namespace vmf

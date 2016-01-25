@@ -177,6 +177,14 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet
 
 /*
  * Class:     com_intel_vmf_MetadataStream
+ * Method:    n_clear
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1clear
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataStream
  * Method:    n_sortMdSetById
  * Signature: (J)V
  */

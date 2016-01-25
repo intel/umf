@@ -74,6 +74,31 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1reopen (JNIEnv *
 }
 
 /*
+* Class:     com_intel_vmf_MetadataStream
+* Method:    n_clear
+* Signature: (J)V
+*/
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1clear (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataStream::n_1clear";
+
+    try
+    {
+        std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
+        (*obj)->clear();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+}
+
+
+/*
  * Class:     com_intel_vmf_MetadataStream
  * Method:    n_load
  * Signature: (JLjava/lang/String;)Z

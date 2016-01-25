@@ -777,9 +777,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*)variantAddr;
         const char* str = env->GetStringUTFChars(fieldName, NULL);
         std::string sName(str);
-
-        env->ReleaseStringUTFChars(fieldName, str);
+        
         (*obj)->setFieldValue (sName, (**variant));
+        env->ReleaseStringUTFChars(fieldName, str);
     }
     catch (const std::exception &e)
     {

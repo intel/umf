@@ -23,20 +23,18 @@ extern "C" {
 #define com_intel_vmf_Variant_type_vec4d 6L
 #undef com_intel_vmf_Variant_type_rawbuffer
 #define com_intel_vmf_Variant_type_rawbuffer 7L
-#undef com_intel_vmf_Variant_type_char_array
-#define com_intel_vmf_Variant_type_char_array 8L
-#undef com_intel_vmf_Variant_type_integer_array
-#define com_intel_vmf_Variant_type_integer_array 9L
-#undef com_intel_vmf_Variant_type_real_array
-#define com_intel_vmf_Variant_type_real_array 10L
-#undef com_intel_vmf_Variant_type_string_array
-#define com_intel_vmf_Variant_type_string_array 11L
-#undef com_intel_vmf_Variant_type_vec2d_array
-#define com_intel_vmf_Variant_type_vec2d_array 12L
-#undef com_intel_vmf_Variant_type_vec3d_array
-#define com_intel_vmf_Variant_type_vec3d_array 13L
-#undef com_intel_vmf_Variant_type_vec4d_array
-#define com_intel_vmf_Variant_type_vec4d_array 14L
+#undef com_intel_vmf_Variant_type_integer_vector
+#define com_intel_vmf_Variant_type_integer_vector 8L
+#undef com_intel_vmf_Variant_type_real_vector
+#define com_intel_vmf_Variant_type_real_vector 9L
+#undef com_intel_vmf_Variant_type_string_vector
+#define com_intel_vmf_Variant_type_string_vector 10L
+#undef com_intel_vmf_Variant_type_vec2d_vector
+#define com_intel_vmf_Variant_type_vec2d_vector 11L
+#undef com_intel_vmf_Variant_type_vec3d_vector
+#define com_intel_vmf_Variant_type_vec3d_vector 12L
+#undef com_intel_vmf_Variant_type_vec4d_vector
+#define com_intel_vmf_Variant_type_vec4d_vector 13L
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_Variant

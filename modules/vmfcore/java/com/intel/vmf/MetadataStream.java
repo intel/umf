@@ -245,7 +245,7 @@ public class MetadataStream implements IQuery
     
     public void clear ()
     {
-        throw new java.lang.UnsupportedOperationException("Not Yet Implemented"); 
+        n_clear (nativeObj);
     }
     
     public void sortById ()
@@ -414,7 +414,7 @@ public class MetadataStream implements IQuery
     private native static long n_getAll (long nativeObj);
     private native static boolean n_importSet (long nativeObj, long srcStreamAddr, long srcSetAddr, long tarFrameIndex,
                                                long srcFrameIndex, long numOfFrames, long setFailureAddr);
-    //TO DO: private native static void n_clear (long nativeObjAddr);
+    private native static void n_clear (long nativeObjAddr);
     private native static void n_sortMdSetById (long nativeObjAddr);
     private native static String n_serialize (long nativeObjAddr, long formaterAddr);
     private native static void n_deserialize (long nativeObj, String text, long formaterAddr);

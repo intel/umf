@@ -4,15 +4,18 @@ interface IReader
 {
     long getNativeAddr();
      
-    boolean parseAll (String text, long nextId,
+    /*boolean parseAll (String text, long nextId,
                       String filepath, String checksum,
                       MetadataStream.VideoSegment[] segments, 
                       MetadataSchema[] schemas,
                       MetadataInternal[] metadata);
-				   
-    boolean parseSchemas (String text, MetadataSchema... schemas);
 	
-    boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] metadata);
+	PropertyMap parseProperties (String text);
+	*/
+    
+    MetadataSchema[] parseSchemas (String text);
 	
-    boolean parseVideoSegments (String text, MetadataStream.VideoSegment... segments);
+    MetadataInternal[] parseMetadata (String text);
+	
+    MetadataStream.VideoSegment[] parseVideoSegments (String text);
 }

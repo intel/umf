@@ -61,10 +61,6 @@ public class VmfMetadataSchemaTest
         mdDesc2 = new MetadataDesc ("car", fields2);
         
         schema = new MetadataSchema ("test_schema", "Anna");
-        
-        assertNotNull(schema);
-        assertNotNull(mdDesc1);
-        assertNotNull(mdDesc2);
     }
     
     @Test
@@ -83,7 +79,6 @@ public class VmfMetadataSchemaTest
         
         MetadataDesc mdDesc3 = schema.findMetadataDesc("person");
         
-        assertNotNull(mdDesc3);
         assertEquals(mdDesc1, mdDesc3);
         
         MetadataDesc mdDescs[] = schema.getAll();

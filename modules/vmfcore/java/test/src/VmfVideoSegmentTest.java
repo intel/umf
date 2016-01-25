@@ -1,18 +1,9 @@
-import junit.framework.*;
 import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
-import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.*;
 import org.junit.Test;
 
 public class VmfVideoSegmentTest 
@@ -50,11 +41,11 @@ public class VmfVideoSegmentTest
         vs1.setTitle ("travel");
         assertEquals ("", vs1.getTitle ());
         
-        assertEquals (0, vs1.getFPS ());
-        assertEquals (35, vs2.getFPS ());
+        assertEquals (0, vs1.getFPS (), 0.00001);
+        assertEquals (35, vs2.getFPS (), 0.00001);
         
         vs1.setFPS (30);
-        assertEquals (30, vs1.getFPS ());
+        assertEquals (30, vs1.getFPS (), 0.00001);
         
         assertEquals (0, vs1.getDuration ());
         assertEquals (0, vs2.getDuration ());

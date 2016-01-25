@@ -15,13 +15,12 @@ package com.intel.vmf;
     public static final int type_vec3d = 5;
     public static final int type_vec4d = 6;
     public static final int type_rawbuffer = 7;
-    public static final int type_char_array = 8;
-    public static final int type_integer_array = 9;
-    public static final int type_real_array = 10;
-    public static final int type_string_array = 11;
-    public static final int type_vec2d_array = 12;
-    public static final int type_vec3d_array = 13;
-    public static final int type_vec4d_array = 14;
+    public static final int type_integer_vector = 8;
+    public static final int type_real_vector = 9;
+    public static final int type_string_vector = 10;
+    public static final int type_vec2d_vector = 11;
+    public static final int type_vec3d_vector = 12;
+    public static final int type_vec4d_vector = 13;
     
     protected final long nativeObj;
 

@@ -19,6 +19,14 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet
 
 /*
  * Class:     com_intel_vmf_MetadataSet
+ * Method:    n_getElement
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     com_intel_vmf_MetadataSet
  * Method:    n_queryByFrameIndex
  * Signature: (JJ)J
  */

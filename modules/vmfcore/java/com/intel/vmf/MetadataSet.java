@@ -37,6 +37,11 @@ public class MetadataSet implements IQuery
      * public MetadataSet queryByReference (Metadata md, filter){}
     */
     
+    public Metadata getElement (long number)
+    {
+    	return new Metadata (n_getElement (nativeObj, number));
+    }
+    
     public MetadataSet queryByFrameIndex (long index)
     {
         return new MetadataSet (n_queryByFrameIndex (nativeObj, index));
@@ -125,6 +130,7 @@ public class MetadataSet implements IQuery
     
     private native static long n_MetadataSet ();
     //private native static long n_MetadataSet (long otherAddr);
+    private native static long n_getElement (long nativeObj, long number);
     private native static long n_queryByFrameIndex (long nativeObj, long index);
     private native static long n_queryByTime (long nativeObj, long startTime, long endTime);
     private native static long n_queryBySchema (long nativeObj, String schemaName);

@@ -8,7 +8,6 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
-//import com.intel.vmf.IWriter;
 import com.intel.vmf.XMLWriter;
 import com.intel.vmf.MetadataSchema;
 
@@ -126,10 +125,10 @@ public class VmfMetadataStreamTest
         MetadataSet mdSet3 = mdSet2.queryByName("person");
         assertEquals(2, mdSet3.getSize());
         
-        //Metadata md = mdSet3[0];
-        //String names[] = md->getFieldNames();
+        Metadata md = mdSet3.getElement(0);
+        String names[] = md.getFieldNames();
         
-        //assertEquals(3, names.length);
+        assertEquals(3, names.length);
         
         MetadataSet mdSet4 = stream.queryByName ("person");
         assertEquals(2, mdSet4.getSize());
@@ -171,9 +170,9 @@ public class VmfMetadataStreamTest
         MetadataSet mdSet9 = stream.queryByReference ("person", fvs);
         assertEquals(5, mdSet9.getSize());
         
-        XMLWriter formater = new XMLWriter ();
+        XMLWriter writer = new XMLWriter ();
         
-        String serialized = stream.serialize (formater);
+        String serialized = stream.serialize (writer);
         assertFalse (serialized.isEmpty());
         
         stream.remove (mdSet6);

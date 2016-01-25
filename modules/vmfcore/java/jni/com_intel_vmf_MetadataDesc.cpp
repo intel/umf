@@ -291,14 +291,13 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc(JNIEn
         jlong* cArray = env->GetLongArrayElements(fieldDescAddr, 0);
         jsize len = env->GetArrayLength(fieldDescAddr);
         std::shared_ptr<FieldDesc>* fieldDesc = (std::shared_ptr<FieldDesc>*)cArray[0];
-       
+    
         const char* tmp = env->GetStringUTFChars(fieldName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(fieldName, tmp);
         jboolean result = (jboolean)(*obj)->getFieldDesc(**fieldDesc, sName);
         env->ReleaseLongArrayElements(fieldDescAddr, cArray, 0);
         return result;
-        
     }
     catch(const std::exception &e)
     {

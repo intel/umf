@@ -1,8 +1,5 @@
 package com.intel.vmf;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 public class XMLReader implements IReader
 {
     static
@@ -23,79 +20,55 @@ public class XMLReader implements IReader
         return nativeObj;
     }
     
+    /*TO DO:
     @Override
     public boolean parseAll (final String text, long nextId, String filepath, String checksum, 
-                             MetadataStream.VideoSegment[] segments, MetadataSchema[] schemas, MetadataInternal[] mdInt)
-    {
-        long segNativeAddrs[] = new long [segments.length];
-        long schemaNativeAddrs[] = new long [schemas.length];
-        long mdIntNativeAddrs[] = new long [mdInt.length];
-        
-        for (int i = 0; i < segments.length; i++)
-        {
-            segNativeAddrs[i] = segments[i].nativeObj;
-        }
-        
-        for (int j = 0; j < schemas.length; j++)
-        {
-            schemaNativeAddrs[j] = schemas[j].nativeObj;
-        }
-        
-        for (int k = 0; k < mdInt.length; k++)
-        {
-            mdIntNativeAddrs[k] = mdInt[k].nativeObj;
-        }
-        
-        return n_parseAll (nativeObj, text, nextId, filepath, 
-        		           checksum, segNativeAddrs, schemaNativeAddrs, 
-        		           mdIntNativeAddrs);
-    }
-	
+                             MetadataStream.VideoSegment[] segments, MetadataSchema[] schemas, MetadataInternal[] mdInt);*/
+    
+    //TO DO: PropertyMap parseProperties (String text);
+    
     @Override
-    public boolean parseSchemas (String text, MetadataSchema... schemas)
+    public MetadataSchema[] parseSchemas (String text)
     {
-        long schemaNativeAddrs[] = new long [schemas.length];
+        long nObjAddrs[] = n_parseSchemas (nativeObj, text); 
+        MetadataSchema schemas[] = new MetadataSchema [nObjAddrs.length];
         
-        for (int j = 0; j < schemas.length; j++)
+        for (int i = 0; i < schemas.length; i++)
         {
-            schemaNativeAddrs[j] = schemas[j].nativeObj;
+            schemas[i] = new MetadataSchema (nObjAddrs[i]);
         }
         
-        return n_parseSchemas (nativeObj, text, schemaNativeAddrs);
+        return schemas;
     }
-	
+
     @Override
-    public boolean parseMetadata (String text, MetadataSchema[] schemas, MetadataInternal[] mdInt)
+    public MetadataInternal[] parseMetadata (String text)
     {
-        long schemaNativeAddrs[] = new long [schemas.length];
-        long mdIntNativeAddrs[] = new long [mdInt.length];
+        long nObjAddrs[] = n_parseMetadata (nativeObj, text);
+        MetadataInternal mdInt[] = new MetadataInternal [nObjAddrs.length];
         
-        for (int j = 0; j < schemas.length; j++)
+        for (int i = 0; i < nObjAddrs.length; i++)
         {
-            schemaNativeAddrs[j] = schemas[j].nativeObj;
+            mdInt[i] = new MetadataInternal (nObjAddrs[i]);
         }
         
-        for (int k = 0; k < mdInt.length; k++)
-        {
-            mdIntNativeAddrs[k] = mdInt[k].nativeObj;
-        }
-        
-        return n_parseMetadata (nativeObj, text, schemaNativeAddrs, mdIntNativeAddrs);
+        return mdInt;
     }
-	
+
     @Override
-    public boolean parseVideoSegments (String text, MetadataStream.VideoSegment... segments)
+    public MetadataStream.VideoSegment[] parseVideoSegments (String text)
     {
-        long segNativeAddrs[] = new long [segments.length];
+        long nObjAddrs[] = n_parseVideoSegments (nativeObj, text);
+        MetadataStream.VideoSegment videoSegments[] = new MetadataStream.VideoSegment[nObjAddrs.length];
         
-        for (int i = 0; i < segments.length; i++)
+        for (int i = 0; i < nObjAddrs.length; i++)
         {
-            segNativeAddrs[i] = segments[i].nativeObj;
+            videoSegments[i] = new MetadataStream.VideoSegment(nObjAddrs[i]);
         }
         
-        return n_parseVideoSegments (nativeObj, text, segNativeAddrs);
+        return videoSegments;
     }
-	
+
     @Override
     protected void finalize () throws Throwable 
     {
@@ -104,13 +77,10 @@ public class XMLReader implements IReader
         
         super.finalize();
     }
-	
-	private static native long n_XMLReader();
-	private static native boolean n_parseAll (long nativeObj, String text, long nextId,
-                                              String filepath, String checksum,
-                                              long[] segments, long[] schemas, long[] md);
-	private static native boolean n_parseSchemas (long nativeObj, String text, long[] schemas);
-	private static native boolean n_parseMetadata (long nativeObj, String text, long[] schemas, long[] metadata);
-	private static native boolean n_parseVideoSegments (long nativeObj, String text, long[] segments);
-	private static native void n_delete (long nativeObj);
+
+    private static native long n_XMLReader();
+    private static native long[] n_parseSchemas (long nativeObj, String text);
+    private static native long[] n_parseMetadata (long nativeObj, String text);
+    private static native long[] n_parseVideoSegments (long nativeObj, String text);
+    private static native void n_delete (long nativeObj);
 }
