@@ -86,27 +86,27 @@ public class VmfVariantTest
         array[1] = 0.0;
         
         var1.setTo(array);
-        assertEquals(Variant.type_real_array, var1.getType());
+        assertEquals(Variant.type_real_vector, var1.getType());
         
         String strArray[] = new String [2];
         strArray[0] = "";
         strArray[1] = "";
         
         var1.setTo(strArray);
-        assertEquals(Variant.type_string_array, var1.getType());
+        assertEquals(Variant.type_string_vector, var1.getType());
         
         vmf_vec2d vec2dArray[] = new vmf_vec2d [2];
         vmf_vec3d vec3dArray[] = new vmf_vec3d [2];
         vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
         
         var1.setTo(vec2dArray);
-        assertEquals(Variant.type_vec2d_array , var1.getType());
+        assertEquals(Variant.type_vec2d_vector , var1.getType());
         
         var1.setTo(vec3dArray);
-        assertEquals(Variant.type_vec3d_array , var1.getType());
+        assertEquals(Variant.type_vec3d_vector , var1.getType());
         
         var1.setTo(vec4dArray);
-        assertEquals(Variant.type_vec4d_array , var1.getType());
+        assertEquals(Variant.type_vec4d_vector , var1.getType());
         
         var2.setTo(var1);
         assertTrue(var1.equals(var2));

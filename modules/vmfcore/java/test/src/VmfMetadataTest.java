@@ -17,11 +17,6 @@ import org.junit.Test;
 
 public class VmfMetadataTest 
 {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
-    
     @BeforeClass
     public static void init()
     {
