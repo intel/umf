@@ -9,36 +9,34 @@ extern "C" {
 #endif
 #undef com_intel_vmf_Variant_type_unknown
 #define com_intel_vmf_Variant_type_unknown 0L
-#undef com_intel_vmf_Variant_type_char
-#define com_intel_vmf_Variant_type_char 1L
 #undef com_intel_vmf_Variant_type_integer
-#define com_intel_vmf_Variant_type_integer 2L
+#define com_intel_vmf_Variant_type_integer 1L
 #undef com_intel_vmf_Variant_type_real
-#define com_intel_vmf_Variant_type_real 3L
+#define com_intel_vmf_Variant_type_real 2L
 #undef com_intel_vmf_Variant_type_string
-#define com_intel_vmf_Variant_type_string 4L
+#define com_intel_vmf_Variant_type_string 3L
 #undef com_intel_vmf_Variant_type_vec2d
-#define com_intel_vmf_Variant_type_vec2d 5L
+#define com_intel_vmf_Variant_type_vec2d 4L
 #undef com_intel_vmf_Variant_type_vec3d
-#define com_intel_vmf_Variant_type_vec3d 6L
+#define com_intel_vmf_Variant_type_vec3d 5L
 #undef com_intel_vmf_Variant_type_vec4d
-#define com_intel_vmf_Variant_type_vec4d 7L
+#define com_intel_vmf_Variant_type_vec4d 6L
 #undef com_intel_vmf_Variant_type_rawbuffer
-#define com_intel_vmf_Variant_type_rawbuffer 8L
+#define com_intel_vmf_Variant_type_rawbuffer 7L
 #undef com_intel_vmf_Variant_type_char_array
-#define com_intel_vmf_Variant_type_char_array 9L
+#define com_intel_vmf_Variant_type_char_array 8L
 #undef com_intel_vmf_Variant_type_integer_array
-#define com_intel_vmf_Variant_type_integer_array 10L
+#define com_intel_vmf_Variant_type_integer_array 9L
 #undef com_intel_vmf_Variant_type_real_array
-#define com_intel_vmf_Variant_type_real_array 11L
+#define com_intel_vmf_Variant_type_real_array 10L
 #undef com_intel_vmf_Variant_type_string_array
-#define com_intel_vmf_Variant_type_string_array 12L
+#define com_intel_vmf_Variant_type_string_array 11L
 #undef com_intel_vmf_Variant_type_vec2d_array
-#define com_intel_vmf_Variant_type_vec2d_array 13L
+#define com_intel_vmf_Variant_type_vec2d_array 12L
 #undef com_intel_vmf_Variant_type_vec3d_array
-#define com_intel_vmf_Variant_type_vec3d_array 14L
+#define com_intel_vmf_Variant_type_vec3d_array 13L
 #undef com_intel_vmf_Variant_type_vec4d_array
-#define com_intel_vmf_Variant_type_vec4d_array 15L
+#define com_intel_vmf_Variant_type_vec4d_array 14L
 /*
  * Class:     com_intel_vmf_Variant
  * Method:    n_Variant

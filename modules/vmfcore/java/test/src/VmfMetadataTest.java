@@ -1,15 +1,18 @@
-import junit.framework.*;
-import com.intel.vmf.FieldValue;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.ReferenceDesc;
+import com.intel.vmf.Reference;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfMetadataTest 
@@ -31,26 +34,30 @@ public class VmfMetadataTest
         Vmf.terminate();
     }
     
-    final protected MetadataSchema schema = new MetadataSchema ("test_schema")
+    final protected MetadataSchema schema = new MetadataSchema ("test_schema");
     
     final protected FieldDesc fields[] = new FieldDesc [3];
-    fields[0] = new FieldDesc ("name", Variant.type_string, false);
-    fields[1] = new FieldDesc ("last name", Variant.type_string, false);
-    fields[2] = new FieldDesc ("age", Variant.type_integer, false);
     
     final protected ReferenceDesc refs[] = new ReferenceDesc [3];
-    refs[0] = new ReferenceDesc ("friend");
-    refs[1] = new ReferenceDesc ("colleague", false, true);
-    refs[2] = new ReferenceDesc ("spouse", true);
     
-    final protected MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
+    protected MetadataDesc mdDesc;
     
     protected Metadata md1;
     protected Metadata md2;
     
     @Before
-    public static void setUp ()
+    public void setUp ()
     {
+        fields[0] = new FieldDesc ("name", Variant.type_string, false);
+        fields[1] = new FieldDesc ("last name", Variant.type_string, false);
+        fields[2] = new FieldDesc ("age", Variant.type_integer, false);
+        
+        refs[0] = new ReferenceDesc ("friend");
+        refs[1] = new ReferenceDesc ("colleague", false, true);
+        refs[2] = new ReferenceDesc ("spouse", true, false);
+        
+        mdDesc = new MetadataDesc ("person", fields, refs);
+        
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
     }

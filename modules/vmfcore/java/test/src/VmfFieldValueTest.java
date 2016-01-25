@@ -3,6 +3,9 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.Variant;
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfFieldValueTest 
@@ -39,7 +42,7 @@ public class VmfFieldValueTest
     {
          System.out.println("Inside VmfFieldValueTest.testGetName()");
          
-         assertEquals(tmp2.getName(), tmp4.getName()); 
+         assertEquals(tmp2.getName(), tmp3.getName()); 
          
          assertEquals("", tmp1.getName());
          assertEquals("fieldName", tmp2.getName());

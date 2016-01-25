@@ -9,6 +9,10 @@ import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfVideoSegmentTest 
@@ -29,9 +33,8 @@ public class VmfVideoSegmentTest
     protected MetadataStream.VideoSegment vs2;
     
     @Before
-    public static void setUp ()
+    public void setUp ()
     {
-        stream = new MetadataStream ();
         vs1 = new MetadataStream.VideoSegment();
         vs2 = new MetadataStream.VideoSegment("holiday", 35, 30);
     }
@@ -41,7 +44,7 @@ public class VmfVideoSegmentTest
     {
         System.out.println("Inside VmfVideoSegmentTest.testGettersAndSetters()");
         
-        assertEquals ("holiday" vs2.getTitle ());
+        assertEquals ("holiday", vs2.getTitle());
         assertEquals ("", vs1.getTitle ());
         
         vs1.setTitle ("travel");

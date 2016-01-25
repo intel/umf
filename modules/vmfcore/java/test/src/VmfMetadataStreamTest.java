@@ -1,15 +1,22 @@
-import junit.framework.*;
 import com.intel.vmf.MetadataStream;
+import com.intel.vmf.MetadataStream.VideoSegment;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.FieldValue;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
+//import com.intel.vmf.IWriter;
+import com.intel.vmf.XMLWriter;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfMetadataStreamTest 
@@ -31,25 +38,28 @@ public class VmfMetadataStreamTest
     protected final MetadataSchema schema = new MetadataSchema ("test_schema");
     
     protected final FieldDesc fields[] = new FieldDesc [3];
-    fields[0] = new FieldDesc ("name", Variant.type_string, false);
-    fields[1] = new FieldDesc ("last name", Variant.type_string, false);
-    fields[2] = new FieldDesc ("age", Variant.type_integer, false);
     
     protected final ReferenceDesc refs[] = new ReferenceDesc [3];
-    refs[0] = new ReferenceDesc ("friend");
-    refs[1] = new ReferenceDesc ("colleague", false, true);
-    refs[2] = new ReferenceDesc ("spouse", true);
     
-    protected final MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
-    
-    schema.add (mdDesc);
+    protected MetadataDesc mdDesc;
     
     protected Metadata md1;
     protected Metadata md2;
     
     @Before
-    public static void setUp ()
+    public void setUp ()
     {
+        fields[0] = new FieldDesc ("name", Variant.type_string, false);
+        fields[1] = new FieldDesc ("last name", Variant.type_string, false);
+        fields[2] = new FieldDesc ("age", Variant.type_integer, false);
+        
+        refs[0] = new ReferenceDesc ("friend");
+        refs[1] = new ReferenceDesc ("colleague", false, true);
+        refs[2] = new ReferenceDesc ("spouse", true, false);
+        
+        mdDesc = new MetadataDesc ("person", fields, refs);
+        
+        schema.add (mdDesc);
         stream = new MetadataStream ();
     }
     
@@ -116,10 +126,10 @@ public class VmfMetadataStreamTest
         MetadataSet mdSet3 = mdSet2.queryByName("person");
         assertEquals(2, mdSet3.getSize());
         
-        Metadata md = properties[0];
-        String names[] = md->getFieldNames();
+        //Metadata md = mdSet3[0];
+        //String names[] = md->getFieldNames();
         
-        assertEquals(3, names.length);
+        //assertEquals(3, names.length);
         
         MetadataSet mdSet4 = stream.queryByName ("person");
         assertEquals(2, mdSet4.getSize());
@@ -161,7 +171,7 @@ public class VmfMetadataStreamTest
         MetadataSet mdSet9 = stream.queryByReference ("person", fvs);
         assertEquals(5, mdSet9.getSize());
         
-        IWriter formater = new XMLWriter ();
+        XMLWriter formater = new XMLWriter ();
         
         String serialized = stream.serialize (formater);
         assertFalse (serialized.isEmpty());
@@ -174,11 +184,11 @@ public class VmfMetadataStreamTest
         stream.add(md2);
         
         stream.remove(schema);
-        mdSet = stream.queryBySchema("test_schema");
-        assertEquals(0, mdSet.getSize());
+        mdSet1 = stream.queryBySchema("test_schema");
+        assertEquals(0, mdSet1.getSize());
         
-        mdSet = stream.getAll();
-        assertEquals(0, mdSet.getSize());
+        mdSet1 = stream.getAll();
+        assertEquals(0, mdSet1.getSize());
     }
     
     @Test
@@ -186,15 +196,15 @@ public class VmfMetadataStreamTest
     {
         System.out.println("Inside VmfMetadataStreamTest.testVideoSegments()");
         
-        Metadata.VideoSegment s1 = new Metadata.VideoSegment("holiday", 35, 30);
-        Metadata.VideoSegment s2 = new Metadata.VideoSegment();
-        Metadata.VideoSegment s3 = new Metadata.VideoSegment();
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 35, 30);
+        MetadataStream.VideoSegment s2 = new MetadataStream.VideoSegment();
+        MetadataStream.VideoSegment s3 = new MetadataStream.VideoSegment();
         
         stream.addVideoSegment (s1);
         stream.addVideoSegment (s2);
         stream.addVideoSegment (s3);
         
-        VideoSegment vs[] = getAllVideoSegments ();
+        VideoSegment vs[] = stream.getAllVideoSegments ();
         assertEquals(3, vs.length);
     }
 }

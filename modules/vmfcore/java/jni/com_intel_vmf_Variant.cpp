@@ -1,5 +1,6 @@
 #include<string>
 #include<vector>
+#include <iostream>
 #include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Variant.h"
 #include "throwJavaException.hpp"
@@ -7,11 +8,11 @@
 using namespace vmf;
 
 /*
- * Class:     com_intel_vmf_Variant
- * Method:    n_Variant
- * Signature: ()J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__ (JNIEnv *, jclass)
+* Class:     com_intel_vmf_Variant
+* Method:    n_Variant
+* Signature: ()J
+*/
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant (JNIEnv *, jclass)
 {
     std::shared_ptr <Variant>* p = new std::shared_ptr <Variant>(new Variant());
     return (jlong) p;
@@ -159,8 +160,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
         const char* tmp = env->GetStringUTFChars(str, NULL);
-        vmf_string value(tmp);
-        (**obj) = value;
+        std::string value(tmp);
+        (**obj) = (vmf_string)value;
 
         env->ReleaseStringUTFChars(str, tmp);
     }
@@ -368,7 +369,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B(JNIEnv *env, jc
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d (JNIEnv *env, jclass, jlong self, jlong vec2dAddr)
 {
     static const char method_name[] = "Variant::n_1setToVec2d";
-
+    std::cout << "Variant::n_1setToVec2d() was called" << std::endl;
     try
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;

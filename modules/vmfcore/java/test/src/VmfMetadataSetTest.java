@@ -1,15 +1,19 @@
-import junit.framework.*;
 import com.intel.vmf.MetadataStream;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.FieldValue;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfMetadataSetTest 
@@ -30,22 +34,28 @@ public class VmfMetadataSetTest
     protected MetadataSchema schema;
     
     protected final FieldDesc fields[] = new FieldDesc [3];
-    fields[0] = new FieldDesc ("name", Variant.type_string, false);
-    fields[1] = new FieldDesc ("last name", Variant.type_string, false);
-    fields[2] = new FieldDesc ("age", Variant.type_integer, false);
     
     protected final ReferenceDesc refs[] = new ReferenceDesc [3];
-    refs[0] = new ReferenceDesc ("friend");
-    refs[1] = new ReferenceDesc ("colleague", false, true);
-    refs[2] = new ReferenceDesc ("spouse", true);
     
     protected final MetadataDesc mdDesc = new MetadataDesc ("person", fields, refs);
     
     protected MetadataSet mdSet1;
     
+    protected Variant var1;
+    protected Variant var2;
+    protected Variant var3;
+    
     @Before
-    public static void setUp ()
+    public void setUp ()
     {
+        fields[0] = new FieldDesc ("name", Variant.type_string, false);
+        fields[1] = new FieldDesc ("last name", Variant.type_string, false);
+        fields[2] = new FieldDesc ("age", Variant.type_integer, false);
+        
+        refs[0] = new ReferenceDesc ("friend");
+        refs[1] = new ReferenceDesc ("colleague", false, true);
+        refs[2] = new ReferenceDesc ("spouse", true, false);
+        
         Metadata md1 = new Metadata (mdDesc);
         Metadata md2 = new Metadata (mdDesc);
         Metadata md3 = new Metadata (mdDesc);
@@ -65,9 +75,9 @@ public class VmfMetadataSetTest
         md2.setTimestamp (1, 3);
         md3.setTimestamp (3, 4);
         
-        Variant var1 = new Variant ("Den");
-        Variant var2 = new Variant ("Smith");
-        Variant var3 = new Variant (24);
+        var1 = new Variant ("Den");
+        var2 = new Variant ("Smith");
+        var3 = new Variant (24);
         
         md1.setFieldValue("name", var1);
         md1.setFieldValue("last name", var2);

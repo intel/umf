@@ -1,4 +1,3 @@
-import junit.framework.*;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.vmf_vec2d;
@@ -6,6 +5,10 @@ import com.intel.vmf.vmf_vec3d;
 import com.intel.vmf.vmf_vec4d;
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfVariantTest 
@@ -26,7 +29,7 @@ public class VmfVariantTest
     protected Variant var2;
     
     @Before
-    public static void setUp ()
+    public void setUp ()
     {
         var1 = new Variant ();
         var2 = new Variant ();
@@ -37,7 +40,7 @@ public class VmfVariantTest
     {
         System.out.println("Inside VmfVariantTest.testSetTo()");
         
-        float value1 = 2.5;
+        float value1 = (float) 2.5;
         int value2 = 4;
         double value3 = 3.14;
         
@@ -78,7 +81,7 @@ public class VmfVariantTest
         var1.setTo(buf);
         assertEquals(Variant.type_rawbuffer, var1.getType());
         
-        double array = new double [2];
+        double array[] = new double [2];
         array[0] = 0.0;
         array[1] = 0.0;
         

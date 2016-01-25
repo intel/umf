@@ -8,21 +8,20 @@ package com.intel.vmf;
     }
 
     public static final int type_unknown = 0;
-    public static final int type_char = 1;
-    public static final int type_integer = 2;
-    public static final int type_real = 3;
-    public static final int type_string = 4;
-    public static final int type_vec2d = 5;
-    public static final int type_vec3d = 6;
-    public static final int type_vec4d = 7;
-    public static final int type_rawbuffer = 8;
-    public static final int type_char_array = 9;
-    public static final int type_integer_array = 10;
-    public static final int type_real_array = 11;
-    public static final int type_string_array = 12;
-    public static final int type_vec2d_array = 13;
-    public static final int type_vec3d_array = 14;
-    public static final int type_vec4d_array = 15;
+    public static final int type_integer = 1;
+    public static final int type_real = 2;
+    public static final int type_string = 3;
+    public static final int type_vec2d = 4;
+    public static final int type_vec3d = 5;
+    public static final int type_vec4d = 6;
+    public static final int type_rawbuffer = 7;
+    public static final int type_char_array = 8;
+    public static final int type_integer_array = 9;
+    public static final int type_real_array = 10;
+    public static final int type_string_array = 11;
+    public static final int type_vec2d_array = 12;
+    public static final int type_vec3d_array = 13;
+    public static final int type_vec4d_array = 14;
     
     protected final long nativeObj;
 
@@ -219,6 +218,21 @@ package com.intel.vmf;
     public void setTo (String str[])
     {
         n_setTo (nativeObj, str);
+    }
+    
+    public void setTo (vmf_vec2d vec)
+    {
+    	n_setToVec2d (nativeObj, vec.nativeObj);
+    }
+    
+    public void setTo (vmf_vec3d vec)
+    {
+    	n_setToVec3d (nativeObj, vec.nativeObj);
+    }
+    
+    public void setTo (vmf_vec4d vec)
+    {
+    	n_setToVec4d (nativeObj, vec.nativeObj);
     }
     
     public void setTo (vmf_vec2d vec[])

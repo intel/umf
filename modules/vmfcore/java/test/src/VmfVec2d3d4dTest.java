@@ -1,16 +1,13 @@
-import junit.framework.*;
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Reference;
-import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
-import com.intel.vmf.MetadataSchema;
+import com.intel.vmf.vmf_vec2d;
+import com.intel.vmf.vmf_vec3d;
+import com.intel.vmf.vmf_vec4d;
+
 
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VmfVec2d3d4dTest 
@@ -31,7 +28,12 @@ public class VmfVec2d3d4dTest
     protected vmf_vec3d v3d;
     protected vmf_vec4d v4d;
     
-    @Test
+    protected vmf_vec2d v2d1;
+    protected vmf_vec3d v3d1;
+    protected vmf_vec4d v4d1;
+    
+    @SuppressWarnings("deprecation")
+	@Test
     public void testVmfVec2d3d4d ()
     {
         v2d = new vmf_vec2d (1, 2);

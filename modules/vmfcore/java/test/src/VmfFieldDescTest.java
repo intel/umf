@@ -1,32 +1,52 @@
-import junit.framework.*;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Variant;
+
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import com.intel.vmf.Vmf;
 
 public class VmfFieldDescTest 
 {
-    protected FieldDesc tmp1 = new FieldDesc ();
-    protected FieldDesc tmp2 = new FieldDesc ("string", Variant.type_string);
-    protected FieldDesc tmp3 = new FieldDesc ("integer", Variant.type_integer, true);
-    protected FieldDesc tmp4 = new FieldDesc ("string", Variant.type_string, false);
-    protected FieldDesc tmp5 = new FieldDesc ("real", Variant.type_real);
-    protected FieldDesc tmp6 = new FieldDesc ("vec2d", Variant.type_vec2d, true);
-    protected FieldDesc tmp7 = new FieldDesc ("vec3d", Variant.type_vec3d, true);
-    protected FieldDesc tmp8 = new FieldDesc ("vec4d", Variant.type_vec4d, true);
-    protected FieldDesc tmp9 = new FieldDesc ("char", Variant.type_char);
-    protected FieldDesc tmp10 = new FieldDesc ("rawbuffer", Variant.type_rawbuffer);
-    
     @BeforeClass
-    public static void setUp()
+    public static void init()
     {
         Vmf.initialize();
     }
     
     @AfterClass
-    public static void tearDown()
+    public static void terminate()
     {
         Vmf.terminate();
+    }
+    
+    protected FieldDesc tmp1;
+    protected FieldDesc tmp2;
+    protected FieldDesc tmp3;
+    protected FieldDesc tmp4;
+    protected FieldDesc tmp5;
+    protected FieldDesc tmp6;
+    protected FieldDesc tmp7;
+    protected FieldDesc tmp8;
+    protected FieldDesc tmp9;
+    protected FieldDesc tmp10;
+    
+    @Before
+    public void setUp()
+    {
+        tmp1 = new FieldDesc ();
+        tmp2 = new FieldDesc ("string", Variant.type_string);
+        tmp3 = new FieldDesc ("integer", Variant.type_integer, true);
+        tmp4 = new FieldDesc ("string", Variant.type_string, false);
+        tmp5 = new FieldDesc ("real", Variant.type_real);
+        tmp6 = new FieldDesc ("vec2d", Variant.type_vec2d, true);
+        tmp7 = new FieldDesc ("vec3d", Variant.type_vec3d, true);
+        tmp8 = new FieldDesc ("vec4d", Variant.type_vec4d, true);
+        
+        tmp10 = new FieldDesc ("rawbuffer", Variant.type_rawbuffer);
     }
     
    @Test
@@ -34,7 +54,7 @@ public class VmfFieldDescTest
    {
         System.out.println("Inside VmfFieldDescTest.testEquals()");
 
-        assertTrue (tmp2.equals (tmp4));
+        assertTrue (tmp2.equals(tmp4));
         
         assertFalse (tmp1.equals (tmp2));
         assertFalse (tmp1.equals (tmp3));
@@ -82,7 +102,7 @@ public class VmfFieldDescTest
         assertEquals(Variant.type_vec2d, tmp6.getType());
         assertEquals(Variant.type_vec3d, tmp7.getType());
         assertEquals(Variant.type_vec4d, tmp8.getType());
-        assertEquals(Variant.type_char, tmp9.getType());
+        
         assertEquals(Variant.type_rawbuffer, tmp10.getType());
    }
    
