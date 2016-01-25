@@ -112,6 +112,7 @@ protected:
 private:
     void loadXMPstructs();
     void saveXMPstructs();
+    void serializeAndParse();
 
     SXMPFiles xmpFile;
     std::shared_ptr<SXMPMeta> xmp;

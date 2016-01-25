@@ -319,6 +319,20 @@ void XMPDataSource::save(const std::shared_ptr<vmf::MetadataSchema>& schema)
     }
 }
 
+
+void XMPDataSource::serializeAndParse()
+{
+    string tempBuffer;
+    XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+    xmp->SerializeToBuffer(&tempBuffer, options, 0, NULL);
+
+    xmp = make_shared<SXMPMeta>();
+    xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
+    schemaSource = make_shared<XMPSchemaSource>(xmp);
+    metadataSource = make_shared<XMPMetadataSource>(xmp);
+}
+
+
 void XMPDataSource::remove(const vector<IdType>& ids)
 {
     metadataSourceCheck();
@@ -332,14 +346,7 @@ void XMPDataSource::remove(const vector<IdType>& ids)
          * instead of saving to file we just put everything to buffer and get back.
          * To be fixed to eliminate re-reading in long term future.
          */
-        string tempBuffer;
-        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
-        xmp->SerializeToBuffer(&tempBuffer, options, 0, NULL);
-
-        xmp = make_shared<SXMPMeta>();
-        xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
-        schemaSource = make_shared<XMPSchemaSource>(xmp);
-        metadataSource = make_shared<XMPMetadataSource>(xmp);
+        serializeAndParse();
     }
     catch(const XMP_Error& e)
     {
@@ -430,7 +437,14 @@ void XMPDataSource::schemaSourceCheck()
 
 void XMPDataSource::removeSchema(const MetaString &schemaName)
 {
+    /* TODO:
+     * Existing implementation requires metadata re-reading here,
+     * so a quick workaround is made below:
+     * instead of saving to file we just put everything to buffer and get back.
+     * To be fixed to eliminate re-reading in long term future.
+     */
     schemaSource->remove(schemaName);
+    serializeAndParse();
 }
 
 std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& XMPPacketOffset)
