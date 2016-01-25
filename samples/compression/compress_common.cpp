@@ -32,6 +32,11 @@ const double PI = 3.14159265358979323846;
 
 void generateMetadata(MetadataStream& mdStream)
 {
+    mdStream.remove();
+    mdStream.save();
+    mdStream.close();
+    mdStream.reopen(MetadataStream::OpenMode::ReadWrite);
+
     // Create a GPS metadata field descriptions
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));
 
