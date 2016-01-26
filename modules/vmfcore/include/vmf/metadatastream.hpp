@@ -63,7 +63,7 @@ public:
         ReadWrite = 2, /**< Open file for read and write */
         IgnoreUnknownCompressor = 4 /**< Represent compressed data as VMF metadata if decompressor is unknown*/
     };
-    typedef long OpenMode;
+    typedef int OpenMode;
 
     class VMF_EXPORT VideoSegment
     {

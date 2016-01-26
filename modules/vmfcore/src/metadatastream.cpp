@@ -41,7 +41,7 @@ bool MetadataStream::open( const std::string& sFilePath, MetadataStream::OpenMod
 {
     try
     {
-        if (m_eMode != InMemory)
+        if((m_eMode & ReadOnly) || (m_eMode & ReadWrite))
             return false;
         dataSource = ObjectFactory::getInstance()->getDataSource();
         if (!dataSource)
@@ -160,7 +160,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
 bool MetadataStream::reopen( OpenMode eMode )
 {
     dataSourceCheck();
-    if( m_eMode != InMemory )
+    if((m_eMode & ReadOnly) || (m_eMode & ReadWrite))
         VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
 
     if( m_sFilePath.empty())
@@ -180,7 +180,7 @@ bool MetadataStream::reopen( OpenMode eMode )
 
 bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
 {
-    if( m_eMode != InMemory )
+    if((m_eMode & ReadOnly) || (m_eMode & ReadWrite))
         throw std::runtime_error("The previous file has not been closed!");
     try
     {
@@ -218,7 +218,7 @@ void MetadataStream::close()
 {
     try
     {
-        m_eMode = InMemory;
+        m_eMode = (m_eMode & ~ReadWrite) & ~ReadOnly;
         if (dataSource)
             dataSource->closeFile();
     }
