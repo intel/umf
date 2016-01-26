@@ -95,7 +95,7 @@ XMPDataSource::XMPDataSource()
     schemaCompression = make_shared<vmf::MetadataSchema>(compressionSchemaName);
     VMF_METADATA_BEGIN(compressedDescName);
         VMF_FIELD_STR(compressionAlgoPropName);
-        VMF_FIELD_RAW(compressedDataPropName);
+        VMF_FIELD_STR(compressedDataPropName);
     VMF_METADATA_END(schemaCompression);
 }
 
@@ -121,30 +121,74 @@ void XMPDataSource::loadXMPstructs()
 {
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     xmpFile.GetXMP(compressedXMP.get());
-    if(compressedXMP->DoesPropertyExist(VMF_NS, compressionAlgoPropName.c_str()))
+
+    std::shared_ptr<XMPMetadataSource> cMetaSource;
+    std::shared_ptr<XMPSchemaSource> cSchemaSource;
+    cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
+    cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
+    if (!cMetaSource || !cSchemaSource)
     {
-        string algo;
-        compressedXMP->GetProperty(VMF_NS, compressionAlgoPropName.c_str(), &algo, NULL);
-        if(!algo.empty())
+        VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
+    }
+
+    //load standard VMF metadata and decompress them if there is a corresponding schema
+    //or pass them further
+    try
+    {
+        std::map<MetaString, std::shared_ptr<MetadataSchema> > cSchemas;
+        cSchemaSource->load(cSchemas);
+        auto it = cSchemas.find(compressionSchemaName);
+        if(it != cSchemas.end())
         {
-            std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
-            string encoded;
-            compressedXMP->GetProperty(VMF_NS, compressedDataPropName.c_str(), &encoded, NULL);
-            string decoded;
-            XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
-            vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
-            string theData;
-            decompressor->decompress(compressed, theData);
-            xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
+            MetadataStream cStream;
+            cStream.addSchema(it->second);
+            cMetaSource->loadSchema(compressionSchemaName, cStream);
+            MetadataSet cSet = cStream.queryBySchema(compressionSchemaName);
+            std::shared_ptr<Metadata> cItem = cSet[0];
+            vmf_string algo    = cItem->getFieldValue(compressionAlgoPropName);
+            vmf_string encoded = cItem->getFieldValue(compressedDataPropName);
+            try
+            {
+                std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
+                string decoded;
+                XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
+                vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
+                string theData;
+                decompressor->decompress(compressed, theData);
+                xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
+                schemaSource = make_shared<XMPSchemaSource>(xmp);
+                metadataSource = make_shared<XMPMetadataSource>(xmp);
+            }
+            catch(IncorrectParamException& ce)
+            {
+                //if there's no such compressor and we're allowed to ignore that
+                if(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor)
+                {
+                    xmp = compressedXMP;
+                    schemaSource = cSchemaSource;
+                    metadataSource = cMetaSource;
+                }
+                else
+                {
+                    VMF_EXCEPTION(IncorrectParamException,
+                                  "Unregistered compression algorithm: " + algo);
+                }
+            }
         }
         else
         {
-            VMF_EXCEPTION(IncorrectParamException, "Compression algorithm name is missing");
+            xmp = compressedXMP;
+            schemaSource = cSchemaSource;
+            metadataSource = cMetaSource;
         }
     }
-    else
+    catch(const XMP_Error& e)
     {
-        xmp = compressedXMP;
+        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+    }
+    catch(const std::exception& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -186,8 +230,19 @@ void XMPDataSource::saveXMPstructs()
             VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
         }
 
-        cMetaSource->saveSchema(compressionSchemaName, cStream);
-        cSchemaSource->save(schemaCompression);
+        try
+        {
+            cMetaSource->saveSchema(compressionSchemaName, cStream);
+            cSchemaSource->save(schemaCompression);
+        }
+        catch(const XMP_Error& e)
+        {
+            VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        }
+        catch(const std::exception& e)
+        {
+            VMF_EXCEPTION(DataStorageException, e.what());
+        }
         IdType cNextId = 1;
         compressedXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
         string cChecksum;
@@ -237,9 +292,6 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
         }
 
         loadXMPstructs();
-
-        schemaSource = make_shared<XMPSchemaSource>(xmp);
-        metadataSource = make_shared<XMPMetadataSource>(xmp);
    }
     catch (const XMP_Error& e)
     {
