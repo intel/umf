@@ -84,10 +84,19 @@ void XMPDataSource::terminate()
     }
 }
 
+static const string compressionSchemaName   = "com.intel.vmf.compressed-metadata.v3";
+static const string compressedDescName      = "compressed-metadata";
+static const string compressedDataPropName  = "data";
+static const string compressionAlgoPropName = "algo";
+
 XMPDataSource::XMPDataSource()
   : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr)
 {
-
+    schemaCompression = make_shared<vmf::MetadataSchema>(compressionSchemaName);
+    VMF_METADATA_BEGIN(compressedDescName);
+        VMF_FIELD_STR(compressionAlgoPropName);
+        VMF_FIELD_RAW(compressedDataPropName);
+    VMF_METADATA_END(schemaCompression);
 }
 
 XMPDataSource::~XMPDataSource()
@@ -107,8 +116,6 @@ void XMPDataSource::setCompressor(const vmf_string &id)
     }
 }
 
-static const string compressedDataPropName = "compressed_data";
-static const string compressionAlgoPropName = "compression_algo";
 
 void XMPDataSource::loadXMPstructs()
 {
@@ -152,6 +159,7 @@ void XMPDataSource::saveXMPstructs()
     if(compressor)
     {
         compressedXMP = std::make_shared<SXMPMeta>();
+
         string buffer;
         XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
         xmp->SerializeToBuffer(&buffer, options, 0, NULL);
@@ -159,8 +167,31 @@ void XMPDataSource::saveXMPstructs()
         compressor->compress(buffer, compressed);
         string encoded;
         XMPUtils::EncodeToBase64 (compressed.data(), compressed.size(), &encoded);
-        compressedXMP->SetProperty(VMF_NS, compressedDataPropName.c_str(), encoded);
-        compressedXMP->SetProperty(VMF_NS, compressionAlgoPropName.c_str(), compressor->getId());
+
+        //save compressed data as VMF metadata with corresponding schema
+        shared_ptr<MetadataStream> cStream = make_shared<MetadataStream>();
+        cStream->addSchema(schemaCompression);
+        shared_ptr<Metadata> cMetadata;
+        cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(compressedDescName));
+        cMetadata->push_back(FieldValue(compressionAlgoPropName, compressor->getId()));
+        cMetadata->push_back(FieldValue(compressedDataPropName,  encoded));
+        cStream->add(cMetadata);
+
+        std::shared_ptr<XMPMetadataSource> cMetaSource;
+        std::shared_ptr<XMPSchemaSource> cSchemaSource;
+        cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
+        cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
+        if (!cMetaSource || !cSchemaSource)
+        {
+            VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
+        }
+
+        cMetaSource->saveSchema(compressionSchemaName, cStream);
+        cSchemaSource->save(schemaCompression);
+        IdType cNextId = 1;
+        compressedXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
+        string cChecksum;
+        compressedXMP->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, cChecksum.c_str());
     }
     else
     {

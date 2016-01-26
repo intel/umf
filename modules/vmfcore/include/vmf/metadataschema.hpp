@@ -159,6 +159,11 @@ private:
 #define VMF_FIELD_VEC4D( name ) VMF_FIELD_VEC4D_( name, false )
 #define VMF_FIELD_VEC4D_OPT( name ) VMF_FIELD_VEC4D_( name, true )
 
+#define VMF_FIELD_RAW_( name, isOptional ) \
+    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_rawbuffer, isOptional ));
+#define VMF_FIELD_RAW( name ) VMF_FIELD_RAW_( name, false )
+#define VMF_FIELD_RAW_OPT( name ) VMF_FIELD_RAW_( name, true )
+
 } // namespace vmf
 
 #ifdef _MSC_VER

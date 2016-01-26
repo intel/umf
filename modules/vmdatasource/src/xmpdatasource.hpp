@@ -121,6 +121,7 @@ private:
     vmf::MetaString metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
+    std::shared_ptr<vmf::MetadataSchema> schemaCompression;
 };
 
 #ifdef _MSC_VER
