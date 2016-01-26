@@ -170,8 +170,7 @@ void XMPDataSource::loadXMPstructs()
                 }
                 else
                 {
-                    VMF_EXCEPTION(IncorrectParamException,
-                                  "Unregistered compression algorithm: " + algo);
+                    VMF_EXCEPTION(IncorrectParamException, ce.what());
                 }
             }
         }
