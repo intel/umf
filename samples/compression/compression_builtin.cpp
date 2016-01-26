@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
     vmf::MetadataStream mdStream;
     // Open metadata stream
-    if (!mdStream.open(videoFile, vmf::MetadataStream::ReadWrite))
+    if (!mdStream.open(videoFile, vmf::MetadataStream::ReadWrite | vmf::MetadataStream::IgnoreUnknownCompressor))
     {
         std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
         exit(1);

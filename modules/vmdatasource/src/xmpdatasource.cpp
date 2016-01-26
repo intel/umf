@@ -169,13 +169,13 @@ void XMPDataSource::saveXMPstructs()
         XMPUtils::EncodeToBase64 (compressed.data(), compressed.size(), &encoded);
 
         //save compressed data as VMF metadata with corresponding schema
-        shared_ptr<MetadataStream> cStream = make_shared<MetadataStream>();
-        cStream->addSchema(schemaCompression);
+        MetadataStream cStream;
+        cStream.addSchema(schemaCompression);
         shared_ptr<Metadata> cMetadata;
         cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(compressedDescName));
         cMetadata->push_back(FieldValue(compressionAlgoPropName, compressor->getId()));
         cMetadata->push_back(FieldValue(compressedDataPropName,  encoded));
-        cStream->add(cMetadata);
+        cStream.add(cMetadata);
 
         std::shared_ptr<XMPMetadataSource> cMetaSource;
         std::shared_ptr<XMPSchemaSource> cSchemaSource;
@@ -216,7 +216,7 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
         openMode = mode;
         metaFileName = fileName;
         XMP_OptionBits modeFlags;
-        if (mode == MetadataStream::ReadWrite)
+        if (mode & MetadataStream::ReadWrite)
         {
             modeFlags = kXMPFiles_OpenForUpdate;
         }
