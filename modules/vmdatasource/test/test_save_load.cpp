@@ -1432,6 +1432,42 @@ TEST_P(TestSaveLoadCompression, Checksum)
 }
 
 
+TEST_P(TestSaveLoadCompression, CheckIgnoreUnknownCompressor)
+{
+    std::string name = GetParam();
+
+    if(name == "com.intel.vmf.compressor.test.bloating")
+    {
+        {
+            vmf::MetadataStream stream;
+            stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+
+            //arbitrary content
+            std::string checksum1 = stream.computeChecksum();
+            stream.setChecksum(checksum1);
+
+            ASSERT_TRUE(stream.save(name));
+            stream.close();
+        }
+
+        vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+
+        {
+            vmf::MetadataStream stream;
+            ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly |
+                                               vmf::MetadataStream::IgnoreUnknownCompressor));
+            std::vector<std::string> schemaNames = stream.getAllSchemaNames();
+            ASSERT_EQ(schemaNames.size(), 1);
+            ASSERT_EQ(schemaNames[0], "com.intel.vmf.compressed-metadata");
+        }
+
+        //restore as it was before
+        std::shared_ptr<vmf::Compressor> bloating = std::make_shared<BloatingCompressor>();
+        vmf::Compressor::registerNew(bloating);
+    }
+}
+
+
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompression,
                         ::testing::Values("com.intel.vmf.compressor.dummy",
                                           "com.intel.vmf.compressor.zlib",

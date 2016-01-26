@@ -84,7 +84,7 @@ void XMPDataSource::terminate()
     }
 }
 
-static const string compressionSchemaName   = "com.intel.vmf.compressed-metadata.v3";
+static const string compressionSchemaName   = "com.intel.vmf.compressed-metadata";
 static const string compressedDescName      = "compressed-metadata";
 static const string compressedDataPropName  = "data";
 static const string compressionAlgoPropName = "algo";
