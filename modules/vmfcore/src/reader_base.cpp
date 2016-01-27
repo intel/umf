@@ -114,14 +114,27 @@ std::string ReaderBase::decompress(const std::string& input)
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");
         }
 
-        std::string decompressed;
-        std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
-        // Compressed binary data should be represented in base64
-        // because of '\0' symbols
-        vmf_rawbuffer compressed = Variant::base64decode(encoded);
-        decompressor->decompress(compressed, decompressed);
-
-        return decompressed;
+        try
+        {
+            std::string decompressed;
+            std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
+            // Compressed binary data should be represented in base64
+            // because of '\0' symbols
+            vmf_rawbuffer compressed = Variant::base64decode(encoded);
+            decompressor->decompress(compressed, decompressed);
+            return decompressed;
+        }
+        catch(IncorrectParamException& ce)
+        {
+            if(ignoreUnknownCompressor)
+            {
+                return input;
+            }
+            else
+            {
+                VMF_EXCEPTION(IncorrectParamException, ce.what());
+            }
+        }
     }
     else
     {

@@ -379,6 +379,63 @@ TEST_P(TestSerialization, Parse_All)
 }
 
 
+//Compressor class to pass fake Id to registerNew() method
+class FakeCompressor : public CompressorDummy
+{
+public:
+    std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new FakeCompressor);
+    }
+
+    virtual vmf::vmf_string getId()
+    {
+        return id;
+    }
+
+    void setId(vmf_string s)
+    {
+        id = s;
+    }
+
+private:
+    vmf_string id;
+};
+
+
+TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
+{
+    SerializerType type = std::get<0>(GetParam());
+
+    vmf_string compressorId = "unknown_compressor";
+    std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
+    std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
+    vmf::Compressor::registerNew(fake);
+
+    if (type == TypeXML)
+    {
+        writer.reset(new XMLWriter(compressorId));
+        reader.reset(new XMLReader(true));
+    }
+    else if (type == TypeJson)
+    {
+        writer.reset(new JSONWriter(compressorId));
+        reader.reset(new JSONReader(true));
+    }
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+    std::string result = stream.serialize(*writer);
+
+    vmf::Compressor::unregister(compressorId);
+
+    reader->parseSchemas(result, schemas);
+
+    ASSERT_EQ(1, schemas.size());
+    ASSERT_EQ("com.intel.vmf.compressed-metadata", schemas[0]->getName());
+}
+
+
 //don't check for incorrect compressors
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
