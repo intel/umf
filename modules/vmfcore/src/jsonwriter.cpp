@@ -384,8 +384,8 @@ vmf_string JSONWriter::compress(const std::string& input)
         std::string compressed = WriterBase::compress(input);
 
         JSONNode root;
-        root.push_back(JSONNode(ATTR_COMPRESSION_ALGO, WriterBase::compressorId));
-        root.push_back(JSONNode(TAG_COMPRESSED_DATA, compressed));
+        root.push_back(JSONNode(COMPRESSION_ALGO_PROP_NAME, WriterBase::compressorId));
+        root.push_back(JSONNode(COMPRESSED_DATA_PROP_NAME, compressed));
 
         return root.write_formatted();
     }

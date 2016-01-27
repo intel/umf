@@ -32,6 +32,7 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
+#include "reader_base.hpp"
 
 namespace vmf
 {
@@ -39,13 +40,13 @@ namespace vmf
 * class XMLReader
 * \brief XMLReader class is a %IReader interface implementation for XML format representation
 */
-class VMF_EXPORT XMLReader : public IReader
+class VMF_EXPORT XMLReader : public ReaderBase
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    XMLReader();
+    XMLReader(bool _ignoreUnknownCompressor = false);
 
     /*!
     * \brief Class destructor
@@ -54,20 +55,39 @@ public:
 
     // IReader implementation
     virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-	std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-        std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
 
-    virtual bool parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas);
+    virtual bool parseSchemas(const std::string& text,
+                              std::vector<std::shared_ptr<MetadataSchema>>& schemas);
 
-    virtual bool parseMetadata(
-        const std::string& text,
-        const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata );
+    virtual bool parseMetadata(const std::string& text,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               std::vector<std::shared_ptr<MetadataInternal>>& metadata );
 
-    virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+    virtual bool parseVideoSegments(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
-    virtual vmf_string decompress(const std::string &input);
+    virtual std::string decompress(const std::string &input);
+
+private:
+    bool internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+
+    bool internalParseSchemas(const std::string& text,
+                              std::vector<std::shared_ptr<MetadataSchema>>& schemas);
+
+    bool internalParseMetadata(const std::string& text,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               std::vector<std::shared_ptr<MetadataInternal>>& metadata );
+
+    bool internalParseVideoSegments(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+
 };
 
 }//vmf

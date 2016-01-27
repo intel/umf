@@ -266,7 +266,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader() : IReader() { }
+JSONReader::JSONReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownCompressor) { }
 JSONReader::~JSONReader(){ }
 
 bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -566,7 +566,7 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
     return true;
 }
 
-vmf_string JSONReader::decompress(const std::string& input)
+std::string JSONReader::decompress(const std::string& input)
 {
     JSONNode root;
     try
@@ -576,30 +576,18 @@ vmf_string JSONReader::decompress(const std::string& input)
     catch(...)
     {
         VMF_LOG_ERROR("Can't get JSON root");
-        return vmf_string();
+        return std::string();
     }
 
-    auto algoIt = root.find(ATTR_COMPRESSION_ALGO);
-    auto dataIt = root.find(TAG_COMPRESSED_DATA);
+    auto algoIt = root.find(COMPRESSION_ALGO_PROP_NAME);
+    auto dataIt = root.find(COMPRESSED_DATA_PROP_NAME);
 
     if(algoIt != root.end())
     {
         std::string algo = algoIt->as_string();
-        if(algo.empty())
-        {
-            VMF_LOG_ERROR("Algorithm name isn't specified");
-            return vmf_string();
-        }
+        std::string data = dataIt->as_string();
 
-        std::string encoded = dataIt->as_string();
-        std::string decompressed;
-        std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
-        // Compressed binary data should be represented in base64
-        // because of '\0' symbols
-        vmf_rawbuffer compressed = Variant::base64decode(encoded);
-        decompressor->decompress(compressed, decompressed);
-
-        return decompressed;
+        return ReaderBase::decompress(data, algo);
     }
     else
     {

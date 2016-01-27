@@ -39,7 +39,6 @@
 #define TAG_METADATA "metadata"
 #define TAG_METADATA_REFERENCES_ARRAY "references-array"
 #define TAG_METADATA_REFERENCE "reference"
-#define TAG_COMPRESSED_DATA "compressed-data"
 
 #define ATTR_NAME "name"
 #define ATTR_VALUE "value"
@@ -78,6 +77,9 @@
 #define ATTR_METADATA_DURATION_HI "duration-hi"
 #define ATTR_METADATA_DURATION_LO "duration-lo"
 
-#define ATTR_COMPRESSION_ALGO "algo"
+#define COMPRESSION_ALGO_PROP_NAME  "algo"
+#define COMPRESSED_DATA_PROP_NAME   "data"
+#define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
+#define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
 
 #endif /* __VMF_RWCONST_H__ */

@@ -222,18 +222,18 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     long width = 0, height = 0;
     for(xmlAttr* cur_prop = segmentNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
-	if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
-	    title = (char*)xmlGetProp(segmentNode, cur_prop->name);
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
-	    fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
-	    timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
-	    duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
-	    width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
-	    height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
+            title = (char*)xmlGetProp(segmentNode, cur_prop->name);
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
+            fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
+            timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
+            duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
+            width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
+            height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
     }
 
     if(title.empty())
@@ -252,14 +252,22 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
-XMLReader::XMLReader() : IReader() { }
+
+XMLReader::XMLReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownCompressor) { }
 XMLReader::~XMLReader(){}
+
 
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     std::string decompressed = decompress(text);
+    return internalParseSchemas(decompressed, schemas);
+}
 
-    if(decompressed.empty())
+
+//this version of parseSchemas always gets uncompressed text as input
+bool XMLReader::internalParseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+{
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input XML string");
         return false;
@@ -273,7 +281,7 @@ bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_pt
         VMF_LOG_ERROR("Failed to allocate XML parser context");
         return false;
     }
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, decompressed.c_str(), (int)decompressed.size(), NULL, NULL, 0);
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
 
     //xmlDocPtr doc = xmlParseMemory(text.c_str(), (int)text.size());
     if(doc == NULL)
@@ -347,13 +355,22 @@ bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_pt
     return true;
 }
 
+
 bool XMLReader::parseMetadata(const std::string& text,
-    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                              std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     std::string decompressed = decompress(text);
+    return internalParseMetadata(decompressed, schemas, metadata);
+}
 
-    if(decompressed.empty())
+
+//this version of parseMetadata always gets uncompressed input
+bool XMLReader::internalParseMetadata(const std::string& text,
+                                      const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                      std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+{
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input XML string");
         return false;
@@ -368,7 +385,7 @@ bool XMLReader::parseMetadata(const std::string& text,
         return false;
     }
 
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, decompressed.c_str(), (int)decompressed.size(), NULL, NULL, 0);
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
     if(doc == NULL)
     {
         VMF_LOG_ERROR("Can't create XML document");
@@ -440,14 +457,24 @@ bool XMLReader::parseMetadata(const std::string& text,
     return true;
 }
 
+
 bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     std::string decompressed = decompress(text);
+    return internalParseAll(decompressed, nextId, filepath, checksum, segments, schemas, metadata);
+}
 
-    if(decompressed.empty())
+
+//this version of parseAll always gets uncompressed text
+bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+{
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input XML string");
         return false;
@@ -463,7 +490,7 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
         return false;
     }
 
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, decompressed.c_str(), (int)decompressed.size(),
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(),
                                       NULL, NULL, 0);
     if(doc == NULL)
     {
@@ -489,11 +516,11 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
             else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_CHECKSUM))
                 checksum = (char*)xmlGetProp(root, cur_prop->name);
         }
-        if(!parseVideoSegments(decompressed, segments))
+        if(!internalParseVideoSegments(text, segments))
             return false;
-        if(!parseSchemas(decompressed, schemas))
+        if(!internalParseSchemas(text, schemas))
             return false;
-        if(!parseMetadata(decompressed, schemas, metadata))
+        if(!internalParseMetadata(text, schemas, metadata))
             return false;
     }
     else
@@ -510,11 +537,19 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
     return true;
 }
 
+
 bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
     std::string decompressed = decompress(text);
+    return internalParseVideoSegments(decompressed, segments);
+}
 
-    if(decompressed.empty())
+
+//this version of parseVideoSegments always gets uncompressed text
+bool XMLReader::internalParseVideoSegments(const std::string& text,
+                                           std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+{
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input XML string");
         return false;
@@ -528,7 +563,7 @@ bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::sha
         VMF_LOG_ERROR("Failed to allocate XML parser context");
         return false;
     }
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, decompressed.c_str(), (int)decompressed.size(), NULL, NULL, 0);
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
 
     //xmlDocPtr doc = xmlParseMemory(text.c_str(), (int)text.size());
     if(doc == NULL)
@@ -602,73 +637,36 @@ bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::sha
     return true;
 }
 
-vmf_string XMLReader::decompress(const std::string& input)
+std::string XMLReader::decompress(const std::string& input)
 {
-    vmf_string result;
-
-    xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
-    if(ctxt == NULL)
+    //parse it as usual serialized VMF XML, search for specific schemas
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::string filePath, checksum;
+    IdType nextId;
+    std::shared_ptr<XMLReader> reader = std::make_shared<XMLReader>();
+    if(!reader->internalParseAll(input, nextId, filePath, checksum, segments, schemas, metadata))
     {
-        VMF_LOG_ERROR("Failed to allocate XML parser context");
-        return vmf_string();
+        // A workaround:
+        // The input is not a full valid VMF XML packet prepared for parseAll.
+        // But maybe this is a packet of VMF schemas for parseSchemas, or segments, etc.
+        // Let them pass further. If there's invalid XML, it will be found later.
+        return input;
     }
 
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, input.data(), (int)input.size(),
-                                      NULL, NULL, 0);
-    if(doc == NULL)
+    if(schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
-        VMF_LOG_ERROR("Can't create XML document");
-        return vmf_string();
-    }
+        std::shared_ptr<Metadata> cMetadata = metadata[0];
+        vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
+        vmf_string data = cMetadata->getFieldValue(COMPRESSED_DATA_PROP_NAME);
 
-    xmlNodePtr root = xmlDocGetRootElement(doc);
-    if(root == NULL)
-    {
-        VMF_LOG_ERROR("XML tree has no root element");
-        return vmf_string();
-    }
-
-    if( (char*)root->name == std::string(TAG_COMPRESSED_DATA))
-    {
-        //get algo name
-        std::string algo;
-
-        for(xmlAttr* prop = root->properties; prop; prop = prop->next)
-        {
-            if(std::string((char*)prop->name) == std::string(ATTR_COMPRESSION_ALGO))
-            {
-                algo = (char*)xmlGetProp(root, prop->name) ;
-            }
-        }
-
-        if(algo.empty())
-        {
-            VMF_LOG_ERROR("Algorithm name isn't specified");
-            return vmf_string();
-        }
-
-        std::string encoded((char*)xmlNodeGetContent(root));
-        std::string decompressed;
-        std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
-        // Compressed binary data should be represented in base64
-        // because of '\0' symbols
-        vmf_rawbuffer compressed = Variant::base64decode(encoded);
-        decompressor->decompress(compressed, decompressed);
-
-        result = decompressed;
+        return ReaderBase::decompress(data, algo);
     }
     else
     {
-        //let it be uncompressed data
-        result = input;
+        return input;
     }
-
-    xmlFreeDoc(doc);
-    xmlFreeParserCtxt(ctxt);
-    xmlCleanupParser();
-    xmlMemoryDump();
-
-    return result;
 }
 
 }//vmf

@@ -33,6 +33,7 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
+#include "reader_base.hpp"
 
 namespace vmf
 {
@@ -40,13 +41,13 @@ namespace vmf
 * class JSONReader
 * \brief JSONReader class is a %IReader interface implementation for JSON format representation
 */
-class VMF_EXPORT JSONReader : public IReader
+class VMF_EXPORT JSONReader : public ReaderBase
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader();
+    JSONReader(bool _ignoreUnknownCompressor = false);
 
     /*!
     * \brief Class destructor
@@ -67,7 +68,7 @@ public:
 
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
-    virtual vmf_string decompress(const std::string &input);
+    virtual std::string decompress(const std::string &input);
 };
 
 }//vmf

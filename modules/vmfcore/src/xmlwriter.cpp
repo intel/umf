@@ -487,46 +487,53 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
 }
 
 
+class MetadataAccessor: public Metadata
+{
+public:
+    MetadataAccessor( const std::shared_ptr< MetadataDesc >& spDescription )
+      : Metadata(spDescription) { }
+    MetadataAccessor( const Metadata& oMetadata )
+      : Metadata(oMetadata) { }
+    using Metadata::setId;
+    virtual ~MetadataAccessor() {}
+};
+
+
 vmf::vmf_string XMLWriter::compress(const std::string& input)
 {
     if(!WriterBase::compressorId.empty())
     {
         std::string compressed = WriterBase::compress(input);
 
-        xmlDocPtr doc = xmlNewDoc(NULL);
+        std::shared_ptr<vmf::MetadataSchema> cSchema;
+        cSchema = std::make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
+        VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
+            VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
+            VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
+        VMF_METADATA_END(cSchema);
 
-        xmlNodePtr compressedNode = xmlNewDocNode(doc, NULL, BAD_CAST TAG_COMPRESSED_DATA,
-                                                  BAD_CAST compressed.data());
-        if(compressedNode == NULL)
-        {
-            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for compressed data");
-        }
+        std::shared_ptr<Metadata> cMetadata;
+        cMetadata = std::make_shared<Metadata>(cSchema->findMetadataDesc(COMPRESSED_DATA_DESC_NAME));
+        cMetadata->push_back(FieldValue(COMPRESSION_ALGO_PROP_NAME, WriterBase::compressorId));
+        cMetadata->push_back(FieldValue(COMPRESSED_DATA_PROP_NAME,  compressed));
 
-        if(xmlNewProp(compressedNode, BAD_CAST ATTR_COMPRESSION_ALGO,
-                      BAD_CAST WriterBase::compressorId.data()) == NULL)
-        {
-            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (compression algo)");
-        }
+        MetadataAccessor metadataAccessor(*cMetadata);
+        metadataAccessor.setId(0);
+        cMetadata = std::make_shared<Metadata>(metadataAccessor);
 
-        if(xmlDocSetRootElement(doc, compressedNode) != 0)
-        {
-            VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
-        }
+        MetadataSet cSet;
+        cSet.push_back(cMetadata);
+        std::vector< std::shared_ptr<MetadataSchema> > cSchemas;
+        cSchemas.push_back(cSchema);
 
-        xmlChar *buf;
-        int size;
-        xmlDocDumpMemory(doc, &buf, &size);
-        if(buf == NULL)
-        {
-            VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
-        }
+        const IdType nextId = 1;
+        const std::string filePath = "";
+        const std::string checksum = "";
+        std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
 
-        std::string outputString = (char*)buf;
-
-        xmlFree(buf);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
+        std::string outputString;
+        std::shared_ptr<IWriter> writer = std::make_shared<XMLWriter>();
+        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet);
 
         return outputString;
     }
