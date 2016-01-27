@@ -376,23 +376,4 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
     return compress(formatted);
 }
 
-
-vmf_string JSONWriter::compress(const std::string& input)
-{
-    if(!WriterBase::compressorId.empty())
-    {
-        std::string compressed = WriterBase::compress(input);
-
-        JSONNode root;
-        root.push_back(JSONNode(COMPRESSION_ALGO_PROP_NAME, WriterBase::compressorId));
-        root.push_back(JSONNode(COMPRESSED_DATA_PROP_NAME, compressed));
-
-        return root.write_formatted();
-    }
-    else
-    {
-        return input;
-    }
-}
-
 }//vmf

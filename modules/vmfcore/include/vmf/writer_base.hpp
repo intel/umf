@@ -44,6 +44,12 @@ public:
     WriterBase(vmf_string _compressorId = vmf_string()) : IWriter(), compressorId(_compressorId)
     { }
 
+    /*!
+     * \brief Creates a new instance of the class
+     * \return Smart pointer to new instance
+     */
+    virtual std::shared_ptr<WriterBase> createNewInstance() const = 0;
+
 protected:
     virtual std::string compress(const std::string& input);
 

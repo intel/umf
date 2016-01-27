@@ -46,8 +46,39 @@ public:
     ignoreUnknownCompressor(_ignoreUnknownCompressor)
     { }
 
+    // IReader implementation
+    virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+
+    virtual bool parseSchemas(const std::string& text,
+                              std::vector<std::shared_ptr<MetadataSchema>>& schemas);
+
+    virtual bool parseMetadata(const std::string& text,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               std::vector<std::shared_ptr<MetadataInternal>>& metadata );
+
+    virtual bool parseVideoSegments(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+    virtual std::string decompress(const std::string& input);
+
 protected:
-    std::string decompress(const std::string& input, const std::string algo);
+    virtual bool internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
+
+    virtual bool internalParseSchemas(const std::string& text,
+                                      std::vector<std::shared_ptr<MetadataSchema>>& schemas) = 0;
+
+    virtual bool internalParseMetadata(const std::string& text,
+                                       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                       std::vector<std::shared_ptr<MetadataInternal>>& metadata ) = 0;
+
+    virtual bool internalParseVideoSegments(const std::string& text,
+                                            std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
 
     bool ignoreUnknownCompressor;
 };

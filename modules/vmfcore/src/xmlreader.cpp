@@ -257,13 +257,6 @@ XMLReader::XMLReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownC
 XMLReader::~XMLReader(){}
 
 
-bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
-{
-    std::string decompressed = decompress(text);
-    return internalParseSchemas(decompressed, schemas);
-}
-
-
 //this version of parseSchemas always gets uncompressed text as input
 bool XMLReader::internalParseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
@@ -353,15 +346,6 @@ bool XMLReader::internalParseSchemas(const std::string& text, std::vector<std::s
     xmlMemoryDump();
 
     return true;
-}
-
-
-bool XMLReader::parseMetadata(const std::string& text,
-                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                              std::vector<std::shared_ptr<MetadataInternal>>& metadata)
-{
-    std::string decompressed = decompress(text);
-    return internalParseMetadata(decompressed, schemas, metadata);
 }
 
 
@@ -458,16 +442,6 @@ bool XMLReader::internalParseMetadata(const std::string& text,
 }
 
 
-bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
-{
-    std::string decompressed = decompress(text);
-    return internalParseAll(decompressed, nextId, filepath, checksum, segments, schemas, metadata);
-}
-
-
 //this version of parseAll always gets uncompressed text
 bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
@@ -535,13 +509,6 @@ bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::s
     xmlMemoryDump();
 
     return true;
-}
-
-
-bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
-{
-    std::string decompressed = decompress(text);
-    return internalParseVideoSegments(decompressed, segments);
 }
 
 
@@ -635,38 +602,6 @@ bool XMLReader::internalParseVideoSegments(const std::string& text,
     xmlMemoryDump();
 
     return true;
-}
-
-std::string XMLReader::decompress(const std::string& input)
-{
-    //parse it as usual serialized VMF XML, search for specific schemas
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-    std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
-    std::string filePath, checksum;
-    IdType nextId;
-    std::shared_ptr<XMLReader> reader = std::make_shared<XMLReader>();
-    if(!reader->internalParseAll(input, nextId, filePath, checksum, segments, schemas, metadata))
-    {
-        // A workaround:
-        // The input is not a full valid VMF XML packet prepared for parseAll.
-        // But maybe this is a packet of VMF schemas for parseSchemas, or segments, etc.
-        // Let them pass further. If there's invalid XML, it will be found later.
-        return input;
-    }
-
-    if(schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
-    {
-        std::shared_ptr<Metadata> cMetadata = metadata[0];
-        vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
-        vmf_string data = cMetadata->getFieldValue(COMPRESSED_DATA_PROP_NAME);
-
-        return ReaderBase::decompress(data, algo);
-    }
-    else
-    {
-        return input;
-    }
 }
 
 }//vmf

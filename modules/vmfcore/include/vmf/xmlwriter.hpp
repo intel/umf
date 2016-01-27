@@ -59,7 +59,14 @@ public:
     virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
-    virtual std::string compress(const std::string& input);
+    /*!
+     * \brief Creates a new instance of the class
+     * \return Smart pointer to the new instance
+     */
+    virtual std::shared_ptr<WriterBase> createNewInstance() const
+    {
+        return std::shared_ptr<WriterBase>(new XMLWriter);
+    }
 
 private:
     // hiding API that may be removed soon

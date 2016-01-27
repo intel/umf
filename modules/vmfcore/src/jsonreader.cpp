@@ -269,11 +269,10 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 JSONReader::JSONReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownCompressor) { }
 JSONReader::~JSONReader(){ }
 
-bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+bool JSONReader::internalParseSchemas(const std::string& text,
+                                      std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
-    std::string decompressed = decompress(text);
-
-    if(decompressed.empty())
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -284,7 +283,7 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
     JSONNode root(JSON_NODE);
     try
     {
-        root = libjson::parse(decompressed);
+        root = libjson::parse(text);
     }
     catch(...)
     {
@@ -304,7 +303,7 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
     {
         try
         {
-	    std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(localRootNode);
+            std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(localRootNode);
             schemas.push_back(spSchema);
         }
         catch(Exception& e)
@@ -346,13 +345,11 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
     return true;
 }
 
-bool JSONReader::parseMetadata(const std::string& text,
-    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool JSONReader::internalParseMetadata(const std::string& text,
+                                       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                       std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    std::string decompressed = decompress(text);
-
-    if(decompressed.empty())
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -363,7 +360,7 @@ bool JSONReader::parseMetadata(const std::string& text,
     JSONNode root;
     try
     {
-        root = libjson::parse(decompressed);
+        root = libjson::parse(text);
     }
     catch(...)
     {
@@ -426,14 +423,12 @@ bool JSONReader::parseMetadata(const std::string& text,
     return true;
 }
 
-bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool JSONReader::internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    std::string decompressed = decompress(text);
-
-    if(decompressed.empty())
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -445,7 +440,7 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
     JSONNode root;
     try
     {
-        root = libjson::parse(decompressed);
+        root = libjson::parse(text);
     }
     catch(...)
     {
@@ -473,11 +468,11 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
         if(checksumIter != localRootNode.end() )
             checksum = checksumIter->as_string();
 
-        if(!parseVideoSegments(decompressed, segments))
+        if(!internalParseVideoSegments(text, segments))
             return false;
-        if(!parseSchemas(decompressed, schemas))
+        if(!internalParseSchemas(text, schemas))
             return false;
-        if(!parseMetadata(decompressed, schemas, metadata))
+        if(!internalParseMetadata(text, schemas, metadata))
             return false;
     }
     else
@@ -489,11 +484,10 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
     return true;
 }
 
-bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
-{
-    std::string decompressed = decompress(text);
 
-    if(decompressed.empty())
+bool JSONReader::internalParseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+{
+    if(text.empty())
     {
         VMF_LOG_ERROR("Empty input JSON string");
         return false;
@@ -504,7 +498,7 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
     JSONNode root(JSON_NODE);
     try
     {
-        root = libjson::parse(decompressed);
+        root = libjson::parse(text);
     }
     catch(...)
     {
@@ -564,35 +558,6 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
 		}
     }
     return true;
-}
-
-std::string JSONReader::decompress(const std::string& input)
-{
-    JSONNode root;
-    try
-    {
-        root = libjson::parse(input);
-    }
-    catch(...)
-    {
-        VMF_LOG_ERROR("Can't get JSON root");
-        return std::string();
-    }
-
-    auto algoIt = root.find(COMPRESSION_ALGO_PROP_NAME);
-    auto dataIt = root.find(COMPRESSED_DATA_PROP_NAME);
-
-    if(algoIt != root.end())
-    {
-        std::string algo = algoIt->as_string();
-        std::string data = dataIt->as_string();
-
-        return ReaderBase::decompress(data, algo);
-    }
-    else
-    {
-        return input;
-    }
 }
 
 }//vmf
