@@ -34,7 +34,7 @@ public class VmfMetadataStreamTest
     
     protected final String videoFile = "D:/Projects/intel_vmf/vmf/data/BlueSquare.avi";
     protected MetadataStream stream;
-    protected final MetadataSchema schema = new MetadataSchema ("test_schema");
+    protected MetadataSchema schema;
     
     protected final FieldDesc fields[] = new FieldDesc [3];
     
@@ -48,6 +48,7 @@ public class VmfMetadataStreamTest
     @Before
     public void setUp ()
     {
+    	schema = new MetadataSchema ("test_schema");
         fields[0] = new FieldDesc ("name", Variant.type_string, false);
         fields[1] = new FieldDesc ("last name", Variant.type_string, false);
         fields[2] = new FieldDesc ("age", Variant.type_integer, false);
@@ -60,7 +61,6 @@ public class VmfMetadataStreamTest
         
         schema.add (mdDesc);
         stream = new MetadataStream ();
-        stream.addSchema(schema);
         
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
@@ -70,11 +70,14 @@ public class VmfMetadataStreamTest
     public void testSaveLoadAndQueries()
     {
         assertTrue (stream.open(videoFile, MetadataStream.ReadWrite));
-        
         stream.getChecksum ();
         
-        String str2 = stream.computeChecksum ();
-        assertFalse (str2.isEmpty());
+        String str = stream.computeChecksum ();
+        assertFalse (str.isEmpty());
+        
+        stream.addSchema(schema);
+        MetadataSchema ms = stream.getSchema("test_schema");
+        assertNotNull(ms);
         
         assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
         assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());

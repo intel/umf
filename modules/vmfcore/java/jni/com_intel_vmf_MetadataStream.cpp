@@ -4,7 +4,7 @@
 #include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_MetadataStream.h"
 #include "throwJavaException.hpp"
-
+#include <iostream>
 using namespace vmf;
 
 /*
@@ -460,13 +460,19 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getSchema (JNIEnv *
     try
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-        const char* schema = env->GetStringUTFChars(schemaName, NULL);
-        std::string sName(schema);
+        const char* name = env->GetStringUTFChars(schemaName, NULL);
+        std::string sName(name);
+        env->ReleaseStringUTFChars(schemaName, name);
 
-        std::shared_ptr <MetadataSchema>* mdSchema = new std::shared_ptr <MetadataSchema>((*obj)->getSchema(sName));
+        std::shared_ptr <MetadataSchema> schema = (*obj)->getSchema(sName);
 
-        env->ReleaseStringUTFChars(schemaName, schema);
-        return (jlong)mdSchema;
+        if (schema != NULL)
+        {
+            std::shared_ptr <MetadataSchema>* mdSchema = new std::shared_ptr <MetadataSchema>(schema);
+            return (jlong)mdSchema;
+        }
+        else
+            VMF_EXCEPTION(NotFoundException, "Schema is not found.");
     }
     catch (const std::exception &e)
     {

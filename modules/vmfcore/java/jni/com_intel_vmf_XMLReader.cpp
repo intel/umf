@@ -50,7 +50,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEn
             return schemaNativeAddrs;
         }
         else
-            throwJavaException(env, 0, method_name);
+            VMF_EXCEPTION(IncorrectParamException, "Schemas can not be parsed.");
     }
     catch (const std::exception &e)
     {
@@ -110,7 +110,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIE
             return mdIntNativeAddrs;
         }
         else
-            throwJavaException(env, 0, method_name);
+            VMF_EXCEPTION(IncorrectParamException, "Metadata can not be parsed.");
     }
     catch (const std::exception &e)
     {
@@ -159,7 +159,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments 
             return segmentsNativeAddrs;
         }
         else
-            throwJavaException(env, 0, method_name);
+            VMF_EXCEPTION(IncorrectParamException, "Segments can not be parsed.");
     }
     catch (const std::exception &e)
     {
