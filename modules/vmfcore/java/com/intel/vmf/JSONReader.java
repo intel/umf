@@ -42,14 +42,22 @@ public class JSONReader implements IReader
     }
 
     @Override
-    public MetadataInternal[] parseMetadata (String text)
+    public MetadataInternal[] parseMetadata (String text, MetadataSchema... schemas)
     {
-        long nObjAddrs[] = n_parseMetadata (nativeObj, text);
-        MetadataInternal mdInt[] = new MetadataInternal [nObjAddrs.length];
-        
-        for (int i = 0; i < nObjAddrs.length; i++)
+    	long nSchemaAddrs[] = new long [schemas.length];
+    	
+    	for (int i = 0; i < schemas.length; i++)
         {
-            mdInt[i] = new MetadataInternal (nObjAddrs[i]);
+    		nSchemaAddrs[i] = schemas[i].nativeObj;
+        }
+    	
+        long nMdIntAddrs[] = n_parseMetadata (nativeObj, text, nSchemaAddrs);
+        
+        MetadataInternal mdInt[] = new MetadataInternal [nMdIntAddrs.length];
+        
+        for (int j = 0; j < nMdIntAddrs.length; j++)
+        {
+            mdInt[j] = new MetadataInternal (nMdIntAddrs[j]);
         }
         
         return mdInt;
@@ -80,7 +88,7 @@ public class JSONReader implements IReader
 
     private static native long n_JSONReader();
     private static native long[] n_parseSchemas (long nativeObj, String text);
-    private static native long[] n_parseMetadata (long nativeObj, String text);
+    private static native long[] n_parseMetadata (long nativeObj, String text, long nSchemaAddrs[]);
     private static native long[] n_parseVideoSegments (long nativeObj, String text);
     private static native void n_delete (long nativeObj);
 }

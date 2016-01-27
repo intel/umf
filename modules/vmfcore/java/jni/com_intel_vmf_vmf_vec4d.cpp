@@ -1,16 +1,16 @@
 #include<string>
 #include<vector>
 #include "vmf/types.hpp"
-#include "../com_intel_vmf_vmf_vec2d.h"
+#include "../com_intel_vmf_vmf_vec4d.h"
 #include "throwJavaException.hpp"
 
 using namespace vmf;
 
 /*
- * Class:     com_intel_vmf_vmf_vec4d
- * Method:    n_vmf_vec4d
- * Signature: ()J
- */
+* Class:     com_intel_vmf_vmf_vec4d
+* Method:    n_vmf_vec4d
+* Signature: ()J
+*/
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__ (JNIEnv *, jclass)
 {
     std::shared_ptr<vmf_vec4d>* p = new std::shared_ptr<vmf_vec4d>(new vmf_vec4d());

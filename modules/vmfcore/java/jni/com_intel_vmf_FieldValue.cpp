@@ -13,10 +13,25 @@ using namespace vmf;
  * Method:    n_FieldValue
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue ());
-    return (jlong) p;
+    static const char method_name[] = "FieldValue::n_1FieldValue__";
+
+    try
+    {
+        std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue());
+        return (jlong)p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -26,9 +41,24 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *,
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *env, jclass, jlong other)
 {
-    std::shared_ptr<FieldValue>* obj = (std::shared_ptr<FieldValue>*) other;
-    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue (**obj));
-    return (jlong) p;
+    static const char method_name[] = "FieldValue::n_1FieldValue__J";
+
+    try
+    {
+        std::shared_ptr<FieldValue>* obj = (std::shared_ptr<FieldValue>*) other;
+        std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue(**obj));
+        return (jlong)p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -38,14 +68,30 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J (JNIEnv *env, jclass, jstring name, jlong variantAddr)
 {
-    std::shared_ptr<Variant>* obj = (std::shared_ptr<Variant>*) variantAddr;
-    const char* tmp = env->GetStringUTFChars(name, NULL);
-    std::string sName(tmp);
-    
-    std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue (sName, (**obj)));
+    static const char method_name[] = "FieldValue::n_1FieldValue__Ljava_lang_String_2J";
 
-    env->ReleaseStringUTFChars(name, tmp);
-    return (jlong) p;
+    try
+    {
+        std::shared_ptr<Variant>* obj = (std::shared_ptr<Variant>*) variantAddr;
+        const char* tmp = env->GetStringUTFChars(name, NULL);
+        std::string sName(tmp);
+
+        std::shared_ptr<FieldValue>* p = new std::shared_ptr<FieldValue>(new FieldValue(sName, (**obj)));
+
+        env->ReleaseStringUTFChars(name, tmp);
+
+        return (jlong)p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -126,6 +172,115 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *env,
     }
     
     return 0;
+}
+
+/*
+* Class:     com_intel_vmf_FieldValue
+* Method:    n_getType
+* Signature: (J)I
+*/
+JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldValue_n_1getType (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "FieldValue::n_1getType";
+
+    try
+    {
+        std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
+        return (jint)(*obj)->getType();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_FieldValue
+* Method:    n_isEmpty
+* Signature: (J)Z
+*/
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEmpty (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "FieldValue::n_1isEmpty";
+
+    try
+    {
+        std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
+        return (jboolean)(*obj)->isEmpty();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_FieldValue
+* Method:    n_getTypeName
+* Signature: (J)Ljava/lang/String;
+*/
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getTypeName (JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "FieldValue::n_1getTypeName";
+
+    try
+    {
+        std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
+        std::string str = (*obj)->getTypeName();
+        return env->NewStringUTF(str.c_str());
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
+}
+
+/*
+* Class:     com_intel_vmf_FieldValue
+* Method:    n_convertTo
+* Signature: (JI)V
+*/
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo (JNIEnv *env, jclass, jlong self, jint type)
+{
+    static const char method_name[] = "FieldValue::n_1convertTo";
+
+    try
+    {
+        Variant::Type Type = (Variant::Type) type;
+        if ((Type >= Variant::Type::type_unknown) && (Type <= Variant::Type::type_vec4d_vector))
+        {
+            std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
+            (*obj)->convertTo(Type);
+        }
+        else
+            throwJavaException(env, 0, method_name);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*

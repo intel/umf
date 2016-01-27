@@ -22,21 +22,23 @@ public class VmfReferenceTest
     }
     
     @AfterClass
-    public void terminate()
+    public static void terminate()
     {
         Vmf.terminate();
     }
     
-    protected final FieldDesc fds[] = new FieldDesc [3];
+    protected final FieldDesc fds1[] = new FieldDesc [3];
+    protected final FieldDesc fds2[] = new FieldDesc [4];
     
-    protected MetadataDesc mdDesc;
+    protected MetadataDesc mdDesc1;
+    protected MetadataDesc mdDesc2;
     
     protected final ReferenceDesc rd1 = new ReferenceDesc ("friend");
     protected final ReferenceDesc rd2 = new ReferenceDesc ("colleague", false, true);
     protected final ReferenceDesc rd3 = new ReferenceDesc ("spouse", true, false); 
     
-    protected final Metadata md1 = new Metadata (mdDesc);
-    protected final Metadata md2 = new Metadata (mdDesc);
+    protected Metadata md1;
+    protected Metadata md2;
     
     protected Reference ref1;
     protected Reference ref2;
@@ -44,11 +46,20 @@ public class VmfReferenceTest
     @Before
     public void setUp ()
     {
-        fds[0] = new FieldDesc ("name", Variant.type_string, false);
-        fds[1] = new FieldDesc ("last name", Variant.type_string, false);
-        fds[2] = new FieldDesc ("age", Variant.type_integer, false);
+        fds1[0] = new FieldDesc ("name", Variant.type_string, false);
+        fds1[1] = new FieldDesc ("last name", Variant.type_string, false);
+        fds1[2] = new FieldDesc ("age", Variant.type_integer, false);
         
-        mdDesc = new MetadataDesc ("person", fds);
+        fds2[0] = new FieldDesc ("manufacturer", Variant.type_string, false);
+        fds2[1] = new FieldDesc ("model", Variant.type_string, false);
+        fds2[2] = new FieldDesc ("number", Variant.type_string, false);
+        fds2[3] = new FieldDesc ("age", Variant.type_integer, false);
+        
+        mdDesc1 = new MetadataDesc ("person", fds1);
+        mdDesc2 = new MetadataDesc ("car", fds2);
+        
+        md1 = new Metadata (mdDesc1);
+        md2 = new Metadata (mdDesc2);
         
         ref1 = new Reference ();
         ref2 = new Reference (rd1, md1);
@@ -57,16 +68,53 @@ public class VmfReferenceTest
     @Test
     public void testReferenceDesc ()
     {
-        System.out.println("Inside VmfReferenceDescTest.testReferenceDesc()");
-        
+    	/*TO DO: Fix for native code Metadata.operator ==.
+        assertFalse(md2.equals(md1));*/
+    	
         ref1.setReferenceMetadata (md2);
         
-        assertEquals(md2, ref1.getReferenceMetadata ());
-        assertEquals(md1, ref2.getReferenceMetadata ());
+        /*TO DO: Fix for native code Metadata.operator ==.
+        assertTrue(md2.equals(ref1.getReferenceMetadata ()));*/
         
-        assertEquals(rd1, ref2.getReferenceDescription ());
+        assertEquals(md2.getName(), ref1.getReferenceMetadata().getName());
+        assertEquals(md2.getDesc().getMetadataName(), ref1.getReferenceMetadata().getDesc().getMetadataName());
+        assertEquals(md2.getDesc().getAllReferenceDescs().length, ref1.getReferenceMetadata ().getDesc().getAllReferenceDescs().length);
+        assertEquals(md2.getDesc().getFields().length, ref1.getReferenceMetadata ().getDesc().getFields().length);
+        assertEquals(md2.getID(), ref1.getReferenceMetadata().getID());
+        assertEquals(md2.getDuration(), ref1.getReferenceMetadata().getDuration());
+        assertEquals(md2.getAllReferences().length, ref1.getReferenceMetadata().getAllReferences().length);
+        assertEquals(md2.getFieldNames().length, ref1.getReferenceMetadata().getFieldNames().length);
+        assertEquals(md2.getFrameIndex(), ref1.getReferenceMetadata().getFrameIndex());
+        assertEquals(md2.getNumOfFrames(), ref1.getReferenceMetadata().getNumOfFrames());
+        
+        /*TO DO: Fix for native code Metadata.operator ==.
+        assertTrue(md1.equals(ref2.getReferenceMetadata ()));*/
+        
+        assertEquals(md1.getName(), ref2.getReferenceMetadata().getName());
+        assertEquals(md1.getDesc().getMetadataName(), ref2.getReferenceMetadata().getDesc().getMetadataName());
+        assertEquals(md1.getDesc().getAllReferenceDescs().length, ref2.getReferenceMetadata ().getDesc().getAllReferenceDescs().length);
+        assertEquals(md1.getDesc().getFields().length, ref2.getReferenceMetadata ().getDesc().getFields().length);
+        assertEquals(md1.getID(), ref2.getReferenceMetadata().getID());
+        assertEquals(md1.getDuration(), ref2.getReferenceMetadata().getDuration());
+        assertEquals(md1.getAllReferences().length, ref2.getReferenceMetadata().getAllReferences().length);
+        assertEquals(md1.getFieldNames().length, ref2.getReferenceMetadata().getFieldNames().length);
+        assertEquals(md1.getFrameIndex(), ref2.getReferenceMetadata().getFrameIndex());
+        assertEquals(md1.getNumOfFrames(), ref2.getReferenceMetadata().getNumOfFrames());
+        
+        assertEquals(rd1.getName(), ref2.getReferenceDescription().getName());
+        assertEquals(rd1.isUnique(), ref2.getReferenceDescription().isUnique());
+        assertEquals(rd1.isCustom(), ref2.getReferenceDescription().isCustom());
         
         ref2.setReferenceMetadata (md2);
-        assertEquals(md2, ref2.getReferenceMetadata ());
+        assertEquals(md2.getName(), ref2.getReferenceMetadata().getName());
+        assertEquals(md2.getDesc().getMetadataName(), ref2.getReferenceMetadata().getDesc().getMetadataName());
+        assertEquals(md2.getDesc().getAllReferenceDescs().length, ref2.getReferenceMetadata ().getDesc().getAllReferenceDescs().length);
+        assertEquals(md2.getDesc().getFields().length, ref2.getReferenceMetadata ().getDesc().getFields().length);
+        assertEquals(md2.getID(), ref2.getReferenceMetadata().getID());
+        assertEquals(md2.getDuration(), ref2.getReferenceMetadata().getDuration());
+        assertEquals(md2.getAllReferences().length, ref2.getReferenceMetadata().getAllReferences().length);
+        assertEquals(md2.getFieldNames().length, ref2.getReferenceMetadata().getFieldNames().length);
+        assertEquals(md2.getFrameIndex(), ref2.getReferenceMetadata().getFrameIndex());
+        assertEquals(md2.getNumOfFrames(), ref2.getReferenceMetadata().getNumOfFrames());
     }
 }

@@ -30,19 +30,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1Reference__JJ (JNIEnv *e
     return (jlong) p;
 }
 
-/*
- * Class:     com_intel_vmf_Reference
- * Method:    n_ReferenceWeak
- * Signature: (JJ)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1ReferenceWeak (JNIEnv *env, jclass, jlong refDescAddr, jlong mdAddr)
-{
-    std::shared_ptr<ReferenceDesc>* refDesc = (std::shared_ptr<ReferenceDesc>*) refDescAddr;
-    std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
-    std::weak_ptr<Metadata>* mdWeak = new std::weak_ptr<Metadata>(*md);
-    std::shared_ptr<Reference>* p = new std::shared_ptr<Reference>(new Reference ((*refDesc), (*mdWeak)));
-    return (jlong) p;
-}
 
 /*
  * Class:     com_intel_vmf_Reference

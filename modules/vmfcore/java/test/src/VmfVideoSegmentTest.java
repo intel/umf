@@ -33,13 +33,11 @@ public class VmfVideoSegmentTest
     @Test
     public void testGettersAndSetters()
     {
-        System.out.println("Inside VmfVideoSegmentTest.testGettersAndSetters()");
-        
         assertEquals ("holiday", vs2.getTitle());
         assertEquals ("", vs1.getTitle ());
         
         vs1.setTitle ("travel");
-        assertEquals ("", vs1.getTitle ());
+        assertEquals ("travel", vs1.getTitle ());
         
         assertEquals (0, vs1.getFPS (), 0.00001);
         assertEquals (35, vs2.getFPS (), 0.00001);

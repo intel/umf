@@ -92,16 +92,24 @@ public class VmfMetadataDescTest
         assertEquals (4, fds.length);
         
         ReferenceDesc rds1[] = mdDesc1.getAllReferenceDescs ();
-        assertEquals(3, rds1.length);
+        assertEquals(4, rds1.length);
         
-        mdDesc2.declareCustomReference ("father", true);
         ReferenceDesc rds2[] = mdDesc2.getAllReferenceDescs ();
         assertEquals(1, rds2.length);
         
-        ReferenceDesc rd = mdDesc1.getReferenceDesc ("friend");
-        assertEquals(refs[0], rd);
+        mdDesc2.declareCustomReference ("father", true);
         
-        FieldDesc fd = mdDesc1.getFieldDesc ("age");
-        assertEquals(fields1[2], fd);
+        rds2 = mdDesc2.getAllReferenceDescs ();
+        assertEquals(2, rds2.length);
+        
+        ReferenceDesc rd1 = mdDesc1.getReferenceDesc ("friend");
+        assertEquals(refs[0].getName(), rd1.getName());
+        assertEquals(refs[0].isUnique(), rd1.isUnique());
+        assertEquals(refs[0].isCustom(), rd1.isCustom());
+        
+        FieldDesc fd1 = mdDesc1.getFieldDesc ("age");
+        assertEquals(fields1[2].getName(), fd1.getName());
+        assertEquals(fields1[2].getType(), fd1.getType());
+        assertEquals(fields1[2].isOptional(), fd1.isOptional());
     }
 }

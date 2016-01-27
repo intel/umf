@@ -15,7 +15,7 @@ interface IReader
     
     MetadataSchema[] parseSchemas (String text);
 	
-    MetadataInternal[] parseMetadata (String text);
+    MetadataInternal[] parseMetadata (String text, MetadataSchema... schemas);
 	
     MetadataStream.VideoSegment[] parseVideoSegments (String text);
 }

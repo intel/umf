@@ -38,8 +38,6 @@ public class VmfVariantTest
     @Test
     public void testSetTo()
     {
-        System.out.println("Inside VmfVariantTest.testSetTo()");
-        
         float value1 = (float) 2.5;
         int value2 = 4;
         double value3 = 3.14;
@@ -98,6 +96,15 @@ public class VmfVariantTest
         vmf_vec2d vec2dArray[] = new vmf_vec2d [2];
         vmf_vec3d vec3dArray[] = new vmf_vec3d [2];
         vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
+        
+        vec2dArray[0] = new vmf_vec2d();
+        vec2dArray[1] = new vmf_vec2d();
+        
+        vec3dArray[0] = new vmf_vec3d();
+        vec3dArray[1] = new vmf_vec3d();
+        
+        vec4dArray[0] = new vmf_vec4d();
+        vec4dArray[1] = new vmf_vec4d();
         
         var1.setTo(vec2dArray);
         assertEquals(Variant.type_vec2d_vector , var1.getType());

@@ -1,5 +1,6 @@
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
+import com.intel.vmf.MetadataStream;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.ReferenceDesc;
@@ -29,7 +30,8 @@ public class VmfMetadataTest
         Vmf.terminate();
     }
     
-    final protected MetadataSchema schema = new MetadataSchema ("test_schema");
+    protected MetadataStream stream; 
+    protected final MetadataSchema schema = new MetadataSchema ("test_schema");
     
     final protected FieldDesc fields[] = new FieldDesc [3];
     
@@ -55,13 +57,16 @@ public class VmfMetadataTest
         
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
+        
+        schema.add (mdDesc);
+        
+        stream = new MetadataStream();
+        stream.addSchema(schema);
     }
     
     @Test
     public void testSettersGetters ()
     {
-        System.out.println("Inside VmfMetadataTest.testSettersGetters()");
-        
         assertEquals(-1, md1.getID ());
         assertEquals(-1, md2.getID ());
         assertEquals(-1, md1.getFrameIndex ());
@@ -73,11 +78,17 @@ public class VmfMetadataTest
         assertEquals(0, md1.getDuration ());
         assertEquals(0, md2.getDuration ());
         
+        /*TO DO: Fix for native code Metadata.operator ==.
+        assertTrue(md2.equals(md1));*/
+        
         assertEquals("person", md1.getName());
         assertEquals("", md1.getSchemaName());
-        assertEquals(mdDesc, md1.getDesc());
-        Variant tmp = md1.getFieldValue ("name");
-        assertTrue(tmp.isEmpty());
+        
+        MetadataDesc mdDesc1 = md1.getDesc();
+        assertEquals(mdDesc.getMetadataName(), mdDesc1.getMetadataName());
+        assertEquals(mdDesc.getFields().length, mdDesc1.getFields().length);
+        assertEquals(mdDesc.getAllReferenceDescs().length, mdDesc1.getAllReferenceDescs().length);
+        
         assertFalse(md1.hasField("age"));
         md1.setFrameIndex(0, 2);
         assertEquals(0, md1.getFrameIndex ());
@@ -94,11 +105,10 @@ public class VmfMetadataTest
         md1.setFieldValue("last name", var2);
         md1.setFieldValue("age", var3);
         
-        assertEquals (var1, md1.getFieldValue ("name"));
-        assertEquals (var2, md1.getFieldValue ("last name"));
-        assertEquals (var3, md1.getFieldValue ("age"));
+        assertTrue (var1.equals(md1.getFieldValue ("name")));
+        assertTrue (var2.equals(md1.getFieldValue ("last name")));
+        assertTrue(var3.equals(md1.getFieldValue ("age")));
         
-        schema.add (mdDesc);
         Metadata md3 = new Metadata(mdDesc);
         
         assertEquals("test_schema", md3.getSchemaName());
@@ -107,8 +117,6 @@ public class VmfMetadataTest
     @Test
     public void testReferences()
     {
-        System.out.println("Inside VmfMetadataTest.testReferences()");
-        
         Variant var1 = new Variant ("Den");
         Variant var2 = new Variant ("Smith");
         Variant var3 = new Variant (21);
@@ -125,6 +133,9 @@ public class VmfMetadataTest
         md2.setFieldValue("last name", var2);
         md2.setFieldValue("age", var3);
         
+        stream.add(md1);
+        stream.add(md2);
+        
         md2.addReference(md2);
         md2.addReference(md1, "spouse");
         md2.addReference(md1, "colleague");
@@ -133,7 +144,9 @@ public class VmfMetadataTest
         assertTrue(md2.isReference (md1, "colleague"));
         assertTrue(md2.isReference (md2));
         
-        assertEquals (md2, md2.getFirstReference("person"));
+        Metadata tmp = md2.getFirstReference("person");
+        assertTrue(tmp.equals(md2));
+        
         MetadataSet set = md2.getReferencesByMetadata ("person");
         assertEquals (3, set.getSize());
         

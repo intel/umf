@@ -60,7 +60,27 @@ public class FieldValue
     {
         setTo (new FieldValue());
     }
+    
+    public int getType ()
+    {
+        return n_getType (nativeObj);
+    }
 
+    public boolean isEmpty ()
+    {
+        return n_isEmpty (nativeObj);
+    }
+
+    public String getTypeName ()
+    {
+        return n_getTypeName (nativeObj);
+    }
+
+    public void convertTo (int type)
+    {
+        n_convertTo (nativeObj, type);
+    }
+    
     @Override
     protected void finalize () throws Throwable 
     {
@@ -77,5 +97,9 @@ public class FieldValue
     private static native void n_setTo (long nativeObj, long other);
     //private static native void n_setToVariant (long nativeObj, long other);
     private static native boolean n_equals (long nativeObj, long other);
+    private native static int n_getType (long nativeObj);
+    private native static boolean n_isEmpty (long nativeObj);
+    private native static String n_getTypeName (long nativeObj);
+    private native static void n_convertTo (long nativeObj, int type);
     private static native void n_delete (long nativeObj);	
 }

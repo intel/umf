@@ -272,7 +272,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc (JNIEnv *env, jcl
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <MetadataDesc> mdDesc = (*obj)->getDesc();
-        std::shared_ptr <MetadataDesc>* retVal = new std::shared_ptr <MetadataDesc>(new MetadataDesc(mdDesc->getMetadataName(), mdDesc->getFields(), mdDesc->getAllReferenceDescs()));
+        std::shared_ptr <MetadataDesc>* retVal = new std::shared_ptr <MetadataDesc>(mdDesc);
         return (jlong)retVal;
     }
     catch (const std::exception &e)

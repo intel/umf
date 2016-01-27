@@ -149,10 +149,10 @@ public class VmfJSONTest
         MetadataSchema mdSchemas[] = reader.parseSchemas(schemas);
         assertEquals (2, mdSchemas.length);
         
-        String mdSet = writer.store(mdSet1);
-        assertFalse(mdSet.isEmpty());
+        String str = writer.store(mdSet1);
+        assertFalse(str.isEmpty());
         
-        MetadataInternal mdInt[] = reader.parseMetadata(mdSet);
+        MetadataInternal mdInt[] = reader.parseMetadata(str, schema1, schema2);
         assertEquals (mdSet1.getSize(), mdInt.length);
         
         String segments = writer.store(videoSeg1, videoSeg2, videoSeg3);

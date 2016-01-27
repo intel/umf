@@ -18,11 +18,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
 }
 
 /*
- * Class:     com_intel_vmf_MetadataStream_VideoSegment
- * Method:    n_VideoSegment
- * Signature: (Ljava/lang/String;DJJJJ)J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJJJ (JNIEnv *env, jclass, jstring title, jdouble fps,
+* Class:     com_intel_vmf_MetadataStream_VideoSegment
+* Method:    n_VideoSegment
+* Signature: (Ljava/lang/String;DJJII)J
+*/
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJII (JNIEnv *env, jclass, jstring title, jdouble fps,
                                                                                                                        jlong startTime, jlong duration, jint width, jint height)
 {
     const char* tmp = env->GetStringUTFChars(title, NULL);

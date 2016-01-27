@@ -1139,11 +1139,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByNameAndValue
     try
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-        FieldValue* value = (FieldValue*)fieldValueAddr;
+        std::shared_ptr <FieldValue>* value = (std::shared_ptr <FieldValue>*)fieldValueAddr;
         const char* tmp = env->GetStringUTFChars(mdName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(mdName, tmp);
-        return (jlong) new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->queryByNameAndValue(sName, (*value))));
+        return (jlong) new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->queryByNameAndValue(sName, (**value))));
     }
     catch (const std::exception &e)
     {

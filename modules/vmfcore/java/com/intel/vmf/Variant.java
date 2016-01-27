@@ -121,7 +121,7 @@ package com.intel.vmf;
         
         long nObjs[] = new long [vec2d.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec2d.length; i++)
         {
             nObjs[i] = vec2d[i].nativeObj;
         }
@@ -135,7 +135,7 @@ package com.intel.vmf;
         
         long nObjs[] = new long [vec3d.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec3d.length; i++)
         {
             nObjs[i] = vec3d[i].nativeObj;
         }
@@ -149,7 +149,7 @@ package com.intel.vmf;
         
         long nObjs[] = new long [vec4d.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec4d.length; i++)
         {
             nObjs[i] = vec4d[i].nativeObj;
         }
@@ -238,7 +238,7 @@ package com.intel.vmf;
     {
         long nObjs[] = new long [vec.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec.length; i++)
         {
             nObjs[i] = vec[i].nativeObj;
         }
@@ -250,7 +250,7 @@ package com.intel.vmf;
     {
         long nObjs[] = new long [vec.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec.length; i++)
         {
             nObjs[i] = vec[i].nativeObj;
         }
@@ -262,7 +262,7 @@ package com.intel.vmf;
     {
         long nObjs[] = new long [vec.length];
         
-        for (int i = 0; i < nObjs.length; i++)
+        for (int i = 0; i < vec.length; i++)
         {
             nObjs[i] = vec[i].nativeObj;
         }
@@ -307,7 +307,7 @@ package com.intel.vmf;
 
     public void clear ()
     {
-        n_setTo (nativeObj, (new Variant()).nativeObj);
+        n_set (nativeObj, (new Variant()).nativeObj);
     }
     
     public void convertTo (int type)

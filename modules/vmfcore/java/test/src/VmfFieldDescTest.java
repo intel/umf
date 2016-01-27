@@ -32,7 +32,7 @@ public class VmfFieldDescTest
     protected FieldDesc tmp7;
     protected FieldDesc tmp8;
     protected FieldDesc tmp9;
-    protected FieldDesc tmp10;
+    
     
     @Before
     public void setUp()
@@ -46,7 +46,7 @@ public class VmfFieldDescTest
         tmp7 = new FieldDesc ("vec3d", Variant.type_vec3d, true);
         tmp8 = new FieldDesc ("vec4d", Variant.type_vec4d, true);
         
-        tmp10 = new FieldDesc ("rawbuffer", Variant.type_rawbuffer);
+        tmp9 = new FieldDesc ("rawbuffer", Variant.type_rawbuffer);
     }
     
    @Test
@@ -64,7 +64,6 @@ public class VmfFieldDescTest
         assertFalse (tmp1.equals (tmp7)); 
         assertFalse (tmp1.equals (tmp8));
         assertFalse (tmp1.equals (tmp9));
-        assertFalse (tmp1.equals (tmp10));
    }
    
    @Test
@@ -74,7 +73,7 @@ public class VmfFieldDescTest
         
         assertEquals(tmp2.getName(), tmp4.getName()); 
         
-        assertEquals("string", tmp1.getName());
+        assertEquals("", tmp1.getName());
         assertEquals("string", tmp2.getName());
         assertEquals("integer", tmp3.getName());
         assertEquals("string", tmp4.getName());
@@ -82,8 +81,8 @@ public class VmfFieldDescTest
         assertEquals("vec2d", tmp6.getName());
         assertEquals("vec3d", tmp7.getName());
         assertEquals("vec4d", tmp8.getName());
-        assertEquals("char", tmp9.getName());
-        assertEquals("rawbuffer", tmp10.getName());
+        
+        assertEquals("rawbuffer", tmp9.getName());
    }
    
    
@@ -103,7 +102,7 @@ public class VmfFieldDescTest
         assertEquals(Variant.type_vec3d, tmp7.getType());
         assertEquals(Variant.type_vec4d, tmp8.getType());
         
-        assertEquals(Variant.type_rawbuffer, tmp10.getType());
+        assertEquals(Variant.type_rawbuffer, tmp9.getType());
    }
    
    @Test
@@ -121,8 +120,8 @@ public class VmfFieldDescTest
         assertEquals(true, tmp6.isOptional());
         assertEquals(true, tmp7.isOptional());
         assertEquals(true, tmp8.isOptional());
+        
         assertEquals(false, tmp9.isOptional());
-        assertEquals(false, tmp10.isOptional());
    }
    
 }

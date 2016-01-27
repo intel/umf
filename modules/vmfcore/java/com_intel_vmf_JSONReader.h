@@ -26,10 +26,10 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas
 /*
  * Class:     com_intel_vmf_JSONReader
  * Method:    n_parseMetadata
- * Signature: (JLjava/lang/String;)[J
+ * Signature: (JLjava/lang/String;[J)[J
  */
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata
-  (JNIEnv *, jclass, jlong, jstring);
+  (JNIEnv *, jclass, jlong, jstring, jlongArray);
 
 /*
  * Class:     com_intel_vmf_JSONReader

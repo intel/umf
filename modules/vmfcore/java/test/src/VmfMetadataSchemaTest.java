@@ -78,8 +78,13 @@ public class VmfMetadataSchemaTest
         assertEquals(2, schema.size());
         
         MetadataDesc mdDesc3 = schema.findMetadataDesc("person");
+        assertEquals("person", mdDesc3.getMetadataName());
         
-        assertEquals(mdDesc1, mdDesc3);
+        FieldDesc fds[] = mdDesc3.getFields();
+        assertEquals(3, fds.length);
+        
+        ReferenceDesc rds[] = mdDesc3.getAllReferenceDescs();
+        assertEquals(4, rds.length);
         
         MetadataDesc mdDescs[] = schema.getAll();
         assertEquals(2, mdDescs.length);

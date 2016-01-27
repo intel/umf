@@ -49,6 +49,38 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals
 
 /*
  * Class:     com_intel_vmf_FieldValue
+ * Method:    n_getType
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldValue_n_1getType
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_FieldValue
+ * Method:    n_isEmpty
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEmpty
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_FieldValue
+ * Method:    n_getTypeName
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getTypeName
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_intel_vmf_FieldValue
+ * Method:    n_convertTo
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_intel_vmf_FieldValue
  * Method:    n_delete
  * Signature: (J)V
  */

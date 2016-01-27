@@ -68,9 +68,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas(JNIEn
 /*
 * Class:     com_intel_vmf_JSONReader
 * Method:    n_parseMetadata
-* Signature: (JLjava/lang/String;)[J
+* Signature: (JLjava/lang/String;[J)[J
 */
-JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNIEnv *env, jclass, jlong self, jstring text)
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata(JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemaNativeAddrs)
 {
     static const char method_name[] = "JSONReader::n_1parseMetadata";
     
@@ -82,22 +82,32 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNI
         std::string sText(tmp);
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
         std::vector <std::shared_ptr<MetadataInternal>> vecMdInt;
-        
+
         env->ReleaseStringUTFChars(text, tmp);
+
+        jlong* schemaArray = env->GetLongArrayElements(schemaNativeAddrs, 0);
+        jsize schemaArrayLength = env->GetArrayLength(schemaNativeAddrs);
+
+        for (int i = 0; i < schemaArrayLength; i++)
+        {
+            std::shared_ptr<MetadataSchema>* schema = (std::shared_ptr<MetadataSchema>*)schemaArray[i];
+            vecSchemas.push_back(*schema);
+        }
 
         bool result = (*obj)->parseMetadata(sText, vecSchemas, vecMdInt);
 
+        env->ReleaseLongArrayElements(schemaNativeAddrs, schemaArray, 0);
+
         if (result == JNI_TRUE)
         {
-            jsize length = (jsize)vecMdInt.size();
-            jlongArray mdIntNativeAddrs = env->NewLongArray (length);
-            jlong* mdIntArray = env->GetLongArrayElements (mdIntNativeAddrs, 0);
+            jsize mdIntArrayLength = (jsize)vecMdInt.size();
+            jlongArray mdIntNativeAddrs = env->NewLongArray(mdIntArrayLength);
+            jlong* mdIntArray = env->GetLongArrayElements(mdIntNativeAddrs, 0);
 
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < mdIntArrayLength; i++)
                 mdIntArray[i] = (jlong)new std::shared_ptr<MetadataInternal>(vecMdInt[i]);
-            
+
             env->ReleaseLongArrayElements(mdIntNativeAddrs, mdIntArray, 0);
-            
             return mdIntNativeAddrs;
         }
         else
@@ -135,7 +145,6 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments
         env->ReleaseStringUTFChars(text, tmp);
 
         bool result = (*obj)->parseVideoSegments(sText, vecSegments);
-
 
         if (result == JNI_TRUE)
         {
