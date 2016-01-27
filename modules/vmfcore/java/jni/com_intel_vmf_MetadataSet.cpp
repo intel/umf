@@ -46,16 +46,17 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv
 * Method:    n_getElement
 * Signature: (JJ)J
 */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement(JNIEnv *env, jclass, jlong self, jlong number)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement (JNIEnv *env, jclass, jlong self, jlong number)
 {
     static const char method_name[] = "MetadataSet::n_1getElement";
 
     try
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+        size_t num = (size_t)number;
 
-        if ((number >= 0) && ((**obj).size() > (size_t)number))
-            return (jlong) new std::shared_ptr<Metadata> ((**obj)[number]);
+        if ((**obj).size() > num)
+            return (jlong) new std::shared_ptr<Metadata> ((**obj)[num]);
         else
             throwJavaException(env, 0, method_name);
     }

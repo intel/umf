@@ -39,7 +39,10 @@ public class MetadataSet implements IQuery
     
     public Metadata getElement (long number)
     {
-    	return new Metadata (n_getElement (nativeObj, number));
+    	if (number >= 0)
+    		return new Metadata (n_getElement (nativeObj, number));
+    	else
+    		return null;
     }
     
     public MetadataSet queryByFrameIndex (long index)
