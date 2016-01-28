@@ -15,8 +15,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<FieldDesc>* p = new std::shared_ptr<FieldDesc>(new FieldDesc ());
-    return (jlong) p;
+    static const char method_name[] = "FieldDesc::n_1FieldDesc__";
+
+    try
+    {
+        std::shared_ptr<FieldDesc>* obj = new std::shared_ptr<FieldDesc>(new FieldDesc());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -26,13 +41,28 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ(JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional)
 {
-    const char* tmp = env->GetStringUTFChars(name, NULL);
-    std::string sName(tmp);
+    static const char method_name[] = "FieldDesc::n_1FieldDesc__Ljava_lang_String_2IZ";
 
-    std::shared_ptr<FieldDesc>* p = new std::shared_ptr<FieldDesc>(new FieldDesc(sName, (Variant::Type) type, (isOptional == JNI_TRUE) ? true : false));
+    try
+    {
+        const char* tmp = env->GetStringUTFChars(name, NULL);
+        std::string sName(tmp);
+        env->ReleaseStringUTFChars(name, tmp);
 
-    env->ReleaseStringUTFChars(name, tmp);
-    return (jlong) p;
+        std::shared_ptr<FieldDesc>* obj = new std::shared_ptr<FieldDesc>(new FieldDesc(sName, (Variant::Type) type, (isOptional == JNI_TRUE) ? true : false));
+
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -49,6 +79,12 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, 
         std::shared_ptr<FieldDesc>* self = (std::shared_ptr<FieldDesc>*) selfAddr;
         std::shared_ptr<FieldDesc>* other = (std::shared_ptr<FieldDesc>*) otherAddr;
         
+        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+            return JNI_FALSE;
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            return JNI_FALSE;
+
         return (**self == **other) ? JNI_TRUE : JNI_FALSE;
     }
     catch(const std::exception &e)
@@ -76,6 +112,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return JNI_FALSE;
+
         std::string str = (**obj).name;
         return env->NewStringUTF(str.c_str());
     }
@@ -103,6 +143,10 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jcl
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jint)((**obj).type);
     }
     catch(const std::exception &e)
@@ -129,6 +173,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *e
     try 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return JNI_FALSE;
+
         return (jboolean)(**obj).optional;
     }
     catch(const std::exception &e)
@@ -154,8 +202,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete (JNIEnv *env, jcla
     
     try 
     {
-        std::shared_ptr<FieldDesc>* p = (std::shared_ptr<FieldDesc>*) self;
-        delete p;
+        std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
+
+        delete obj;
     }
     catch(const std::exception &e)
     {

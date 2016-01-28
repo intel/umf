@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONReader_n_1JSONReader (JNIEnv *env, jclass)
 {
-    std::shared_ptr<JSONReader>* p = new std::shared_ptr<JSONReader>(new JSONReader ());
-    return (jlong) p;
+    static const char method_name[] = "JSONReader::n_1JSONReader";
+
+    try
+    {
+        std::shared_ptr<JSONReader>* obj = new std::shared_ptr<JSONReader>(new JSONReader());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -29,11 +44,15 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas(JNIEn
     try 
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText (tmp);
-        std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
-        
         env->ReleaseStringUTFChars(text, tmp);
+
+        std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
 
         bool result = (*obj)->parseSchemas (sText, vecSchemas);
 
@@ -70,13 +89,16 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas(JNIEn
 * Method:    n_parseMetadata
 * Signature: (JLjava/lang/String;[J)[J
 */
-JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata(JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemaNativeAddrs)
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemaNativeAddrs)
 {
     static const char method_name[] = "JSONReader::n_1parseMetadata";
     
     try 
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
@@ -138,6 +160,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
@@ -185,8 +210,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONReader_n_1delete (JNIEnv *env, jcl
     
     try 
     {
-        std::shared_ptr<JSONReader>* p = (std::shared_ptr<JSONReader>*) self;
-        delete p;
+        std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
+
+        delete obj;
     }
     catch(const std::exception &e)
     {

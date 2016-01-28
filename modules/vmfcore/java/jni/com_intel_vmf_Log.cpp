@@ -15,10 +15,23 @@ using namespace vmf;
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1logToFile (JNIEnv *env, jclass, jstring file)
 {
-    const char* path = env->GetStringUTFChars(file, NULL);
-    std::string sPath(path);
-    Log::logToFile(sPath);
-    env->ReleaseStringUTFChars(file, path);
+    static const char method_name[] = "MetadataDesc::n_1logToFile";
+
+    try
+    {
+        const char* path = env->GetStringUTFChars(file, NULL);
+        std::string sPath(path);
+        Log::logToFile(sPath);
+        env->ReleaseStringUTFChars(file, path);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -28,7 +41,20 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1logToFile (JNIEnv *env, jclass,
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1logToConsole (JNIEnv *env, jclass)
 {
-    Log::logToConsole();
+    static const char method_name[] = "MetadataDesc::n_1logToFile";
+
+    try
+    {
+        Log::logToConsole();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -38,7 +64,20 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1logToConsole (JNIEnv *env, jcla
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1setVerbosityLevel (JNIEnv *env, jclass, jint level)
 {
-    Log::setVerbosityLevel((LogLevel)level);
+    static const char method_name[] = "MetadataDesc::n_1setVerbosityLevel";
+
+    try
+    {
+        Log::setVerbosityLevel((LogLevel)level);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -48,5 +87,18 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Log_n_1setVerbosityLevel (JNIEnv *env,
  */
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Log_n_1getVerbosityLevel (JNIEnv *env, jclass)
 {
-    return Log::getVerbosityLevel();
+    static const char method_name[] = "MetadataDesc::n_1getVerbosityLevel";
+
+    try
+    {
+        return Log::getVerbosityLevel();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }

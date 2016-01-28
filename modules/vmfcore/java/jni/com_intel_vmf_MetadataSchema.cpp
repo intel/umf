@@ -14,16 +14,31 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema (JNIEnv *env, jclass, jstring name, jstring author)
 {
-    const char* cName = env->GetStringUTFChars(name, NULL);
-    std::string sName(cName);
-    const char* cAuthor = env->GetStringUTFChars(author, NULL);
-    std::string sAuthor(cAuthor);
-    
-    std::shared_ptr<MetadataSchema>* p = new std::shared_ptr<MetadataSchema>(new MetadataSchema (sName, sAuthor));
+    static const char method_name[] = "MetadataSchema::n_1MetadataSchema";
 
-    env->ReleaseStringUTFChars(name, cName);
-    env->ReleaseStringUTFChars(author, cAuthor);
-    return (jlong) p;
+    try
+    {
+        const char* cName = env->GetStringUTFChars(name, NULL);
+        std::string sName(cName);
+        const char* cAuthor = env->GetStringUTFChars(author, NULL);
+        std::string sAuthor(cAuthor);
+
+        std::shared_ptr<MetadataSchema>* p = new std::shared_ptr<MetadataSchema>(new MetadataSchema(sName, sAuthor));
+
+        env->ReleaseStringUTFChars(name, cName);
+        env->ReleaseStringUTFChars(author, cAuthor);
+        return (jlong)p;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -40,7 +55,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getName (JNIEnv *
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
+            return 0;
 
         std::string str = (*obj)->getName ();
         return env->NewStringUTF (str.c_str());
@@ -71,7 +86,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAuthor (JNIEnv
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
+            return 0;
 
         std::string str = (*obj)->getAuthor ();
         return env->NewStringUTF (str.c_str());
@@ -164,13 +179,20 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc (J
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
+            return 0;
 
         const char* tmp = env->GetStringUTFChars(mdName, NULL);
         std::string sName(tmp);
-        const std::shared_ptr<MetadataDesc> spMdDesc = (*obj)->findMetadataDesc (sName);
         env->ReleaseStringUTFChars(mdName, tmp);
-        return (jlong) new std::shared_ptr<MetadataDesc> (spMdDesc);
+
+        const std::shared_ptr<MetadataDesc> spMdDesc = (*obj)->findMetadataDesc (sName);
+
+        if (spMdDesc != NULL)
+        {
+            return (jlong) new std::shared_ptr<MetadataDesc>(spMdDesc);
+        }
+        else
+            return 0;
     }
     catch(const std::exception &e)
     {
@@ -199,7 +221,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll (JNIEnv
         std::shared_ptr<MetadataSchema>* obj = (std::shared_ptr<MetadataSchema>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
+            return 0;
 
         std::vector<std::shared_ptr<MetadataDesc>> spMdDescVec = (*obj)->getAll ();
         jlongArray nObjs = env->NewLongArray ((jsize)spMdDescVec.size());

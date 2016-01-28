@@ -11,10 +11,25 @@ using namespace vmf;
  * Method:    n_MetadataDesc
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__ (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<MetadataDesc>* p = new std::shared_ptr<MetadataDesc>(new MetadataDesc());
-    return (jlong) p;
+    static const char method_name[] = "MetadataDesc::n_1MetadataDesc__";
+
+    try
+    {
+        std::shared_ptr<MetadataDesc>* obj = new std::shared_ptr<MetadataDesc>(new MetadataDesc());
+        return (jlong) obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -24,13 +39,28 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__ (JNIEn
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2J (JNIEnv *env, jclass, jstring mdName, jlong type)
 {
-    const char* tmp = env->GetStringUTFChars(mdName, NULL);
-    std::string sName(tmp);
-   
-    std::shared_ptr<MetadataDesc>* p = new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, (Variant::Type) type));
+    static const char method_name[] = "MetadataDesc::n_1MetadataDesc__Ljava_lang_String_2J";
 
-    env->ReleaseStringUTFChars(mdName, tmp);
-    return (jlong) p;
+    try
+    {
+        const char* tmp = env->GetStringUTFChars(mdName, NULL);
+        std::string sName(tmp);
+
+        std::shared_ptr<MetadataDesc>* obj = new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, (Variant::Type) type));
+
+        env->ReleaseStringUTFChars(mdName, tmp);
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -40,21 +70,36 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs)
 {
-    const char* tmp = env->GetStringUTFChars(mdName, NULL);
-    std::string sName(tmp);
-    std::vector <FieldDesc> descs;
-    jlong* cArray = env->GetLongArrayElements (fieldDescs, 0);
-    jsize len = env->GetArrayLength (fieldDescs);
-    
-    for (int i = 0; i < len; i++)
+    static const char method_name[] = "MetadataDesc::n_1MetadataDesc__Ljava_lang_String_2_3J";
+
+    try
     {
-        std::shared_ptr<FieldDesc>* pFieldDesc = (std::shared_ptr<FieldDesc>*)cArray[i];
-        descs.push_back (**pFieldDesc);
+        const char* tmp = env->GetStringUTFChars(mdName, NULL);
+        std::string sName(tmp);
+        std::vector <FieldDesc> descs;
+        jlong* cArray = env->GetLongArrayElements(fieldDescs, 0);
+        jsize len = env->GetArrayLength(fieldDescs);
+
+        for (int i = 0; i < len; i++)
+        {
+            std::shared_ptr<FieldDesc>* pFieldDesc = (std::shared_ptr<FieldDesc>*)cArray[i];
+            descs.push_back(**pFieldDesc);
+        }
+
+        env->ReleaseLongArrayElements(fieldDescs, cArray, 0);
+        env->ReleaseStringUTFChars(mdName, tmp);
+        return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, descs));
     }
-    
-    env->ReleaseLongArrayElements (fieldDescs, cArray, 0);
-    env->ReleaseStringUTFChars(mdName, tmp);
-    return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, descs));
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -64,31 +109,46 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_l
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1MetadataDesc__Ljava_lang_String_2_3J_3J (JNIEnv *env, jclass, jstring mdName, jlongArray fieldDescs, jlongArray refDescs)
 {
-    const char* tmp = env->GetStringUTFChars(mdName, NULL);
-    std::string sName(tmp);
-    std::vector <FieldDesc> fdVec;
-    std::vector<std::shared_ptr<ReferenceDesc>> rdVec;
-    jlong* descArray = env->GetLongArrayElements (fieldDescs, 0);
-    jlong* refArray = env->GetLongArrayElements (refDescs, 0);
-    jsize lenDescs = env->GetArrayLength (fieldDescs);
-    jsize lenRefs = env->GetArrayLength (refDescs);
-    
-    for (int i = 0; i < lenDescs; i++)
+    static const char method_name[] = "MetadataDesc::n_1MetadataDesc__Ljava_lang_String_2_3J_3J";
+
+    try
     {
-        std::shared_ptr<FieldDesc>* pFieldDesc = (std::shared_ptr<FieldDesc>*) descArray[i];
-        fdVec.push_back (**pFieldDesc);
+        const char* tmp = env->GetStringUTFChars(mdName, NULL);
+        std::string sName(tmp);
+        std::vector <FieldDesc> fdVec;
+        std::vector<std::shared_ptr<ReferenceDesc>> rdVec;
+        jlong* descArray = env->GetLongArrayElements(fieldDescs, 0);
+        jlong* refArray = env->GetLongArrayElements(refDescs, 0);
+        jsize lenDescs = env->GetArrayLength(fieldDescs);
+        jsize lenRefs = env->GetArrayLength(refDescs);
+
+        for (int i = 0; i < lenDescs; i++)
+        {
+            std::shared_ptr<FieldDesc>* pFieldDesc = (std::shared_ptr<FieldDesc>*) descArray[i];
+            fdVec.push_back(**pFieldDesc);
+        }
+
+        for (int i = 0; i < lenRefs; i++)
+        {
+            std::shared_ptr<ReferenceDesc>* pRefDesc = (std::shared_ptr<ReferenceDesc>*)refArray[i];
+            rdVec.push_back(*pRefDesc);
+        }
+
+        env->ReleaseLongArrayElements(fieldDescs, descArray, 0);
+        env->ReleaseLongArrayElements(refDescs, refArray, 0);
+        env->ReleaseStringUTFChars(mdName, tmp);
+        return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, fdVec, rdVec));
     }
-    
-    for (int i = 0; i < lenRefs; i++)
+    catch (const std::exception &e)
     {
-       std::shared_ptr<ReferenceDesc>* pRefDesc = (std::shared_ptr<ReferenceDesc>*)refArray[i];
-       rdVec.push_back (*pRefDesc);
+        throwJavaException(env, &e, method_name);
     }
-    
-    env->ReleaseLongArrayElements (fieldDescs, descArray, 0);
-    env->ReleaseLongArrayElements (refDescs, refArray, 0);
-    env->ReleaseStringUTFChars(mdName, tmp);
-    return (jlong) new std::shared_ptr<MetadataDesc>(new MetadataDesc(sName, fdVec, rdVec));
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -103,6 +163,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getMetadataName (JN
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::string str = (*obj)->getMetadataName ();
         return env->NewStringUTF (str.c_str());
     }
@@ -131,6 +195,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getSchemaName (JNIE
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::string str = (*obj)->getSchemaName ();
         return env->NewStringUTF (str.c_str());
     }
@@ -158,6 +226,10 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields (JNIEn
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::vector<FieldDesc> vec = (*obj)->getFields ();
         jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
@@ -194,6 +266,10 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceD
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::vector<std::shared_ptr<ReferenceDesc>> vec = (*obj)->getAllReferenceDescs ();
         jlongArray nObjs = env->NewLongArray ((jsize)vec.size());
         jlong* body = env->GetLongArrayElements (nObjs, 0);
@@ -279,25 +355,28 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc (JNI
 /*
 * Class:     com_intel_vmf_MetadataDesc
 * Method:    n_getFieldDesc
-* Signature: (J[JLjava/lang/String;)Z
+* Signature: (JLjava/lang/String;)J
 */
-JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc(JNIEnv *env, jclass, jlong self, jlongArray fieldDescAddr, jstring fieldName)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc (JNIEnv *env, jclass, jlong self, jstring fieldName)
 {
     static const char method_name[] = "MetadataDesc::n_1getFieldDesc";
     
     try 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
-        jlong* cArray = env->GetLongArrayElements(fieldDescAddr, 0);
-        jsize len = env->GetArrayLength(fieldDescAddr);
-        std::shared_ptr<FieldDesc>* fieldDesc = (std::shared_ptr<FieldDesc>*)cArray[0];
+        
+        FieldDesc fieldDesc;
     
         const char* tmp = env->GetStringUTFChars(fieldName, NULL);
         std::string sName(tmp);
-        env->ReleaseStringUTFChars(fieldName, tmp);
-        jboolean result = (jboolean)(*obj)->getFieldDesc(**fieldDesc, sName);
-        env->ReleaseLongArrayElements(fieldDescAddr, cArray, 0);
-        return result;
+        env->ReleaseStringUTFChars (fieldName, tmp);
+
+        bool result = (*obj)->getFieldDesc (fieldDesc, sName);
+            
+        if (result == JNI_TRUE)
+            return (jlong) new std::shared_ptr<FieldDesc>(new FieldDesc(fieldDesc.name, fieldDesc.type, fieldDesc.optional));
+        else
+            return 0;
     }
     catch(const std::exception &e)
     {

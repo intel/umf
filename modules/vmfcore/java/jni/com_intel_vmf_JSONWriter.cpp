@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONWriter_n_1JSONWriter (JNIEnv *env, jclass)
 {
-    std::shared_ptr<JSONWriter>* p = new std::shared_ptr<JSONWriter>(new JSONWriter());
-    return (jlong)p;
+    static const char method_name[] = "JSONWriter::n_1JSONWriter";
+
+    try
+    {
+        std::shared_ptr<JSONWriter>* obj = new std::shared_ptr<JSONWriter>(new JSONWriter());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 
@@ -30,6 +45,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSchemas (JNIEnv 
     try
     {
         std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
+
+        if((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
 
         jlong* schemasArray = env->GetLongArrayElements(schemaAddrs, 0);
@@ -72,6 +91,12 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet (JNI
         std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        if ((set == NULL) || (*set == NULL) || (set->get() == NULL))
+            return 0;
+
         std::string str = (*obj)->store(**set);
         return env->NewStringUTF(str.c_str());
     }
@@ -101,14 +126,23 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
         std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        if ((set == NULL) || (*set == NULL) || (set->get() == NULL))
+            return 0;
+
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
 
         const char* file = env->GetStringUTFChars(path, NULL);
         const char* sum = env->GetStringUTFChars(checksum, NULL);
 
-        std::string sPath(file);
-        std::string sChecksum(sum);
+        std::string sPath (file);
+        std::string sChecksum (sum);
+
+        env->ReleaseStringUTFChars (path, file);
+        env->ReleaseStringUTFChars (checksum, sum);
 
         jlong* segmentsArray = env->GetLongArrayElements (segAddrs, 0);
         jlong* schemasArray = env->GetLongArrayElements (schemaAddrs, 0);
@@ -130,10 +164,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
 
         env->ReleaseLongArrayElements(segAddrs, segmentsArray, 0);
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
-
-        env->ReleaseStringUTFChars(path, file);
-        env->ReleaseStringUTFChars(checksum, sum);
-
+                
         std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set));
         return env->NewStringUTF(str.c_str());
     }
@@ -163,6 +194,12 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment (JNIEnv 
         std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
         std::shared_ptr<MetadataStream::VideoSegment>* segment = (std::shared_ptr<MetadataStream::VideoSegment>*) segAddr;
 
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        if ((segment == NULL) || (*segment == NULL) || (segment->get() == NULL))
+            return 0;
+
         std::string str = (*obj)->store(*segment);
         return env->NewStringUTF (str.c_str());
     }
@@ -190,6 +227,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegments (JNIEnv
     try
     {
         std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
 
         jlong* segmentsArray = env->GetLongArrayElements(segAddrs, 0);
@@ -229,8 +270,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONWriter_n_1delete (JNIEnv *env, jcl
 
     try
     {
-        std::shared_ptr<JSONWriter>* p = (std::shared_ptr<JSONWriter>*) self;
-        delete p;
+        std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Writer is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {
