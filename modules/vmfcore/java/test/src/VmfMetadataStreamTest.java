@@ -62,6 +62,8 @@ public class VmfMetadataStreamTest
         schema.add (mdDesc);
         stream = new MetadataStream ();
         
+        stream.addSchema(schema);
+        
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
     }
@@ -74,10 +76,6 @@ public class VmfMetadataStreamTest
         
         String str = stream.computeChecksum ();
         assertFalse (str.isEmpty());
-        
-        stream.addSchema(schema);
-        MetadataSchema ms = stream.getSchema("test_schema");
-        assertNotNull(ms);
         
         assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
         assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());

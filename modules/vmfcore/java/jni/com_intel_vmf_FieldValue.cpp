@@ -72,11 +72,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_
 
     try
     {
-        std::shared_ptr<Variant>* obj = (std::shared_ptr<Variant>*) variantAddr;
+        std::shared_ptr<Variant>* variant = (std::shared_ptr<Variant>*) variantAddr;
         const char* tmp = env->GetStringUTFChars(name, NULL);
         std::string sName(tmp);
 
-        std::shared_ptr<FieldValue>* obj = new std::shared_ptr<FieldValue>(new FieldValue(sName, (**obj)));
+        std::shared_ptr<FieldValue>* obj = new std::shared_ptr<FieldValue>(new FieldValue(sName, (**variant)));
 
         env->ReleaseStringUTFChars(name, tmp);
 
