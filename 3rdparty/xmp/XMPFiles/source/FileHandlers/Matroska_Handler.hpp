@@ -20,6 +20,12 @@
 
 #include <memory>
 
+#if !defined(_MSC_FULL_VER) || _MSC_FULL_VER < 190023026
+  // MSVC before 2015 doesn't support 'noexcept'
+  #define _ALLOW_KEYWORD_MACROS 1
+  #define noexcept throw()
+#endif
+
 extern XMPFileHandler * Matroska_MetaHandlerCTor(XMPFiles * parent);
 
 extern bool Matroska_CheckFormat(XMP_FileFormat format,
@@ -27,7 +33,7 @@ extern bool Matroska_CheckFormat(XMP_FileFormat format,
 	XMP_IO*	fileRef,
 	XMPFiles *	 parent);
 
-static constexpr XMP_OptionBits kMatroska_HandlerFlags = (kXMPFiles_CanInjectXMP |
+static const XMP_OptionBits kMatroska_HandlerFlags = (kXMPFiles_CanInjectXMP |
 	kXMPFiles_CanExpand |
 	kXMPFiles_CanRewrite |
 	kXMPFiles_PrefersInPlace |

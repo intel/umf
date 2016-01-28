@@ -10,6 +10,12 @@
 #ifndef _EBML_variant_h_
 #define _EBML_variant_h_
 
+#if !defined(_MSC_FULL_VER) || _MSC_FULL_VER < 190023026
+  // MSVC before 2015 doesn't support 'noexcept'
+  #define _ALLOW_KEYWORD_MACROS 1
+  #define noexcept throw()
+#endif
+
 namespace ebml
 {
 	class ebml_variant_t
