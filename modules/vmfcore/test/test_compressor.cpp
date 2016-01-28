@@ -84,12 +84,8 @@ protected:
 
     std::string generateData(int nChars)
     {
-        std::string result;
-        srand(0); result.reserve(nChars);
-        for(int i = 0; i < nChars; i++)
-        {
-            result.push_back( (char)(rand()%256) );
-        }
+        std::string result(nChars, '\0');
+        std::generate_n(result.begin(), nChars, []()->char {return (rand()%254) + 1;});
         return result;
     }
 
@@ -130,7 +126,7 @@ TEST_P(TestCompressor, LossesOnCompression)
             ASSERT_EQ(data, result);
             nChars = nChars ? 2*nChars : 1;
         }
-        while(nChars < (1 << 24));
+        while(nChars < (1 << 20));
     }
 }
 
