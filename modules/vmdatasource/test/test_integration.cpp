@@ -61,7 +61,7 @@ TEST(Integration, fullFunctionality_1)
         ASSERT_NO_THROW(schema[1]->add(desc[2]));
         ASSERT_NO_THROW(schema[1]->add(desc[3]));
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         ASSERT_NO_THROW(s.addSchema(schema[0]));
         ASSERT_NO_THROW(s.addSchema(schema[1]));
         s.save();
@@ -80,7 +80,7 @@ TEST(Integration, fullFunctionality_1)
 
     {
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         std::shared_ptr<vmf::MetadataSchema> schema[2];
         schema[0] = s.getSchema(TEST_SCHEMA_NAME_0);
         ASSERT_TRUE(schema[0] != NULL);
@@ -108,7 +108,7 @@ TEST(Integration, fullFunctionality_1)
 
     {
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         vmf::MetadataSet schema[2];
         s.load(TEST_SCHEMA_NAME_0);
         s.load(TEST_SCHEMA_NAME_1);
@@ -176,7 +176,7 @@ TEST(Integration, Hongwu1)
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         std::shared_ptr< vmf::MetadataDesc > spEventDesc ( new vmf::MetadataDesc( "event", vmf::Variant::type_string ));
         spSchema->add( spEventDesc );
         std::shared_ptr< vmf::Metadata > spBirthday( new vmf::Metadata( spEventDesc ));
@@ -190,7 +190,7 @@ TEST(Integration, Hongwu1)
     }
     {
         vmf::MetadataStream stream;
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("event");
@@ -211,7 +211,7 @@ TEST(Integration, Hongwu2)
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         std::shared_ptr< vmf::MetadataDesc > spNumbersDesc ( new vmf::MetadataDesc( "ints", vmf::Variant::type_integer ));
         spSchema->add( spNumbersDesc );
         std::shared_ptr< vmf::Metadata > spNumbers( new vmf::Metadata( spNumbersDesc ));
@@ -255,7 +255,7 @@ TEST(Integration, structuresForDoc)
     schema->add(desc);
 
     vmf::MetadataStream stream;
-    stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
     stream.addSchema(schema);
     std::shared_ptr<vmf::Metadata> dima(new vmf::Metadata(desc)), vasya(new vmf::Metadata(desc));
     dima->setFieldValue("name", "Dmitry");

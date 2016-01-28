@@ -35,7 +35,7 @@ void generateMetadata(MetadataStream& mdStream)
     mdStream.remove();
     mdStream.save();
     mdStream.close();
-    mdStream.reopen(MetadataStream::OpenModeFlags::ReadWrite);
+    mdStream.reopen(MetadataStream::OpenModeFlags::Update);
 
     // Create a GPS metadata field descriptions
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));

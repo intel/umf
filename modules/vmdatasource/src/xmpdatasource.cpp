@@ -268,7 +268,7 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
         openMode = mode;
         metaFileName = fileName;
         XMP_OptionBits modeFlags;
-        if (mode & MetadataStream::ReadWrite)
+        if (mode & MetadataStream::Update)
         {
             modeFlags = kXMPFiles_OpenForUpdate;
         }

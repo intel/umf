@@ -56,13 +56,13 @@ protected:
 
 TEST_F(TestGlobal, Open)
 {
-    ASSERT_FALSE(stream.open(NO_FILE, vmf::MetadataStream::ReadWrite));
-    ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite));
+    ASSERT_FALSE(stream.open(NO_FILE, vmf::MetadataStream::Update));
+    ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update));
 }
 
 TEST_F(TestGlobal, Reopen)
 {
-    stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(TEST_FILE, vmf::MetadataStream::Update);
     stream.addSchema(schema);
     auto meta = std::make_shared<vmf::Metadata>(desc);
     meta->setFieldValue("name", "Dmitry");
@@ -72,7 +72,7 @@ TEST_F(TestGlobal, Reopen)
     stream.save();
     stream.close();
 
-    ASSERT_TRUE(stream.reopen(vmf::MetadataStream::ReadWrite));
+    ASSERT_TRUE(stream.reopen(vmf::MetadataStream::Update));
     stream.load();
     ASSERT_EQ(1, stream.getAll().size());
     ASSERT_TRUE(stream.save());
@@ -90,7 +90,7 @@ TEST_F(TestGlobal, SaveTo)
         auto metadata = std::make_shared<vmf::Metadata>(another_desc);
         metadata->addValue("test value for another file");
 
-        stream.open(ANOTHER_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(ANOTHER_TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(another_schema);
         stream.add(metadata);
         stream.save();
@@ -109,7 +109,7 @@ TEST_F(TestGlobal, SaveTo)
         stream.clear();
     }
     {   // open TEST_FILE, add metadata and save to ANOTHER_TEST_FILE
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.close();
         stream.addSchema(schema);
         auto meta = std::make_shared<vmf::Metadata>(desc);

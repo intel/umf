@@ -60,7 +60,7 @@ public:
     {
         InMemory  = 0, /**< Stream data are in-memory */
         ReadOnly  = 1, /**< Open file for read only */
-        ReadWrite = 2, /**< Open file for read and write */
+        Update = 2, /**< Open file for read and write */
         IgnoreUnknownCompressor = 4 /**< Represent compressed data as VMF metadata if decompressor is unknown*/
     };
     typedef int OpenMode;

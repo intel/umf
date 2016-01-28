@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
     {
         copyFile(VIDEO_FILE, WORKING_FILE);
 
-        if(!stream.open(WORKING_FILE, MetadataStream::ReadWrite))
+        if(!stream.open(WORKING_FILE, MetadataStream::Update))
             throw std::runtime_error("Can't open MetadataStream");
 
         //create predefined STD schema

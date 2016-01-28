@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     // Open metadata stream
     MetadataStream mdStream;
-    if (!mdStream.open(FILE_NAME, MetadataStream::ReadWrite))
+    if (!mdStream.open(FILE_NAME, MetadataStream::Update))
     {
         cerr << "Can't open file " << FILE_NAME << endl;
         exit(1);

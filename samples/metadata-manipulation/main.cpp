@@ -120,7 +120,7 @@ void removeMetadata(const string& path, const string& schemaName = "", const str
                                                (setName.empty() ? string("*") : setName) ) 
          << endl;
     MetadataStream ms;
-    if (!ms.open(path, MetadataStream::ReadWrite))
+    if (!ms.open(path, MetadataStream::Update))
         throw std::runtime_error("Can't open MetadataStream");
     vector<string> schemas;
     if(schemaName.empty())
