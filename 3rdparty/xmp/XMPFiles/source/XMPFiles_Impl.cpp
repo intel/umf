@@ -142,6 +142,10 @@ const FileExtMapping kFileExtMap[] =
 	  { "idml", kXMP_UCFFile },
 	  { "idap", kXMP_UCFFile },
 	  { "icap", kXMP_UCFFile },
+	  { "mkv", kXMP_MatroskaFile },
+	  { "mka", kXMP_MatroskaFile },
+	  { "mks", kXMP_MatroskaFile },
+	  { "mk3d", kXMP_MatroskaFile },
 	  { "", 0 } };	// ! Must be last as a sentinel.
 
 // Files known to contain XMP but have no smart handling, here or elsewhere.
