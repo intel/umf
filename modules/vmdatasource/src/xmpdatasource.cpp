@@ -244,8 +244,6 @@ void XMPDataSource::saveXMPstructs()
         }
         IdType cNextId = 1;
         compressedXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
-        string cChecksum;
-        compressedXMP->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, cChecksum.c_str());
     }
     else
     {
