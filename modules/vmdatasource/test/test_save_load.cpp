@@ -1469,7 +1469,6 @@ TEST_P(TestSaveLoadCompression, CheckIgnoreUnknownCompressor)
 
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompression,
-                        ::testing::Values("com.intel.vmf.compressor.dummy",
-                                          "com.intel.vmf.compressor.zlib",
+                        ::testing::Values("com.intel.vmf.compressor.zlib",
                                           "unregistered",
                                           "com.intel.vmf.compressor.test.bloating"));

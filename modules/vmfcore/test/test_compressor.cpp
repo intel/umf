@@ -131,31 +131,6 @@ TEST_P(TestCompressor, LossesOnCompression)
 }
 
 
-TEST_P(TestCompressor, DummyDecompression)
-{
-    std::string name = GetParam();
-
-    //we can only expect undefined behaviour
-    //on other compressors when decompressing random data
-    if(name == "com.intel.vmf.compressor.dummy")
-    {
-        compressor = vmf::Compressor::create(name);
-
-        int nChars = 0;
-        do
-        {
-            std::string garbage = generateData(nChars);
-            vmf_rawbuffer compressed(garbage.data(), garbage.size());
-            std::string result;
-            ASSERT_NO_THROW(compressor->decompress(compressed, result));
-            ASSERT_EQ(garbage, result);
-            nChars = nChars ? 2*nChars : 8;
-        }
-        while(nChars < (1 << 24));
-    }
-}
-
-
 TEST_P(TestCompressor, DecompressionOfEmpty)
 {
     std::string name = GetParam();
@@ -175,17 +150,28 @@ TEST_P(TestCompressor, CheckRegisteredIds)
 {
     std::vector<vmf_string> regIds = vmf::Compressor::getRegisteredIds();
     std::set<vmf_string> registeredIds(regIds.begin(), regIds.end());
-    std::set<vmf_string> knownIds = {"com.intel.vmf.compressor.dummy",
-                                     "com.intel.vmf.compressor.zlib",
+    std::set<vmf_string> knownIds = {"com.intel.vmf.compressor.zlib",
                                      "com.intel.vmf.compressor.test.bloating"};
     ASSERT_EQ(registeredIds, knownIds);
 }
 
 
 //Compressor class to pass fake Id to registerNew() method
-class FakeCompressor : public CompressorDummy
+class FakeCompressor : public Compressor
 {
 public:
+    virtual void compress(const vmf_string& input, vmf_rawbuffer& output)
+    {
+        //copies input to another buffer and writes result
+        output = vmf_rawbuffer(input.c_str(), input.size());
+    }
+
+    virtual void decompress(const vmf_rawbuffer& input, vmf_string &output)
+    {
+        //copies code to another buffer and writes result
+        output = vmf_string(input.data(), input.size());
+    }
+
     std::shared_ptr<Compressor> createNewInstance() const
     {
         return std::shared_ptr<Compressor>(new FakeCompressor);
@@ -224,8 +210,7 @@ TEST_P(TestCompressor, TryRegisterExisting)
 
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestCompressor,
-                        ::testing::Values("com.intel.vmf.compressor.dummy",
-                                          "com.intel.vmf.compressor.zlib",
+                        ::testing::Values("com.intel.vmf.compressor.zlib",
                                           "unregistered",
                                           "com.intel.vmf.compressor.test.bloating"));
 

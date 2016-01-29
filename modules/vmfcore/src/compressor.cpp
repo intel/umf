@@ -17,7 +17,6 @@
 
 #include <stdexcept>
 #include "vmf/compressor.hpp"
-#include "vmf/compressor_dummy.hpp"
 #include "vmf/compressor_zlib.hpp"
 
 namespace vmf {
@@ -32,10 +31,8 @@ CompressorsMap& getMapInstance(CompressorType type)
     if(compressors[BUILTIN].empty())
     {
         //register standard compressors
-        static std::shared_ptr<Compressor> dummy(std::make_shared<CompressorDummy>());
-        static std::shared_ptr<Compressor>  zlib(std::make_shared<CompressorZlib>());
-        compressors[BUILTIN][dummy->getId()] = dummy;
-        compressors[BUILTIN][ zlib->getId()] = zlib;
+        std::shared_ptr<Compressor> zlib(std::make_shared<CompressorZlib>());
+        compressors[BUILTIN][zlib->getId()] = zlib;
     }
     return compressors[type];
 }

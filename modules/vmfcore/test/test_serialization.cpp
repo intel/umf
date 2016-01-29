@@ -380,9 +380,21 @@ TEST_P(TestSerialization, Parse_All)
 
 
 //Compressor class to pass fake Id to registerNew() method
-class FakeCompressor : public CompressorDummy
+class FakeCompressor : public Compressor
 {
 public:
+    virtual void compress(const vmf_string& input, vmf_rawbuffer& output)
+    {
+        //copies input to another buffer and writes result
+        output = vmf_rawbuffer(input.c_str(), input.size());
+    }
+
+    virtual void decompress(const vmf_rawbuffer& input, vmf_string &output)
+    {
+        //copies code to another buffer and writes result
+        output = vmf_string(input.data(), input.size());
+    }
+
     std::shared_ptr<Compressor> createNewInstance() const
     {
         return std::shared_ptr<Compressor>(new FakeCompressor);
@@ -439,6 +451,4 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 //don't check for incorrect compressors
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
-                                           ::testing::Values("com.intel.vmf.compressor.dummy",
-                                                             "com.intel.vmf.compressor.zlib",
-                                                             "")));
+                                           ::testing::Values("com.intel.vmf.compressor.zlib", "")));
