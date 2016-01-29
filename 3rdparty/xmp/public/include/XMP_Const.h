@@ -931,7 +931,8 @@ enum {
     kXMP_XMLFile             = 0x584D4C20UL,
 	/// Public file format constant:  'text'
     kXMP_TextFile            = 0x74657874UL,
-
+    /// Public file format constant:  'MKV ', http://matroska.org/technical/specs/index.html
+    kXMP_MatroskaFile        = 0x4D4B5620UL,
 	// -------------------------------
     // Adobe application file formats.
 
