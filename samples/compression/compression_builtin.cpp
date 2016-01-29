@@ -57,9 +57,6 @@ int main(int argc, char** argv)
     // Save metadata to video file with built-in zlib-based compressor
     mdStream.save("com.intel.vmf.compressor.zlib");
 
-    // Alternative way:
-    //mdStream.save(CompressorZlib::getId());
-
     // Close metadata stream
     mdStream.close();
 

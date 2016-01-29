@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include "vmf/compressor.hpp"
-#include "vmf/compressor_zlib.hpp"
+#include "compressor_zlib.hpp"
 
 namespace vmf {
 

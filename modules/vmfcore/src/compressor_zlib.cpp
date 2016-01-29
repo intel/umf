@@ -15,7 +15,7 @@
  *
  */
 
-#include "vmf/compressor_zlib.hpp"
+#include "compressor_zlib.hpp"
 #include <cstdint>
 #include "zlib.h"
 
