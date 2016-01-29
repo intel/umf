@@ -13,6 +13,7 @@ import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -61,25 +62,31 @@ public class VmfMetadataStreamTest
         
         schema.add (mdDesc);
         stream = new MetadataStream ();
-        
+        stream.clear();
         stream.addSchema(schema);
         
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
     }
     
+    @After
+    public void tearDown()
+    {
+    	stream.clear();
+    }
+    
     @Test
     public void testSaveLoadAndQueries()
     {
+    	assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
+        assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());
+        assertEquals(schema.getAll().length, stream.getSchema("test_schema").getAll().length);
+    	
         assertTrue (stream.open(videoFile, MetadataStream.ReadWrite));
         stream.getChecksum ();
         
         String str = stream.computeChecksum ();
         assertFalse (str.isEmpty());
-        
-        assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
-        assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());
-        assertEquals(schema.getAll().length, stream.getSchema("test_schema").getAll().length);
         
         Variant var1 = new Variant ("Den");
         Variant var2 = new Variant ("Smith");

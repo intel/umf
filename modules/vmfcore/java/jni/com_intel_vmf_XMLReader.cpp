@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLReader_n_1XMLReader (JNIEnv *env, jclass)
 {
-    std::shared_ptr<XMLReader>* p = new std::shared_ptr<XMLReader>(new XMLReader());
-    return (jlong)p;
+    static const char method_name[] = "XMLReader::n_1XMLReader";
+
+    try
+    {
+        std::shared_ptr<XMLReader>* obj = new std::shared_ptr<XMLReader>(new XMLReader());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -29,6 +44,10 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEn
     try
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
@@ -76,6 +95,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIE
     try
     {
         std::shared_ptr <XMLReader>* obj = (std::shared_ptr <XMLReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
@@ -137,6 +159,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments 
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(text, NULL);
         std::string sText(tmp);
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
@@ -184,8 +209,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclas
 
     try
     {
-        std::shared_ptr<XMLReader>* p = (std::shared_ptr<XMLReader>*) self;
-        delete p;
+        std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {

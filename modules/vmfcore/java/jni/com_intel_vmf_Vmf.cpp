@@ -2,6 +2,7 @@
 #include<vector>
 #include "vmf/metadatastream.hpp"
 #include "../com_intel_vmf_Vmf.h"
+#include "throwJavaException.hpp"
 
 using namespace vmf;
 
@@ -12,7 +13,20 @@ using namespace vmf;
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass)
 {
-    vmf::initialize ();
+    static const char method_name[] = "Vmf::n_1initialize";
+
+    try
+    {
+        vmf::initialize();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -22,5 +36,18 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate (JNIEnv *env, jclass)
 {
-    vmf::terminate ();
+    static const char method_name[] = "Vmf::n_1terminate";
+
+    try
+    {
+        vmf::terminate();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }

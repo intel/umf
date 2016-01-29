@@ -18,8 +18,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata (JNIEnv *env, jc
 
     try
     {
-        std::shared_ptr <MetadataDesc>* addr = (std::shared_ptr <MetadataDesc>*) mdDescAddr;
-        return (jlong) new std::shared_ptr<Metadata>(new Metadata(*addr));
+        std::shared_ptr <MetadataDesc>* desc = (std::shared_ptr <MetadataDesc>*) mdDescAddr;
+
+        if (desc == NULL)
+            return 0;
+
+        return (jlong) new std::shared_ptr<Metadata>(new Metadata(*desc));
     }
     catch (const std::exception &e)
     {
@@ -45,6 +49,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env
     try
     {
         std::shared_ptr <Metadata>* other = (std::shared_ptr <Metadata>*) otherAddr;
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            return 0;
+
         return (jlong) new std::shared_ptr<Metadata>(new Metadata(**other));
     }
     catch (const std::exception &e)
@@ -339,13 +347,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc (JNIEnv *env, jcl
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <MetadataDesc> mdDesc = (*obj)->getDesc();
 
-        if (mdDesc != NULL)
-        {
-            std::shared_ptr <MetadataDesc>* retVal = new std::shared_ptr <MetadataDesc>(mdDesc);
-            return (jlong)retVal;
-        }
-        else
+        if (mdDesc == NULL)
             return 0;
+
+        std::shared_ptr <MetadataDesc>* retVal = new std::shared_ptr <MetadataDesc>(mdDesc);
+        return (jlong) retVal;
     }
     catch (const std::exception &e)
     {
@@ -591,10 +597,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference (JNIEnv
 
         std::shared_ptr <Metadata> md = (*obj)->getFirstReference(sName);
 
-        if (md != NULL)
-            return (jlong) new std::shared_ptr <Metadata>(md);
-        else
+        if (md == NULL)
             return 0;
+            
+        return (jlong) new std::shared_ptr <Metadata>(md);
     }
     catch (const std::exception &e)
     {
@@ -663,8 +669,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
         std::string sName(str);
 
         env->ReleaseStringUTFChars(name, str);
-        std::shared_ptr <MetadataSet>* mdSet = new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->getReferencesByName(sName)));
-        return (jlong) mdSet;
+        return (jlong) new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->getReferencesByName(sName)));
     }
     catch (const std::exception &e)
     {

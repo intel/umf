@@ -1,7 +1,6 @@
 #include<string>
 #include<vector>
-#include "vmf/types.hpp"
-#include "../com_intel_vmf_vmf_vec3d.h"
+#include "vmf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
 using namespace vmf;
@@ -11,10 +10,25 @@ using namespace vmf;
  * Method:    n_vmf_vec3d
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__(JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__(JNIEnv *env, jclass)
 {
-    std::shared_ptr<vmf_vec3d>* p = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d());
-    return (jlong)p;
+    static const char method_name[] = "vmf_vec3d::n_1vec3d__";
+
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* obj = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -22,10 +36,25 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__(JNIEnv *, 
  * Method:    n_vmf_vec3d
  * Signature: (DDD)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD (JNIEnv *, jclass, jdouble x, jdouble y, jdouble z)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD (JNIEnv *env, jclass, jdouble x, jdouble y, jdouble z)
 {
-    std::shared_ptr<vmf_vec3d>* p = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d((double)x, (double)y, (double)z));
-    return (jlong)p;
+    static const char method_name[] = "vmf_vec3d::n_1vec3d__DDD";
+
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* obj = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d((double)x, (double)y, (double)z));
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -33,12 +62,31 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD (JNIEnv
  * Method:    n_setTo
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1setTo (JNIEnv *, jclass, jlong selfAddr, jlong otherAddr)
+JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
-    std::shared_ptr<vmf_vec3d>* self = (std::shared_ptr<vmf_vec3d>*) selfAddr;
-    std::shared_ptr<vmf_vec3d>* other = (std::shared_ptr<vmf_vec3d>*) otherAddr;
+    static const char method_name[] = "vmf_vec3d::n_1setTo";
 
-    (**self) = (**other);
+    try
+    {
+        std::shared_ptr<vmf_vec3d>* self = (std::shared_ptr<vmf_vec3d>*) selfAddr;
+        std::shared_ptr<vmf_vec3d>* other = (std::shared_ptr<vmf_vec3d>*) otherAddr;
+
+        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Vec3d is null pointer.");
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Other vec3d is null pointer.");
+
+        (**self) = (**other);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -53,6 +101,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getX(JNIEnv *env, jcl
     try
     {
         std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble)((**obj).x);
     }
     catch (const std::exception &e)
@@ -79,6 +131,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getY(JNIEnv *env, jcl
     try
     {
         std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble)((**obj).y);
     }
     catch (const std::exception &e)
@@ -105,6 +161,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getZ (JNIEnv *env, jc
     try
     {
         std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble)((**obj).z);
     }
     catch (const std::exception &e)
@@ -130,8 +190,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1delete (JNIEnv *env, jcl
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* p = (std::shared_ptr<vmf_vec3d>*) self;
-        delete p;
+        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Vec3d is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {

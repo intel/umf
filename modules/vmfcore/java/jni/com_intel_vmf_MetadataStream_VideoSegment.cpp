@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<MetadataStream::VideoSegment>* p = new std::shared_ptr<MetadataStream::VideoSegment>(new MetadataStream::VideoSegment ());
-    return (jlong) p;
+    static const char method_name[] = "MetadataStream::VideoSegment::n_1VideoSegment__";
+
+    try
+    {
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = new std::shared_ptr<MetadataStream::VideoSegment>(new MetadataStream::VideoSegment());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -25,12 +40,28 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJII (JNIEnv *env, jclass, jstring title, jdouble fps,
                                                                                                                        jlong startTime, jlong duration, jint width, jint height)
 {
-    const char* tmp = env->GetStringUTFChars(title, NULL);
-    std::string sTitle(tmp);
-    
-    std::shared_ptr<MetadataStream::VideoSegment>* p = new std::shared_ptr<MetadataStream::VideoSegment>(new MetadataStream::VideoSegment(sTitle, (double)fps, (long long)startTime, (long long)duration, (long)width, (long)height));
-    env->ReleaseStringUTFChars(title, tmp);
-    return (jlong) p;
+    static const char method_name[] = "MetadataStream::VideoSegment::n_1VideoSegment__Ljava_lang_String_2DJJII";
+
+    try
+    {
+        const char* tmp = env->GetStringUTFChars(title, NULL);
+        std::string sTitle(tmp);
+        env->ReleaseStringUTFChars(title, tmp);
+
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = new std::shared_ptr<MetadataStream::VideoSegment>(new MetadataStream::VideoSegment(sTitle, (double)fps, (long long)startTime, (long long)duration, (long)width, (long)height));
+        
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -46,6 +77,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::string str = (*obj)->getTitle();
         return env->NewStringUTF(str.c_str());
     }
@@ -73,6 +108,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
         const char* tmp = env->GetStringUTFChars(title, NULL);
         std::string sTitle(tmp);
         (*obj)->setTitle (sTitle);
@@ -100,6 +140,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self; 
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble) (*obj)->getFPS();
     }
     catch (const std::exception &e)
@@ -126,6 +170,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
         (*obj)->setFPS ((jdouble)fps);
     }
     catch (const std::exception &e)
@@ -150,6 +198,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1g
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jlong)(*obj)->getDuration();
     }
     catch (const std::exception &e)
@@ -176,6 +228,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
         (*obj)->setDuration((long long) duration);
     }
     catch (const std::exception &e)
@@ -200,6 +256,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1g
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jlong) (*obj)->getTime();
     }
     catch (const std::exception &e)
@@ -226,6 +286,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
         (*obj)->setTime((long long) startTime);
     }
     catch (const std::exception &e)
@@ -250,6 +314,10 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1ge
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         long w = 0, h = 0;
 
         (*obj)->getResolution(w, h);
@@ -279,6 +347,10 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1ge
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         long w = 0, h = 0;
 
         (*obj)->getResolution(w, h);
@@ -298,36 +370,6 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1ge
 
 /*
 * Class:     com_intel_vmf_MetadataStream_VideoSegment
-* Method:    n_getResolution
-* Signature: (J[J)V
-*/
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getResolution (JNIEnv *env, jclass, jlong self, jintArray resolutionArray)
-{
-    static const char method_name[] = "MetadataStream::VideoSegment::n_1getResolution";
-
-    try
-    {
-        std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
-        jint* cArray = env->GetIntArrayElements (resolutionArray, 0);
-        jsize len = env->GetArrayLength (resolutionArray);
-        
-        if (len == 2)
-            (*obj)->getResolution ((long&)cArray[0], (long&)cArray[1]);
-        else
-            throwJavaException (env, 0, method_name);
-    }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-}
-
-/*
-* Class:     com_intel_vmf_MetadataStream_VideoSegment
 * Method:    n_setResolution
 * Signature: (JII)V
 */
@@ -338,6 +380,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
     try
     {
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
         (*obj)->setResolution ((long) w, (long) h);
     }
     catch (const std::exception &e)
@@ -361,8 +407,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1de
 
     try
     {
-        std::shared_ptr<MetadataStream::VideoSegment>* p = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
-        delete p;
+        std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {

@@ -343,10 +343,13 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc (JNI
 
         const char* tmp = env->GetStringUTFChars(refName, NULL);
         std::string sName(tmp);
-        std::shared_ptr<ReferenceDesc> sp = (*obj)->getReferenceDesc(sName);
+        std::shared_ptr<ReferenceDesc> refDesc = (*obj)->getReferenceDesc(sName);
+
+        if (refDesc == NULL)
+            return 0;
 
         env->ReleaseStringUTFChars(refName, tmp);
-        return (jlong) new std::shared_ptr<ReferenceDesc>(new ReferenceDesc (sp->name, sp->isUnique, sp->isCustom));
+        return (jlong) new std::shared_ptr<ReferenceDesc>(new ReferenceDesc(refDesc->name, refDesc->isUnique, refDesc->isCustom));
     }
     catch(const std::exception &e)
     {
@@ -384,10 +387,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc (JNIEnv 
 
         bool result = (*obj)->getFieldDesc (fieldDesc, sName);
             
-        if (result == JNI_TRUE)
-            return (jlong) new std::shared_ptr<FieldDesc>(new FieldDesc(fieldDesc.name, fieldDesc.type, fieldDesc.optional));
-        else
+        if (result == JNI_FALSE)
             return 0;
+
+       return (jlong) new std::shared_ptr<FieldDesc>(new FieldDesc(fieldDesc.name, fieldDesc.type, fieldDesc.optional));
     }
     catch(const std::exception &e)
     {

@@ -1,7 +1,6 @@
 #include<string>
 #include<vector>
-#include "vmf/types.hpp"
-#include "../com_intel_vmf_vmf_vec2d.h"
+#include "vmf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
 using namespace vmf;
@@ -13,8 +12,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<vmf_vec2d>* p = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d());
-    return (jlong) p;
+    static const char method_name[] = "vmf_vec2d::n_1vec2d__";
+
+    try
+    {
+        std::shared_ptr<vmf_vec2d>* obj = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -24,8 +38,23 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__ (JNIEnv *e
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__DD (JNIEnv *env, jclass, jdouble x, jdouble y)
 {
-    std::shared_ptr<vmf_vec2d>* p = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d((double)x, (double)y));
-    return (jlong)p;
+    static const char method_name[] = "vmf_vec2d::n_1vec2d__DD";
+
+    try
+    {
+        std::shared_ptr<vmf_vec2d>* obj = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d((double)x, (double)y));
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -35,10 +64,29 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__DD (JNIEnv 
  */
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
-    std::shared_ptr<vmf_vec2d>* self = (std::shared_ptr<vmf_vec2d>*) selfAddr;
-    std::shared_ptr<vmf_vec2d>* other = (std::shared_ptr<vmf_vec2d>*) otherAddr;
+    static const char method_name[] = "vmf_vec2d::n_1setTo";
 
-    (**self) = (**other);
+    try
+    {
+        std::shared_ptr<vmf_vec2d>* self = (std::shared_ptr<vmf_vec2d>*) selfAddr;
+        std::shared_ptr<vmf_vec2d>* other = (std::shared_ptr<vmf_vec2d>*) otherAddr;
+
+        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Vec2d is null pointer.");
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Other vec2d is null pointer.");
+
+        (**self) = (**other);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
 }
 
 /*
@@ -53,6 +101,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getX (JNIEnv *env, jc
     try
     {
         std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble)((**obj).x);
     }
     catch (const std::exception &e)
@@ -79,6 +131,10 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getY(JNIEnv *env, jcl
     try
     {
         std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jdouble)((**obj).y);
     }
     catch (const std::exception &e)
@@ -104,8 +160,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1delete (JNIEnv *env, jcl
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* p = (std::shared_ptr<vmf_vec2d>*) self;
-        delete p;
+        std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Vec2d is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {

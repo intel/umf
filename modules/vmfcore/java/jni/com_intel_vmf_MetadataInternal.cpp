@@ -15,9 +15,28 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal (JNIEnv *env, jclass, jlong mdDescAddr)
 {
-    std::shared_ptr<MetadataDesc>* mdDesc = (std::shared_ptr<MetadataDesc>*) mdDescAddr;
-    std::shared_ptr<MetadataInternal>* p = new std::shared_ptr<MetadataInternal>(new MetadataInternal(*mdDesc));
-    return (jlong)p;
+    static const char method_name[] = "MetadataInternal::n_1MetadataInternal";
+
+    try
+    {
+        std::shared_ptr<MetadataDesc>* mdDesc = (std::shared_ptr<MetadataDesc>*) mdDescAddr;
+
+        if (mdDesc == NULL)
+            return 0;
+
+        std::shared_ptr<MetadataInternal>* obj = new std::shared_ptr<MetadataInternal>(new MetadataInternal(*mdDesc));
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -32,6 +51,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalC
     try
     {
         std::shared_ptr<MetadataInternal>* other = (std::shared_ptr<MetadataInternal>*) otherAddr;
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            return 0;
+
         return (jlong) new std::shared_ptr <MetadataInternal>(new MetadataInternal ((**other)));
     }
     catch (const std::exception &e)
@@ -58,6 +81,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalB
     try
     {
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
+
+        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+            return 0;
+
         return (jlong) new std::shared_ptr <MetadataInternal>(new MetadataInternal((**md)));
     }
     catch (const std::exception &e)
@@ -83,8 +110,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *en
 
     try
     {
-        std::shared_ptr<MetadataInternal>* p = (std::shared_ptr<MetadataInternal>*) self;
-        delete p;
+        std::shared_ptr<MetadataInternal>* obj = (std::shared_ptr<MetadataInternal>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION (NullPointerException, "Metadata internal is null pointer.");
+
+        delete obj;
     }
     catch (const std::exception &e)
     {

@@ -46,7 +46,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1open (JNIEnv *en
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         const char* tmp = env->GetStringUTFChars(filePath, NULL);
@@ -80,7 +80,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1reopen (JNIEnv *
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean) (*obj)->reopen (((MetadataStream::OpenMode)mode));
@@ -110,7 +110,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1clear (JNIEnv *env, 
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
         (*obj)->clear();
@@ -139,7 +139,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1load__JLjava_lan
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         const char* tmp = env->GetStringUTFChars(schemaName, NULL);
@@ -173,7 +173,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1load__JLjava_lan
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         const char* schema = env->GetStringUTFChars(schemaName, NULL);
@@ -209,7 +209,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1save (JNIEnv *en
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean)(*obj)->save();
@@ -239,7 +239,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1saveTo (JNIEnv *
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         const char* tmp = env->GetStringUTFChars(filePath, NULL);
@@ -273,7 +273,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1close (JNIEnv *env, 
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
         (*obj)->close();
@@ -301,19 +301,17 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getById (JNIEnv *en
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return 0;
 
         IdType Id = (IdType)id;
         std::shared_ptr <Metadata> spMd = (*obj)->getById (Id);
 
-        if (spMd != NULL)
-        {
-            std::shared_ptr <Metadata>* retVal = new std::shared_ptr <Metadata>(spMd);
-            return (jlong)retVal;
-        }
-        else
+        if (spMd == NULL)
             return 0;
+        
+        std::shared_ptr <Metadata>* retVal = new std::shared_ptr <Metadata>(spMd);
+        return (jlong)retVal;
     }
     catch (const std::exception &e)
     {
@@ -341,10 +339,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1add (JNIEnv *env, j
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         return (jlong)(*obj)->add(*md);
@@ -375,10 +373,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1addInternal (JNIEnv
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
         std::shared_ptr <MetadataInternal>* mdInt = (std::shared_ptr <MetadataInternal>*) mdIntAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((mdInt == NULL) || (mdInt->get() == NULL))
+        if ((mdInt == NULL) || (*mdInt == NULL) || (mdInt->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata internal is null pointer.");
 
         return (jlong)(*obj)->add(*mdInt);
@@ -408,7 +406,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1removeMdById (JN
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean)(*obj)->remove((IdType)id);
@@ -439,10 +437,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1removeSet (JNIEnv *e
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
         std::shared_ptr <MetadataSet>* mdSet = (std::shared_ptr <MetadataSet>*) mdSetAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((mdSet == NULL) || (mdSet->get() == NULL))
+        if ((mdSet == NULL) || (*mdSet == NULL) || (mdSet->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata set is null pointer.");
 
         (*obj)->remove((**mdSet));
@@ -471,10 +469,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1removeSchema (JNIEnv
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
         std::shared_ptr <MetadataSchema>* schema = (std::shared_ptr <MetadataSchema>*) schemaAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((schema == NULL) || (schema->get() == NULL))
+        if ((schema == NULL) || (*schema == NULL) || (schema->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
 
         (*obj)->remove (*schema);
@@ -502,7 +500,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1removeAllMd (JNIEnv 
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
         (*obj)->remove();
@@ -531,10 +529,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addSchema (JNIEnv *e
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
         std::shared_ptr <MetadataSchema>* schema = (std::shared_ptr <MetadataSchema>*) schemaAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((schema == NULL) || (schema->get() == NULL))
+        if ((schema == NULL) || (*schema == NULL) || (schema->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Schema is null pointer.");
 
         (*obj)->addSchema (*schema);
@@ -562,7 +560,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getSchema (JNIEnv *
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* name = env->GetStringUTFChars(schemaName, NULL);
@@ -571,13 +569,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getSchema (JNIEnv *
 
         std::shared_ptr <MetadataSchema> schema = (*obj)->getSchema(sName);
 
-        if (schema != NULL)
-        {
-            std::shared_ptr <MetadataSchema>* mdSchema = new std::shared_ptr <MetadataSchema>(schema);
-            return (jlong)mdSchema;
-        }
-        else
+        if (schema == NULL)
             return 0;
+
+        std::shared_ptr <MetadataSchema>* mdSchema = new std::shared_ptr <MetadataSchema>(schema);
+        return (jlong) mdSchema;
     }
     catch (const std::exception &e)
     {
@@ -604,7 +600,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllSchema
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*)self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector <std::string> vecNames = (*obj)->getAllSchemaNames();
@@ -646,7 +642,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getAll (JNIEnv *env
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::shared_ptr <MetadataSet>* mdSet = new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->getAll()));
@@ -682,10 +678,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEn
         std::shared_ptr <MetadataSet>* srcSet = (std::shared_ptr <MetadataSet>*) srcSetAddr;
         std::shared_ptr <MetadataSet>* setFalure = (std::shared_ptr <MetadataSet>*) setFalureAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL) || (srcStream == NULL) || (srcStream->get() == NULL))
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL) || (srcStream == NULL) || (srcStream == NULL) || (srcStream->get() == NULL))
             return JNI_FALSE;
 
-        if ((srcSet == NULL) || (srcSet->get() == NULL))
+        if ((srcSet == NULL) || (*srcSet == NULL) || (srcSet->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean)(*obj)->import((**srcStream), (**srcSet), (long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFalure->get());

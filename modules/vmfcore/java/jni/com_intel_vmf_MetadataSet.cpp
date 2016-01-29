@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<MetadataSet>* p = new std::shared_ptr<MetadataSet>(new MetadataSet());
-    return (jlong) p;
+    static const char method_name[] = "MetadataSet::n_1MetadataSet__";
+
+    try
+    {
+        std::shared_ptr<MetadataSet>* obj = new std::shared_ptr<MetadataSet>(new MetadataSet());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -22,10 +37,29 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv 
  * Method:    n_MetadataSet
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv *, jclass, jlong otherAddr)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv *env, jclass, jlong otherAddr)
 {
-    std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
-    return (jlong) new std::shared_ptr<MetadataSet> (new MetadataSet (**other));
+    static const char method_name[] = "MetadataSet::n_1MetadataSet__J";
+
+    try
+    {
+        std::shared_ptr<MetadataSet>* other = (std::shared_ptr<MetadataSet>*)otherAddr;
+
+        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+            return 0;
+
+        return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet(**other));
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -53,12 +87,16 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement (JNIEnv *en
     try
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         size_t num = (size_t)number;
 
         if ((**obj).size() > num)
             return (jlong) new std::shared_ptr<Metadata> ((**obj)[num]);
         else
-            throwJavaException(env, 0, method_name);
+            VMF_EXCEPTION (OutOfRangeException, "Number is out of range.");
     }
     catch (const std::exception &e)
     {
@@ -84,6 +122,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNI
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         size_t index = (size_t) id;
         return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByFrameIndex(index)));
     }
@@ -111,6 +153,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByTime (JNIEnv *e
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jlong) new std::shared_ptr<MetadataSet>(new MetadataSet((*obj)->queryByTime((long long)startTime, (long long)endTime)));
     }
     catch(const std::exception &e)
@@ -137,6 +183,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryBySchema (JNIEnv 
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(schemaName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(schemaName, tmp);
@@ -166,6 +216,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByName (JNIEnv *e
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
 
         const char* tmp = env->GetStringUTFChars(mdName, NULL);
         std::string sName(tmp);
@@ -198,6 +251,13 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndValue (J
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::shared_ptr<FieldValue>* value = (std::shared_ptr<FieldValue>*)fieldValueAddr;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        if ((value == NULL) || (*value == NULL) || (value->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(mdName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(mdName, tmp);
@@ -227,6 +287,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields (
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::vector <FieldValue> values;
     
         const char* tmp = env->GetStringUTFChars(mdName, NULL);
@@ -269,6 +333,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(refName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(refName, tmp);
@@ -299,6 +367,13 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
         std::shared_ptr<FieldValue>* value = (std::shared_ptr<FieldValue>*)valueAddr;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        if ((value == NULL) || (*value == NULL) || (value->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars (refName, NULL);
         std::string sName(tmp);
         env->ReleaseStringUTFChars(refName, tmp);
@@ -328,6 +403,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         const char* tmp = env->GetStringUTFChars(refName, NULL);
         std::string sName(tmp);
         
@@ -369,9 +448,18 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::shared_ptr<MetadataSet>* setFailure = (std::shared_ptr<MetadataSet>*)setFailureAddr;
-        
-        return (jlong) (*obj)->shift((long long) dstFrameIndex, (long long) srcFrameIndex, (long long) numOfFrames, (*setFailure).get());
+
+        if ((setFailure != NULL) && (*setFailure != NULL))
+            return (jlong)(*obj)->shift((long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFailure->get());
+        else if (setFailure == NULL)
+            return (jlong)(*obj)->shift((long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames);
+        else
+            return 0;
     }
     catch(const std::exception &e)
     {
@@ -397,6 +485,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize (JNIEnv *env, 
     try 
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         return (jlong) (*obj)->size();
     }
     catch(const std::exception &e)
@@ -423,6 +515,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete (JNIEnv *env, jc
     try
     {
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Metadata set is null pointer.");
+
         delete obj;
     }
     catch (const std::exception &e)

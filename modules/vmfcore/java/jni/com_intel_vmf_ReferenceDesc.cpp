@@ -13,8 +13,23 @@ using namespace vmf;
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__ (JNIEnv *env, jclass)
 {
-    std::shared_ptr<ReferenceDesc>* p = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc ());
-    return (jlong) p;
+    static const char method_name[] = "ReferenceDesc::n_1ReferenceDesc__";
+
+    try
+    {
+        std::shared_ptr<ReferenceDesc>* obj = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc());
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -24,11 +39,26 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__ (JNI
  */
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__Ljava_lang_String_2ZZ (JNIEnv *env, jclass, jstring name, jboolean isUnique, jboolean isCustom)
 {
-    const char* tmp = env->GetStringUTFChars(name, NULL);
-    std::string sName(tmp);
-    std::shared_ptr<ReferenceDesc>* p = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc(sName, (isUnique == JNI_TRUE) ? true : false, (isCustom == JNI_TRUE) ? true : false));
-    env->ReleaseStringUTFChars(name, tmp);
-    return (jlong) p;
+    static const char method_name[] = "ReferenceDesc::n_1ReferenceDesc__Ljava_lang_String_2ZZ";
+
+    try
+    {
+        const char* tmp = env->GetStringUTFChars(name, NULL);
+        std::string sName(tmp);
+        std::shared_ptr<ReferenceDesc>* obj = new std::shared_ptr<ReferenceDesc>(new ReferenceDesc(sName, (isUnique == JNI_TRUE) ? true : false, (isCustom == JNI_TRUE) ? true : false));
+        env->ReleaseStringUTFChars(name, tmp);
+        return (jlong)obj;
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+
+    return 0;
 }
 
 /*
@@ -43,7 +73,11 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_ReferenceDesc_n_1getName (JNIEnv *e
     try 
     {
         std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
-        std::string str = (*(*obj)).name;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        std::string str = (**obj).name;
         return env->NewStringUTF(str.c_str());
     }
     catch(const std::exception &e)
@@ -70,7 +104,11 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_ReferenceDesc_n_1isUnique (JNIEnv 
     try 
     {
         std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
-        jboolean isUnique = (jboolean)(*(*obj)).isUnique;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        jboolean isUnique = (jboolean)(**obj).isUnique;
         return isUnique;
     }
     catch(const std::exception &e)
@@ -97,7 +135,11 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_ReferenceDesc_n_1isCustom (JNIEnv 
     try 
     {
         std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
-        jboolean isCustom = (jboolean)(*(*obj)).isCustom;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            return 0;
+
+        jboolean isCustom = (jboolean)(**obj).isCustom;
         return isCustom;
     }
     catch(const std::exception &e)
@@ -123,8 +165,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_ReferenceDesc_n_1delete (JNIEnv *env, 
     
     try 
     {
-        std::shared_ptr<ReferenceDesc>* p = (std::shared_ptr<ReferenceDesc>*) self;
-        delete p;
+        std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
+
+        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+            VMF_EXCEPTION(NullPointerException, "Reference description is null pointer.");
+
+        delete obj;
     }
     catch(const std::exception &e)
     {

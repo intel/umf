@@ -154,7 +154,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNI
 */
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments (JNIEnv *env, jclass, jlong self, jstring text)
 {
-    static const char method_name[] = "JSONReader::n_1VideoSegments";
+    static const char method_name[] = "JSONReader::n_1parseVideoSegments";
     
     try 
     {
@@ -213,7 +213,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONReader_n_1delete (JNIEnv *env, jcl
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
         if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
+            VMF_EXCEPTION (NullPointerException, "Reader is null pointer.");
 
         delete obj;
     }
