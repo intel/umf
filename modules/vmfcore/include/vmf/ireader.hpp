@@ -48,33 +48,31 @@ public:
     * \brief Deserialize input string to stream metadata and related stuff. Used for "stream.deserialize(text)" implementation.
     * String may be comressed, in that case use ICompressor field to decompress it.
     */
-    virtual bool parseAll(
-        const std::string& text,
-        IdType& nextId,
-        std::string& filepath,
-        std::string& checksum,
-	std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-        std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata ) = 0;
+    virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath,
+                          std::string& checksum,
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
 
     /*!
     * \brief Deserialize input string to a schemas vector
     */
-    virtual bool parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas) = 0;
+    virtual bool parseSchemas(const std::string& text,
+                              std::vector<std::shared_ptr<MetadataSchema>>& schemas) = 0;
 
     /*!
     * \brief Deserialize input string to a metadata vector
     */
-    virtual bool parseMetadata(
-        const std::string& text,
-        const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata ) = 0;
+    virtual bool parseMetadata(const std::string& text,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
+
 
     /*!
     * \brief Deserialize input string to a segment vector
     */
-    virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
-
+    virtual bool parseVideoSegments(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
     /*!
      * \brief Performs decompression of previously compressed data
      * \param input Input string
