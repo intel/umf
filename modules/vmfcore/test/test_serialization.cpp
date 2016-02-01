@@ -379,42 +379,6 @@ TEST_P(TestSerialization, Parse_All)
 }
 
 
-//Compressor class to pass fake Id to registerNew() method
-class FakeCompressor : public Compressor
-{
-public:
-    virtual void compress(const vmf_string& input, vmf_rawbuffer& output)
-    {
-        //copies input to another buffer and writes result
-        output = vmf_rawbuffer(input.c_str(), input.size());
-    }
-
-    virtual void decompress(const vmf_rawbuffer& input, vmf_string &output)
-    {
-        //copies code to another buffer and writes result
-        output = vmf_string(input.data(), input.size());
-    }
-
-    std::shared_ptr<Compressor> createNewInstance() const
-    {
-        return std::shared_ptr<Compressor>(new FakeCompressor);
-    }
-
-    virtual vmf::vmf_string getId()
-    {
-        return id;
-    }
-
-    void setId(vmf_string s)
-    {
-        id = s;
-    }
-
-private:
-    vmf_string id;
-};
-
-
 TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {
     SerializerType type = std::get<0>(GetParam());
