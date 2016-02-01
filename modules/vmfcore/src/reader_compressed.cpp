@@ -65,18 +65,20 @@ bool ReaderCompressed::parseVideoSegments(const std::string& text,
 std::string ReaderCompressed::decompress(const std::string& input)
 {
     //parse it as usual serialized VMF XML, search for specific schemas
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
-    std::string filePath, checksum;
-    IdType nextId;
-    if(!reader->parseAll(input, nextId, filePath, checksum, segments, schemas, metadata))
+    if(!reader->parseSchemas(input, schemas))
     {
-        VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse input data");
+        VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
     }
 
     if(schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
+        std::vector<std::shared_ptr<MetadataInternal>> metadata;
+        if(!reader->parseMetadata(input, schemas, metadata))
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
+        }
+
         std::shared_ptr<Metadata> cMetadata = metadata[0];
         vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
         vmf_string encoded = cMetadata->getFieldValue(COMPRESSED_DATA_PROP_NAME);
