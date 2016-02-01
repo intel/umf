@@ -43,7 +43,6 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
   set(BUILD_SAMPLES OFF)
   set(BUILD_QT_SAMPLES OFF)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gp -fprofile-arcs -ftest-coverage")
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
