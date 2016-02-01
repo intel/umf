@@ -38,6 +38,7 @@
 	#include "XMPFiles/source/FileHandlers/SWF_Handler.hpp"
 	#include "XMPFiles/source/FileHandlers/XDCAM_Handler.hpp"
 	#include "XMPFiles/source/FileHandlers/XDCAMEX_Handler.hpp"
+	#include "XMPFiles/source/FileHandlers/Matroska_Handler.hpp"
 #endif
 
 #if EnableMiscHandlers
@@ -145,6 +146,7 @@ void HandlerRegistry::initialize()
 	allOK &= this->registerNormalHandler ( kXMP_MOVFile, kMPEG4_HandlerFlags, MPEG4_CheckFormat, MPEG4_MetaHandlerCTor );	// ! Yes, MPEG-4 includes MOV.
 	allOK &= this->registerNormalHandler ( kXMP_FLVFile, kFLV_HandlerFlags, FLV_CheckFormat, FLV_MetaHandlerCTor );
 	allOK &= this->registerNormalHandler ( kXMP_AIFFFile, kAIFF_HandlerFlags, AIFF_CheckFormat, AIFF_MetaHandlerCTor );
+	allOK &= this->registerNormalHandler ( kXMP_MatroskaFile, kMatroska_HandlerFlags, Matroska_CheckFormat, Matroska_MetaHandlerCTor);
 #endif
 
 #if EnableMiscHandlers
