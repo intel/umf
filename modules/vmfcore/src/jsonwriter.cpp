@@ -169,7 +169,7 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-JSONWriter::JSONWriter(const vmf_string& _compressorId) : WriterBase(_compressorId) { }
+JSONWriter::JSONWriter() : IWriter() { }
 JSONWriter::~JSONWriter() { }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
@@ -186,7 +186,7 @@ std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
     root.push_back(schemaNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::shared_ptr<Metadata>& spMetadata)
@@ -203,7 +203,7 @@ std::string JSONWriter::store(const std::shared_ptr<Metadata>& spMetadata)
     root.push_back(metadataNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -227,7 +227,7 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>
     root.push_back(schemasArrayNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const MetadataSet& set)
@@ -251,7 +251,7 @@ std::string JSONWriter::store(const MetadataSet& set)
     root.push_back(metadataArrayNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const IdType& nextId,
@@ -332,7 +332,7 @@ std::string JSONWriter::store(const IdType& nextId,
     root.push_back(vmfRootNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
@@ -349,7 +349,7 @@ std::string JSONWriter::store(const std::shared_ptr<MetadataStream::VideoSegment
     root.push_back(segmentNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
@@ -373,7 +373,7 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
     root.push_back(segmentsArrayNode);
 
     std::string formatted = root.write_formatted();
-    return compress(formatted);
+    return formatted;
 }
 
 }//vmf

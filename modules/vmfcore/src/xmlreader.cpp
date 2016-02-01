@@ -253,12 +253,12 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
 }
 
 
-XMLReader::XMLReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownCompressor) { }
+XMLReader::XMLReader() : IReader() { }
 XMLReader::~XMLReader(){}
 
 
 //this version of parseSchemas always gets uncompressed text as input
-bool XMLReader::internalParseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(text.empty())
     {
@@ -350,9 +350,9 @@ bool XMLReader::internalParseSchemas(const std::string& text, std::vector<std::s
 
 
 //this version of parseMetadata always gets uncompressed input
-bool XMLReader::internalParseMetadata(const std::string& text,
-                                      const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                      std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool XMLReader::parseMetadata(const std::string& text,
+                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                              std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -443,10 +443,11 @@ bool XMLReader::internalParseMetadata(const std::string& text,
 
 
 //this version of parseAll always gets uncompressed text
-bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool XMLReader::parseAll(const std::string& text, IdType& nextId,
+                         std::string& filepath, std::string& checksum,
+                         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                         std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -490,11 +491,11 @@ bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::s
             else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_CHECKSUM))
                 checksum = (char*)xmlGetProp(root, cur_prop->name);
         }
-        if(!internalParseVideoSegments(text, segments))
+        if(!parseVideoSegments(text, segments))
             return false;
-        if(!internalParseSchemas(text, schemas))
+        if(!parseSchemas(text, schemas))
             return false;
-        if(!internalParseMetadata(text, schemas, metadata))
+        if(!parseMetadata(text, schemas, metadata))
             return false;
     }
     else
@@ -513,8 +514,8 @@ bool XMLReader::internalParseAll(const std::string& text, IdType& nextId, std::s
 
 
 //this version of parseVideoSegments always gets uncompressed text
-bool XMLReader::internalParseVideoSegments(const std::string& text,
-                                           std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+bool XMLReader::parseVideoSegments(const std::string& text,
+                                   std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
     if(text.empty())
     {

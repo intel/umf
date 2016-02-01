@@ -33,7 +33,6 @@
 #include "metadataschema.hpp"
 #include "metadatastream.hpp"
 #include "ireader.hpp"
-#include "reader_base.hpp"
 
 namespace vmf
 {
@@ -41,35 +40,34 @@ namespace vmf
 * class JSONReader
 * \brief JSONReader class is a %IReader interface implementation for JSON format representation
 */
-class VMF_EXPORT JSONReader : public ReaderBase
+class VMF_EXPORT JSONReader : public IReader
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader(bool _ignoreUnknownCompressor = false);
+    JSONReader();
 
     /*!
     * \brief Class destructor
     */
     ~JSONReader();
 
-protected:
     //these methods always get uncompressed text as input
-    virtual bool internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+    virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
 
-    virtual bool internalParseSchemas(const std::string& text,
-                                      std::vector<std::shared_ptr<MetadataSchema>>& schemas);
+    virtual bool parseSchemas(const std::string& text,
+                              std::vector<std::shared_ptr<MetadataSchema>>& schemas);
 
-    virtual bool internalParseMetadata(const std::string& text,
-                                       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                       std::vector<std::shared_ptr<MetadataInternal>>& metadata );
+    virtual bool parseMetadata(const std::string& text,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               std::vector<std::shared_ptr<MetadataInternal>>& metadata );
 
-    virtual bool internalParseVideoSegments(const std::string& text,
-                                            std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+    virtual bool parseVideoSegments(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 };
 
 }//vmf

@@ -15,11 +15,46 @@
  *
  */
 
-#include "vmf/writer_base.hpp"
+#include "vmf/writer_compressed.hpp"
 #include "vmf/rwconst.hpp"
 
 namespace vmf
 {
+
+std::string WriterCompressed::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+{
+    std::string text = writer->store(schemas);
+    return compress(text);
+}
+
+std::string WriterCompressed::store(const MetadataSet& set)
+{
+    std::string text = writer->store(set);
+    return compress(text);
+}
+
+std::string WriterCompressed::store(const IdType& nextId, const std::string& filepath,
+                                    const std::string& checksum,
+                                    const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                                    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                    const MetadataSet& set)
+{
+    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set);
+    return compress(text);
+}
+
+std::string WriterCompressed::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
+{
+    std::string text = writer->store(spSegment);
+    return compress(text);
+}
+
+std::string WriterCompressed::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
+{
+    std::string text = writer->store(segments);
+    return compress(text);
+}
+
 
 class MetadataAccessor: public Metadata
 {
@@ -33,7 +68,7 @@ public:
 };
 
 
-std::string WriterBase::compress(const std::string& input)
+std::string WriterCompressed::compress(const std::string& input)
 {
     if(!compressorId.empty())
     {
@@ -54,7 +89,7 @@ std::string WriterBase::compress(const std::string& input)
 
         std::shared_ptr<Metadata> cMetadata;
         cMetadata = std::make_shared<Metadata>(cSchema->findMetadataDesc(COMPRESSED_DATA_DESC_NAME));
-        cMetadata->push_back(FieldValue(COMPRESSION_ALGO_PROP_NAME, compressorId));
+        cMetadata->push_back(FieldValue(COMPRESSION_ALGO_PROP_NAME, compressor->getId()));
         cMetadata->push_back(FieldValue(COMPRESSED_DATA_PROP_NAME,  compressed));
 
         MetadataAccessor metadataAccessor(*cMetadata);
@@ -73,8 +108,6 @@ std::string WriterBase::compress(const std::string& input)
 
         //create writer with no compression enabled
         std::string outputString;
-        std::shared_ptr<WriterBase> writer = this->createNewInstance();
-        writer->compressorId.clear();
         outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet);
 
         return outputString;

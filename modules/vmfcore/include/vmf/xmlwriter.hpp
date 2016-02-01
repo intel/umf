@@ -26,7 +26,6 @@
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
 #include "iwriter.hpp"
-#include "writer_base.hpp"
 
 namespace vmf
 {
@@ -34,18 +33,18 @@ namespace vmf
 * class XMLWriter
 * \brief XMLWriter class is a %IWriter interface implementation for XML format representation
 */
-class VMF_EXPORT XMLWriter : public WriterBase
+class VMF_EXPORT XMLWriter : public IWriter
 {
 public:
     /*!
     * \brief Default class constructor
     */
-    XMLWriter(const vmf_string& _compressorId = vmf_string());
+    XMLWriter();
 
     /*!
     * \brief Class destructor
     */
-    ~XMLWriter();
+    virtual ~XMLWriter();
 
     // IWriter implementation
     virtual std::string store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas);
@@ -58,15 +57,6 @@ public:
                               const MetadataSet& set);
     virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
-
-    /*!
-     * \brief Creates a new instance of the class
-     * \return Smart pointer to the new instance
-     */
-    virtual std::shared_ptr<WriterBase> createNewInstance() const
-    {
-        return std::shared_ptr<WriterBase>(new XMLWriter);
-    }
 
 private:
     // hiding API that may be removed soon

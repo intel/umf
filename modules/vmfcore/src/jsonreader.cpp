@@ -266,10 +266,10 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader(bool _ignoreUnknownCompressor) : ReaderBase(_ignoreUnknownCompressor) { }
+JSONReader::JSONReader() : IReader() { }
 JSONReader::~JSONReader(){ }
 
-bool JSONReader::internalParseSchemas(const std::string& text,
+bool JSONReader::parseSchemas(const std::string& text,
                                       std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(text.empty())
@@ -345,7 +345,7 @@ bool JSONReader::internalParseSchemas(const std::string& text,
     return true;
 }
 
-bool JSONReader::internalParseMetadata(const std::string& text,
+bool JSONReader::parseMetadata(const std::string& text,
                                        const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                        std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
@@ -423,7 +423,7 @@ bool JSONReader::internalParseMetadata(const std::string& text,
     return true;
 }
 
-bool JSONReader::internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
                                   std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                   std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                   std::vector<std::shared_ptr<MetadataInternal>>& metadata)
@@ -468,11 +468,11 @@ bool JSONReader::internalParseAll(const std::string& text, IdType& nextId, std::
         if(checksumIter != localRootNode.end() )
             checksum = checksumIter->as_string();
 
-        if(!internalParseVideoSegments(text, segments))
+        if(!parseVideoSegments(text, segments))
             return false;
-        if(!internalParseSchemas(text, schemas))
+        if(!parseSchemas(text, schemas))
             return false;
-        if(!internalParseMetadata(text, schemas, metadata))
+        if(!parseMetadata(text, schemas, metadata))
             return false;
     }
     else
@@ -485,7 +485,7 @@ bool JSONReader::internalParseAll(const std::string& text, IdType& nextId, std::
 }
 
 
-bool JSONReader::internalParseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
     if(text.empty())
     {

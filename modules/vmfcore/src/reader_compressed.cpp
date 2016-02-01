@@ -15,7 +15,7 @@
  *
  */
 
-#include "vmf/reader_base.hpp"
+#include "vmf/reader_compressed.hpp"
 #include "vmf/rwconst.hpp"
 
 namespace vmf
@@ -23,74 +23,46 @@ namespace vmf
 
 /*
  * parseXXX() methods:
- * Try to read w/o decompression
- * if failed, decomperess and read once again
+ * Deserialize -> decompress -> Deserialize
  */
 
-bool ReaderBase::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                          std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool ReaderCompressed::parseAll(const std::string& text, IdType& nextId,
+                                std::string& filepath, std::string& checksum,
+                                std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                                std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    if(!internalParseAll(text, nextId, filepath, checksum, segments, schemas, metadata) ||
-       (schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME))
-    {
-        std::string decompressed = decompress(text);
-        return internalParseAll(decompressed, nextId, filepath, checksum, segments, schemas, metadata);
-    }
-    else
-    {
-        return true;
-    }
+    std::string decompressed = decompress(text);
+    return reader->parseAll(decompressed, nextId, filepath, checksum, segments, schemas, metadata);
 }
 
 
-bool ReaderBase::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+bool ReaderCompressed::parseSchemas(const std::string& text,
+                                    std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
-    if(!internalParseSchemas(text, schemas) ||
-       (schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME))
-    {
-        std::string decompressed = decompress(text);
-        return internalParseSchemas(decompressed, schemas);
-    }
-    else
-    {
-        return true;
-    }
+    std::string decompressed = decompress(text);
+    return reader->parseSchemas(decompressed, schemas);
 }
 
 
-bool ReaderBase::parseMetadata(const std::string& text,
-                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                              std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+bool ReaderCompressed::parseMetadata(const std::string& text,
+                                     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                     std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    if(!internalParseMetadata(text, schemas, metadata))
-    {
-        std::string decompressed = decompress(text);
-        return internalParseMetadata(decompressed, schemas, metadata);
-    }
-    else
-    {
-        return true;
-    }
+    std::string decompressed = decompress(text);
+    return reader->parseMetadata(decompressed, schemas, metadata);
 }
 
 
-bool ReaderBase::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+bool ReaderCompressed::parseVideoSegments(const std::string& text,
+                                          std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
-    if(!internalParseVideoSegments(text, segments))
-    {
-        std::string decompressed = decompress(text);
-        return internalParseVideoSegments(decompressed, segments);
-    }
-    else
-    {
-        return true;
-    }
+    std::string decompressed = decompress(text);
+    return reader->parseVideoSegments(decompressed, segments);
 }
 
 
-std::string ReaderBase::decompress(const std::string& input)
+std::string ReaderCompressed::decompress(const std::string& input)
 {
     //parse it as usual serialized VMF XML, search for specific schemas
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
@@ -98,7 +70,7 @@ std::string ReaderBase::decompress(const std::string& input)
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     std::string filePath, checksum;
     IdType nextId;
-    if(!internalParseAll(input, nextId, filePath, checksum, segments, schemas, metadata))
+    if(!reader->parseAll(input, nextId, filePath, checksum, segments, schemas, metadata))
     {
         VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse input data");
     }

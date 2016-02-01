@@ -72,13 +72,6 @@ public:
     * \brief Export a video segments vector to a string representation.
     */
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments) = 0;
-
-    /*!
-     * \brief Performs compression of text data
-     * \param input Input string
-     * \return Compressed string
-     */
-    virtual std::string compress(const std::string& input) = 0;
 };
 
 }//vmf

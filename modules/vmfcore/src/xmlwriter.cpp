@@ -186,7 +186,7 @@ static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::V
     }
 }
 
-XMLWriter::XMLWriter(const vmf_string &_compressorId) : WriterBase(_compressorId) {}
+XMLWriter::XMLWriter() : IWriter() { }
 XMLWriter::~XMLWriter() {}
 
 std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
@@ -217,7 +217,7 @@ std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const std::shared_ptr<Metadata>& spMetadata)
@@ -248,7 +248,7 @@ std::string XMLWriter::store(const std::shared_ptr<Metadata>& spMetadata)
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -285,7 +285,7 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>&
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const MetadataSet& set)
@@ -322,7 +322,7 @@ std::string XMLWriter::store(const MetadataSet& set)
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const IdType& nextId,
@@ -414,7 +414,7 @@ std::string XMLWriter::store(const IdType& nextId,
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
@@ -446,7 +446,7 @@ std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
@@ -483,7 +483,7 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
     xmlCleanupParser();
     xmlMemoryDump();
 
-    return compress(outputString);
+    return outputString;
 }
 
 }//vmf

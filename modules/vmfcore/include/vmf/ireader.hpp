@@ -67,7 +67,6 @@ public:
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
 
-
     /*!
     * \brief Deserialize input string to a segment vector
     */

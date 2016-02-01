@@ -16,14 +16,14 @@
  */
 
 /*!
-* \file reader_base.hpp
-* \brief Implementation of %IReader interface common methods
+* \file reader_compressed.hpp
+* \brief Deserialization based on instance of IReader class
 */
 
 #pragma once
 
-#ifndef VMF_READER_BASE_HPP
-#define VMF_READER_BASE_HPP
+#ifndef VMF_READER_COMPRESSED_HPP
+#define VMF_READER_COMPRESSED_HPP
 
 #include "ireader.hpp"
 
@@ -31,23 +31,29 @@ namespace vmf
 {
 
 /*!
- * \class ReaderBase
+ * \class ReaderCompressed
  * \brief Class implementing common methods for all IReader implementations
+ * \brief ReaderCompressed class performs deserialization of compressed stream
+ * based on provided instance of and IReader
  */
-class VMF_EXPORT ReaderBase : public IReader
+class VMF_EXPORT ReaderCompressed : public IReader
 {
 public:
     /*!
-     * \brief Constructor of base class
+     * \brief Constructor of the class
+     * \param _reader Shared pointer to instance of IReader class
      * \param _ignoreUnknownCompressor Flag specifying what to do with unknown compressor:
      * throw an exception (false) or pass compressed data as VMF metadata
      */
-    ReaderBase(bool _ignoreUnknownCompressor = false) : IReader(),
-    ignoreUnknownCompressor(_ignoreUnknownCompressor)
+    ReaderCompressed(std::shared_ptr<IReader> _reader, bool _ignoreUnknownCompressor = false) :
+    IReader(), reader(_reader), ignoreUnknownCompressor(_ignoreUnknownCompressor)
     { }
+    
+    virtual ~ReaderCompressed() { }
 
     // IReader implementation
-    virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
+    virtual bool parseAll(const std::string& text, IdType& nextId,
+                          std::string& filepath, std::string& checksum,
                           std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                           std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                           std::vector<std::shared_ptr<MetadataInternal>>& metadata);
@@ -62,28 +68,19 @@ public:
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
+    /*!
+     * \brief Performs decompression of previously compressed data
+     * \param input Input string
+     * \return Decompressed string
+     */
     virtual std::string decompress(const std::string& input);
 
 protected:
-    virtual bool internalParseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
-
-    virtual bool internalParseSchemas(const std::string& text,
-                                      std::vector<std::shared_ptr<MetadataSchema>>& schemas) = 0;
-
-    virtual bool internalParseMetadata(const std::string& text,
-                                       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                       std::vector<std::shared_ptr<MetadataInternal>>& metadata ) = 0;
-
-    virtual bool internalParseVideoSegments(const std::string& text,
-                                            std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
-
+    std::shared_ptr<IReader> reader;
     bool ignoreUnknownCompressor;
 };
 
 
 }//vmf
 
-#endif /* VMF_READER_BASE_HPP */
+#endif /* VMF_READER_COMPRESSED_HPP */
