@@ -248,17 +248,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const MetaString& path
             VMF_EXCEPTION(DataStorageException, "Corrupted field by path " + currentFieldPath);
         }
 
-        Variant::Type type = Variant::type_unknown;
-        for(int i = 1;
-            Variant::typeToString(static_cast<Variant::Type>(i)) != Variant::typeToString(Variant::type_unknown); ++i)
-        {
-            MetaString nameOfType = Variant::typeToString(static_cast<Variant::Type>(i));
-            if (nameOfType == rawType)
-            {
-                type = static_cast<Variant::Type>(i);
-                break;
-            }
-        }
+        Variant::Type type = Variant::typeFromString(rawType);
 
         bool optional = true;
         if(!metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS, FIELD_OPTIONALITY, NULL, NULL))
