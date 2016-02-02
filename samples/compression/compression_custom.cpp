@@ -50,7 +50,7 @@ int compress_custom(const string& videoFile)
     shared_ptr<Compressor> compressor = make_shared<MyLZWCompressor>();
     Compressor::registerNew(compressor);
 
-    cout << "Trfying to save metadata using unregister compressor..." << endl;
+    cout << "Trying to save metadata using unregister compressor..." << endl;
     if (mdStream.save("unknown_compressor_ID"))
         cout << "VMF error: it shouldn't allow saving with unregistered compressor" << endl;
     else
