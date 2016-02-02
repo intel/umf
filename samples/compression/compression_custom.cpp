@@ -32,61 +32,42 @@
 using namespace std;
 using namespace vmf;
 
-int main(int argc, char** argv)
+int compress_custom(const string& videoFile)
 {
-    if (argc != 2)
+    cout << "Custom compression usage sample:" << endl;
+
+    MetadataStream mdStream;
+    if (!mdStream.open(videoFile, MetadataStream::Update | MetadataStream::IgnoreUnknownCompressor))
     {
-        std::cerr << "Error: Wrong number of arguments." << std::endl;
-        std::cerr << "Usage: " << argv[0] << " <video_file> " << std::endl;
-        return -1;
-    }
-
-    //vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
-    vmf::initialize();
-
-    vmf::vmf_string videoFile(argv[1]);
-
-    vmf::MetadataStream mdStream;
-    // Open metadata stream
-    if (!mdStream.open(videoFile, vmf::MetadataStream::Update | vmf::MetadataStream::IgnoreUnknownCompressor))
-    {
-        std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
+        cerr << "Can't open file '" + videoFile + "'" << endl;
         exit(1);
     }
+
+    cout << "Generating metadata..." << endl;
     generateMetadata(mdStream);
 
-    cout << "Saving metadata..." << endl << endl;
-
-    // Save metadata to video file with custom compressor
+    cout << "Registering custom compressor..." << endl;
     shared_ptr<Compressor> compressor = make_shared<MyLZWCompressor>();
+    Compressor::registerNew(compressor);
 
-    // Register compressor before it could be used in saving and loading
-    vmf::Compressor::registerNew(compressor);
-
-    // Trying to load or save file with unregistered compressor
-    // doesn't produce exceptions, just returns false
-    if(mdStream.save("unknown_compressor_ID"))
-    {
+    cout << "Trfying to save metadata using unregister compressor..." << endl;
+    if (mdStream.save("unknown_compressor_ID"))
         cout << "VMF error: it shouldn't allow saving with unregistered compressor" << endl;
-    }
     else
-    {
         cout << "VMF is right: it can't use unregistered compressor!" << endl;
-    }
 
+    cout << "Saving metadata using custom just registered compressor (" << compressor->getId() << ")..." << endl;
     mdStream.save(compressor->getId());
 
 
-    // Close metadata stream
     mdStream.close();
 
-    cout << "Loading metadata..." << endl;
+    cout << "Loading metadata back..." << endl;
     readAndDumpMetadata(videoFile);
 
-    //The following action is optional
+    cout << "Unregistering custom '" << compressor->getId() << "' compressor (it's optional here)..." << endl;
     vmf::Compressor::unregister(compressor->getId());
 
-    vmf::terminate();
-
+    cout << "That's all!" << endl;
     return 0;
 }

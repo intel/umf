@@ -30,28 +30,45 @@
 using namespace std;
 using namespace vmf;
 
-int compress_builtin(const string& videoFile)
+int main(int argc, char** argv)
 {
-    cout << "Builtin compression usage sample:" << endl;
-
-    MetadataStream mdStream;
-    if (!mdStream.open(videoFile, MetadataStream::Update | MetadataStream::IgnoreUnknownCompressor))
+    if (argc != 2)
     {
-        cerr << "Can't open file '" + videoFile + "'" << endl;
-        exit(1);
+        cerr << "Error: Wrong number of arguments." << endl;
+        cerr << "Usage: " << argv[0] << " <video_file> " << endl;
+        return -1;
     }
 
-    cout << "Generating metadata..." << endl;
-    generateMetadata(mdStream);
+    initialize();
 
-    cout << "Saving metadata using 'com.intel.vmf.compressor.zlib'..." << endl;
-    mdStream.save("com.intel.vmf.compressor.zlib");
+    string videoFile(argv[1]);
 
-    mdStream.close();
+    MetadataStream mds;
 
-    cout << "Loading metadata back..." << endl;
-    readAndDumpMetadata(videoFile);
+    // cleanup existing metadata
+    if (mds.open(videoFile, MetadataStream::Update | MetadataStream::IgnoreUnknownCompressor))
+    {
+        mds.load();
+        mds.remove();
+        mds.save();
+        mds.close();
+    }
 
-    cout << "That's all!" << endl;
+    compress_builtin(videoFile);
+
+    cout << endl << endl;
+
+    // cleanup existing metadata
+    if (mds.open(videoFile, MetadataStream::Update | MetadataStream::IgnoreUnknownCompressor))
+    {
+        mds.load();
+        mds.remove();
+        mds.save();
+        mds.close();
+    }
+
+    compress_custom(videoFile);
+
+    vmf::terminate();
     return 0;
 }

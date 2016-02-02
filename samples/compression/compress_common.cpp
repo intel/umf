@@ -45,7 +45,7 @@ void generateMetadata(MetadataStream& mdStream)
         VMF_FIELD_REAL(GPS_COORD_LNG_FIELD);
     VMF_METADATA_END(gpsSchema);
 
-    cout << "Adding metadata schema '" << GPS_SCHEMA_NAME << "'..." << endl;
+    cout << "Adding metadata schema '" << GPS_SCHEMA_NAME << "':" << endl;
 
     // Add schema to metadata stream
     mdStream.addSchema(gpsSchema);
@@ -53,14 +53,14 @@ void generateMetadata(MetadataStream& mdStream)
     shared_ptr<Metadata> gpsMetadata;
 
     // Let there be an UFO moving around some point on Earth
-    const int nPoints = 32768;
+    const int nPoints = 1<<10;
     for(int i = 0; i < nPoints; i++)
     {
         float lat = float(  37.235 + cos(i/25.0*2.0*PI) * 0.001);
         float lng = float(-115.811 + sin(i/25.0*2.0*PI) * 0.001);
         long long time = i;
-        cout << "Adding metadata item 'lat " << lat << " lng " << lng << "'";
-        cout << " with associated time " << time << endl;
+        if (i<3) cout << "\t[" << i << "] 'lat " << lat << " lng " << lng << '\'' << " time " << time << endl;
+        else cout << '.';
 
         // Create a metadata item
         gpsMetadata = shared_ptr<Metadata>(new Metadata(gpsSchema->findMetadataDesc(GPS_DESC)));
@@ -73,6 +73,7 @@ void generateMetadata(MetadataStream& mdStream)
         // Add to metadata a new item
         mdStream.add(gpsMetadata);
     }
+    cout << "\n\t" << nPoints << " items." << endl;
 }
 
 void readAndDumpMetadata(const vmf_string& videoFile)
@@ -111,19 +112,28 @@ void readAndDumpMetadata(const vmf_string& videoFile)
             if(mdSet.empty()) continue;
             vector<string> fields(mdSet[0]->getFieldNames());
             int itemNum = 0;
-            for(auto item = mdSet.begin(); item != mdSet.end(); item++)
+            for(const auto& item : mdSet)
             {
-                cout << "\t\t* (" << sNum << "." << setNum << "." << ++itemNum << ") { ";
-                const char * separator = "";
-                for (auto f = fields.begin(); f != fields.end(); f++)
+                if (itemNum++ <= 3)
                 {
-                    cout << separator << *f << "=";
-                    try { cout << (*item)->getFieldValue(*f).toString(); }
-                    catch(vmf::Exception& e) { cout << '<' << e.what() << '>'; }
-                    separator = ", ";
+                    cout << "\t\t* (" << sNum << "." << setNum << "." << itemNum << ") { ";
+                    const char * separator = "";
+                    for (const auto& f : fields)
+                    {
+                        cout << separator << f << "=";
+                        try { cout << item->getFieldValue(f).toString(); }
+                        catch (vmf::Exception& e) { cout << '<' << e.what() << '>'; }
+                        separator = ", ";
+                    }
+                    cout << " }";
+                    long long t = item->getTime();
+                    if (t >= 0) cout << ", time " << t;
+                    cout << endl;
                 }
-                cout << " }" << endl;
+                else
+                    cout << '.';
             }
+            cout << "\n\t\t" << itemNum << " items." << endl;
         }
     }
 

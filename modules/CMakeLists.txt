@@ -72,7 +72,7 @@ if (BUILD_JAVA_API)
     file(GLOB VMFCORE_JAVA_JUNIT "${VMFCORE_JAVA_DIR}/test/lib/*.jar")
 endif()
 
-source_group(vmfcore\\include\\vmf FILES ${VMFCORE_HEADERS})
+source_group(vmfcore\\include FILES ${VMFCORE_HEADERS})
 source_group(vmfcore\\src FILES ${VMFCORE_SOURCES})
 source_group(vmfcore\\src\\details FILES ${VMFCORE_DETAILS})
 
@@ -97,7 +97,7 @@ file(GLOB VMDATASOURCE_SOURCES "${VMDATASOURCE_SOURCE_DIR}/*.hpp" "${VMDATASOURC
 file(GLOB VMDATASOURCE_TESTS "${VMDATASOURCE_TESTS_DIR}/*.hpp" "${VMDATASOURCE_TESTS_DIR}/*.cpp")
 
 source_group(vmdatasource\\src FILES ${VMDATASOURCE_SOURCES})
-source_group(vmdatasource\\include\\vmf FILES ${VMDATASOURCE_HEADERS})
+source_group(vmdatasource\\include FILES ${VMDATASOURCE_HEADERS})
 
 include_directories(${CMAKE_BINARY_DIR} ${VMFCORE_PUBLIC_DIR} ${VMFCORE_DETAILS_DIR} ${VMDATASOURCE_PUBLIC_DIR} ${XMP_PUBLIC_DIR} ${LIBXML2_PUBLIC_DIR} ${LIBJSON_PUBLIC_DIR} ${ZLIB_PUBLIC_DIR} ${XMPCORE_SOURCE_DIR} ${XMP_ROOT_DIR})
 
@@ -139,7 +139,7 @@ elseif(UNIX)
     target_link_libraries(${VMF_LIBRARY_NAME} dl)
 endif()
 
-set_target_properties(${VMF_LIBRARY_NAME} PROPERTIES FOLDER "vmf")
+set_target_properties(${VMF_LIBRARY_NAME} PROPERTIES FOLDER "vmf library")
 
 include_directories(${GTEST_INCLUDE_DIR})
 
