@@ -31,43 +31,69 @@ public class MetadataSet implements IQuery
      *}
     */
 
-    /*
-     * TO DO:
-     * public MetadataSet query (filter){}
-     * public MetadataSet queryByReference (Metadata md, filter){}
-    */
-    
     public Metadata getElement (long number)
     {
     	if (number >= 0)
-    		return new Metadata (n_getElement (nativeObj, number));
+    	{
+    		long nativeAddr = n_getElement (nativeObj, number);
+    		
+    		if (nativeAddr == 0)
+    			return null;
+    		
+    		return new Metadata (nativeAddr);
+    	}
     	else
     		return null;
     }
     
     public MetadataSet queryByFrameIndex (long index)
     {
-        return new MetadataSet (n_queryByFrameIndex (nativeObj, index));
+    	long nativeAddr = n_queryByFrameIndex (nativeObj, index);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByTime (long startTime, long endTime)
     {
-        return new MetadataSet (n_queryByTime (nativeObj, startTime, endTime));
+    	long nativeAddr = n_queryByTime (nativeObj, startTime, endTime);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryBySchema (String schemaName)
     {
-        return new MetadataSet (n_queryBySchema (nativeObj, schemaName));
+    	long nativeAddr = n_queryBySchema (nativeObj, schemaName);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByName (String name)
     {
-        return new MetadataSet (n_queryByName (nativeObj, name));
+    	long nativeAddr = n_queryByName (nativeObj, name);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByNameAndValue (String mdName, FieldValue value)
     {
-        return new MetadataSet (n_queryByNameAndValue (nativeObj, mdName, value.nativeObj));
+    	long nativeAddr = n_queryByNameAndValue (nativeObj, mdName, value.nativeObj);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByNameAndFields (String mdName, FieldValue fields[])
@@ -78,17 +104,32 @@ public class MetadataSet implements IQuery
             nativeFieldValueObjs[i] = fields[i].nativeObj;
         }
         
-        return new MetadataSet (n_queryByNameAndFields (nativeObj, mdName, nativeFieldValueObjs));
+        long nativeAddr = n_queryByNameAndFields (nativeObj, mdName, nativeFieldValueObjs);
+        
+        if (nativeAddr == 0)
+			return null;
+        
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByReference (String refName)
     {
-        return new MetadataSet (n_queryByReference (nativeObj, refName));
+    	long nativeAddr = n_queryByReference (nativeObj, refName);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByReference (String refName, FieldValue value)
     {
-        return new MetadataSet (n_queryByReference (nativeObj, refName, value.nativeObj));
+    	long nativeAddr = n_queryByReference (nativeObj, refName, value.nativeObj);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
     
     public MetadataSet queryByReference (String refName, FieldValue[] fields)
@@ -99,7 +140,12 @@ public class MetadataSet implements IQuery
             nativeFieldValueObjs[i] = fields[i].nativeObj;
         }
         
-        return new MetadataSet (n_queryByReference (nativeObj, refName, nativeFieldValueObjs));
+        long nativeAddr = n_queryByReference (nativeObj, refName, nativeFieldValueObjs);
+        
+        if (nativeAddr == 0)
+			return null;
+        
+        return new MetadataSet (nativeAddr);
     }
     
     public long shift (long nTarFrameIndex, long nSrcFrameIndex)
@@ -109,7 +155,10 @@ public class MetadataSet implements IQuery
     
     public long shift (long nTarFrameIndex, long nSrcFrameIndex, long nNumOfFrames, MetadataSet setFailure)
     {
-        return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, setFailure.nativeObj);
+    	if (setFailure == null)
+    		return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, 0);
+    	else
+    		return n_shift (nativeObj, nTarFrameIndex, nSrcFrameIndex, nNumOfFrames, setFailure.nativeObj);
     }
     
     public long getSize ()

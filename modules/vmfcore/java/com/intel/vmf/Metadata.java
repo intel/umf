@@ -95,7 +95,12 @@ public class Metadata
 
     public MetadataDesc getDesc ()
     {
-        return new MetadataDesc (n_getDesc (nativeObj));
+    	long nativeAddr = n_getDesc (nativeObj);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new MetadataDesc (nativeAddr);
     }
 
     public String[] getFieldNames ()
@@ -105,7 +110,12 @@ public class Metadata
 
     public Variant getFieldValue (String name)
     {
-        return new Variant (n_getFieldValue (nativeObj, name));
+    	long nativeAddr = n_getFieldValue (nativeObj, name);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new Variant (nativeAddr);
     }
 
     public boolean hasField (String fieldName)
@@ -132,22 +142,41 @@ public class Metadata
 
     public Metadata getFirstReference (String mdName)
     {
-        return new Metadata (n_getFirstReference (nativeObj, mdName));
+    	long nativeAddr = n_getFirstReference (nativeObj, mdName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new Metadata (nativeAddr);
     }
 
     public MetadataSet getReferencesByMetadata (String mdName)
     {
-        return new MetadataSet (n_getReferencesByMetadata (nativeObj, mdName));
+    	long nativeAddr = n_getReferencesByMetadata (nativeObj, mdName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
 
     public MetadataSet getReferencesByName (String refName)
     {
-        return new MetadataSet (n_getReferencesByName (nativeObj, refName));
+    	long nativeAddr = n_getReferencesByName (nativeObj, refName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new MetadataSet (nativeAddr);
     }
 
     public Reference[] getAllReferences ()
     {
         long nObjs[] = n_getAllReferences (nativeObj);
+        
+        if (nObjs == null)
+        	return null;
+        
         Reference objs[] = new Reference [nObjs.length];
 
         for (int i = 0; i < nObjs.length; i++)

@@ -456,10 +456,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
 
         if ((setFailure != NULL) && (*setFailure != NULL))
             return (jlong)(*obj)->shift((long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFailure->get());
-        else if (setFailure == NULL)
-            return (jlong)(*obj)->shift((long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames);
         else
-            return 0;
+            return (jlong)(*obj)->shift((long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames);
     }
     catch(const std::exception &e)
     {

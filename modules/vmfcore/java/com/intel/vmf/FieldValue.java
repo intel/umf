@@ -45,10 +45,10 @@ public class FieldValue
     }
 
     /*
-    public void setTo (Variant value)
-    {
-        n_setToVariant (nativeObj, value.nativeObj);
-    }
+     *public void setTo (Variant value)
+     *{
+     *   n_setToVariant (nativeObj, value.nativeObj);
+     *}
     */
     
     public void setTo (FieldValue value)

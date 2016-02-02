@@ -34,12 +34,22 @@ public class Reference
 
     public Metadata getReferenceMetadata ()
     {
-        return new Metadata (n_getMetadata (nativeObj));
+    	long nativeAddr = n_getMetadata (nativeObj);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new Metadata (nativeAddr);
     }
 
     public ReferenceDesc getReferenceDescription ()
     {
-        return new ReferenceDesc (n_getReferenceDescription (nativeObj));
+    	long nativeAddr = n_getReferenceDescription (nativeObj);
+    	
+    	if (nativeAddr == 0)
+			return null;
+    	
+        return new ReferenceDesc (nativeAddr);
     }
 
     public void setReferenceMetadata (Metadata md)

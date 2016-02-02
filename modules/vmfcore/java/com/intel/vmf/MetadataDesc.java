@@ -68,12 +68,16 @@ public class MetadataDesc
     
     public FieldDesc[] getFields ()
     {
-        long nObjAddrs[] = n_getFields (nativeObj);
-        FieldDesc objs[] = new FieldDesc [nObjAddrs.length];
+        long nObjs[] = n_getFields (nativeObj);
         
-        for (int i = 0; i < nObjAddrs.length; i++)
+        if (nObjs == null)
+        	return null;
+        
+        FieldDesc objs[] = new FieldDesc [nObjs.length];
+        
+        for (int i = 0; i < nObjs.length; i++)
         {
-            objs[i] = new FieldDesc (nObjAddrs[i]);
+            objs[i] = new FieldDesc (nObjs[i]);
         }
         
         return objs;
@@ -82,6 +86,10 @@ public class MetadataDesc
     public ReferenceDesc[] getAllReferenceDescs ()
     {
         long nObjAddrs[] = n_getAllReferenceDescs (nativeObj);
+        
+        if (nObjAddrs == null)
+        	return null;
+        
         ReferenceDesc objs[] = new ReferenceDesc [nObjAddrs.length];
         
         for (int i = 0; i < nObjAddrs.length; i++)
@@ -105,18 +113,33 @@ public class MetadataDesc
     
     public ReferenceDesc getReferenceDesc (String refName)
     {
-        return new ReferenceDesc (n_getReferenceDesc (nativeObj, refName));
+    	long nativeAddr = n_getReferenceDesc (nativeObj, refName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new ReferenceDesc (nativeAddr);
     }
     
     public FieldDesc getFieldDesc ()
     {
         String fieldName = "";
-        return new FieldDesc (n_getFieldDesc (nativeObj, fieldName));
+        long nativeAddr = n_getFieldDesc (nativeObj, fieldName);
+        
+        if (nativeAddr == 0)
+    		return null;
+        
+        return new FieldDesc (nativeAddr);
     }
     
     public FieldDesc getFieldDesc (String fieldName)
     {
-    	return new FieldDesc (n_getFieldDesc (nativeObj, fieldName));
+    	long nativeAddr = n_getFieldDesc (nativeObj, fieldName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+    	return new FieldDesc (nativeAddr);
     }
     
     @Override

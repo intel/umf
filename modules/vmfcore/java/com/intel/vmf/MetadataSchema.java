@@ -52,12 +52,21 @@ public class MetadataSchema
     
     public MetadataDesc findMetadataDesc (String mdName)
     {
-        return new MetadataDesc (n_findMetadataDesc (nativeObj, mdName));
+    	long nativeAddr = n_findMetadataDesc (nativeObj, mdName);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new MetadataDesc (nativeAddr);
     }
     
     public MetadataDesc[] getAll()
     {
         long nObjs[] = n_getAll (nativeObj);
+        
+        if (nObjs == null)
+        	return null;
+        
         MetadataDesc objs[] = new MetadataDesc [nObjs.length];
         
         for (int i = 0; i < nObjs.length; i++)
@@ -75,7 +84,12 @@ public class MetadataSchema
     
     public static MetadataSchema getStdSchema ()
     {
-        return new MetadataSchema (n_getStdSchema (STD_DST));
+    	long nativeAddr = n_getStdSchema (STD_DST);
+    	
+    	if (nativeAddr == 0)
+    		return null;
+    	
+        return new MetadataSchema (nativeAddr);
     }
     
     @Override

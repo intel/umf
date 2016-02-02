@@ -31,6 +31,10 @@ public class JSONReader implements IReader
     public MetadataSchema[] parseSchemas (String text)
     {
         long nObjAddrs[] = n_parseSchemas (nativeObj, text); 
+        
+        if (nObjAddrs == null)
+        	return null;
+        
         MetadataSchema schemas[] = new MetadataSchema [nObjAddrs.length];
         
         for (int i = 0; i < schemas.length; i++)
@@ -53,6 +57,9 @@ public class JSONReader implements IReader
     	
         long nMdIntAddrs[] = n_parseMetadata (nativeObj, text, nSchemaAddrs);
         
+        if (nMdIntAddrs == null)
+        	return null;
+        
         MetadataInternal mdInt[] = new MetadataInternal [nMdIntAddrs.length];
         
         for (int j = 0; j < nMdIntAddrs.length; j++)
@@ -67,6 +74,10 @@ public class JSONReader implements IReader
     public MetadataStream.VideoSegment[] parseVideoSegments (String text)
     {
         long nObjAddrs[] = n_parseVideoSegments (nativeObj, text);
+        
+        if (nObjAddrs == null)
+        	return null;
+        
         MetadataStream.VideoSegment videoSegments[] = new MetadataStream.VideoSegment[nObjAddrs.length];
         
         for (int i = 0; i < nObjAddrs.length; i++)
