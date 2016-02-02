@@ -65,8 +65,6 @@ public class VmfMetadataDescTest
     @Test
     public void testMetadataDesc ()
     {
-        System.out.println("Inside VmfMetadataDescTest.testMetadataDesc()");
-        
         assertEquals("person", mdDesc1.getMetadataName ());
         assertEquals("car", mdDesc2.getMetadataName ());
         

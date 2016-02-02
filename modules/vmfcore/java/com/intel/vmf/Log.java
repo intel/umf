@@ -12,22 +12,22 @@ public class Log
     public static final int LOG_ERROR = 2;
     public static final int LOG_NO_MESSAGE = 3;
     
-    static void setLogToFile (String file)
+    public static void setLogToFile (String file)
     {
         n_logToFile (file);
     }
     
-    static void setLogToConsole ()
+    public static void setLogToConsole ()
     {
         n_logToConsole ();
     }
     
-    static void setVerbosityLevel(int level)
+    public static void setVerbosityLevel(int level)
     {
         n_setVerbosityLevel (level);
     }
     
-    static int getVerbosityLevel()
+    public static int getVerbosityLevel()
     {
         return n_getVerbosityLevel ();
     }

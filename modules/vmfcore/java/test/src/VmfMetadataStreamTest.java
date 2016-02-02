@@ -13,6 +13,11 @@ import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,7 +38,25 @@ public class VmfMetadataStreamTest
         Vmf.terminate();
     }
     
-    protected final String videoFile = "D:/Projects/intel_vmf/vmf/data/BlueSquare.avi";
+    protected final String srcFile = "../../../../../data/BlueSquare.avi";
+    protected final String dstFile = "Test.avi";
+    
+    void copy (String srcFile, String dstFile) throws IOException 
+    {
+    	FileInputStream fileInputStream = new FileInputStream(srcFile);
+		FileChannel srcChannel = fileInputStream.getChannel();
+    	    
+    	FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
+		FileChannel dstChannel = fileOutputStream.getChannel();
+
+    	dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+
+    	srcChannel.close();
+    	dstChannel.close();
+    	fileInputStream.close();
+    	fileOutputStream.close();
+    }
+    
     protected MetadataStream stream;
     protected MetadataSchema schema;
     
@@ -62,7 +85,6 @@ public class VmfMetadataStreamTest
         
         schema.add (mdDesc);
         stream = new MetadataStream ();
-        stream.clear();
         stream.addSchema(schema);
         
         md1 = new Metadata(mdDesc);
@@ -76,13 +98,15 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testSaveLoadAndQueries()
+    public void testSaveLoadAndQueries() throws IOException
     {
+    	copy (srcFile, dstFile);
+    	
     	assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
         assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());
         assertEquals(schema.getAll().length, stream.getSchema("test_schema").getAll().length);
     	
-        assertTrue (stream.open(videoFile, MetadataStream.ReadWrite));
+        assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
         stream.getChecksum ();
         
         String str = stream.computeChecksum ();
@@ -103,6 +127,8 @@ public class VmfMetadataStreamTest
         md2.setFieldValue("name", var1);
         md2.setFieldValue("last name", var2);
         md2.setFieldValue("age", var3);
+        
+        stream.addSchema(schema);
         
         stream.add(md1);
         stream.add(md2);

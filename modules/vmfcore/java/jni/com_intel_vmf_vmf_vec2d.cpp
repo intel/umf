@@ -1,16 +1,17 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
+#include "../com_intel_vmf_vmf_vec2d.h"
 #include "throwJavaException.hpp"
 
 using namespace vmf;
 
 /*
- * Class:     com_intel_vmf_vmf_vec2d
- * Method:    n_vmf_vec2d
- * Signature: ()J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__ (JNIEnv *env, jclass)
+* Class:     com_intel_vmf_vmf_vec2d
+* Method:    n_vmf_vec2d
+* Signature: ()J
+*/
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__(JNIEnv *env, jclass)
 {
     static const char method_name[] = "vmf_vec2d::n_1vec2d__";
 

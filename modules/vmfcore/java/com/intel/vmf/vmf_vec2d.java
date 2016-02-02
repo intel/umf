@@ -28,7 +28,7 @@ public class vmf_vec2d
     }
     
     /*
-     * public void setTo (vmf_vec4d other)
+     * public void setTo (vmf_vec2d other)
      *{
      *    n_setTo (nativeObj, other.nativeObj);
      *}
