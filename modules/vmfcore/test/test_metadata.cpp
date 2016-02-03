@@ -88,5 +88,5 @@ TEST_F(TestMetadata, GetSingleFieldValue)
     std::shared_ptr<vmf::MetadataDesc> desc(new vmf::MetadataDesc("name", vmf::Variant::type_integer));
     std::shared_ptr<vmf::Metadata> metadata(new vmf::Metadata(desc));
     metadata->addValue(42);
-    ASSERT_NO_THROW(metadata->getFieldValue(""));
+    ASSERT_NO_THROW(metadata->getFieldValue());
 }

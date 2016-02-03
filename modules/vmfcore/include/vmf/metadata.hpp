@@ -146,7 +146,7 @@ public:
     * \note For missing optional fields returns an empty Variant value
     *       that can be checked via 'Variant::isEmpty()' call.
     */
-    vmf::Variant getFieldValue( const std::string& sName ) const;
+    vmf::Variant getFieldValue( const std::string& sName = std::string()) const;
 
     /*!
     * \brief Find field by name
