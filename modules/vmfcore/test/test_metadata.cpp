@@ -82,3 +82,11 @@ TEST_F(TestMetadata, AddValueIncorrectType)
     std::shared_ptr< vmf::Metadata > spSki( new vmf::Metadata( spDesc ));
     EXPECT_THROW(spSki->addValue((vmf::vmf_integer) 42), vmf::TypeCastException);
 }
+
+TEST_F(TestMetadata, GetSingleFieldValue)
+{
+    std::shared_ptr<vmf::MetadataDesc> desc(new vmf::MetadataDesc("name", vmf::Variant::type_integer));
+    std::shared_ptr<vmf::Metadata> metadata(new vmf::Metadata(desc));
+    metadata->addValue(42);
+    ASSERT_NO_THROW(metadata->getFieldValue(""));
+}
