@@ -171,11 +171,6 @@ std::vector< std::string > Metadata::getFieldNames() const
 
 vmf::Variant Metadata::getFieldValue( const std::string& sName ) const
 {
-    if( sName.empty() )
-    {
-        VMF_EXCEPTION(IncorrectParamException, "Field name not specified!");
-    }
-
     const_iterator it = const_cast<vmf::Metadata*>(this)->findField( sName );
     if( it != this->end() )
         return *it;
