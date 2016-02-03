@@ -72,10 +72,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jcla
         std::shared_ptr<vmf_vec4d>* self = (std::shared_ptr<vmf_vec4d>*) selfAddr;
         std::shared_ptr<vmf_vec4d>* other = (std::shared_ptr<vmf_vec4d>*) otherAddr;
 
-        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+        if ((self == NULL) || (self->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec4d is null pointer.");
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Other vec4d is null pointer.");
 
 
@@ -104,7 +104,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).x);
@@ -134,7 +134,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).y);
@@ -164,7 +164,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).z);
@@ -195,7 +195,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).w);
@@ -225,7 +225,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete (JNIEnv *env, jcl
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec4d is null pointer.");
 
         delete obj;

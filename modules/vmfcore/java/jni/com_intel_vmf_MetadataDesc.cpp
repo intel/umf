@@ -164,7 +164,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getMetadataName (JN
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::string str = (*obj)->getMetadataName ();
@@ -196,7 +196,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getSchemaName (JNIE
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::string str = (*obj)->getSchemaName ();
@@ -227,7 +227,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields (JNIEn
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector<FieldDesc> vec = (*obj)->getFields ();
@@ -267,7 +267,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceD
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector<std::shared_ptr<ReferenceDesc>> vec = (*obj)->getAllReferenceDescs ();
@@ -307,7 +307,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1declareCustomReference
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
 
         const char* tmp = env->GetStringUTFChars(refName, NULL);
@@ -338,7 +338,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getReferenceDesc (JNI
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(refName, NULL);
@@ -376,7 +376,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFieldDesc (JNIEnv 
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
         
         FieldDesc fieldDesc;
@@ -417,7 +417,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1delete (JNIEnv *env, j
     {
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
 
         delete obj;

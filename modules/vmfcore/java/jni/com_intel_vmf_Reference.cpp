@@ -46,10 +46,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1Reference__JJ (JNIEnv *e
         std::shared_ptr<ReferenceDesc>* refDesc = (std::shared_ptr<ReferenceDesc>*) refDescAddr;
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
 
-        if ((refDesc == NULL) || (*refDesc == NULL) || (refDesc->get() == NULL))
+        if ((refDesc == NULL) || (refDesc->get() == NULL))
             return 0;
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             return 0;
 
         std::shared_ptr<Reference>* obj = new std::shared_ptr<Reference>(new Reference((*refDesc), (*md)));
@@ -81,7 +81,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1getMetadata (JNIEnv *env
     {
         std::shared_ptr<Reference>* obj = (std::shared_ptr<Reference>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::weak_ptr<Metadata> md = (*obj)->getReferenceMetadata();
@@ -118,10 +118,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Reference_n_1setMetadata (JNIEnv *env,
         std::shared_ptr<Reference>* obj = (std::shared_ptr<Reference>*) self;
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setReferenceMetadata ((*md));
@@ -149,7 +149,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Reference_n_1getReferenceDescription 
     {
         std::shared_ptr<Reference>* obj = (std::shared_ptr<Reference>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::shared_ptr<ReferenceDesc> refDesc = (*obj)->getReferenceDescription();
@@ -185,7 +185,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Reference_n_1delete (JNIEnv *env, jcla
     {
         std::shared_ptr<Reference>* obj = (std::shared_ptr<Reference>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
 
         delete obj;

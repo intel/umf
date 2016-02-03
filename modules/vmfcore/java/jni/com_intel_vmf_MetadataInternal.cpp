@@ -52,7 +52,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalC
     {
         std::shared_ptr<MetadataInternal>* other = (std::shared_ptr<MetadataInternal>*) otherAddr;
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             return 0;
 
         return (jlong) new std::shared_ptr <MetadataInternal>(new MetadataInternal ((**other)));

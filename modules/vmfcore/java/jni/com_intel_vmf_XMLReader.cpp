@@ -45,7 +45,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEn
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -96,7 +96,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIE
     {
         std::shared_ptr <XMLReader>* obj = (std::shared_ptr <XMLReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -159,7 +159,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments 
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -211,7 +211,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclas
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) ||  (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
 
         delete obj;
