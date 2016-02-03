@@ -79,10 +79,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, 
         std::shared_ptr<FieldDesc>* self = (std::shared_ptr<FieldDesc>*) selfAddr;
         std::shared_ptr<FieldDesc>* other = (std::shared_ptr<FieldDesc>*) otherAddr;
         
-        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+        if ((self == NULL) || (self->get() == NULL))
             return JNI_FALSE;
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             return JNI_FALSE;
 
         return (**self == **other) ? JNI_TRUE : JNI_FALSE;
@@ -113,7 +113,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         std::string str = (**obj).name;
@@ -144,7 +144,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jcl
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jint)((**obj).type);
@@ -174,7 +174,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *e
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean)(**obj).optional;
@@ -204,7 +204,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete (JNIEnv *env, jcla
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
 
         delete obj;

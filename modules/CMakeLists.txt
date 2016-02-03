@@ -54,7 +54,7 @@ set(VMFCORE_TEST_EXECUTABLE "unit-tests")
 if (BUILD_JAVA_API AND JAVA_FOUND)
     set(VMFCORE_JAVA_DIR "${VMFCORE_DIR}/java")
     set(VMFCORE_JNI_DIR "${VMFCORE_JAVA_DIR}/jni")
-    set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.8" "-target" "1.8")
+    set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
 endif()
 
 configure_file("${VMFCORE_PUBLIC_DIR}/vmf/config.hpp.in" "${CMAKE_BINARY_DIR}/config.hpp")

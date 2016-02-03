@@ -45,7 +45,6 @@ public class VmfFieldDescTest
         tmp6 = new FieldDesc ("vec2d", Variant.type_vec2d, true);
         tmp7 = new FieldDesc ("vec3d", Variant.type_vec3d, true);
         tmp8 = new FieldDesc ("vec4d", Variant.type_vec4d, true);
-        
         tmp9 = new FieldDesc ("rawbuffer", Variant.type_rawbuffer);
     }
     
@@ -77,7 +76,6 @@ public class VmfFieldDescTest
         assertEquals("vec2d", tmp6.getName());
         assertEquals("vec3d", tmp7.getName());
         assertEquals("vec4d", tmp8.getName());
-        
         assertEquals("rawbuffer", tmp9.getName());
    }
    
@@ -95,7 +93,6 @@ public class VmfFieldDescTest
         assertEquals(Variant.type_vec2d, tmp6.getType());
         assertEquals(Variant.type_vec3d, tmp7.getType());
         assertEquals(Variant.type_vec4d, tmp8.getType());
-        
         assertEquals(Variant.type_rawbuffer, tmp9.getType());
    }
    
@@ -112,7 +109,6 @@ public class VmfFieldDescTest
         assertEquals(true, tmp6.isOptional());
         assertEquals(true, tmp7.isOptional());
         assertEquals(true, tmp8.isOptional());
-        
         assertEquals(false, tmp9.isOptional());
    }
    

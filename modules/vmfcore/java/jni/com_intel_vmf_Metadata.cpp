@@ -50,7 +50,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env
     {
         std::shared_ptr <Metadata>* other = (std::shared_ptr <Metadata>*) otherAddr;
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             return 0;
 
         return (jlong) new std::shared_ptr<Metadata>(new Metadata(**other));
@@ -80,7 +80,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID (JNIEnv *env, jclas
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jlong) (*obj)->getId();
@@ -110,7 +110,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex (JNIEnv *en
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jlong)(*obj)->getFrameIndex();
@@ -140,7 +140,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames (JNIEnv *e
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jlong) (*obj)->getNumOfFrames();
@@ -170,7 +170,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setFrameIndex ((long long)frameIndex, (long long)numOfFrames);
@@ -198,7 +198,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env,
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setTimestamp ((long long)time, (long long)duration);
@@ -226,7 +226,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime (JNIEnv *env, jcl
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jlong)(*obj)->getTime();
@@ -256,7 +256,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env,
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jlong) (*obj)->getDuration();
@@ -286,7 +286,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, j
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (env->NewStringUTF(((*obj)->getName()).c_str()));
@@ -316,7 +316,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName (JNIEnv *
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (env->NewStringUTF(((*obj)->getSchemaName()).c_str()));
@@ -345,6 +345,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc (JNIEnv *env, jcl
     try
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
+
+        if ((obj == NULL) || (obj->get() == NULL))
+            return 0;
+
         std::shared_ptr <MetadataDesc> mdDesc = (*obj)->getDesc();
 
         if (mdDesc == NULL)
@@ -378,7 +382,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getFieldNames (JNI
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector<std::string> vecNames = (*obj)->getFieldNames();
@@ -420,7 +424,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFieldValue (JNIEnv *en
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -454,7 +458,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField (JNIEnv *env,
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -489,10 +493,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals (JNIEnv *env, j
         std::shared_ptr <Metadata>* self = (std::shared_ptr <Metadata>*)selfAddr;
         std::shared_ptr <Metadata>* other = (std::shared_ptr <Metadata>*)otherAddr;
 
-        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+        if ((self == NULL) || (self->get() == NULL))
             return JNI_FALSE;
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             return JNI_FALSE;
     
         return (**self) == (**other) ? JNI_TRUE : JNI_FALSE;
@@ -554,10 +558,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1lessThan (JNIEnv *env,
         std::shared_ptr <Metadata>* self = (std::shared_ptr <Metadata>*)selfAddr;
         std::shared_ptr <Metadata>* other = (std::shared_ptr <Metadata>*)otherAddr;
 
-        if ((self == NULL) || (*self == NULL) || (self->get() == NULL))
+        if ((self == NULL) || (self->get() == NULL))
             return JNI_FALSE;
 
-        if ((other == NULL) || (*other == NULL) || (other->get() == NULL))
+        if ((other == NULL) || (other->get() == NULL))
             return JNI_FALSE;
     
         return (**self) < (**other) ? JNI_TRUE : JNI_FALSE; 
@@ -587,7 +591,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference (JNIEnv
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -627,7 +631,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByMetadata (
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -662,7 +666,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -696,7 +700,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences (JN
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector<Reference> refs = (*obj)->getAllReferences();
@@ -739,7 +743,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceById (JNIEn
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -775,10 +779,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceByMd (JNIEn
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             return JNI_FALSE;
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -814,10 +818,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference (JNIEnv *env,
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -850,7 +854,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById (JNIEn
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -883,10 +887,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd (JNIEn
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
@@ -920,10 +924,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*)variantAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
-        if ((variant == NULL) || (*variant == NULL) || (variant->get() == NULL))
+        if ((variant == NULL) || (variant->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
         const char* str = env->GetStringUTFChars(fieldName, NULL);
@@ -956,10 +960,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addValue (JNIEnv *env, jcl
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*) variantAddr;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
-        if ((variant == NULL) || (*variant == NULL) || (variant->get() == NULL))
+        if ((variant == NULL) || (variant->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
         (*obj)->addValue((**variant)); 
@@ -987,7 +991,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1validate (JNIEnv *env, jcl
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->validate ();
@@ -1015,7 +1019,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isValid (JNIEnv *env, 
     {
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*)self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return JNI_FALSE;
 
         return (jboolean) (*obj)->isValid ();
@@ -1045,7 +1049,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1delete (JNIEnv *env, jclas
     {
         std::shared_ptr<Metadata>* obj = (std::shared_ptr<Metadata>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         delete obj;

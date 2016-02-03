@@ -45,7 +45,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseSchemas(JNIEn
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -97,7 +97,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseMetadata (JNI
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -160,7 +160,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_JSONReader_n_1parseVideoSegments
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -212,7 +212,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONReader_n_1delete (JNIEnv *env, jcl
     {
         std::shared_ptr<JSONReader>* obj = (std::shared_ptr<JSONReader>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION (NullPointerException, "Reader is null pointer.");
 
         delete obj;
