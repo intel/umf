@@ -141,8 +141,6 @@ public class VmfJSONTest
     @Test
     public void testJSONReaderAndWriter()
     {
-        System.out.println("Inside VmfJSONTest.testJSONReaderAndWriter()");
-        
         String schemas = writer.store(schema1, schema2);
         assertFalse(schemas.isEmpty());
         

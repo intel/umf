@@ -52,8 +52,6 @@ public class VmfFieldDescTest
    @Test
    public void testEquals ()
    {
-        System.out.println("Inside VmfFieldDescTest.testEquals()");
-
         assertTrue (tmp2.equals(tmp4));
         
         assertFalse (tmp1.equals (tmp2));
@@ -69,8 +67,6 @@ public class VmfFieldDescTest
    @Test
    public void testGetName ()
    {
-        System.out.println("Inside VmfFieldDescTest.testGetName()");
-        
         assertEquals(tmp2.getName(), tmp4.getName()); 
         
         assertEquals("", tmp1.getName());
@@ -89,8 +85,6 @@ public class VmfFieldDescTest
    @Test
    public void testGetType ()
    {
-        System.out.println("Inside VmfFieldDescTest.testGetType()");
-        
         assertEquals(tmp2.getType(), tmp4.getType());
         
         assertEquals(Variant.type_string, tmp1.getType());
@@ -108,8 +102,6 @@ public class VmfFieldDescTest
    @Test
    public void testIsOptional()
    {
-         System.out.println("Inside VmfFieldDescTest.testIsOptional()");
-        
         assertEquals(tmp2.isOptional(), tmp4.isOptional());
         
         assertEquals(false, tmp1.isOptional());
