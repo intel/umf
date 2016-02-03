@@ -452,10 +452,11 @@ TEST_F(TestVariant, VectorFloatConstructor)
 
 TEST_F(TestVariant, typeFromString)
 {
-    ASSERT_EQ(v.typeFromString(""), vmf::Variant::type_unknown);
-    ASSERT_EQ(v.typeFromString("invalid type"), vmf::Variant::type_unknown);
+    ASSERT_THROW(v.typeFromString(""), vmf::IncorrectParamException);
+    ASSERT_THROW(v.typeFromString("invalid type"), vmf::IncorrectParamException);
 
     ASSERT_EQ(v.typeFromString("unknown"), vmf::Variant::type_unknown);
+    ASSERT_EQ(v.typeFromString("char"), vmf::Variant::type_integer); // removed char replaced with integer
     ASSERT_EQ(v.typeFromString("integer"), vmf::Variant::type_integer);
     ASSERT_EQ(v.typeFromString("real"), vmf::Variant::type_real);
     ASSERT_EQ(v.typeFromString("string"), vmf::Variant::type_string);
@@ -464,6 +465,7 @@ TEST_F(TestVariant, typeFromString)
     ASSERT_EQ(v.typeFromString("vec4d"), vmf::Variant::type_vec4d);
     ASSERT_EQ(v.typeFromString("rawbuffer"), vmf::Variant::type_rawbuffer);
 
+    ASSERT_EQ(v.typeFromString("char[]"), vmf::Variant::type_integer_vector); // removed char[] replaced with integer[]
     ASSERT_EQ(v.typeFromString("integer[]"), vmf::Variant::type_integer_vector);
     ASSERT_EQ(v.typeFromString("real[]"), vmf::Variant::type_real_vector);
     ASSERT_EQ(v.typeFromString("string[]"), vmf::Variant::type_string_vector);

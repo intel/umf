@@ -50,11 +50,12 @@ public:
 
 Variant::Variant() : data(nullptr), m_type(type_unknown) {}
 
-Variant::Variant(const Variant& other) : data(other.data->clone()), m_type(other.getType()) {}
+Variant::Variant(const Variant& other) : data(other.data ? other.data->clone() : nullptr), m_type(other.getType()) {}
 
-Variant::Variant(Variant&& other)
+Variant::Variant(Variant&& other) : Variant()
 {
-    *this = std::move(other);
+    std::swap(data, other.data);
+    std::swap(m_type, other.m_type);
 }
 
 Variant::~Variant()
@@ -620,27 +621,28 @@ std::string Variant::typeToString(Type t)
 }
 
 #define TYPE_FROM_STRING( T , VAL) \
-    if(sFieldType == #VAL) \
-        return type_##T;
+    if(sFieldType == #VAL) return type_##T
 
 Variant::Type Variant::typeFromString(const std::string& sFieldType)
 {
-    TYPE_FROM_STRING( unknown , unknown )
-    TYPE_FROM_STRING( integer , integer )
-    TYPE_FROM_STRING( real , real )
-    TYPE_FROM_STRING( string , string )
-    TYPE_FROM_STRING( vec2d , vec2d )
-    TYPE_FROM_STRING( vec3d , vec3d )
-    TYPE_FROM_STRING( vec4d , vec4d )
-    TYPE_FROM_STRING( rawbuffer , rawbuffer )
-    TYPE_FROM_STRING( integer_vector , integer[] )
-    TYPE_FROM_STRING( real_vector , real[] )
-    TYPE_FROM_STRING( string_vector , string[] )
-    TYPE_FROM_STRING( vec2d_vector , vec2d[] )
-    TYPE_FROM_STRING( vec3d_vector , vec3d[] )
-    TYPE_FROM_STRING( vec4d_vector , vec4d[] )
+    TYPE_FROM_STRING(unknown, unknown);
+    TYPE_FROM_STRING(integer, char);
+    TYPE_FROM_STRING(integer, integer);
+    TYPE_FROM_STRING(real, real);
+    TYPE_FROM_STRING(string, string);
+    TYPE_FROM_STRING(vec2d, vec2d);
+    TYPE_FROM_STRING(vec3d, vec3d);
+    TYPE_FROM_STRING(vec4d, vec4d);
+    TYPE_FROM_STRING(rawbuffer, rawbuffer);
+    TYPE_FROM_STRING(integer_vector, char[]);
+    TYPE_FROM_STRING(integer_vector, integer[]);
+    TYPE_FROM_STRING(real_vector, real[]);
+    TYPE_FROM_STRING(string_vector, string[]);
+    TYPE_FROM_STRING(vec2d_vector, vec2d[]);
+    TYPE_FROM_STRING(vec3d_vector, vec3d[]);
+    TYPE_FROM_STRING(vec4d_vector, vec4d[]);
 
-    return type_unknown;
+    VMF_EXCEPTION(IncorrectParamException, std::string("Invalid type string: ") + sFieldType);
 }
 
 bool Variant::isConvertible(Type srcType, Type dstType)
