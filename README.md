@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/apavlenko/vmf.svg?branch=vmf-3.0)](https://travis-ci.org/apavlenko/vmf)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/apavlenko/vmf?branch=vmf-3.0&svg=true)](https://ci.appveyor.com/project/apavlenko/vmf/branch/vmf-3.0)
 [![Coverage Status](https://coveralls.io/repos/github/apavlenko/vmf/badge.svg?branch=vmf-3.0)](https://coveralls.io/github/apavlenko/vmf?branch=vmf-3.0)
+[![codecov.io](https://codecov.io/github/apavlenko/vmf/coverage.svg?branch=vmf-3.0)](https://codecov.io/github/apavlenko/vmf?branch=vmf-3.0)
 
 Video Metadata Framework
 ------------------------
