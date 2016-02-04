@@ -14,8 +14,9 @@ addons:
     sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
     packages: ['cmake', 'g++-4.8', 'clang-3.7']
 before_install:
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then pip install --user cpp-coveralls; export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then pip install --user codecov; export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
+  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user cpp-coveralls; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user codecov; fi
 before_script:
   - mkdir ../build
   - cd ../build
@@ -34,6 +35,6 @@ script:
   - if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then cd ..; mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
 after_success:
   - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root ../.. --build-root ..; fi
-  - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root ../.. --gcov-exec gcov-4.8; fi
 notifications:
   email: false
