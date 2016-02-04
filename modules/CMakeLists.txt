@@ -1,5 +1,5 @@
 project(vmf-library)
-cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 set(VMF_LIBRARY_NAME "vmf")
 set(VMF_JAR_NAME ${VMF_LIBRARY_NAME}_java)
@@ -78,21 +78,33 @@ source_group(vmfcore\\src\\details FILES ${VMFCORE_DETAILS})
 if (BUILD_JAVA_API AND JAVA_FOUND)
     source_group(vmfcore\\jni FILES ${VMFCORE_JNI})
         
-    add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    if(CMAKE_VERSION VERSION_LESS "2.8.12")
+      # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
+      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API})
+      set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    else()
+      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    endif()
     
-    get_target_property(_jarFile ${VMF_JAR_NAME} JAR_FILE)
-    get_target_property(_classDir ${VMF_JAR_NAME} CLASSDIR)
+    # debug info
+    #get_target_property(_jarFile ${VMF_JAR_NAME} JAR_FILE)
+    #get_target_property(_classDir ${VMF_JAR_NAME} CLASSDIR)
+    #message(STATUS "Jar file ${_jarFile}")
+    #message(STATUS "Class compiled to ${_classDir}")
     
-    message(STATUS "Jar file ${_jarFile}")
-    message(STATUS "Class compiled to ${_classDir}")
-        
-    add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    if(CMAKE_VERSION VERSION_LESS "2.8.12")
+      # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
+      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT})
+      set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    else()
+      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    endif()
     
-    get_target_property(_jarFile ${VMF_JAR_TEST_NAME} JAR_FILE)
-    get_target_property(_classDir ${VMF_JAR_TEST_NAME} CLASSDIR)
-    
-    message(STATUS "Jar file ${_jarFile}")
-    message(STATUS "Class compiled to ${_classDir}")
+    # debug info
+    #get_target_property(_jarFile ${VMF_JAR_TEST_NAME} JAR_FILE)
+    #get_target_property(_classDir ${VMF_JAR_TEST_NAME} CLASSDIR)
+    #message(STATUS "Jar file ${_jarFile}")
+    #message(STATUS "Class compiled to ${_classDir}")
     
     file(COPY ${VMFCORE_JAVA_JUNIT} DESTINATION ${CMAKE_BINARY_DIR}/bin)
 endif()
