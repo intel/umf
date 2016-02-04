@@ -2,9 +2,11 @@ package com.intel.vmf;
 
 public class Vmf
 {
+    public static final String NATIVE_LIBRARY_NAME = "vmf";
+
     static
     {
-        System.loadLibrary("vmf");
+        System.loadLibrary(NATIVE_LIBRARY_NAME);
     }
     
     public static void initialize ()

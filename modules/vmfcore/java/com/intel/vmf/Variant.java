@@ -2,10 +2,17 @@ package com.intel.vmf;
 
  public class Variant
  {
-    static
-    {
-        System.loadLibrary("vmf");
-    }
+     static
+     {
+         try
+         {
+             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
+         }
+         catch (Exception e)
+         {
+             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+         }
+     }
 
     public static final int type_unknown = 0;
     public static final int type_integer = 1;

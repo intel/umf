@@ -4,7 +4,14 @@ public class vmf_vec4d
 {
     static
     {
-        System.loadLibrary("vmf");
+        try
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
+        }
+        catch (Exception e)
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+        }
     }
     
     public final long nativeObj;

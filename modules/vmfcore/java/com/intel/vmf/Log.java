@@ -4,7 +4,14 @@ public class Log
 {
     static
     {
-        System.loadLibrary("vmf");
+        try
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
+        }
+        catch (Exception e)
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+        }
     }
     
     public static final int LOG_INFO = 0;

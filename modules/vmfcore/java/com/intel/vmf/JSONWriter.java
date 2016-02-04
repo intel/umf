@@ -4,7 +4,14 @@ public class JSONWriter implements IWriter
 {
     static
     {
-        System.loadLibrary("vmf");
+        try
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
+        }
+        catch (Exception e)
+        {
+            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+        }
     }
 
     protected final long nativeObj;
