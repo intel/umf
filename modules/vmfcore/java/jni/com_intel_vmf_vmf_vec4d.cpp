@@ -1,8 +1,9 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_vmf_vec4d.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +12,9 @@ using namespace vmf;
 * Method:    n_vmf_vec4d
 * Signature: ()J
 */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "vmf_vec4d::n_1vec4d__";
@@ -37,6 +41,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__ (JNIEnv *e
  * Method:    n_vmf_vec4d
  * Signature: (DDDD)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD(JNIEnv *env, jclass, jdouble x, jdouble y, jdouble z, jdouble w);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD (JNIEnv *env, jclass, jdouble x, jdouble y, jdouble z, jdouble w)
 {
     static const char method_name[] = "vmf_vec4d::n_1vec4d__DDDD";
@@ -63,6 +70,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD (JNIEn
  * Method:    n_setTo
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "vmf_vec4d::n_1setTo";
@@ -96,6 +106,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jcla
 * Method:    n_getX
 * Signature: (J)D
 */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "vmf_vec4d::n_1getX";
@@ -104,7 +117,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).x);
@@ -126,6 +139,9 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX (JNIEnv *env, jc
 * Method:    n_getY
 * Signature: (J)D
 */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "vmf_vec4d::n_1getY";
@@ -134,7 +150,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).y);
@@ -156,6 +172,9 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY (JNIEnv *env, jc
 * Method:    n_getZ
 * Signature: (J)D
 */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "vmf_vec4d::n_1getZ";
@@ -164,7 +183,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).z);
@@ -186,6 +205,9 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ (JNIEnv *env, jc
 * Method:    n_getW
 * Signature: (J)D
 */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW (JNIEnv *env, jclass, jlong self)
 {
 
@@ -195,7 +217,7 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW (JNIEnv *env, jc
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         return (jdouble)((**obj).w);
@@ -217,6 +239,9 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW (JNIEnv *env, jc
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "vmf_vec4d::n_1delete";
@@ -225,7 +250,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete (JNIEnv *env, jcl
     {
         std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec4d is null pointer.");
 
         delete obj;
@@ -238,4 +263,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete (JNIEnv *env, jcl
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

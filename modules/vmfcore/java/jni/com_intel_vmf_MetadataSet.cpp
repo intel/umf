@@ -1,8 +1,10 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_MetadataSet.h"
+//#include "../com_intel_vmf_MetadataSet.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +13,9 @@ using namespace vmf;
  * Method:    n_MetadataSet
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "MetadataSet::n_1MetadataSet__";
@@ -37,6 +42,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__ (JNIEnv 
  * Method:    n_MetadataSet
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J(JNIEnv *env, jclass, jlong otherAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv *env, jclass, jlong otherAddr)
 {
     static const char method_name[] = "MetadataSet::n_1MetadataSet__J";
@@ -80,6 +88,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1MetadataSet__J (JNIEnv
 * Method:    n_getElement
 * Signature: (JJ)J
 */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement(JNIEnv *env, jclass, jlong self, jlong number);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement (JNIEnv *env, jclass, jlong self, jlong number)
 {
     static const char method_name[] = "MetadataSet::n_1getElement";
@@ -115,6 +126,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement (JNIEnv *en
  * Method:    n_queryByFrameIndex
  * Signature: (JJ)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex(JNIEnv *env, jclass, jlong self, jlong id);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNIEnv *env, jclass, jlong self, jlong id)
 {
     static const char method_name[] = "MetadataSet::n_1queryByFrameIndex";
@@ -146,6 +160,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByFrameIndex (JNI
  * Method:    n_queryByTime
  * Signature: (JJJ)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByTime(JNIEnv *env, jclass, jlong self, jlong startTime, jlong endTime);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByTime (JNIEnv *env, jclass, jlong self, jlong startTime, jlong endTime)
 {
     static const char method_name[] = "MetadataSet::n_1queryByTime";
@@ -176,6 +193,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByTime (JNIEnv *e
  * Method:    n_queryBySchema
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryBySchema(JNIEnv *env, jclass, jlong self, jstring schemaName);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryBySchema (JNIEnv *env, jclass, jlong self, jstring schemaName)
 {
     static const char method_name[] = "MetadataSet::n_1queryBySchema";
@@ -209,6 +229,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryBySchema (JNIEnv 
  * Method:    n_queryByName
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByName(JNIEnv *env, jclass, jlong self, jstring mdName);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByName (JNIEnv *env, jclass, jlong self, jstring mdName)
 {
     static const char method_name[] = "MetadataSet::n_1queryByName";
@@ -243,6 +266,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByName (JNIEnv *e
  * Method:    n_queryByNameAndValue
  * Signature: (JLjava/lang/String;J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndValue(JNIEnv *env, jclass, jlong self, jstring mdName, jlong fieldValueAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndValue (JNIEnv *env, jclass, jlong self, jstring mdName, jlong fieldValueAddr)
 {
     static const char method_name[] = "MetadataSet::n_1queryByNameAndValue";
@@ -280,6 +306,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndValue (J
  * Method:    n_queryByNameAndFields
  * Signature: (JLjava/lang/String;[J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields(JNIEnv *env, jclass, jlong self, jstring mdName, jlongArray fieldValues);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields (JNIEnv *env, jclass, jlong self, jstring mdName, jlongArray fieldValues)
 {
     static const char method_name[] = "MetadataSet::n_1queryByNameAndFields";
@@ -326,6 +355,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByNameAndFields (
  * Method:    n_queryByReference
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2(JNIEnv *env, jclass, jlong self, jstring refName);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2 (JNIEnv *env, jclass, jlong self, jstring refName)
 {
     static const char method_name[] = "MetadataSet::n_1queryByReference__JLjava_lang_String_2";
@@ -359,6 +391,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
  * Method:    n_queryByReference
  * Signature: (JLjava/lang/String;J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2J(JNIEnv *env, jclass, jlong self, jstring refName, jlong valueAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2J (JNIEnv *env, jclass, jlong self, jstring refName, jlong valueAddr)
 {
     static const char method_name[] = "MetadataSet::n_1queryByReference__JLjava_lang_String_2J";
@@ -396,6 +431,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
  * Method:    n_queryByReference
  * Signature: (JLjava/lang/String;[J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2_3J(JNIEnv *env, jclass, jlong self, jstring refName, jlongArray fieldValues);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLjava_lang_String_2_3J (JNIEnv *env, jclass, jlong self, jstring refName, jlongArray fieldValues)
 {
     static const char method_name[] = "MetadataSet::n_1queryByReference__JLjava_lang_String_2_3J";
@@ -441,6 +479,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1queryByReference__JLja
  * Method:    n_shift
  * Signature: (JJJJJ)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift(JNIEnv *env, jclass, jlong self, jlong dstFrameIndex, jlong srcFrameIndex, jlong numOfFrames, jlong setFailureAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jclass, jlong self, jlong dstFrameIndex, jlong srcFrameIndex, jlong numOfFrames, jlong setFailureAddr)
 {
     static const char method_name[] = "MetadataSet::n_1shift";
@@ -476,6 +517,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1shift (JNIEnv *env, jc
  * Method:    n_getSize
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSet::n_1getSize";
@@ -506,6 +550,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getSize (JNIEnv *env, 
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSet::n_1delete";
@@ -527,4 +574,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete (JNIEnv *env, jc
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

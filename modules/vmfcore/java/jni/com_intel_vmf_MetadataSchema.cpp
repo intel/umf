@@ -1,9 +1,11 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_MetadataSchema.h"
+//#include "../com_intel_vmf_MetadataSchema.h"
 #include "throwJavaException.hpp"
 #include <iostream>
+
+extern "C" {
 
 using namespace vmf;
 
@@ -12,6 +14,9 @@ using namespace vmf;
  * Method:    n_MetadataSchema
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema(JNIEnv *env, jclass, jstring name, jstring author);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema (JNIEnv *env, jclass, jstring name, jstring author)
 {
     static const char method_name[] = "MetadataSchema::n_1MetadataSchema";
@@ -46,6 +51,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1MetadataSchema (JNI
  * Method:    n_getName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1getName";
@@ -77,6 +85,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getName (JNIEnv *
  * Method:    n_getAuthor
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAuthor(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAuthor (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1getAuthor";
@@ -108,6 +119,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAuthor (JNIEnv
  * Method:    n_size
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1size(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1size (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1size";
@@ -138,6 +152,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1size (JNIEnv *env, 
  * Method:    n_add
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1add(JNIEnv *env, jclass, jlong self, jlong mdDescAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1add (JNIEnv *env, jclass, jlong self, jlong mdDescAddr)
 {
     static const char method_name[] = "MetadataSchema::n_1add";
@@ -170,6 +187,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1add (JNIEnv *env, jc
  * Method:    n_findMetadataDesc
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc(JNIEnv *env, jclass, jlong self, jstring mdName);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc (JNIEnv *env, jclass, jlong self, jstring mdName)
 {
     static const char method_name[] = "MetadataSchema::n_1findMetadataDesc";
@@ -210,6 +230,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1findMetadataDesc (J
  * Method:    n_getAll
  * Signature: (J)[J
  */
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1getAll";
@@ -250,6 +273,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataSchema_n_1getAll (JNIEnv
  * Method:    n_getStdSchemaName
  * Signature: (I)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchemaName(JNIEnv *env, jclass, jint kind);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchemaName (JNIEnv *env, jclass, jint kind)
 {
     static const char method_name[] = "MetadataSchema::n_1getStdSchemaName";
@@ -277,6 +303,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchemaName 
  * Method:    n_getStdSchema
  * Signature: (JI)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema(JNIEnv *env, jclass, jint kind);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema (JNIEnv *env, jclass, jint kind)
 {
     static const char method_name[] = "MetadataSchema::n_1getStdSchema";
@@ -302,6 +331,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSchema_n_1getStdSchema (JNIEn
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataSchema::n_1delete";
@@ -323,4 +355,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSchema_n_1delete (JNIEnv *env,
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

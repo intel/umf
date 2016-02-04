@@ -1,8 +1,9 @@
 #include<string>
 #include<vector>
 #include "vmf/xmlreader.hpp"
-#include "../com_intel_vmf_XMLReader.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +12,9 @@ using namespace vmf;
  * Method:    n_XMLReader
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLReader_n_1XMLReader(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLReader_n_1XMLReader (JNIEnv *env, jclass)
 {
     static const char method_name[] = "XMLReader::n_1XMLReader";
@@ -37,6 +41,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLReader_n_1XMLReader (JNIEnv *env, 
 * Method:    n_parseSchemas
 * Signature: (JLjava/lang/String;)[J
 */
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas(JNIEnv *env, jclass, jlong self, jstring text);
+
+
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEnv *env, jclass, jlong self, jstring text)
 {
     static const char method_name[] = "XMLReader::n_1parseSchemas";
@@ -45,7 +52,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEn
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -88,6 +95,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseSchemas (JNIEn
 * Method:    n_parseMetadata
 * Signature: (JLjava/lang/String;[J)[J
 */
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata(JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemaNativeAddrs);
+
+
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIEnv *env, jclass, jlong self, jstring text, jlongArray schemaNativeAddrs)
 {
     static const char method_name[] = "XMLReader::n_1parseMetadata";
@@ -96,7 +106,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIE
     {
         std::shared_ptr <XMLReader>* obj = (std::shared_ptr <XMLReader>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -151,6 +161,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseMetadata (JNIE
 * Method:    n_parseVideoSegments
 * Signature: (JLjava/lang/String;)[J
 */
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments(JNIEnv *env, jclass, jlong self, jstring text);
+
+
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments (JNIEnv *env, jclass, jlong self, jstring text)
 {
     static const char method_name[] = "XMLReader::n_1parseVideoSegments";
@@ -159,7 +172,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments 
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -203,6 +216,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_XMLReader_n_1parseVideoSegments 
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "XMLReader::n_1delete";
@@ -211,7 +227,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclas
     {
         std::shared_ptr<XMLReader>* obj = (std::shared_ptr<XMLReader>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
 
         delete obj;
@@ -224,4 +240,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLReader_n_1delete(JNIEnv *env, jclas
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

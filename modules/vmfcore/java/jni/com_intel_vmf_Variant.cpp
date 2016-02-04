@@ -2,8 +2,10 @@
 #include<vector>
 #include <iostream>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_Variant.h"
+//#include "../com_intel_vmf_Variant.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -12,6 +14,9 @@ using namespace vmf;
 * Method:    n_Variant
 * Signature: ()J
 */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant (JNIEnv *env, jclass)
 {
     static const char method_name[] = "Variant::n_1Variant";
@@ -38,6 +43,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant (JNIEnv *env, jcla
  * Method:    n_Variant
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J(JNIEnv *env, jclass, jlong otherAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *env, jclass, jlong otherAddr)
 {
     static const char method_name[] = "Variant::n_1Variant__J";
@@ -65,6 +73,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *env, j
  * Method:    n_setTo
  * Signature: (JI)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI(JNIEnv *env, jclass, jlong self, jint value);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI (JNIEnv *env, jclass, jlong self, jint value)
 {
     static const char method_name[] = "Variant::n_1setTo__JI";
@@ -93,6 +104,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JI (JNIEnv *env, jcl
  * Method:    n_setTo
  * Signature: (JF)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF(JNIEnv *env, jclass, jlong self, jfloat value);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF (JNIEnv *env, jclass, jlong self, jfloat value)
 {
     static const char method_name[] = "Variant::n_1setTo__JF";
@@ -121,6 +135,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JF (JNIEnv *env, jcl
  * Method:    n_setTo
  * Signature: (J[I)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I(JNIEnv *env, jclass, jlong self, jintArray values);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I (JNIEnv *env, jclass, jlong self, jintArray values)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3I";
@@ -159,6 +176,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3I (JNIEnv *env, j
  * Method:    n_setTo
  * Signature: (J[F)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F(JNIEnv *env, jclass, jlong self, jfloatArray values);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, jclass, jlong self, jfloatArray values)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3F";
@@ -198,6 +218,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3F (JNIEnv *env, j
  * Method:    n_setTo
  * Signature: (JLjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2(JNIEnv *env, jclass, jlong self, jstring str);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2 (JNIEnv *env, jclass, jlong self, jstring str)
 {
     static const char method_name[] = "Variant::n_1setTo__JLjava_lang_String_2";
@@ -231,6 +254,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
 * Method:    n_setTo
 * Signature: (JD)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD(JNIEnv *env, jclass, jlong self, jdouble value);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD(JNIEnv *env, jclass, jlong self, jdouble value)
 {
     static const char method_name[] = "Variant::n_1setTo__JD";
@@ -259,6 +285,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD(JNIEnv *env, jcla
 * Method:    n_setTo
 * Signature: (JJ)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jclass, jlong self, jlong value);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jclass, jlong self, jlong value)
 {
     static const char method_name[] = "Variant::n_1setTo__JJ";
@@ -287,6 +316,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jcla
 * Method:    n_setTo
 * Signature: (J[Ljava/lang/String;)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String_2(JNIEnv *env, jclass, jlong self, jobjectArray stringArray);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String_2(JNIEnv *env, jclass, jlong self, jobjectArray stringArray)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3Ljava_lang_String_2";
@@ -329,6 +361,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String
 * Method:    n_setTo
 * Signature: (J[D)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D(JNIEnv *env, jclass, jlong self, jdoubleArray values);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D(JNIEnv *env, jclass, jlong self, jdoubleArray values)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3D";
@@ -368,6 +403,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D(JNIEnv *env, jc
 * Method:    n_setTo
 * Signature: (J[J)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3J(JNIEnv *env, jclass, jlong self, jlongArray values);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3J (JNIEnv *env, jclass, jlong self, jlongArray values)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3J";
@@ -407,6 +445,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3J (JNIEnv *env, j
 * Method:    n_setTo
 * Signature: (J[B)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B(JNIEnv *env, jclass, jlong self, jbyteArray buffer);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B(JNIEnv *env, jclass, jlong self, jbyteArray buffer)
 {
     static const char method_name[] = "Variant::n_1setTo__J_3B";
@@ -439,6 +480,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B(JNIEnv *env, jc
 * Method:    n_setToVec2d
 * Signature: (JJ)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d(JNIEnv *env, jclass, jlong self, jlong vec2dAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d (JNIEnv *env, jclass, jlong self, jlong vec2dAddr)
 {
     static const char method_name[] = "Variant::n_1setToVec2d";
@@ -471,6 +515,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d (JNIEnv *env, jc
 * Method:    n_setToVec3d
 * Signature: (JJ)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3d(JNIEnv *env, jclass, jlong self, jlong vec3dAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3d (JNIEnv *env, jclass, jlong self, jlong vec3dAddr)
 {
     static const char method_name[] = "Variant::n_1setToVec3d";
@@ -503,6 +550,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3d (JNIEnv *env, jc
 * Method:    n_setToVec4d
 * Signature: (JJ)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4d(JNIEnv *env, jclass, jlong self, jlong vec4dAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4d (JNIEnv *env, jclass, jlong self, jlong vec4dAddr)
 {
     static const char method_name[] = "Variant::n_1setToVec4d";
@@ -535,6 +585,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4d (JNIEnv *env, jc
 * Method:    n_setToVec2dArray
 * Signature: (J[J)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2dArray(JNIEnv *env, jclass, jlong self, jlongArray vec2dArray);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2dArray (JNIEnv *env, jclass, jlong self, jlongArray vec2dArray)
 {
     static const char method_name[] = "Variant::n_1setToVec2dArray";
@@ -575,6 +628,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2dArray (JNIEnv *en
 * Method:    n_setToVec3dArray
 * Signature: (J[J)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3dArray(JNIEnv *env, jclass, jlong self, jlongArray vec3dArray);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3dArray (JNIEnv *env, jclass, jlong self, jlongArray vec3dArray)
 {
     static const char method_name[] = "Variant::n_1setToVec3dArray";
@@ -615,6 +671,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3dArray (JNIEnv *en
 * Method:    n_setToVec4dArray
 * Signature: (J[J)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4dArray(JNIEnv *env, jclass, jlong self, jlongArray vec4dArray);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4dArray (JNIEnv *env, jclass, jlong self, jlongArray vec4dArray)
 {
     static const char method_name[] = "Variant::n_1setToVec4dArray";
@@ -656,6 +715,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4dArray (JNIEnv *en
 * Method:    n_set
 * Signature: (JJ)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1set(JNIEnv *env, jclass, jlong self, jlong otherAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1set (JNIEnv *env, jclass, jlong self, jlong otherAddr)
 {
     static const char method_name[] = "Variant::n_1set";
@@ -688,6 +750,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1set (JNIEnv *env, jclass, j
  * Method:    n_equals
  * Signature: (JJ)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals(JNIEnv *env, jclass, jlong self, jlong otherAddr);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals (JNIEnv *env, jclass, jlong self, jlong otherAddr)
 {
     static const char method_name[] = "Variant::n_1equals";
@@ -722,6 +787,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals (JNIEnv *env, jc
  * Method:    n_toString
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Variant::n_1toString";
@@ -753,6 +821,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString (JNIEnv *env, j
  * Method:    n_fromString
  * Signature: (JILjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString(JNIEnv *env, jclass, jlong self, jint type, jstring value);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString (JNIEnv *env, jclass, jlong self, jint type, jstring value)
 {
     static const char method_name[] = "Variant::n_1fromString";
@@ -787,6 +858,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString (JNIEnv *env, jc
  * Method:    n_getType
  * Signature: (J)I
  */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1getType(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1getType (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Variant::n_1getType";
@@ -817,6 +891,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1getType (JNIEnv *env, jclas
  * Method:    n_isEmpty
  * Signature: (J)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isEmpty(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isEmpty (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Variant::n_1isEmpty";
@@ -847,6 +924,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isEmpty (JNIEnv *env, j
  * Method:    n_getTypeName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1getTypeName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1getTypeName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Variant::n_1getTypeName";
@@ -878,6 +958,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1getTypeName (JNIEnv *env
  * Method:    n_convertTo
  * Signature: (JI)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo(JNIEnv *env, jclass, jlong self, jint type);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo (JNIEnv *env, jclass, jlong self, jint type)
 {
     static const char method_name[] = "Variant::n_1convertTo";
@@ -908,6 +991,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo (JNIEnv *env, jcl
  * Method:    n_typeToString
  * Signature: (I)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1typeToString(JNIEnv *env, jclass, jint type);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1typeToString (JNIEnv *env, jclass, jint type)
 {
     static const char method_name[] = "Variant::n_1typeToString";
@@ -939,6 +1025,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1typeToString (JNIEnv *en
  * Method:    n_typeFromString
  * Signature: (Ljava/lang/String;)I
  */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1typeFromString(JNIEnv *env, jclass, jstring type);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1typeFromString (JNIEnv *env, jclass, jstring type)
 {
     static const char method_name[] = "Variant::n_1typeFromString";
@@ -967,6 +1056,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Variant_n_1typeFromString (JNIEnv *env
  * Method:    n_isConvertible
  * Signature: (II)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isConvertible(JNIEnv *env, jclass, jint srcType, jint dstType);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isConvertible (JNIEnv *env, jclass, jint srcType, jint dstType)
 {
     static const char method_name[] = "Variant::n_1isConvertible";
@@ -994,6 +1086,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isConvertible (JNIEnv *
  * Method:    n_base64Encode
  * Signature: ([BI)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode(JNIEnv *env, jclass, jbyteArray buf, jint length);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode (JNIEnv *env, jclass, jbyteArray buf, jint length)
 {
     static const char method_name[] = "Variant::n_1base64Encode";
@@ -1024,6 +1119,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode (JNIEnv *en
  * Method:    n_base64Decode
  * Signature: (Ljava/lang/String;)[B
  */
+JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode(JNIEnv *env, jclass, jstring src);
+
+
 JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv *env, jclass, jstring src)
 {
     static const char method_name[] = "Variant::n_1base64Decode";
@@ -1061,6 +1159,9 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Variant::n_1delete";
@@ -1082,4 +1183,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1delete (JNIEnv *env, jclass
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

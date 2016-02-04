@@ -3,8 +3,10 @@
 #include <memory>
 #include <stdexcept>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_FieldDesc.h"
+//#include "../com_intel_vmf_FieldDesc.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -13,6 +15,9 @@ using namespace vmf;
  * Method:    n_FieldDesc
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "FieldDesc::n_1FieldDesc__";
@@ -39,7 +44,10 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__ (JNIEnv *env
  * Method:    n_FieldDesc
  * Signature: (Ljava/lang/String;JZ)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ(JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ (JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional);
+
+
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_String_2IZ (JNIEnv *env, jclass, jstring name, jint type, jboolean isOptional)
 {
     static const char method_name[] = "FieldDesc::n_1FieldDesc__Ljava_lang_String_2IZ";
 
@@ -70,6 +78,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldDesc_n_1FieldDesc__Ljava_lang_St
  * Method:    n_equals
  * Signature: (JJ)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "FieldDesc::n_1equals";
@@ -104,6 +115,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1equals (JNIEnv *env, 
  * Method:    n_getName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, jclass, jlong self)
 {
     
@@ -136,6 +150,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
  * Method:    n_getType
  * Signature: (J)I
  */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldDesc::n_1getType";
@@ -166,6 +183,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldDesc_n_1getType (JNIEnv *env, jcl
  * Method:    n_isOptional
  * Signature: (J)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldDesc::n_1isOptional";
@@ -196,6 +216,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldDesc_n_1isOptional (JNIEnv *e
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldDesc::n_1delete";
@@ -218,3 +241,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete (JNIEnv *env, jcla
         throwJavaException(env, 0, method_name);
     }
 }
+
+
+}
+

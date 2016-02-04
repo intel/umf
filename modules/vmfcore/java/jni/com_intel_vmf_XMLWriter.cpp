@@ -1,8 +1,9 @@
 #include<string>
 #include<vector>
 #include "vmf/xmlwriter.hpp"
-#include "../com_intel_vmf_XMLWriter.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +12,8 @@ using namespace vmf;
  * Method:    n_XMLWriter
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLWriter_n_1XMLWriter(JNIEnv *env, jclass);
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLWriter_n_1XMLWriter (JNIEnv *env, jclass)
 {
     static const char method_name[] = "XMLWriter::n_1XMLWriter";
@@ -37,6 +40,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_XMLWriter_n_1XMLWriter (JNIEnv *env, 
  * Method:    n_storeSchemas
  * Signature: (J[J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSchemas(JNIEnv *env, jclass, jlong self, jlongArray schemaAddrs);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSchemas (JNIEnv *env, jclass, jlong self, jlongArray schemaAddrs)
 {
     static const char method_name[] = "XMLWriter::n_1storeSchemas";
@@ -45,7 +51,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSchemas (JNIEnv *
     {
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
@@ -81,6 +87,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSchemas (JNIEnv *
  * Method:    n_storeMetadataSet
  * Signature: (JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeMetadataSet(JNIEnv *env, jclass, jlong self, jlong setAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeMetadataSet (JNIEnv *env, jclass, jlong self, jlong setAddr)
 {
     static const char method_name[] = "XMLWriter::n_1storeMetadataSet";
@@ -90,10 +99,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeMetadataSet (JNIE
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
-        if ((set == NULL) || (*set == NULL) || (set->get() == NULL))
+        if ((set == NULL) || (set->get() == NULL))
             return 0;
 
         std::string str = (*obj)->store(**set);
@@ -116,6 +125,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeMetadataSet (JNIE
  * Method:    n_storeAll
  * Signature: (JJLjava/lang/String;Ljava/lang/String;[J[JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll (JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr)
 {
     static const char method_name[] = "XMLWriter::n_1storeAll";
@@ -125,10 +137,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll (JNIEnv *env,
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
-        if ((set == NULL) || (*set == NULL) || (set->get() == NULL))
+        if ((set == NULL) || (set->get() == NULL))
             return 0;
 
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
@@ -178,6 +190,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll (JNIEnv *env,
  * Method:    n_storeSegment
  * Signature: (JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment(JNIEnv *env, jclass, jlong self, jlong segAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment (JNIEnv *env, jclass, jlong self, jlong segAddr)
 {
     static const char method_name[] = "XMLWriter::n_1storeSegment";
@@ -187,10 +202,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment (JNIEnv *
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
         std::shared_ptr<MetadataStream::VideoSegment>* segment = (std::shared_ptr<MetadataStream::VideoSegment>*) segAddr;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
-        if ((segment == NULL) || (*segment == NULL) || (segment->get() == NULL))
+        if ((segment == NULL) || (segment->get() == NULL))
             return 0;
 
         std::string str = (*obj)->store(*segment);
@@ -213,6 +228,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment (JNIEnv *
  * Method:    n_storeSegments
  * Signature: (J[J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegments(JNIEnv *env, jclass, jlong self, jlongArray segAddrs);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegments(JNIEnv *env, jclass, jlong self, jlongArray segAddrs)
 {
     static const char method_name[] = "XMLWriter::n_1storeSegments";
@@ -222,7 +240,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegments(JNIEnv *
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
         jlong* segmentsArray = env->GetLongArrayElements(segAddrs, 0);
@@ -256,6 +274,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegments(JNIEnv *
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_XMLWriter_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_XMLWriter_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "XMLWriter::n_1delete";
@@ -264,7 +285,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLWriter_n_1delete (JNIEnv *env, jcla
     {
         std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
 
-        if ((obj == NULL) ||  (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Writer is null pointer.");
 
         delete obj;
@@ -277,4 +298,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_XMLWriter_n_1delete (JNIEnv *env, jcla
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

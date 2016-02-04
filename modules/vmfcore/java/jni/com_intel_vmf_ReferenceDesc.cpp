@@ -1,8 +1,10 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_ReferenceDesc.h"
+//#include "../com_intel_vmf_ReferenceDesc.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +13,9 @@ using namespace vmf;
  * Method:    n_ReferenceDesc
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_ReferenceDesc_n_1ReferenceDesc__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "ReferenceDesc::n_1ReferenceDesc__";
@@ -180,4 +185,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_ReferenceDesc_n_1delete (JNIEnv *env, 
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

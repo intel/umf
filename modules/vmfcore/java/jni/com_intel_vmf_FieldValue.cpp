@@ -3,8 +3,10 @@
 #include <memory>
 #include <stdexcept>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_FieldValue.h"
+//#include "../com_intel_vmf_FieldValue.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -13,6 +15,9 @@ using namespace vmf;
  * Method:    n_FieldValue
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "FieldValue::n_1FieldValue__";
@@ -39,6 +44,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__ (JNIEnv *e
  * Method:    n_FieldValue
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J(JNIEnv *env, jclass, jlong otherAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *env, jclass, jlong otherAddr)
 {
     static const char method_name[] = "FieldValue::n_1FieldValue__J";
@@ -66,6 +74,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__J (JNIEnv *
  * Method:    n_FieldValue
  * Signature: (Ljava/lang/String;J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J(JNIEnv *env, jclass, jstring name, jlong variantAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_String_2J (JNIEnv *env, jclass, jstring name, jlong variantAddr)
 {
     static const char method_name[] = "FieldValue::n_1FieldValue__Ljava_lang_String_2J";
@@ -99,6 +110,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FieldValue_n_1FieldValue__Ljava_lang_
  * Method:    n_getName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldValue::n_1getName";
@@ -130,6 +144,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getName (JNIEnv *env,
  * Method:    n_setTo
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "FieldValue::n_1setTo";
@@ -162,6 +179,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jcla
  * Method:    n_equals
  * Signature: (JJ)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "FieldValue::n_1equals";
@@ -196,6 +216,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1equals (JNIEnv *env,
 * Method:    n_getType
 * Signature: (J)I
 */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldValue_n_1getType(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldValue_n_1getType (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldValue::n_1getType";
@@ -226,6 +249,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_FieldValue_n_1getType (JNIEnv *env, jc
 * Method:    n_isEmpty
 * Signature: (J)Z
 */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEmpty(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEmpty (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldValue::n_1isEmpty";
@@ -256,6 +282,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_FieldValue_n_1isEmpty (JNIEnv *env
 * Method:    n_getTypeName
 * Signature: (J)Ljava/lang/String;
 */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getTypeName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getTypeName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldValue::n_1getTypeName";
@@ -287,6 +316,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldValue_n_1getTypeName (JNIEnv *
 * Method:    n_convertTo
 * Signature: (JI)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo(JNIEnv *env, jclass, jlong self, jint type);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo (JNIEnv *env, jclass, jlong self, jint type)
 {
     static const char method_name[] = "FieldValue::n_1convertTo";
@@ -321,6 +353,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo (JNIEnv *env, 
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "FieldValue::n_1delete";
@@ -342,4 +377,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete (JNIEnv *env, jcl
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

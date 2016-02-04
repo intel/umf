@@ -1,8 +1,10 @@
 #include<string>
 #include<vector>
 #include "vmf/jsonwriter.hpp"
-#include "../com_intel_vmf_JSONWriter.h"
+//#include "../com_intel_vmf_JSONWriter.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +13,9 @@ using namespace vmf;
  * Method:    n_JSONWriter
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONWriter_n_1JSONWriter(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONWriter_n_1JSONWriter (JNIEnv *env, jclass)
 {
     static const char method_name[] = "JSONWriter::n_1JSONWriter";
@@ -38,6 +43,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_JSONWriter_n_1JSONWriter (JNIEnv *env
  * Method:    n_storeSchemas
  * Signature: (J[J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSchemas(JNIEnv *env, jclass, jlong self, jlongArray schemaAddrs);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSchemas (JNIEnv *env, jclass, jlong self, jlongArray schemaAddrs)
 {
     static const char method_name[] = "JSONWriter::n_1storeSchemas";
@@ -82,6 +90,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSchemas (JNIEnv 
  * Method:    n_storeMetadataSet
  * Signature: (JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet(JNIEnv *env, jclass, jlong self, jlong setAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet (JNIEnv *env, jclass, jlong self, jlong setAddr)
 {
     static const char method_name[] = "JSONWriter::n_1storeMetadataSet";
@@ -117,6 +128,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet (JNI
  * Method:    n_storeAll
  * Signature: (JJLjava/lang/String;Ljava/lang/String;[J[JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr)
 {
     static const char method_name[] = "JSONWriter::n_1storeAll";
@@ -185,6 +199,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
  * Method:    n_storeSegment
  * Signature: (JJ)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment(JNIEnv *env, jclass, jlong self, jlong segAddr);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment (JNIEnv *env, jclass, jlong self, jlong segAddr)
 {
     static const char method_name[] = "JSONWriter::n_1storeSegment";
@@ -220,6 +237,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment (JNIEnv 
  * Method:    n_storeSegments
  * Signature: (J[J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegments(JNIEnv *env, jclass, jlong self, jlongArray segAddrs);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegments (JNIEnv *env, jclass, jlong self, jlongArray segAddrs)
 {
     static const char method_name[] = "JSONWriter::n_1storeSegments";
@@ -264,6 +284,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegments (JNIEnv
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_JSONWriter_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_JSONWriter_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "JSONWriter::n_1delete";
@@ -285,4 +308,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_JSONWriter_n_1delete (JNIEnv *env, jcl
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

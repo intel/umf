@@ -1,8 +1,10 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_MetadataStream_VideoSegment.h"
+//#include "../com_intel_vmf_MetadataStream_VideoSegment.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +13,9 @@ using namespace vmf;
  * Method:    n_VideoSegment
  * Signature: ()J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__(JNIEnv *env, jclass);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__ (JNIEnv *env, jclass)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1VideoSegment__";
@@ -37,6 +42,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
 * Method:    n_VideoSegment
 * Signature: (Ljava/lang/String;DJJII)J
 */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJII (JNIEnv *env, jclass, jstring title, jdouble fps, jlong startTime, jlong duration, jint width, jint height);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1VideoSegment__Ljava_lang_String_2DJJII (JNIEnv *env, jclass, jstring title, jdouble fps,
                                                                                                                        jlong startTime, jlong duration, jint width, jint height)
 {
@@ -69,6 +77,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1V
  * Method:    n_getTitle
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getTitle (JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getTitle (JNIEnv *env, jclass, jlong self)
 {
 
@@ -101,6 +112,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_
  * Method:    n_setTitle
  * Signature: (JLjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setTitle (JNIEnv *env, jclass, jlong self, jstring title);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setTitle (JNIEnv *env, jclass, jlong self, jstring title)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setTitle";
@@ -133,6 +147,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
  * Method:    n_getFPS
  * Signature: (J)D
  */
+JNIEXPORT jdouble JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getFPS(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getFPS (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getFPS";
@@ -163,6 +180,9 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_
  * Method:    n_setFPS
  * Signature: (JD)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setFPS(JNIEnv *env, jclass, jlong self, jdouble fps);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setFPS(JNIEnv *env, jclass, jlong self, jdouble fps)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setFPS";
@@ -191,6 +211,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
  * Method:    n_getDuration
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getDuration(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getDuration (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getDuration";
@@ -221,6 +244,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1g
  * Method:    n_setDuration
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setDuration(JNIEnv *env, jclass, jlong self, jlong duration);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setDuration(JNIEnv *env, jclass, jlong self, jlong duration)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setDuration";
@@ -249,6 +275,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
  * Method:    n_getTime
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getTime (JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getTime (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getTime";
@@ -279,6 +308,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1g
  * Method:    n_setTime
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setTime(JNIEnv *env, jclass, jlong self, jlong startTime);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setTime(JNIEnv *env, jclass, jlong self, jlong startTime)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setTime";
@@ -307,6 +339,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 * Method:    n_getWidth
 * Signature: (J)I
 */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getWidth(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getWidth(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getWidth";
@@ -340,6 +375,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1ge
 * Method:    n_getHeight
 * Signature: (J)I
 */
+JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getHeight(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1getHeight (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1getHeight";
@@ -373,6 +411,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1ge
 * Method:    n_setResolution
 * Signature: (JII)V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setResolution(JNIEnv *env, jclass, jlong self, jint w, jint h);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1setResolution (JNIEnv *env, jclass, jlong self, jint w, jint h)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1setResolution";
@@ -401,6 +442,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::VideoSegment::n_1delete";
@@ -424,3 +468,5 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1de
     }
 }
 
+
+}

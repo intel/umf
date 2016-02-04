@@ -2,8 +2,10 @@
 #include<vector>
 #include <map>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_Metadata.h"
+//#include "../com_intel_vmf_Metadata.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -12,6 +14,9 @@ using namespace vmf;
  * Method:    n_Metadata
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata(JNIEnv *env, jclass, jlong mdDescAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata (JNIEnv *env, jclass, jlong mdDescAddr)
 {
     static const char method_name[] = "Metadata::n_1Metadata";
@@ -42,6 +47,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1Metadata (JNIEnv *env, jc
  * Method:    n_MetadataCopy
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy(JNIEnv *env, jclass, jlong otherAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env, jclass, jlong otherAddr)
 {
     static const char method_name[] = "Metadata::n_1MetadataCopy";
@@ -72,6 +80,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1MetadataCopy (JNIEnv *env
  * Method:    n_getID
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getID";
@@ -102,6 +113,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getID (JNIEnv *env, jclas
  * Method:    n_getFrameIndex
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getFrameIndex";
@@ -132,6 +146,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFrameIndex (JNIEnv *en
  * Method:    n_getNumOfFrames
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getNumOfFrames";
@@ -162,6 +179,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getNumOfFrames (JNIEnv *e
  * Method:    n_setFrameIndex
  * Signature: (JJJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex(JNIEnv *env, jclass, jlong self, jlong frameIndex, jlong numOfFrames);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env, jclass, jlong self, jlong frameIndex, jlong numOfFrames)
 {
     static const char method_name[] = "Metadata::n_1setFrameIndex";
@@ -190,6 +210,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env
  * Method:    n_setTimestamp
  * Signature: (JJJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp(JNIEnv *env, jclass, jlong self, jlong time, jlong duration);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env, jclass, jlong self, jlong time, jlong duration)
 {
     static const char method_name[] = "Metadata::n_1setTimestamp";
@@ -218,6 +241,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env,
  * Method:    n_getTime
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getTime";
@@ -248,6 +274,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getTime (JNIEnv *env, jcl
  * Method:    n_getDuration
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getDuration";
@@ -278,6 +307,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDuration (JNIEnv *env,
  * Method:    n_getName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getName";
@@ -308,6 +340,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getName (JNIEnv *env, j
  * Method:    n_getSchemaName
  * Signature: (J)Ljava/lang/String;
  */
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getSchemaName";
@@ -338,6 +373,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Metadata_n_1getSchemaName (JNIEnv *
  * Method:    n_getDesc
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getDesc";
@@ -374,6 +412,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getDesc (JNIEnv *env, jcl
  * Method:    n_getFieldNames
  * Signature: (J)[Ljava/lang/String;
  */
+JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getFieldNames(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getFieldNames (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getFieldNames";
@@ -416,6 +457,9 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Metadata_n_1getFieldNames (JNI
  * Method:    n_getFieldValue
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFieldValue(JNIEnv *env, jclass, jlong self, jstring name);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFieldValue (JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Metadata::n_1getFieldValue";
@@ -450,6 +494,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFieldValue (JNIEnv *en
  * Method:    n_hasField
  * Signature: (JLjava/lang/String;)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField(JNIEnv *env, jclass, jlong self, jstring name);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField (JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Metadata::n_1hasField";
@@ -484,6 +531,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1hasField (JNIEnv *env,
  * Method:    n_equals
  * Signature: (JJ)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "Metadata::n_1equals";
@@ -549,6 +599,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1equals (JNIEnv *env, j
  * Method:    n_lessThan
  * Signature: (JJ)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1lessThan(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1lessThan (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
     static const char method_name[] = "Metadata::n_1lessThan";
@@ -583,6 +636,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1lessThan (JNIEnv *env,
  * Method:    n_getFirstReference
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference(JNIEnv *env, jclass, jlong self, jstring name);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference (JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Metadata::n_1getFirstReference";
@@ -623,6 +679,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getFirstReference (JNIEnv
  * Method:    n_getReferencesByMetadata
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByMetadata(JNIEnv *env, jclass, jlong self, jstring name);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByMetadata (JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Metadata::n_1getReferencesByMetadata";
@@ -658,6 +717,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByMetadata (
  * Method:    n_getReferencesByName
  * Signature: (JLjava/lang/String;)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName(JNIEnv *env, jclass, jlong self, jstring name);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Metadata::n_1getReferencesByName";
@@ -692,6 +754,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
  * Method:    n_getAllReferences
  * Signature: (J)[Lcom/intel/vmf/Reference;
  */
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1getAllReferences";
@@ -735,6 +800,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences (JN
  * Method:    n_isReferenceById
  * Signature: (JJLjava/lang/String;)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceById(JNIEnv *env, jclass, jlong self, jlong id, jstring name);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceById (JNIEnv *env, jclass, jlong self, jlong id, jstring name)
 {
     static const char method_name[] = "Metadata::n_1isReferenceById";
@@ -770,6 +838,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceById (JNIEn
  * Method:    n_isReferenceByMd
  * Signature: (JJLjava/lang/String;)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceByMd(JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceByMd (JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name)
 {
     static const char method_name[] = "Metadata::n_1isReferenceByMd";
@@ -809,6 +880,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isReferenceByMd (JNIEn
  * Method:    n_addReference
  * Signature: (JJLjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference(JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference (JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name)
 {
     static const char method_name[] = "Metadata::n_1addReference";
@@ -846,6 +920,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference (JNIEnv *env,
  * Method:    n_removeReferenceById
  * Signature: (JJLjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById(JNIEnv *env, jclass, jlong self, jlong id, jstring name);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById (JNIEnv *env, jclass, jlong self, jlong id, jstring name)
 {
     static const char method_name[] = "Metadata::n_1removeReferenceById";
@@ -878,6 +955,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById (JNIEn
  * Method:    n_removeReferenceByMd
  * Signature: (JJLjava/lang/String;)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd(JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd (JNIEnv *env, jclass, jlong self, jlong mdAddr, jstring name)
 {
     static const char method_name[] = "Metadata::n_1removeReferenceByMd";
@@ -915,6 +995,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd (JNIEn
  * Method:    n_setFieldValue
  * Signature: (JLjava/lang/String;J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue(JNIEnv *env, jclass, jlong self, jstring fieldName, jlong variantAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env, jclass, jlong self, jstring fieldName, jlong variantAddr)
 {
     static const char method_name[] = "Metadata::n_1setFieldValue";
@@ -951,6 +1034,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env
  * Method:    n_addValue
  * Signature: (JJ)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addValue(JNIEnv *env, jclass, jlong self, jlong variantAddr);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addValue (JNIEnv *env, jclass, jlong self, jlong variantAddr)
 {
     static const char method_name[] = "Metadata::n_1addValue";
@@ -983,6 +1069,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addValue (JNIEnv *env, jcl
  * Method:    n_validate
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1validate(JNIEnv *env, jclass, jlong self);
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1validate (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1validate";
@@ -1011,6 +1099,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1validate (JNIEnv *env, jcl
  * Method:    n_isValid
  * Signature: (J)Z
  */
+JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isValid(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isValid (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1isValid";
@@ -1041,6 +1132,9 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Metadata_n_1isValid (JNIEnv *env, 
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Metadata::n_1delete";
@@ -1062,4 +1156,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1delete (JNIEnv *env, jclas
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

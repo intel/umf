@@ -3,8 +3,10 @@
 #include <memory>
 #include <stdexcept>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_MetadataInternal.h"
+//#include "../com_intel_vmf_MetadataInternal.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -13,6 +15,9 @@ using namespace vmf;
  * Method:    n_MetadataInternal
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal(JNIEnv *env, jclass, jlong mdDescAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal (JNIEnv *env, jclass, jlong mdDescAddr)
 {
     static const char method_name[] = "MetadataInternal::n_1MetadataInternal";
@@ -44,6 +49,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal 
  * Method:    n_MetadataInternalCopy
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy(JNIEnv *env, jclass, jlong otherAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy (JNIEnv *env, jclass, jlong otherAddr)
 {
     static const char method_name[] = "MetadataInternal::n_1MetadataInternalCopy";
@@ -74,6 +82,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalC
  * Method:    n_MetadataInternalByMD
  * Signature: (J)J
  */
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalByMD(JNIEnv *env, jclass, jlong mdAddr);
+
+
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalByMD (JNIEnv *env, jclass, jlong mdAddr)
 {
     static const char method_name[] = "MetadataInternal::n_1MetadataInternalByMD";
@@ -104,6 +115,9 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalB
  * Method:    n_delete
  * Signature: (J)V
  */
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete(JNIEnv *env, jclass, jlong self);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataInternal::n_1delete";
@@ -125,4 +139,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *en
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }

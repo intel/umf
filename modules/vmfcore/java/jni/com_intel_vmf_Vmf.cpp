@@ -1,8 +1,10 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-#include "../com_intel_vmf_Vmf.h"
+//#include "../com_intel_vmf_Vmf.h"
 #include "throwJavaException.hpp"
+
+extern "C" {
 
 using namespace vmf;
 
@@ -11,6 +13,9 @@ using namespace vmf;
 * Method:    n_initialize
 * Signature: ()V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize(JNIEnv *env, jclass);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass)
 {
     static const char method_name[] = "Vmf::n_1initialize";
@@ -34,6 +39,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass
 * Method:    n_terminate
 * Signature: ()V
 */
+JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate(JNIEnv *env, jclass);
+
+
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate (JNIEnv *env, jclass)
 {
     static const char method_name[] = "Vmf::n_1terminate";
@@ -50,4 +58,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate (JNIEnv *env, jclass)
     {
         throwJavaException(env, 0, method_name);
     }
+}
+
+
 }
