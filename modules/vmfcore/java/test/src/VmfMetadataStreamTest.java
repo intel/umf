@@ -38,8 +38,8 @@ public class VmfMetadataStreamTest
         Vmf.terminate();
     }
     
-    protected final String srcFile = "../../../../../data/BlueSquare.avi";
-    protected final String dstFile = "Test.avi";
+    protected final String srcFile = "BlueSquare.avi";
+    protected final String dstFile = "test.avi";
     
     void copy (String srcFile, String dstFile) throws IOException 
     {

@@ -51,6 +51,8 @@ set(VMFCORE_DETAILS_DIR "${VMFCORE_SOURCE_DIR}/details")
 set(VMFCORE_TESTS_DIR "${VMFCORE_DIR}/test")
 set(VMFCORE_TEST_EXECUTABLE "unit-tests")
 
+set(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/BlueSquare.avi")
+
 if (BUILD_JAVA_API AND JAVA_FOUND)
     set(VMFCORE_JAVA_DIR "${VMFCORE_DIR}/java")
     set(VMFCORE_JNI_DIR "${VMFCORE_JAVA_DIR}/jni")
@@ -80,8 +82,8 @@ if (BUILD_JAVA_API AND JAVA_FOUND)
         
     if(CMAKE_VERSION VERSION_LESS "2.8.12")
       # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
-      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API})
       set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API})
     else()
       add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
     endif()
@@ -94,8 +96,8 @@ if (BUILD_JAVA_API AND JAVA_FOUND)
     
     if(CMAKE_VERSION VERSION_LESS "2.8.12")
       # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
-      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT})
       set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT})
     else()
       add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
     endif()
@@ -107,6 +109,7 @@ if (BUILD_JAVA_API AND JAVA_FOUND)
     #message(STATUS "Class compiled to ${_classDir}")
     
     file(COPY ${VMFCORE_JAVA_JUNIT} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+    file(COPY ${VIDEO_PATH} DESTINATION ${CMAKE_BINARY_DIR}/bin)
 endif()
 
 set(VMDATASOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vmdatasource")
@@ -243,7 +246,6 @@ if(BUILD_TESTS)
 		append_target_property(${VMDATASOURCE_TEST_EXECUTABLE} LINK_FLAGS "-Wl,-z,muldefs")
 	endif()
 
-    set(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/BlueSquare.avi")
     set(OUTPUT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}")
 
     if (CMAKE_HOST_WIN32)
