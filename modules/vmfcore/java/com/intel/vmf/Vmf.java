@@ -6,7 +6,14 @@ public class Vmf
 
     static
     {
-        System.loadLibrary(NATIVE_LIBRARY_NAME);
+        try
+        {
+            System.loadLibrary(NATIVE_LIBRARY_NAME);
+        }
+        catch (UnsatisfiedLinkError e)
+        {
+            System.loadLibrary(NATIVE_LIBRARY_NAME + "d");
+        }
     }
     
     public static void initialize ()

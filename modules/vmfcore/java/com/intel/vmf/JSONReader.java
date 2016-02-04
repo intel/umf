@@ -8,7 +8,7 @@ public class JSONReader implements IReader
         {
             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
         }
-        catch (Exception e)
+        catch (UnsatisfiedLinkError e)
         {
             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
         }
