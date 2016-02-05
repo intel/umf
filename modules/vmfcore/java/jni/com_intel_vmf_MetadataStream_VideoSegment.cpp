@@ -1,7 +1,6 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-//#include "../com_intel_vmf_MetadataStream_VideoSegment.h"
 #include "throwJavaException.hpp"
 
 extern "C" {

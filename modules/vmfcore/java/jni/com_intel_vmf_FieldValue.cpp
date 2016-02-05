@@ -3,7 +3,6 @@
 #include <memory>
 #include <stdexcept>
 #include "vmf/metadatastream.hpp"
-//#include "../com_intel_vmf_FieldValue.h"
 #include "throwJavaException.hpp"
 
 extern "C" {

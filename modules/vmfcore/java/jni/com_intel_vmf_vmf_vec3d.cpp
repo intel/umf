@@ -1,7 +1,6 @@
 #include<string>
 #include<vector>
 #include "vmf/metadatastream.hpp"
-//#include "../com_intel_vmf_vmf_vec3d.h"
 #include "throwJavaException.hpp"
 
 extern "C" {

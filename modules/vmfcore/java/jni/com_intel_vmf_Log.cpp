@@ -3,7 +3,6 @@
 #include <memory>
 #include <stdexcept>
 #include "vmf/log.hpp"
-//#include "../com_intel_vmf_Log.h"
 #include "throwJavaException.hpp"
 
 extern "C" {

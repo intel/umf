@@ -2,7 +2,6 @@
 #include<vector>
 #include <memory>
 #include "vmf/metadatastream.hpp"
-//#include "../com_intel_vmf_MetadataStream.h"
 #include "throwJavaException.hpp"
 #include <iostream>
 

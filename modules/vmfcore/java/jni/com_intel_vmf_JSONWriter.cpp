@@ -1,7 +1,6 @@
 #include<string>
 #include<vector>
 #include "vmf/jsonwriter.hpp"
-//#include "../com_intel_vmf_JSONWriter.h"
 #include "throwJavaException.hpp"
 
 extern "C" {

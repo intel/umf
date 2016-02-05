@@ -2,7 +2,6 @@
 #include<vector>
 #include <map>
 #include "vmf/metadatastream.hpp"
-//#include "../com_intel_vmf_Metadata.h"
 #include "throwJavaException.hpp"
 
 extern "C" {
