@@ -29,6 +29,6 @@ build_script:
 on_success:
   - bin\%CONFIGURATION%\unit-tests.exe
   - bin\%CONFIGURATION%\unit-tests-ds.exe
-  - if exist bin\\vmf_java.jar (cd bin && java -Djava.library.path=%CONFIGURATION% -cp .;vmf_java.jar;vmf_java_test.jar;junit-4.11.jar org.junit.runner.JUnitCore VmfTestSuite)
+  - if "%VMF_SHARED%"=="ON" if exist bin\\vmf_java.jar (cd bin && java -Djava.library.path=%CONFIGURATION% -cp .;vmf_java.jar;vmf_java_test.jar;junit-4.11.jar org.junit.runner.JUnitCore VmfTestSuite)
 
 test: off
