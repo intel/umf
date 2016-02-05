@@ -31,8 +31,8 @@ matrix:
         - VMF_IOS_BUILD=ON
 addons:
   apt:
-    sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-    packages: ['cmake', 'g++-4.8', 'clang-3.7']
+    sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+    packages: ['cmake', 'cmake-data', 'g++-4.8', 'clang-3.7']
 before_install:
   - env
   - if [ $TRAVIS_OS_NAME == linux ]; then cat /proc/cpuinfo; fi
