@@ -6,10 +6,4 @@ public class VmfNotFoundException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfNotFoundException [" + super.toString() + "]";
-    }
 }

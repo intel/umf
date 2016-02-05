@@ -6,10 +6,4 @@ public class VmfTypeCastException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfTypeCastException [" + super.toString() + "]";
-    }
 }

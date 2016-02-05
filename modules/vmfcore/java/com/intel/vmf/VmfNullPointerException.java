@@ -6,10 +6,4 @@ public class VmfNullPointerException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfNullPointerException [" + super.toString() + "]";
-    }
 }

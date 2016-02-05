@@ -6,10 +6,4 @@ public class VmfNotInitializedException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfNotInitializedException [" + super.toString() + "]";
-    }
 }

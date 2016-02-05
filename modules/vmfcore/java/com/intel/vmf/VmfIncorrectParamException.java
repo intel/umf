@@ -6,10 +6,4 @@ public class VmfIncorrectParamException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfIncorrectParamException [" + super.toString() + "]";
-    }
 }

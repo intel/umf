@@ -6,10 +6,4 @@ public class VmfInternalErrorException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfInternalErrorException [" + super.toString() + "]";
-    }
 }

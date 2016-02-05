@@ -6,10 +6,4 @@ public class VmfObjectExpiredException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfObjectExpiredException [" + super.toString() + "]";
-    }
 }

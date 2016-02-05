@@ -6,10 +6,4 @@ public class VmfDataStorageException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfDataStorageException [" + super.toString() + "]";
-    }
 }

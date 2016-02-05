@@ -6,10 +6,4 @@ public class VmfValidateException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfValidateException [" + super.toString() + "]";
-    }
 }

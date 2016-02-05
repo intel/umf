@@ -6,10 +6,4 @@ public class VmfAssociationException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfAssociationException [" + super.toString() + "]";
-    }
 }

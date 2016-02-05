@@ -6,10 +6,4 @@ public class VmfOutOfRangeException extends VmfException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfOutOfRangeException [" + super.toString() + "]";
-    }
 }

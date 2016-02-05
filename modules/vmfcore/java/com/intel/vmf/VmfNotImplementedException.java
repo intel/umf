@@ -6,10 +6,4 @@ public class VmfNotImplementedException extends RuntimeException
     {
         super(msg);
     }
-
-    @Override
-    public String toString() 
-    {
-        return "VmfNotImplementedException [" + super.toString() + "]";
-    }
 }
