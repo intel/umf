@@ -53,6 +53,7 @@ bool MetadataStream::open( const std::string& sFilePath, MetadataStream::OpenMod
         dataSource->openFile(m_sFilePath, eMode);
         dataSource->loadVideoSegments(videoSegments);
         dataSource->load(m_mapSchemas);
+        dataSource->loadStats(*this);
         m_eMode = eMode;
         m_sFilePath = sFilePath;
         nextId = dataSource->loadId();
@@ -132,6 +133,8 @@ bool MetadataStream::save(const vmf_string &compressorId)
                 dataSource->saveSchema(p.first, *this);
                 dataSource->save(p.second);
             }
+
+            dataSource->saveStats(m_stats);
 
             dataSource->saveVideoSegments(videoSegments);
 
@@ -316,6 +319,8 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
         }
     });
     m_oMetadataSet.push_back(spMetadata);
+
+    notifyStat(StatAction::Add, spMetadata);
 }
 
 bool MetadataStream::remove( const IdType& id )
@@ -331,7 +336,11 @@ bool MetadataStream::remove( const IdType& id )
     // Found it, let's remove it
     if( it != m_oMetadataSet.end() )
     {
-        (*it)->setStreamRef(nullptr);
+        std::shared_ptr< Metadata > spMetadata = *it;
+
+        notifyStat(StatAction::Remove, spMetadata);
+
+        spMetadata->setStreamRef(nullptr);
         m_oMetadataSet.erase( it );
 
         // Also remove any reference to it. There might be other shared pointers pointing to this object, so that
@@ -551,6 +560,7 @@ bool MetadataStream::import( MetadataStream& srcStream, MetadataSet& srcSet, lon
 
 void MetadataStream::clear()
 {
+    clearStats();
     m_eMode = InMemory;
     m_sFilePath = "";
     m_oMetadataSet.clear();
@@ -836,6 +846,76 @@ void MetadataStream::convertFrameIndexToTimestamp(
     }
     if (i == videoSegments.size())
         timestamp = Metadata::UNDEFINED_TIMESTAMP, duration = Metadata::UNDEFINED_DURATION;
+}
+
+void MetadataStream::notifyStat(StatAction::Type action, std::shared_ptr< Metadata > spMetadata)
+{
+    std::for_each( m_stats.begin(), m_stats.end(), [&]( Stat* stat )
+    {
+        stat->notify(action, spMetadata);
+    });
+}
+
+void MetadataStream::addStat(const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode)
+{
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)->bool
+    {
+        return stat->getName() == name;
+    });
+
+    if (it != m_stats.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
+    }
+
+    Stat* stat = new Stat(name, fields, updateMode);
+    m_stats.push_back(stat);
+    stat->setStream(this);
+}
+
+Stat* MetadataStream::getStat(const std::string& name) const
+{
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)->bool
+    {
+        return stat->getName() == name;
+    });
+
+    if (it == m_stats.end())
+    {
+        VMF_EXCEPTION(vmf::NotFoundException, "Statistics object not found: '" + name + "'");
+    }
+
+    return *it;
+}
+
+std::vector< std::string > MetadataStream::getAllStatNames() const
+{
+    std::vector< std::string > names;
+
+    std::for_each(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)
+    {
+        names.push_back(stat->getName());
+    });
+
+    return names;
+}
+
+void MetadataStream::clearStats()
+{
+    if (!m_stats.empty())
+    {
+        for (auto it = m_stats.begin(); it != m_stats.end();  ++it)
+        {
+            Stat* stat = *it;
+            if (stat != nullptr)
+            {
+                stat->setStream(nullptr);
+                delete stat;
+                *it = nullptr;
+            }
+        }
+        std::vector< Stat* >().swap(m_stats); // m_stats.clear()
+    }
 }
 
 }//namespace vmf
