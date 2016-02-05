@@ -8,7 +8,7 @@ public class Reference
         {
             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
         }
-        catch (Exception e)
+        catch (UnsatisfiedLinkError e)
         {
             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
         }
@@ -20,7 +20,7 @@ public class Reference
     {
         if (addr == 0)
             throw new java.lang.IllegalArgumentException("Native object address is NULL");
-        
+
         nativeObj = addr;
     }
 
@@ -42,20 +42,20 @@ public class Reference
     public Metadata getReferenceMetadata ()
     {
     	long nativeAddr = n_getMetadata (nativeObj);
-    	
+
     	if (nativeAddr == 0)
 			return null;
-    	
+
         return new Metadata (nativeAddr);
     }
 
     public ReferenceDesc getReferenceDescription ()
     {
     	long nativeAddr = n_getReferenceDescription (nativeObj);
-    	
+
     	if (nativeAddr == 0)
 			return null;
-    	
+
         return new ReferenceDesc (nativeAddr);
     }
 

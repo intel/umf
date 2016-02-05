@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 # must go before the `project()` command
@@ -15,7 +15,14 @@ if(NOT IOS)
   option(BUILD_SHARED_LIBS "Whether or not to build VMF as shared library" ON)
   option(BUILD_SAMPLES "Whether or not to build the samples" ON)
   option(BUILD_TESTS "Whether or not to build the tests" ON)
-  option(BUILD_JAVA_API "Whether or not to build Java wrappers" ON)
+  # Java
+  find_package(Java 1.7 QUIET COMPONENTS Development)
+  find_package(JNI QUIET)
+  if(Java_FOUND AND JNI_FOUND)
+    option(BUILD_JAVA_API "Whether or not to build Java wrappers" ON)
+  else()
+    option(BUILD_JAVA_API "Whether or not to build Java wrappers" OFF)
+  endif()
 else()
   set(BUILD_SHARED_LIBS OFF)
   set(BUILD_SAMPLES OFF)

@@ -1,5 +1,5 @@
 project(vmf-library)
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 set(VMF_LIBRARY_NAME "vmf")
 set(VMF_JAR_NAME ${VMF_LIBRARY_NAME}_java)
@@ -27,13 +27,10 @@ set(LIBXML2_PUBLIC_DIR "${VMF_3PTY_DIR}/libxml2/src/include")
 set(LIBJSON_PUBLIC_DIR "${VMF_3PTY_DIR}/libjson/src" "${VMF_3PTY_DIR}/libjson/src/_internal/Source")
 
 if (BUILD_JAVA_API)
-    find_package(Java REQUIRED)
+    find_package(Java 1.7 REQUIRED COMPONENTS Development)
     find_package(JNI REQUIRED)
     include(UseJava)
-    if(JAVA_FOUND)  
-        message( STATUS "JAVA_INCLUDE_PATH " ${JAVA_INCLUDE_PATH} )
-        include_directories(${JAVA_INCLUDE_PATH} ${JNI_INCLUDE_DIRS})
-    endif()
+    include_directories(${JAVA_INCLUDE_PATH} ${JNI_INCLUDE_DIRS})
 endif()
 
 if(CODE_COVERAGE)
@@ -53,7 +50,7 @@ set(VMFCORE_TEST_EXECUTABLE "unit-tests")
 
 set(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/BlueSquare.avi")
 
-if (BUILD_JAVA_API AND JAVA_FOUND)
+if (BUILD_JAVA_API)
     set(VMFCORE_JAVA_DIR "${VMFCORE_DIR}/java")
     set(VMFCORE_JNI_DIR "${VMFCORE_JAVA_DIR}/jni")
     set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
@@ -66,8 +63,7 @@ file(GLOB VMFCORE_SOURCES "${VMFCORE_SOURCE_DIR}/*.hpp"  "${VMFCORE_SOURCE_DIR}/
 file(GLOB VMFCORE_DETAILS "${VMFCORE_DETAILS_DIR}/*.hpp" "${VMFCORE_DETAILS_DIR}/*.cpp")
 file(GLOB VMFCORE_TESTS "${VMFCORE_TESTS_DIR}/*.hpp"     "${VMFCORE_TESTS_DIR}/*.cpp")
 
-if (BUILD_JAVA_API AND JAVA_FOUND)
-#"${VMFCORE_JAVA_DIR}/*.h" 
+if (BUILD_JAVA_API)
     file(GLOB VMFCORE_JNI "${VMFCORE_JNI_DIR}/*.cpp")
     file(GLOB VMFCORE_JAVA_API "${VMFCORE_JAVA_DIR}/com/intel/vmf/*.java")
     file(GLOB VMFCORE_JAVA_TEST "${VMFCORE_JAVA_DIR}/test/src/*.java")
@@ -78,37 +74,12 @@ source_group(vmfcore\\include\\vmf FILES ${VMFCORE_HEADERS})
 source_group(vmfcore\\src FILES ${VMFCORE_SOURCES})
 source_group(vmfcore\\src\\details FILES ${VMFCORE_DETAILS})
 
-if (BUILD_JAVA_API AND JAVA_FOUND)
+if (BUILD_JAVA_API)
     source_group(vmfcore\\jni FILES ${VMFCORE_JNI})
-        
-    if(CMAKE_VERSION VERSION_LESS "2.8.12")
-      # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
-      set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
-      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API})
-    else()
-      add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
-    endif()
-    
-    # debug info
-    #get_target_property(_jarFile ${VMF_JAR_NAME} JAR_FILE)
-    #get_target_property(_classDir ${VMF_JAR_NAME} CLASSDIR)
-    #message(STATUS "Jar file ${_jarFile}")
-    #message(STATUS "Class compiled to ${_classDir}")
-    
-    if(CMAKE_VERSION VERSION_LESS "2.8.12")
-      # old CMake workaround, to be removed when cmake_minimum_required will require 2.8.12
-      set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
-      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT})
-    else()
-      add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
-    endif()
-    
-    # debug info
-    #get_target_property(_jarFile ${VMF_JAR_TEST_NAME} JAR_FILE)
-    #get_target_property(_classDir ${VMF_JAR_TEST_NAME} CLASSDIR)
-    #message(STATUS "Jar file ${_jarFile}")
-    #message(STATUS "Class compiled to ${_classDir}")
-    
+    add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    add_dependencies(${VMF_JAR_NAME} ${VMF_LIBRARY_NAME})
+    add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    add_dependencies(${VMF_JAR_TEST_NAME} ${VMF_JAR_NAME})
     file(COPY ${VMFCORE_JAVA_JUNIT} DESTINATION ${CMAKE_BINARY_DIR}/bin)
     file(COPY ${VIDEO_PATH} DESTINATION ${CMAKE_BINARY_DIR}/bin)
 endif()
@@ -128,7 +99,7 @@ source_group(vmdatasource\\include\\vmf FILES ${VMDATASOURCE_HEADERS})
 
 include_directories(${CMAKE_BINARY_DIR} ${VMFCORE_PUBLIC_DIR} ${VMFCORE_DETAILS_DIR} ${VMDATASOURCE_PUBLIC_DIR} ${XMP_PUBLIC_DIR} ${LIBXML2_PUBLIC_DIR} ${LIBJSON_PUBLIC_DIR})
 
-if (BUILD_JAVA_API AND JAVA_FOUND)
+if (BUILD_JAVA_API)
     add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${VMFCORE_JNI} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES})
 else()
     add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES})
