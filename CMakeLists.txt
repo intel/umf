@@ -31,6 +31,11 @@ else()
   set(BUILD_JAVA_API OFF)
 endif()
 
+if(NOT BUILD_SHARED_LIBS)
+  # JAR depends on dynamic VMF lib
+  set(BUILD_JAVA_API OFF)
+endif()
+
 if(WIN32)
   set(BUILD_INSTALLER ON)
 endif()
