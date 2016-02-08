@@ -84,12 +84,12 @@ public:
             registerUserOp( UserOp::className, UserOp::createInstance );
         }
 
-    static const char minName[];
-    static const char maxName[];
-    static const char averageName[];
-    static const char countName[];
-    static const char sumName[];
-    static const char lastName[];
+    static const std::string& minName();
+    static const std::string& maxName();
+    static const std::string& averageName();
+    static const std::string& countName();
+    static const std::string& sumName();
+    static const std::string& lastName();
 
 private:
     static UserOpMap& getClassMap();

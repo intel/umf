@@ -490,23 +490,23 @@ StatOpFactory::UserOpMap& StatOpFactory::getClassMap()
 
     if( ops.empty() )
     {
-        ops.insert( UserOpItem( minName    , StatOpMin    ::createInstance ));
-        ops.insert( UserOpItem( maxName    , StatOpMax    ::createInstance ));
-        ops.insert( UserOpItem( averageName, StatOpAverage::createInstance ));
-        ops.insert( UserOpItem( countName  , StatOpCount  ::createInstance ));
-        ops.insert( UserOpItem( sumName    , StatOpSum    ::createInstance ));
-        ops.insert( UserOpItem( lastName   , StatOpLast   ::createInstance ));
+        ops.insert( UserOpItem( minName()    , StatOpMin::createInstance     ));
+        ops.insert( UserOpItem( maxName()    , StatOpMax::createInstance     ));
+        ops.insert( UserOpItem( averageName(), StatOpAverage::createInstance ));
+        ops.insert( UserOpItem( countName()  , StatOpCount::createInstance   ));
+        ops.insert( UserOpItem( sumName()    , StatOpSum::createInstance     ));
+        ops.insert( UserOpItem( lastName()   , StatOpLast::createInstance    ));
     }
 
     return ops;
 }
 
-const char StatOpFactory::minName[]     = BUILTIN_OP_NAME_MIN;
-const char StatOpFactory::maxName[]     = BUILTIN_OP_NAME_MAX;
-const char StatOpFactory::averageName[] = BUILTIN_OP_NAME_AVERAGE;
-const char StatOpFactory::countName[]   = BUILTIN_OP_NAME_COUNT;
-const char StatOpFactory::sumName[]     = BUILTIN_OP_NAME_SUM;
-const char StatOpFactory::lastName[]    = BUILTIN_OP_NAME_LAST;
+const std::string& StatOpFactory::minName()     { static const std::string name( BUILTIN_OP_NAME_MIN     ); return name; }
+const std::string& StatOpFactory::maxName()     { static const std::string name( BUILTIN_OP_NAME_MAX     ); return name; }
+const std::string& StatOpFactory::averageName() { static const std::string name( BUILTIN_OP_NAME_AVERAGE ); return name; }
+const std::string& StatOpFactory::countName()   { static const std::string name( BUILTIN_OP_NAME_COUNT   ); return name; }
+const std::string& StatOpFactory::sumName()     { static const std::string name( BUILTIN_OP_NAME_SUM     ); return name; }
+const std::string& StatOpFactory::lastName()    { static const std::string name( BUILTIN_OP_NAME_LAST    ); return name; }
 
 // class StatField (StatFieldDesc)
 

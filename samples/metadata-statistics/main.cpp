@@ -204,8 +204,8 @@ int sample(int argc, char *argv[])
 
     // Set up statistics object(s)
     std::vector< vmf::StatField > fields;
-    fields.push_back( vmf::StatField( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::countName ));
-    fields.push_back( vmf::StatField( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName ));
+    fields.push_back( vmf::StatField( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::countName() ));
+    fields.push_back( vmf::StatField( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName() ));
     fields.push_back( vmf::StatField( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::className ));
     fields.push_back( vmf::StatField( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::className ));
     mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Manual );
