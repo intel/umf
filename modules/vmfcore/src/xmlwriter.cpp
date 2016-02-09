@@ -186,7 +186,62 @@ static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::V
     }
 }
 
-XMLWriter::XMLWriter() : IWriter() { }
+static void add(xmlNodePtr statNode, const Stat* stat)
+{
+    if (stat->getName().empty())
+        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat->getName().c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
+
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_UPDATE_MODE, BAD_CAST StatUpdateMode::toString(stat->getUpdateMode()).c_str() ) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object update mode)");
+
+    std::vector< std::string > fieldNames = stat->getAllFieldNames();
+    if (!fieldNames.empty())
+    {
+        std::for_each(fieldNames.begin(), fieldNames.end(), [&](const std::string& fieldName)
+        {
+            const StatField& field = stat->getField(fieldName);
+
+            if (field.getName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+            if (field.getFieldName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+            if (field.getOpName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+
+            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            if (metadataDesc == nullptr)
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
+            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+            if (metadataDesc->getMetadataName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+
+            xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
+            if(fieldNode == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for stat object field" );
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST metadataDesc->getSchemaName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST metadataDesc->getMetadataName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
+        });
+    }
+}
+
+XMLWriter::XMLWriter() {}
 XMLWriter::~XMLWriter() {}
 
 std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
@@ -330,7 +385,8 @@ std::string XMLWriter::store(const IdType& nextId,
     const std::string& checksum,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    const MetadataSet& set)
+    const MetadataSet& set,
+    const std::vector< Stat* >& stats)
 {
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
@@ -475,6 +531,76 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
     xmlDocDumpMemory(doc, &buf, &size);
     if (buf == NULL)
 	VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
+
+    std::string outputString = (char *)buf;
+
+    xmlFree(buf);
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+    xmlMemoryDump();
+
+    return outputString;
+}
+
+std::string XMLWriter::store(const Stat* stat)
+{
+    if( stat == nullptr )
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
+
+    xmlDocPtr doc = xmlNewDoc(NULL);
+    xmlNodePtr statNode = xmlNewNode(NULL, BAD_CAST TAG_STAT);
+    if(statNode == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for stat object" );
+
+    if(xmlDocSetRootElement(doc, statNode) != 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
+
+    add(statNode, stat);
+
+    xmlChar *buf;
+    int size;
+    xmlDocDumpMemory(doc, &buf, &size);
+    if (buf == NULL)
+        VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into the buffer");
+
+    std::string outputString = (char *)buf;
+
+    xmlFree(buf);
+    xmlFreeDoc(doc);
+    xmlCleanupParser();
+    xmlMemoryDump();
+
+    return outputString;
+}
+
+std::string XMLWriter::store(const std::vector< Stat* >& stats)
+{
+    if(stats.empty())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Input stat object vector is empty");
+
+    xmlDocPtr doc = xmlNewDoc(NULL);
+    xmlNodePtr statsArrayNode = xmlNewNode(NULL, BAD_CAST TAG_STATS_ARRAY);
+    if(statsArrayNode == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for stat object array");
+
+    if(xmlDocSetRootElement(doc, statsArrayNode) != 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
+
+    std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+    {
+        if( stat == nullptr )
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
+
+        xmlNodePtr statNode = xmlNewChild(statsArrayNode, NULL, BAD_CAST TAG_STAT, NULL);
+
+        add(statNode, stat);
+    });
+
+    xmlChar *buf;
+    int size;
+    xmlDocDumpMemory(doc, &buf, &size);
+    if (buf == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
 
     std::string outputString = (char *)buf;
 

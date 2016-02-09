@@ -54,9 +54,12 @@ public:
                               const std::string& checksum,
                               const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                              const MetadataSet& set);
+                              const MetadataSet& set,
+                              const std::vector< Stat* >& stats);
     virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
+    virtual std::string store(const Stat* stat);
+    virtual std::string store(const std::vector< Stat* >& stats);
 
 private:
     // hiding API that may be removed soon

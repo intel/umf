@@ -61,7 +61,8 @@ public:
                                const std::string& checksum,
                                const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                               const MetadataSet& set ) = 0;
+                               const MetadataSet& set,
+                               const std::vector< Stat* >& stats ) = 0;
 
     /*!
     * \brief Export a video segment to a string representation
@@ -72,6 +73,17 @@ public:
     * \brief Export a video segments vector to a string representation.
     */
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments) = 0;
+
+    /*!
+    * \brief Export a statistics object to a string representation
+    */
+    virtual std::string store(const Stat* stat) = 0;
+
+    /*!
+    * \brief Export a statistics object vector to a string representation.
+    */
+    virtual std::string store(const std::vector< Stat* >& stats) = 0;
+
 };
 
 }//vmf

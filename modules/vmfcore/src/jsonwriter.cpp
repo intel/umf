@@ -169,8 +169,57 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-JSONWriter::JSONWriter() : IWriter() { }
-JSONWriter::~JSONWriter() { }
+static void add(JSONNode& statNode, const Stat* stat)
+{
+    if (stat->getName().empty())
+        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+
+    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat->getName()));
+    statNode.push_back(JSONNode(ATTR_STAT_UPDATE_MODE, StatUpdateMode::toString(stat->getUpdateMode())));
+
+    std::vector< std::string > fieldNames = stat->getAllFieldNames();
+    if (!fieldNames.empty())
+    {
+        JSONNode fieldsArrayNode(JSON_ARRAY);
+        fieldsArrayNode.set_name(TAG_STAT_FIELDS_ARRAY);
+
+        std::for_each(fieldNames.begin(), fieldNames.end(), [&](const std::string& fieldName)
+        {
+            const StatField& field = stat->getField(fieldName);
+
+            if (field.getName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+            if (field.getFieldName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+            if (field.getOpName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+
+            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            if (metadataDesc == nullptr)
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
+            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+            if (metadataDesc->getMetadataName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+
+            JSONNode fieldNode(JSON_NODE);
+            fieldNode.set_name(TAG_STAT_FIELD);
+
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_NAME, field.getName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_SCHEMA_NAME, metadataDesc->getSchemaName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_METADATA_NAME, metadataDesc->getMetadataName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_FIELD_NAME, field.getFieldName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_OP_NAME, field.getOpName()));
+
+            fieldsArrayNode.push_back(fieldNode);
+        });
+
+        statNode.push_back(fieldsArrayNode);
+    }
+}
+
+JSONWriter::JSONWriter() {};
+JSONWriter::~JSONWriter() {};
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
 {
@@ -259,7 +308,8 @@ std::string JSONWriter::store(const IdType& nextId,
     const std::string& checksum,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    const MetadataSet& set)
+    const MetadataSet& set,
+    const std::vector< Stat* >& stats)
 {
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
@@ -298,6 +348,23 @@ std::string JSONWriter::store(const IdType& nextId,
 	});
 
 	vmfRootNode.push_back(segmentsArrayNode);
+    }
+
+    if(!stats.empty())
+    {
+        JSONNode statsArrayNode(JSON_ARRAY);
+        statsArrayNode.set_name(TAG_STATS_ARRAY);
+
+        std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+        {
+            if( stat == nullptr )
+                VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
+            JSONNode statNode(JSON_NODE);
+            add(statNode, stat);
+            statsArrayNode.push_back(statNode);
+        });
+
+        vmfRootNode.push_back(statsArrayNode);
     }
 
     JSONNode schemasArrayNode(JSON_ARRAY);
@@ -374,6 +441,45 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
 
     std::string formatted = root.write_formatted();
     return formatted;
+}
+
+std::string JSONWriter::store(const std::vector< Stat* >& stats)
+{
+    if(stats.empty())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Input stat object vector is empty");
+
+    JSONNode statsArrayNode(JSON_ARRAY);
+    statsArrayNode.set_name(TAG_STATS_ARRAY);
+
+    std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+    {
+        if( stat == nullptr )
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
+        JSONNode statNode(JSON_NODE);
+        add(statNode, stat);
+        statsArrayNode.push_back(statNode);
+    });
+
+    JSONNode root(JSON_NODE);
+    root.push_back(statsArrayNode);
+
+    return root.write_formatted();
+}
+
+std::string JSONWriter::store(const Stat* stat)
+{
+    if( stat == nullptr )
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
+
+    JSONNode statNode(JSON_NODE);
+    statNode.set_name(TAG_STAT);
+
+    add(statNode, stat);
+
+    JSONNode root(JSON_NODE);
+    root.push_back(statNode);
+
+    return root.write_formatted();
 }
 
 }//vmf

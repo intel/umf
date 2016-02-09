@@ -55,9 +55,10 @@ public:
 
     //these methods always get uncompressed text as input
     virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+	std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+        std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+        std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+        MetadataStream& stream);
 
     virtual bool parseSchemas(const std::string& text,
                               std::vector<std::shared_ptr<MetadataSchema>>& schemas);
@@ -66,8 +67,8 @@ public:
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata );
 
-    virtual bool parseVideoSegments(const std::string& text,
-                                    std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+    virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+    virtual bool parseStats(const std::string& text, MetadataStream& stream);
 };
 
 }//vmf

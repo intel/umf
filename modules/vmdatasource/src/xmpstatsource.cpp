@@ -170,7 +170,7 @@ void XMPStatSource::load(MetadataStream& stream)
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_OP_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &opName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field metadata field name");
+                VMF_EXCEPTION(DataStorageException, "Broken stat field operation name");
 
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }

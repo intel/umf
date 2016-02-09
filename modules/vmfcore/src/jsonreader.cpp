@@ -266,8 +266,65 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader() : IReader() { }
-JSONReader::~JSONReader(){ }
+static void parseStatFromNode(JSONNode& statNode, MetadataStream& stream)
+{
+    auto statNameIter = statNode.find(ATTR_STAT_NAME);
+    auto updateModeIter = statNode.find(ATTR_STAT_UPDATE_MODE);
+
+    if(statNameIter == statNode.end())
+        VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has no stat name");
+    if(updateModeIter == statNode.end())
+        VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has no stat update mode");
+
+    std::string statName = statNameIter->as_string();
+    StatUpdateMode::Type updateMode = StatUpdateMode::fromString(updateModeIter->as_string());
+
+    if(statName.empty())
+        VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has invalid stat name");
+
+    std::vector< StatField > fields;
+
+    auto fieldsArrayIter = statNode.find(TAG_STAT_FIELDS_ARRAY);
+    if(fieldsArrayIter != statNode.end())
+    {
+        for(auto fieldNode = fieldsArrayIter->begin(); fieldNode != fieldsArrayIter->end(); fieldNode++)
+        {
+            auto fieldNameIter = fieldNode->find(ATTR_STAT_FIELD_NAME);
+            if(fieldNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no name");
+
+            auto schemaNameIter = fieldNode->find(ATTR_STAT_FIELD_SCHEMA_NAME);
+            if(schemaNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata schema name");
+
+            auto metadataNameIter = fieldNode->find(ATTR_STAT_FIELD_METADATA_NAME);
+            if(metadataNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata name");
+
+            auto metadataFieldNameIter = fieldNode->find(ATTR_STAT_FIELD_FIELD_NAME);
+            if(metadataFieldNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata field name");
+
+            auto opNameIter = fieldNode->find(ATTR_STAT_FIELD_OP_NAME);
+            if(opNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no operation name");
+
+            std::string fieldName, schemaName, metadataName, metadataFieldName, opName;
+
+            fieldName = fieldNameIter->as_string();
+            schemaName = schemaNameIter->as_string();
+            metadataName = metadataNameIter->as_string();
+            metadataFieldName = metadataFieldNameIter->as_string();
+            opName = opNameIter->as_string();
+
+            fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
+        }
+    }
+
+    stream.addStat(statName, fields, updateMode);
+}
+
+JSONReader::JSONReader(){}
 
 bool JSONReader::parseSchemas(const std::string& text,
                                       std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -424,9 +481,10 @@ bool JSONReader::parseMetadata(const std::string& text,
 }
 
 bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+    std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+    MetadataStream& stream)
 {
     if(text.empty())
     {
@@ -556,6 +614,76 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
 		    VMF_LOG_ERROR("Exception: %s", e.what());
 		    return false;
 		}
+    }
+    return true;
+}
+
+bool JSONReader::parseStats(const std::string& text, MetadataStream& stream)
+{
+    if(text.empty())
+    {
+        VMF_LOG_ERROR("Empty input JSON string");
+        return false;
+    }
+
+    JSONNode root(JSON_NODE);
+    try
+    {
+        root = libjson::parse(text);
+    }
+    catch(...)
+    {
+        VMF_LOG_ERROR("JSON document has no root element");
+        return false;
+    }
+
+    if(root.size() != 1)
+    {
+        VMF_LOG_ERROR("More than one JSON root");
+        return false;
+    }
+
+    JSONNode localRootNode = root[0];
+
+    if( localRootNode.name() == TAG_STAT )
+    {
+        try
+        {
+            parseStatFromNode(localRootNode, stream);
+        }
+        catch(Exception& e)
+        {
+            VMF_LOG_ERROR("Exception: %s", e.what());
+            return false;
+        }
+    }
+    else if( localRootNode.name() == TAG_STATS_ARRAY )
+    {
+        for(auto node = localRootNode.begin(); node != localRootNode.end(); node++)
+        try
+        {
+            parseStatFromNode(*node, stream);
+        }
+        catch(Exception& e)
+        {
+            VMF_LOG_ERROR("Exception: %s", e.what());
+            return false;
+        }
+    }
+    else if( localRootNode.name() == TAG_VMF )
+    {
+        for(auto rootChildNode = localRootNode.begin(); rootChildNode != localRootNode.end(); rootChildNode++)
+            if(rootChildNode->name() == TAG_STATS_ARRAY )
+                for(auto node = rootChildNode->begin(); node != rootChildNode->end(); node++)
+                try
+                {
+                    parseStatFromNode(*node, stream);
+                }
+                catch(Exception& e)
+                {
+                    VMF_LOG_ERROR("Exception: %s", e.what());
+                    return false;
+                }
     }
     return true;
 }
