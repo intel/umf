@@ -22,7 +22,7 @@ public class VmfFieldValueTest
         Vmf.terminate();
     }
     
-    protected Variant var;
+    protected Variant variant;
     protected FieldValue fieldValue1;
     protected FieldValue fieldValue2; 
     protected FieldValue fieldValue3; 
@@ -30,11 +30,11 @@ public class VmfFieldValueTest
     @Before
     public void setUp()
     {
-    	var = new Variant();
+    	variant = new Variant();
     	fieldValue1 = new FieldValue();
-    	var.setTo(25);
-    	fieldValue2 = new FieldValue("fieldName", var);
-    	fieldValue3 = new FieldValue("fieldName", var);
+    	variant.setTo(25);
+    	fieldValue2 = new FieldValue("fieldName", variant);
+    	fieldValue3 = new FieldValue("fieldName", variant);
     }
     
     @Test
@@ -72,12 +72,21 @@ public class VmfFieldValueTest
     @Test
     public void testClear ()
     {
-        FieldValue tmp = new FieldValue();
+        FieldValue fv = new FieldValue();
         
         fieldValue2.clear();
         assertEquals("", fieldValue2.getName());
-        assertEquals(tmp.getType(), fieldValue2.getType());
+        assertEquals(fv.getType(), fieldValue2.getType());
         assertEquals(Variant.type_unknown, fieldValue2.getType());
-        assertEquals("unknown", tmp.getTypeName());
+        assertEquals("unknown", fv.getTypeName());
+    }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        fieldValue1 = null;
+        fieldValue2 = null;
+        fieldValue3 = null;
+        variant = null;
     }
 }
