@@ -37,7 +37,8 @@ MetadataStream::~MetadataStream(void)
     clear();
 }
 
-bool MetadataStream::open( const std::string& sFilePath, MetadataStream::OpenMode eMode )
+bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode eMode,
+                          std::shared_ptr<Encryptor> encryptor)
 {
     try
     {
@@ -104,7 +105,15 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
     }
 }
 
-bool MetadataStream::save(const vmf_string &compressorId)
+
+bool MetadataStream::save(std::shared_ptr<Encryptor> encryptor, bool isWholeEncrypted)
+{
+    return save("", encryptor, isWholeEncrypted);
+}
+
+
+bool MetadataStream::save(const vmf_string &compressorId, std::shared_ptr<Encryptor> encryptor,
+                          bool isWholeEncrypted)
 {
     dataSourceCheck();
     try
@@ -157,7 +166,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
     }
 }
 
-bool MetadataStream::reopen( OpenMode eMode )
+bool MetadataStream::reopen(OpenMode eMode , std::shared_ptr<Encryptor> encryptor)
 {
     dataSourceCheck();
     if((m_eMode & ReadOnly) || (m_eMode & Update))
@@ -178,7 +187,16 @@ bool MetadataStream::reopen( OpenMode eMode )
     return false;
 }
 
-bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
+
+bool MetadataStream::saveTo(const std::string &sFilePath, std::shared_ptr<Encryptor> encryptor,
+                            bool isWholeEncrypted)
+{
+    return saveTo(sFilePath, encryptor, isWholeEncrypted);
+}
+
+
+bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId,
+                            std::shared_ptr<Encryptor> encryptor, bool isWholeEncrypted)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
         throw std::runtime_error("The previous file has not been closed!");

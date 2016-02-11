@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2015 Intel(r) Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,14 @@
  */
 
 /*!
-* \file reader_compressed.hpp
-* \brief Deserialization based on instance of IReader class
-*/
+ * \file reader_encrypted.hpp
+ * \brief Deserialization based on instances of Encryptor and IReader classes
+ */
 
 #pragma once
 
-#ifndef VMF_READER_COMPRESSED_HPP
-#define VMF_READER_COMPRESSED_HPP
+#ifndef VMF_READER_ENCRYPTED_HPP
+#define VMF_READER_ENCRYPTED_HPP
 
 #include "ireader.hpp"
 
@@ -31,24 +31,24 @@ namespace vmf
 {
 
 /*!
- * \class ReaderCompressed
- * \brief ReaderCompressed class performs deserialization of compressed stream
- * based on provided instance of and IReader
+ * \class ReaderEncrypted
+ * \brief The class performs deserialization of encrypted stream
+ * based on provided instance of IReader and
  */
-class VMF_EXPORT ReaderCompressed : public IReader
+class VMF_EXPORT ReaderEncrypted : public IReader
 {
 public:
     /*!
      * \brief Constructor of the class
      * \param _reader Shared pointer to instance of IReader class
-     * \param _ignoreUnknownCompressor Flag specifying what to do with unknown compressor:
-     * throw an exception (false) or pass compressed data as VMF metadata
+     * \param _encryptor Shared pointer to instance of Encryptor class
+     * \param _ignoreUnknownEncryptor Flag specifying what to do with unknown encryptor:
+     * throw an exception (false) or pass encrypted data as VMF metadata
      */
-    ReaderCompressed(std::shared_ptr<IReader> _reader, bool _ignoreUnknownCompressor = false) :
-    IReader(), reader(_reader), ignoreUnknownCompressor(_ignoreUnknownCompressor)
-    { }
-    
-    virtual ~ReaderCompressed() { }
+    ReaderEncrypted(std::shared_ptr<IReader> _reader, std::shared_ptr<Encryptor> _encryptor,
+                    bool _ignoreUnknownEncryptor = false);
+
+    virtual ~ReaderEncrypted() { }
 
     // IReader implementation
     virtual bool parseAll(const std::string& text, IdType& nextId,
@@ -67,19 +67,11 @@ public:
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
-    /*!
-     * \brief Performs decompression of previously compressed data
-     * \param input Input string
-     * \return Decompressed string
-     */
-    virtual std::string decompress(const std::string& input);
-
 protected:
-    std::shared_ptr<IReader> reader;
-    bool ignoreUnknownCompressor;
+
 };
 
+} //vmf
 
-}//vmf
+#endif //VMF_READER_ENCRYPTED_HPP
 
-#endif /* VMF_READER_COMPRESSED_HPP */

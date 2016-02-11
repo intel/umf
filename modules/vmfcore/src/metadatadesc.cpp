@@ -24,18 +24,22 @@ MetadataDesc::MetadataDesc()
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
 }
 
-MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields)
+MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                           bool isEncrypted)
     : m_sMetadataName(sMetadataName)
     , m_vFields(vFields)
+    , m_encrypted(isEncrypted)
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
     validate();
 }
 
-MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields, const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs)
+MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                           const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs, bool isEncrypted)
     : m_sMetadataName( sMetadataName )
     , m_vFields( vFields )
     , m_vRefDesc( vRefs )
+    , m_encrypted(isEncrypted)
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
     validate();
@@ -93,6 +97,11 @@ std::string MetadataDesc::getMetadataName() const
 std::string MetadataDesc::getSchemaName() const
 {
     return m_sSchemaName;
+}
+
+bool MetadataDesc::isEncrypted() const
+{
+    return m_encrypted;
 }
 
 std::vector<FieldDesc> MetadataDesc::getFields() const

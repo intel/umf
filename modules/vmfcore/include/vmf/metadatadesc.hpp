@@ -44,23 +44,32 @@ struct FieldDesc
     * \brief Structure constructor
     * \param sName [in] field description name
     * \param eType [in] field type
+    * \param isOptional [in] field optional
+    * \param isEncrypted [in] field encrypted
     */
-    FieldDesc( const std::string& sName = "", Variant::Type eType = Variant::type_string, bool isOptional = false ) : name( sName ), type( eType ), optional(isOptional) {};
+    FieldDesc( const std::string& sName = "", Variant::Type eType = Variant::type_string,
+               bool isOptional = false, bool isEncrypted = false ) :
+        name( sName ), type( eType ), optional(isOptional), encrypted(isEncrypted) {};
 
     /*!
     * \brief field name
     */
-    std::string		name;
+    std::string     name;
 
     /*!
     * \brief field type
     */
-    Variant::Type	type;
+    Variant::Type   type;
 
     /*!
     * \brief field optional
     */
-    bool        	optional;
+    bool            optional;
+
+    /*!
+     * \brief field encrypted
+     */
+    bool            encrypted;
 
     /*!
     * \brief Compare operator
@@ -99,11 +108,16 @@ public:
     * \brief Class constructor for constructing struct-type metadata descriptor
     * \param sMetadataName [in] metadata name
     * \param vFields [in] metadata description fields
+    * \param isEncrypted [in] Specifies whether all metadata records of this description
+    * should be encrypted at file saving or serialization
     * \throw ValidateException if input data is invalid or inconsistent
     */
-    MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields);
+    MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                 bool isEncrypted = false);
 
-    MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields, const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs);
+    MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                 const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs,
+                 bool isEncrypted = false);
 
     /*!
     * \brief Class constructor for single-value descriptor or array type descriptor
@@ -128,6 +142,13 @@ public:
     * \return metadata schema name
     */
     std::string getSchemaName() const;
+
+    /*!
+     * \brief Check if metadata records of this description should be encrypted
+     * at saving or serialization
+     * \return encryption status
+     */
+    bool isEncrypted() const;
 
     /*!
     * \brief Get metadata description fields
@@ -155,10 +176,11 @@ protected:
     void setSchemaName( const std::string& sAppName );
 
 private:
-    std::string					m_sSchemaName;
-    std::string					m_sMetadataName;
-    std::vector< FieldDesc >	m_vFields;
+    std::string                 m_sSchemaName;
+    std::string                 m_sMetadataName;
+    std::vector< FieldDesc >    m_vFields;
     std::vector<std::shared_ptr<ReferenceDesc>>  m_vRefDesc;
+    bool m_encrypted;
 };
 };
 
