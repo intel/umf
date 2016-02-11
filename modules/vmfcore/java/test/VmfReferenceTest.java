@@ -117,4 +117,19 @@ public class VmfReferenceTest
         assertEquals(md2.getFrameIndex(), ref2.getReferenceMetadata().getFrameIndex());
         assertEquals(md2.getNumOfFrames(), ref2.getReferenceMetadata().getNumOfFrames());
     }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        ref1 = null;
+        ref2 = null;
+        
+        md1 = null;
+        md2 = null;
+        
+        mdDesc1 = null;
+        mdDesc2 = null;
+        
+        System.gc();
+    }
 }

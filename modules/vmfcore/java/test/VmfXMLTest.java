@@ -37,7 +37,7 @@ public class VmfXMLTest
     protected XMLReader reader;
     protected XMLWriter writer;
     
-    protected MetadataSet mdSet1;
+    protected MetadataSet mdSet;
     
     protected Variant var1;
     protected Variant var2;
@@ -116,7 +116,7 @@ public class VmfXMLTest
         md2.addReference(md3, "friend");
         md2.addReference(md3, "colleague");
         
-        mdSet1 = stream.getAll();
+        mdSet = stream.getAll();
     	
         videoSeg1 = new MetadataStream.VideoSegment("holiday", 35, 0);
         videoSeg2 = new MetadataStream.VideoSegment("vacation", 30, 15);
@@ -135,16 +135,39 @@ public class VmfXMLTest
         MetadataSchema mdSchemas[] = reader.parseSchemas(schemas);
         assertEquals (2, mdSchemas.length);
         
-        String str = writer.store(mdSet1);
+        String str = writer.store(mdSet);
         assertFalse(str.isEmpty());
         
         MetadataInternal mdInt[] = reader.parseMetadata(str, schema1, schema2);
-        assertEquals (mdSet1.getSize(), mdInt.length);
+        assertEquals (mdSet.getSize(), mdInt.length);
         
         String segments = writer.store(videoSeg1, videoSeg2, videoSeg3);
         assertFalse(segments.isEmpty());
         
         MetadataStream.VideoSegment videoSegs[] = reader.parseVideoSegments(segments);
         assertEquals (3, videoSegs.length);
+    }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        reader = null;
+        writer = null;
+        
+        videoSeg1 = null;
+        videoSeg2 = null;
+        videoSeg3 = null;
+        
+        var1 = null;
+        var2 = null;
+        var3 = null;
+        
+        mdDesc1 = null;
+        mdDesc2 = null;
+        
+        mdSet = null;
+        stream = null;
+        
+        System.gc();
     }
 }

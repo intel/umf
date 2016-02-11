@@ -6,6 +6,7 @@ import com.intel.vmf.vmf_vec4d;
 import static org.junit.Assert.*;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,8 +32,8 @@ public class VmfVec2d3d4dTest
     protected vmf_vec3d v3d1;
     protected vmf_vec4d v4d1;
     
-	@Test
-    public void testVmfVec2d3d4d ()
+    @Before
+    public void setUp ()
     {
         v2d = new vmf_vec2d (1, 2);
         v3d = new vmf_vec3d (1, 2, 3);
@@ -41,7 +42,11 @@ public class VmfVec2d3d4dTest
         v2d1 = new vmf_vec2d ();
         v3d1 = new vmf_vec3d ();
         v4d1 = new vmf_vec4d ();
-        
+    }
+    
+	@Test
+    public void testVmfVec2d3d4d ()
+    {
         assertEquals(1, v2d.getX(), 0.00001);
         assertEquals(2, v2d.getY(), 0.00001);
         
@@ -65,5 +70,19 @@ public class VmfVec2d3d4dTest
         assertEquals(0, v4d1.getY(), 0.00001);
         assertEquals(0, v4d1.getZ(), 0.00001);
         assertEquals(0, v4d1.getW(), 0.00001);
+    }
+	
+	@Test
+    public void testDeleteByGC()
+    {
+	    v2d = null;
+	    v3d = null;
+	    v4d = null;
+	    
+	    v2d1 = null;
+	    v3d1 = null;
+	    v4d1 = null;
+	    
+	    System.gc();
     }
 }
