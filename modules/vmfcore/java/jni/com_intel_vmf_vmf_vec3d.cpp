@@ -232,4 +232,4 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1delete (JNIEnv *env, jcl
 
 
 }
-  
+ 
