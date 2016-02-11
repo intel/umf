@@ -97,4 +97,23 @@ public class VmfMetadataSchemaTest
         
         assertEquals(stdName, MetadataSchema.getStdSchemaName ());
     }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        schema = null;
+        
+        fields1 = null;
+        fields2 = null;
+        
+        refs = null;
+        
+        mdDesc1 = null;
+        mdDesc2 = null;
+        
+        md1 = null;
+        md2 = null;
+        
+        System.gc();
+    }
 }

@@ -33,13 +33,12 @@ public class VmfMetadataSetTest
     protected MetadataStream stream;
     protected MetadataSchema schema;
     
-    protected final FieldDesc fields[] = new FieldDesc [3];
-    
-    protected final ReferenceDesc refs[] = new ReferenceDesc [3];
+    protected FieldDesc fields[];
+    protected ReferenceDesc refs[];
     
     protected MetadataDesc mdDesc;
     
-    protected MetadataSet mdSet1;
+    protected MetadataSet mdSet;
     
     protected Variant var1;
     protected Variant var2;
@@ -48,10 +47,12 @@ public class VmfMetadataSetTest
     @Before
     public void setUp ()
     {
+        fields = new FieldDesc [3];
         fields[0] = new FieldDesc ("name", Variant.type_string, false);
         fields[1] = new FieldDesc ("last name", Variant.type_string, false);
         fields[2] = new FieldDesc ("age", Variant.type_integer, false);
         
+        refs = new ReferenceDesc [3];
         refs[0] = new ReferenceDesc ("friend");
         refs[1] = new ReferenceDesc ("colleague", false, true);
         refs[2] = new ReferenceDesc ("spouse", true, false);
@@ -111,29 +112,29 @@ public class VmfMetadataSetTest
         md2.addReference(md3, "friend");
         md2.addReference(md3, "colleague");
         
-        mdSet1 = stream.getAll();
+        mdSet = stream.getAll();
     }
     
     @Test
     public void testQueries()
     {
-        assertEquals(3, mdSet1.getSize());
+        assertEquals(3, mdSet.getSize());
         
-        MetadataSet mdSet2 = mdSet1.queryBySchema("test_schema");
+        MetadataSet mdSet2 = mdSet.queryBySchema("test_schema");
         assertEquals(3, mdSet2.getSize());
         
-        mdSet2 = mdSet1.queryByFrameIndex (0);
+        mdSet2 = mdSet.queryByFrameIndex (0);
         assertEquals(2, mdSet2.getSize());
         
-        mdSet2 = mdSet1.queryByTime (0, 2);
+        mdSet2 = mdSet.queryByTime (0, 2);
         assertEquals(2, mdSet2.getSize());
         
-        mdSet2 = mdSet1.queryByName("person");
+        mdSet2 = mdSet.queryByName("person");
         assertEquals(3, mdSet2.getSize());
         
         FieldValue fv = new FieldValue("name", var1);
         
-        mdSet2 = mdSet1.queryByNameAndValue ("person", fv);
+        mdSet2 = mdSet.queryByNameAndValue ("person", fv);
         assertEquals(1, mdSet2.getSize());
         
         FieldValue fvs[] = new FieldValue [2];
@@ -141,7 +142,7 @@ public class VmfMetadataSetTest
         fvs[0] = new FieldValue("last name", var2);
         fvs[1] = new FieldValue("age", var3);
         
-        mdSet2 = mdSet1.queryByNameAndFields ("person", fvs);
+        mdSet2 = mdSet.queryByNameAndFields ("person", fvs);
         assertEquals(1, mdSet2.getSize());
         
         mdSet2 = stream.queryByReference ("person");
@@ -152,5 +153,24 @@ public class VmfMetadataSetTest
         
         mdSet2 = stream.queryByReference ("person", fvs);
         assertEquals(1, mdSet2.getSize());
+    }
+
+    @Test
+    public void testDeleteByGC()
+    {
+        stream = null;
+        schema = null;
+        
+        mdSet = null;
+        mdDesc = null;
+        
+        var1 = null;
+        var2 = null;
+        var3 = null;
+        
+        fields = null;
+        refs = null;
+        
+        System.gc();
     }
  }

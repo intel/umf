@@ -110,4 +110,20 @@ public class VmfMetadataDescTest
         assertEquals(fields1[2].getType(), fd1.getType());
         assertEquals(fields1[2].isOptional(), fd1.isOptional());
     }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        mdDesc1 = null;
+        mdDesc2 = null;
+        mdDesc3 = null;
+        mdDesc4 = null;
+        
+        fields1 = null;
+        fields2 = null;
+        
+        refs = null;
+        
+        System.gc();
+    }
 }

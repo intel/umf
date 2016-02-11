@@ -88,5 +88,6 @@ public class VmfFieldValueTest
         fieldValue2 = null;
         fieldValue3 = null;
         variant = null;
+        System.gc();
     }
 }
