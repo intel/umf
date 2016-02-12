@@ -45,11 +45,11 @@ struct FieldDesc
     * \param sName [in] field description name
     * \param eType [in] field type
     * \param isOptional [in] field optional
-    * \param isEncrypted [in] field encrypted
+    * \param _useEncryption [in] field useEncryption
     */
     FieldDesc( const std::string& sName = "", Variant::Type eType = Variant::type_string,
-               bool isOptional = false, bool isEncrypted = false ) :
-        name( sName ), type( eType ), optional(isOptional), encrypted(isEncrypted) {};
+               bool isOptional = false, bool _useEncryption = false ) :
+        name( sName ), type( eType ), optional(isOptional), useEncryption(_useEncryption) {};
 
     /*!
     * \brief field name
@@ -67,9 +67,9 @@ struct FieldDesc
     bool            optional;
 
     /*!
-     * \brief field encrypted
+     * \brief field useEncryption
      */
-    bool            encrypted;
+    bool            useEncryption;
 
     /*!
     * \brief Compare operator
@@ -108,12 +108,12 @@ public:
     * \brief Class constructor for constructing struct-type metadata descriptor
     * \param sMetadataName [in] metadata name
     * \param vFields [in] metadata description fields
-    * \param isEncrypted [in] Specifies whether all metadata records of this description
+    * \param useEncryption [in] Specifies whether all metadata records of this description
     * should be encrypted at file saving or serialization
     * \throw ValidateException if input data is invalid or inconsistent
     */
     MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
-                 bool isEncrypted = false);
+                 bool useEncryption = false);
 
     MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
                  const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs,
@@ -148,7 +148,14 @@ public:
      * at saving or serialization
      * \return encryption status
      */
-    bool isEncrypted() const;
+    bool getUseEncryption() const;
+
+
+    /*!
+     * \brief Enables or disables encryption at saving or serialization
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
 
     /*!
     * \brief Get metadata description fields
@@ -180,7 +187,7 @@ private:
     std::string                 m_sMetadataName;
     std::vector< FieldDesc >    m_vFields;
     std::vector<std::shared_ptr<ReferenceDesc>>  m_vRefDesc;
-    bool m_encrypted;
+    bool m_useEncryption;
 };
 };
 

@@ -83,7 +83,13 @@ public:
      * at saving or serialization
      * \return encryption status
      */
-    bool isEncrypted() const;
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables encryption
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
 
     /*!
     * \brief Get count of schema items
@@ -133,7 +139,7 @@ protected:
 private:
     std::string m_sName;
     std::string m_sAuthor;
-    bool        m_encrypted;
+    bool        m_useEncryption;
 };
 
 

@@ -40,21 +40,23 @@ public:
     {
     }
 
-    FieldValue( const std::string& name, vmf::Variant variant, bool isEncrypted = false)
+    FieldValue( const std::string& name, vmf::Variant variant, bool useEncryption = false)
         : vmf::Variant( variant )
         , m_name( name )
-        , m_encrypted(isEncrypted)
+        , m_useEncryption(useEncryption)
     {
     }
 
     const std::string& getName() const { return m_name; }
 
-    const bool isEncrypted() const { return m_encrypted; }
+    const bool getEncrypted() const { return m_useEncryption; }
+
+    void setEncrypted(bool useEncryption) { m_useEncryption = useEncryption; }
 
     FieldValue& operator = ( const FieldValue& other )
     {
         m_name = other.m_name;
-        m_encrypted = other.m_encrypted;
+        m_useEncryption = other.m_useEncryption;
         Variant::operator = ( other );
 
         return *this;
@@ -63,13 +65,13 @@ public:
     bool operator == ( const FieldValue& other ) const
     {
         return m_name == other.m_name &&
-               m_encrypted == other.m_encrypted &&
+               m_useEncryption == other.m_useEncryption &&
                Variant::operator == ( other );
     }
 
 private:
     MetaString m_name;
-    bool m_encrypted;
+    bool m_useEncryption;
 };
 
 }

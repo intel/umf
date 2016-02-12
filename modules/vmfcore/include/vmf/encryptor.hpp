@@ -48,7 +48,7 @@ public:
     /*!
      * \brief Gets the hint for the algorithm (for example, the name of the algorithm)
      */
-    virtual vmf_string& getHint() = 0;
+    virtual vmf_string getHint() = 0;
 
     /*!
      * \brief Default destructor

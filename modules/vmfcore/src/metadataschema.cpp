@@ -19,8 +19,8 @@
 
 namespace vmf
 {
-MetadataSchema::MetadataSchema(const std::string& sName, const std::string& sAuthor, bool isEncrypted)
-    : m_sName(sName), m_sAuthor(sAuthor), m_encrypted(isEncrypted)
+MetadataSchema::MetadataSchema(const std::string& sName, const std::string& sAuthor, bool useEncryption)
+    : m_sName(sName), m_sAuthor(sAuthor), m_useEncryption(useEncryption)
 {
     if (sName.empty())
     {
@@ -48,9 +48,14 @@ std::string MetadataSchema::getAuthor() const
     return m_sAuthor;
 }
 
-bool MetadataSchema::isEncrypted() const
+void MetadataSchema::setUseEncryption(bool useEncryption)
 {
-    return m_encrypted;
+    m_useEncryption = useEncryption;
+}
+
+bool MetadataSchema::getUseEncryption() const
+{
+    return m_useEncryption;
 }
 
 size_t MetadataSchema::size() const

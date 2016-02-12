@@ -58,11 +58,11 @@ public:
     /*!
     * \brief Class constructor
     * \param spDescription [in] metadata item description
-    * \param isEncrypted [in] Specifies whether this metadata record should be encrypted
+    * \param useEncryption [in] Specifies whether this metadata record should be encrypted
     *  at saving or serialization
     * \throw NullPointerException if metadata description pointer is null
     */
-    Metadata( const std::shared_ptr< MetadataDesc >& spDescription, bool isEncrypted = false );
+    Metadata(const std::shared_ptr< MetadataDesc >& spDescription, bool useEncryption = false );
 
     /*!
     * \brief Class copy constructor
@@ -273,7 +273,13 @@ public:
      * \brief Check if this metadata record should be encrypted at saving or serialization
      * \return encryption status
      */
-    bool isEncrypted() const;
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enable or disable enrcryption at saving or serialization
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
 
     enum {
         UNDEFINED_FRAME_INDEX = -1, UNDEFINED_FRAMES_NUMBER = 0,
@@ -298,7 +304,7 @@ private:
     long long       m_nDuration;
     std::string     m_sName;
     std::string     m_sSchemaName;
-    bool            m_encrypted;
+    bool            m_useEncryption;
 
     std::vector<Reference> m_vReferences;
     std::shared_ptr< MetadataDesc >	m_spDesc;

@@ -20,7 +20,7 @@
 
 namespace vmf
 {
-Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool isEncrypted)
+Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool useEncryption)
     : m_Id( INVALID_ID )
     , m_nFrameIndex(UNDEFINED_FRAME_INDEX)
     , m_nNumOfFrames(UNDEFINED_FRAMES_NUMBER)
@@ -28,7 +28,7 @@ Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool i
     , m_nDuration(UNDEFINED_DURATION)
     , m_sName( "" )
     , m_sSchemaName( "" )
-    , m_encrypted(isEncrypted)
+    , m_useEncryption(useEncryption)
     , m_spDesc( spDescription )
     , m_pStream(nullptr)
 {
@@ -586,9 +586,14 @@ void Metadata::setId( const IdType& id )
     m_Id = id;
 }
 
-bool Metadata::isEncrypted() const
+bool Metadata::getUseEncryption() const
 {
-    return m_encrypted;
+    return m_useEncryption;
+}
+
+void Metadata::setUseEncryption(bool useEncryption)
+{
+    m_useEncryption = useEncryption;
 }
 
 bool Metadata::isValid() const
