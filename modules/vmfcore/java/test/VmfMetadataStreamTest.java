@@ -97,7 +97,8 @@ public class VmfMetadataStreamTest
     @After
     public void tearDown()
     {
-    	stream.clear();
+        if (stream != null)
+            stream.clear();
     }
     
     @Test
