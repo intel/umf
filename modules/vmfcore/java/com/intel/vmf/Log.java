@@ -19,6 +19,11 @@ public class Log
     public static final int LOG_ERROR = 2;
     public static final int LOG_NO_MESSAGE = 3;
     
+    public static void log (int level, String msg, String func, String file, int line)
+    {
+        n_log (level, msg, func, file, line);
+    }
+    
     public static void setLogToFile (String file)
     {
         n_logToFile (file);
@@ -39,6 +44,7 @@ public class Log
         return n_getVerbosityLevel ();
     }
     
+    private static native void n_log (int level, String msg, String func, String file, int line);
     private static native void n_logToFile (String file);
     private static native void n_logToConsole ();
     private static native void n_setVerbosityLevel (int level);
