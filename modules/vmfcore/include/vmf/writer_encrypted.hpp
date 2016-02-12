@@ -37,12 +37,12 @@ public:
      * \brief Constructor taking encryptor and writer to be used at data writing
      * \param _writer Shared pointer to instance of IWriter
      * \param _encryptor Shared pointer to istance of Encryptor
-     * \param _isWholeEncrypted Specifies whether all data should be encrypted
+     * \param encryptAll Specifies whether all data should be encrypted
      * or just selected items
      * should be encrypted at file saving or serialization
      */
     WriterEncrypted(std::shared_ptr<IWriter> _writer, std::shared_ptr<Encryptor> _encryptor,
-                    bool _isWholeEncrypted = false);
+                    bool encryptAll = false);
 
     /*!
      * \brief Class destructor
