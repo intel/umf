@@ -27,7 +27,8 @@
 namespace vmf
 {
 MetadataStream::MetadataStream(void)
-    : m_eMode( InMemory ), dataSource(nullptr), nextId(0), m_sChecksumMedia("")
+    : m_eMode( InMemory ), dataSource(nullptr), nextId(0), m_sChecksumMedia(""),
+      m_useEncryption(false), m_encryptor(nullptr)
 {
 }
 
@@ -37,8 +38,7 @@ MetadataStream::~MetadataStream(void)
     clear();
 }
 
-bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode eMode,
-                          std::shared_ptr<Encryptor> encryptor)
+bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode eMode)
 {
     try
     {
@@ -106,14 +106,7 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
 }
 
 
-bool MetadataStream::save(std::shared_ptr<Encryptor> encryptor, bool isWholeEncrypted)
-{
-    return save("", encryptor, isWholeEncrypted);
-}
-
-
-bool MetadataStream::save(const vmf_string &compressorId, std::shared_ptr<Encryptor> encryptor,
-                          bool isWholeEncrypted)
+bool MetadataStream::save(const vmf_string &compressorId)
 {
     dataSourceCheck();
     try
@@ -166,7 +159,7 @@ bool MetadataStream::save(const vmf_string &compressorId, std::shared_ptr<Encryp
     }
 }
 
-bool MetadataStream::reopen(OpenMode eMode , std::shared_ptr<Encryptor> encryptor)
+bool MetadataStream::reopen(OpenMode eMode)
 {
     dataSourceCheck();
     if((m_eMode & ReadOnly) || (m_eMode & Update))
@@ -188,15 +181,7 @@ bool MetadataStream::reopen(OpenMode eMode , std::shared_ptr<Encryptor> encrypto
 }
 
 
-bool MetadataStream::saveTo(const std::string &sFilePath, std::shared_ptr<Encryptor> encryptor,
-                            bool isWholeEncrypted)
-{
-    return saveTo(sFilePath, encryptor, isWholeEncrypted);
-}
-
-
-bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId,
-                            std::shared_ptr<Encryptor> encryptor, bool isWholeEncrypted)
+bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
         throw std::runtime_error("The previous file has not been closed!");
@@ -571,11 +556,13 @@ void MetadataStream::clear()
 {
     m_eMode = InMemory;
     m_sFilePath = "";
+    m_useEncryption = false;
     m_oMetadataSet.clear();
     m_mapSchemas.clear();
     removedIds.clear();
     addedIds.clear();
     videoSegments.clear();
+    m_encryptor.reset();
 }
 
 void MetadataStream::dataSourceCheck()
@@ -697,6 +684,28 @@ void MetadataStream::setChecksum(const std::string &digestStr)
 {
     m_sChecksumMedia = digestStr;
 }
+
+
+bool MetadataStream::getUseEncryption() const
+{
+    return m_useEncryption;
+}
+
+void MetadataStream::setUseEncryption(bool useEncryption)
+{
+    m_useEncryption = useEncryption;
+}
+
+std::shared_ptr<Encryptor> MetadataStream::getEncryptor() const
+{
+    return m_encryptor;
+}
+
+void MetadataStream::setEncryptor(std::shared_ptr<Encryptor> encryptor)
+{
+    m_encryptor = encryptor;
+}
+
 
 void MetadataStream::addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment)
 {

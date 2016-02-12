@@ -116,20 +116,16 @@ public:
     * \brief Open metadata stream
     * \param sFilePath [in] path to media file
     * \param eMode [in] open mode
-    * \param encryptor Instance of Encryptor to be used for decryption
     * \return Open result
     */
-    bool open( const std::string& sFilePath, OpenMode eMode = ReadOnly,
-               std::shared_ptr<Encryptor> encryptor = std::shared_ptr<Encryptor>() );
+    bool open( const std::string& sFilePath, OpenMode eMode = ReadOnly);
 
     /*!
     * \brief Reopen a previously closed metadata stream. 
     * \param eMode [in] open mode
-    * \param encryptor Instance of Encryptor to be used for decryption
     * \return Open result
     */
-    bool reopen( OpenMode eMode = ReadOnly,
-                 std::shared_ptr<Encryptor> encryptor = std::shared_ptr<Encryptor>() );
+    bool reopen( OpenMode eMode = ReadOnly);
 
     /*!
     * \brief Load metadata with specified scheme
@@ -151,44 +147,18 @@ public:
     * \brief Save loaded data to media file
     * \param compressorId String identifying compression to be used at saving
     * (empty string means no compression)
-    * \param encryptor Instance of encryptor to be used for encryption
-    * \param isWholeEncrypted Specifies whether to encrypt the whole metadata or not
     * \return Save operation result
     */
-    bool save(const vmf_string& compressorId = vmf_string(),
-              std::shared_ptr<Encryptor> encryptor = std::shared_ptr<Encryptor>(),
-              bool isWholeEncrypted = false );
-
-    /*!
-     * \brief Save loaded data to media file
-     * \param encryptor Instance of encryptor to be used for encryption
-     * \param isWholeEncrypted Specifies whether to encrypt the whole metadata or not
-     * \return Save operation result
-     */
-    bool save(std::shared_ptr<Encryptor> encryptor, bool isWholeEncrypted = false);
+    bool save(const vmf_string& compressorId = vmf_string());
 
     /*!
     * \brief Save the in-memory metadata to a different video file.
     * \param sFilePath the path of the new file.
     * \param compressorId String identifying compression to be used at saving
     * (empty string means no compression)
-    * \param encryptor Instance of encryptor to be used for encryption
-    * \param isWholeEncrypted Specifies whether to encrypt the whole metadata or not
     * \return true if succeed.
     */
-    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string(),
-                std::shared_ptr<Encryptor> encryptor = std::shared_ptr<Encryptor>(),
-                bool isWholeEncrypted = false );
-
-    /*!
-    * \brief Save the in-memory metadata to a different video file.
-    * \param sFilePath the path of the new file.
-    * \param encryptor Instance of encryptor to be used for encryption
-    * \param isWholeEncrypted Specifies whether to encrypt the whole metadata or not
-    * \return true if succeed.
-    */
-    bool saveTo(const std::string& sFilePath, std::shared_ptr<Encryptor> encryptor,
-                bool isWholeEncrypted = false );
+    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string());
 
     /*!
     * \brief Close previously opened media file
@@ -373,6 +343,30 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
+    /*!
+     * \brief Check if the encryption of the whole metadata is enabled or not
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables the encryption of the whole data at saving or
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
+
+    /*!
+     * \brief Gets the Encryptor instance to be used at saving or serialization
+     * \return the instance of Encryptor
+     */
+    std::shared_ptr<Encryptor> getEncryptor() const;
+
+    /*!
+     * \brief Sets the instance of Encryptor to be used at saving or serialization
+     * \param encryptor
+     */
+    void setEncryptor(std::shared_ptr<Encryptor> encryptor);
+
 protected:
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
@@ -393,6 +387,8 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
+    bool m_useEncryption;
+    std::shared_ptr<Encryptor> m_encryptor;
 };
 
 }
