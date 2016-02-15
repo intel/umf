@@ -64,7 +64,7 @@ file(GLOB VMFCORE_TESTS "${VMFCORE_TESTS_DIR}/*.hpp"     "${VMFCORE_TESTS_DIR}/*
 
 if (BUILD_JAVA_API)
     file(GLOB VMFCORE_JNI "${VMFCORE_JNI_DIR}/*.cpp")
-    file(GLOB VMFCORE_JAVA_API "${VMFCORE_JAVA_DIR}/com/intel/vmf/*.java")
+    file(GLOB VMFCORE_JAVA_API "${VMFCORE_JAVA_DIR}/src/com/intel/vmf/*.java")
     file(GLOB VMFCORE_JAVA_TEST "${VMFCORE_JAVA_DIR}/test/src/*.java")
     file(GLOB VMFCORE_JAVA_JUNIT "${VMFCORE_JAVA_DIR}/test/lib/*.jar")
 endif()
