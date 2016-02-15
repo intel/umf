@@ -34,6 +34,7 @@ endif()
 if(NOT BUILD_SHARED_LIBS)
   # JAR depends on dynamic VMF lib
   set(BUILD_JAVA_API OFF)
+  message(WARNING "Java API building is disabled since it requires VMF lib to be dynamic")
 endif()
 
 if(WIN32)
@@ -144,6 +145,9 @@ if(BUILD_SAMPLES)
     set(VMF_LIBS vmf)
     set(VMF_INCLUDE_DIR "${MODULES_DIR}/vmfcore/include" "${CMAKE_BINARY_DIR}")
     set(VMF_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
+    if(BUILD_JAVA_API)
+      set(VMF_JAR_PATH "${CMAKE_BINARY_DIR}/bin/vmf_java.jar")
+    endif()
     add_subdirectory(samples)
 endif()
 
@@ -208,6 +212,10 @@ if (BUILD_INSTALLER)
     install(DIRECTORY "samples" DESTINATION ".")
     install(DIRECTORY "data" DESTINATION ".")
     install(FILES "cmake/FindVMF.cmake" DESTINATION "samples")
+
+if (BUILD_JAVA_API)	
+    install(FILES "${CMAKE_BINARY_DIR}/bin/vmf_java.jar" DESTINATION "java")
+endif()
 
 # documentation
     install(FILES "docs/VMF_Release_Notes.pdf" DESTINATION "docs")
