@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.io.File;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -220,6 +221,8 @@ public class VmfMetadataStreamTest
         
         mdSet1 = stream.getAll();
         assertEquals(0, mdSet1.getSize());
+
+        new File(dstFile).delete();
     }
     
     @Test

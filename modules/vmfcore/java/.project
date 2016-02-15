@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>VMF_BIN_DIR</name>
+			<type>2</type>
+			<locationURI>VMF_BIN_DIR</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
