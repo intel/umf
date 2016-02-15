@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -30,13 +30,24 @@ public class VmfLogTest
     @Test
     public void testLog () throws IOException
     {
-        Log.setLogToFile("LogFile.txt");
+        File newFile = new File("myLogFile.txt");
+        if (newFile.exists())
+            newFile.delete();
+        
+        assertTrue(newFile.createNewFile()); 
+        
+        Log.setLogToFile("myLogFile.txt");
+        BufferedReader in = new BufferedReader(new FileReader("myLogFile.txt"));
+        String str = in.readLine();
+        assertTrue (str == null);
         
         Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 30);
-        BufferedReader in = new BufferedReader(new FileReader("LogFile.txt"));
-        String str = in.readLine();
+        
+        str = in.readLine();
         assertFalse (str.isEmpty());
+        str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:30");
         in.close();
+        newFile.delete();
         
         Log.setLogToConsole ();
         assertEquals(Log.LOG_INFO, Log.getVerbosityLevel());
