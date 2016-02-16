@@ -1,19 +1,21 @@
 # .travis.yml
 sudo: false
-language: cpp
+language: android
 git:
   depth : 1
 os:
   - linux
   - osx
-compiler:
-  - gcc
-  - clang
+env:
+  - CC=gcc
+  - CC=clang
 addons:
   apt:
     sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
     packages: ['cmake', 'g++-4.8', 'clang-3.7']
 before_install:
+  - env
+  - if [ $TRAVIS_OS_NAME == linux ]; then android list; fi
 # coverage
   - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user cpp-coveralls; fi
@@ -25,10 +27,8 @@ before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc     ]; then export CC=gcc-4.8;      fi
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == clang   ]; then export CC=clang-3.7;    fi
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CXX == g++     ]; then export CXX=g++-4.8;     fi
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CXX == clang++ ]; then export CXX=clang++-3.7; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then if [ $CC  == gcc ]; then export CC=gcc-4.8; export CXX=g++-4.8; else export CC=clang-3.7; export CXX=clang++-3.7; fi; fi
+  - if [ $TRAVIS_OS_NAME == osx ];   then if [ $CC  == gcc ]; then export CXX=g++; else export export CXX=clang++; fi; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then ldd --version; fi
   - if [[ $CC  == gcc*  ]]; then VMF_SHARED=ON; else VMF_SHARED=OFF; fi
   - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED $VMF_GCOV_OPTS ../vmf
