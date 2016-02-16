@@ -11,7 +11,9 @@ import static org.junit.Assert.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class VmfMetadataSchemaTest 
 {
@@ -96,6 +98,27 @@ public class VmfMetadataSchemaTest
         assertEquals(stdName, std.getName());
         
         assertEquals(stdName, MetadataSchema.getStdSchemaName ());
+    }
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    
+    @Test
+    public void testAddTrown()
+    {
+        schema.add(mdDesc1);
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Metadata with same name already exists!");
+        schema.add(mdDesc1);
+    }
+    
+    @Test
+    public void testCreateSchemaTrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Schema name can't be empty.");
+        @SuppressWarnings("unused")
+        MetadataSchema newSchema = new MetadataSchema("");
     }
     
     @Test
