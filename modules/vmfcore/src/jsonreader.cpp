@@ -369,15 +369,17 @@ bool JSONReader::parseSchemas(const std::string& text,
     else if( localRootNode.name() == TAG_SCHEMAS_ARRAY )
     {
         for(auto node : localRootNode)
-        try
         {
-            std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(node);
-            schemas.push_back(spSchema);
-        }
-        catch(Exception& e)
-        {
-            VMF_LOG_ERROR("Exception: %s", e.what());
-            return false;
+            try
+            {
+                std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(node);
+                schemas.push_back(spSchema);
+            }
+            catch(Exception& e)
+            {
+                VMF_LOG_ERROR("Exception: %s", e.what());
+                return false;
+            }
         }
     }
     else if( localRootNode.name() == TAG_VMF )
@@ -385,15 +387,17 @@ bool JSONReader::parseSchemas(const std::string& text,
         for(auto rootChildNode : localRootNode)
             if(rootChildNode.name() == TAG_SCHEMAS_ARRAY )
                 for(auto node : rootChildNode)
-                try
                 {
-                    std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(node);
-                    schemas.push_back(spSchema);
-                }
-                catch(Exception& e)
-                {
-                    VMF_LOG_ERROR("Exception: %s", e.what());
-                    return false;
+                    try
+                    {
+                        std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(node);
+                        schemas.push_back(spSchema);
+                    }
+                    catch(Exception& e)
+                    {
+                        VMF_LOG_ERROR("Exception: %s", e.what());
+                        return false;
+                    }
                 }
     }
     return true;
@@ -446,15 +450,17 @@ bool JSONReader::parseMetadata(const std::string& text,
     else if( localRootNode.name() == TAG_METADATA_ARRAY )
     {
         for(auto node : localRootNode)
-        try
         {
-            std::shared_ptr<MetadataInternal> spMetadata = parseMetadataFromNode(node, schemas);
-            metadata.push_back(spMetadata);
-        }
-        catch(Exception& e)
-        {
-            VMF_LOG_ERROR("Exception: %s", e.what());
-            return false;
+            try
+            {
+                std::shared_ptr<MetadataInternal> spMetadata = parseMetadataFromNode(node, schemas);
+                metadata.push_back(spMetadata);
+            }
+            catch(Exception& e)
+            {
+                VMF_LOG_ERROR("Exception: %s", e.what());
+                return false;
+            }
         }
     }
     else if( localRootNode.name() == TAG_VMF )
@@ -462,15 +468,17 @@ bool JSONReader::parseMetadata(const std::string& text,
         for(auto rootChildNode : localRootNode)
             if(rootChildNode.name() == TAG_METADATA_ARRAY )
                 for(auto node : rootChildNode)
-                try
                 {
-                    std::shared_ptr<MetadataInternal> spMetadata = parseMetadataFromNode(node, schemas);
-                    metadata.push_back(spMetadata);
-                }
-                catch(Exception& e)
-                {
-                    VMF_LOG_ERROR("Exception: %s", e.what());
-                    return false;
+                    try
+                    {
+                        std::shared_ptr<MetadataInternal> spMetadata = parseMetadataFromNode(node, schemas);
+                        metadata.push_back(spMetadata);
+                    }
+                    catch(Exception& e)
+                    {
+                        VMF_LOG_ERROR("Exception: %s", e.what());
+                        return false;
+                    }
                 }
     }
 
@@ -587,32 +595,36 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
     else if( localRootNode.name() == TAG_VIDEO_SEGMENTS_ARRAY )
     {
         for(auto node : localRootNode)
-	try
-	{
-            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(node);
-	    segments.push_back(spSegment);
-	}
-	catch(Exception& e)
-	{
-	    VMF_LOG_ERROR("Exception: %s", e.what());
-	    return false;
-	}
+        {
+            try
+    	    {
+                std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(node);
+                segments.push_back(spSegment);
+            }
+            catch(Exception& e)
+            {
+                VMF_LOG_ERROR("Exception: %s", e.what());
+                return false;
+            }
+        }
     }
     else if( localRootNode.name() == TAG_VMF )
     {
         for(auto rootChildNode : localRootNode)
             if(rootChildNode.name() == TAG_VIDEO_SEGMENTS_ARRAY )
                 for(auto node : rootChildNode)
-		try
-		{
-                    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(node);
-		    segments.push_back(spSegment);
-		}
-		catch(Exception& e)
-		{
-		    VMF_LOG_ERROR("Exception: %s", e.what());
-		    return false;
-		}
+                {
+                    try
+                    {
+                        std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(node);
+                        segments.push_back(spSegment);
+                    }
+                    catch(Exception& e)
+                    {
+                        VMF_LOG_ERROR("Exception: %s", e.what());
+                        return false;
+                    }
+                }
     }
     return true;
 }
@@ -659,14 +671,16 @@ bool JSONReader::parseStats(const std::string& text, std::vector< Stat >& stats)
     else if( localRootNode.name() == TAG_STATS_ARRAY )
     {
         for(auto node : localRootNode)
-        try
         {
-            parseStatFromNode(node, stats);
-        }
-        catch(Exception& e)
-        {
-            VMF_LOG_ERROR("Exception: %s", e.what());
-            return false;
+            try
+            {
+                parseStatFromNode(node, stats);
+            }
+            catch(Exception& e)
+            {
+                VMF_LOG_ERROR("Exception: %s", e.what());
+                return false;
+            }
         }
     }
     else if( localRootNode.name() == TAG_VMF )
@@ -674,14 +688,16 @@ bool JSONReader::parseStats(const std::string& text, std::vector< Stat >& stats)
         for(auto rootChildNode : localRootNode)
             if(rootChildNode.name() == TAG_STATS_ARRAY )
                 for(auto node : rootChildNode)
-                try
                 {
-                    parseStatFromNode(node, stats);
-                }
-                catch(Exception& e)
-                {
-                    VMF_LOG_ERROR("Exception: %s", e.what());
-                    return false;
+                    try
+                    {
+                        parseStatFromNode(node, stats);
+                    }
+                    catch(Exception& e)
+                    {
+                        VMF_LOG_ERROR("Exception: %s", e.what());
+                        return false;
+                    }
                 }
     }
     return true;
