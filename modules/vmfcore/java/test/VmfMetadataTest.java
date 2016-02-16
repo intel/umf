@@ -2,6 +2,7 @@ import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataStream;
 import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.MetadataInternal;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Reference;
@@ -325,5 +326,13 @@ public class VmfMetadataTest
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: Metadata field not found in metadata description");
         md1.setFieldValue("empty", var1);
+    }
+    
+    @SuppressWarnings("unused")
+    @Test
+    public void testCreateMdIntermal()
+    {
+        MetadataInternal mdInt1 = new MetadataInternal(mdDesc);
+        MetadataInternal mdInt2 = new MetadataInternal(md1);
     }
 }

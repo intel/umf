@@ -10,7 +10,9 @@ import static org.junit.Assert.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 public class VmfMetadataDescTest 
@@ -109,6 +111,26 @@ public class VmfMetadataDescTest
         assertEquals(fields1[2].getName(), fd1.getName());
         assertEquals(fields1[2].getType(), fd1.getType());
         assertEquals(fields1[2].isOptional(), fd1.isOptional());
+    }
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    
+    @Test
+    public void testDeclareCustomReferenceTrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: This reference name already exist!");
+        mdDesc1.declareCustomReference ("friend", true);
+    }
+    
+    @Test
+    public void testCreateTrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Invalid metadata descriprion type.");
+        @SuppressWarnings("unused")
+        MetadataDesc mdDesc = new MetadataDesc ("name", Variant.type_unknown);
     }
     
     @Test

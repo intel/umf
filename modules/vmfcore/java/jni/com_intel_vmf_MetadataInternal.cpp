@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal 
  * Method:    n_MetadataInternalCopy
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy(JNIEnv *env, jclass, jlong otherAddr);
+/*JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy(JNIEnv *env, jclass, jlong otherAddr);
 
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy (JNIEnv *env, jclass, jlong otherAddr)
@@ -74,7 +74,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalC
     }
 
     return 0;
-}
+}*/
 
 /*
  * Class:     com_intel_vmf_MetadataInternal
