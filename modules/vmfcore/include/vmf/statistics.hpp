@@ -57,10 +57,10 @@ public:
     virtual ~IStatOp() {}
 
 public:
-    virtual const std::string& getName() const = 0;
+    virtual const std::string& name() const = 0;
     virtual void reset() = 0;
     virtual bool handle( StatAction::Type action, const Variant& inputValue ) = 0;
-    virtual const Variant& getValue() const = 0;
+    virtual const Variant& value() const = 0;
 };
 
 class VMF_EXPORT StatOpFactory
@@ -75,13 +75,13 @@ public:
     static IStatOp* create( const std::string& name );
     static void registerUserOp( const std::string& name, InstanceCreator createInstance );
 
-    // required: UserOp::className & UserOp::createInstance members
+    // required: UserOp::opName() & UserOp::createInstance() static members
     template< class UserOp >
     inline static void registerUserOp()
         {
             static_assert( std::is_base_of< IStatOp, UserOp >::value,
                            "User operation must implement IStatOp interface" );
-            registerUserOp( UserOp::className, UserOp::createInstance );
+            registerUserOp( UserOp::opName(), UserOp::createInstance );
         }
 
     static const std::string& minName();
@@ -113,6 +113,11 @@ private:
             : m_name( other.m_name ), m_schemaName( other.m_schemaName ), m_metadataName( other.m_metadataName ),
               m_metadataDesc( nullptr ), m_fieldName( other.m_fieldName ), m_fieldDesc(),
               m_opName( other.m_opName ), m_pMetadataStream( nullptr ) {}
+        explicit StatFieldDesc( StatFieldDesc&& other )
+            : m_name( std::move( other.m_name )), m_schemaName( std::move( other.m_schemaName )),
+              m_metadataName( std::move( other.m_metadataName )), m_metadataDesc( std::move( nullptr )),
+              m_fieldName( std::move( other.m_fieldName )), m_fieldDesc( std::move( other.m_fieldDesc )),
+              m_opName( std::move( other.m_opName )), m_pMetadataStream( nullptr ) {}
         StatFieldDesc()
             : m_name( "" ), m_schemaName( "" ), m_metadataName( "" ),
               m_metadataDesc( nullptr ), m_fieldName( "" ), m_fieldDesc(),
@@ -120,6 +125,7 @@ private:
         ~StatFieldDesc() {}
 
         StatFieldDesc& operator=( const StatFieldDesc& other );
+        StatFieldDesc& operator=( StatFieldDesc&& other );
 
         const std::string& getName() const { return m_name; }
         const std::string& getSchemaName() const { return m_schemaName; }
@@ -148,10 +154,12 @@ public:
                const std::string& metadataName, const std::string& fieldName,
                const std::string& opName );
     explicit StatField( const StatField& other );
+    explicit StatField( StatField&& other );
     StatField();
     ~StatField();
 
     StatField& operator=( const StatField& other );
+    StatField& operator=( StatField&& other );
 
     const std::string& getName() const { return m_desc.getName(); }
     std::shared_ptr< MetadataDesc > getMetadataDesc() const { return m_desc.getMetadataDesc(); }
@@ -163,7 +171,7 @@ public:
     void update( bool doRescan = false );
     StatState::Type handle( StatAction::Type action, std::shared_ptr< Metadata > metadata );
 
-    const Variant& getValue() const { return m_op->getValue(); }
+    const Variant& getValue() const { return m_op->value(); }
 
 private:
     void setStream( MetadataStream* pMetadataStream );
@@ -187,7 +195,12 @@ private:
     {
     public:
         explicit StatDesc( const std::string& name ) : m_name( name ) {}
+        explicit StatDesc( const StatDesc& other ) : m_name( other.m_name ) {}
+        explicit StatDesc( StatDesc&& other ) : m_name( std::move( other.m_name )) {}
         ~StatDesc() {}
+
+        StatDesc& operator=( const StatDesc& other ) { m_name = other.m_name; return *this; }
+        StatDesc& operator=( StatDesc&& other ) { m_name = std::move( other.m_name ); return *this; }
 
         const std::string& getName() const { return m_name; }
 
@@ -197,7 +210,12 @@ private:
 
 public:
     Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
+    explicit Stat( const Stat& other );
+    explicit Stat( Stat&& other );
     ~Stat();
+
+    Stat& operator=( const Stat& other );
+    Stat& operator=( Stat&& other );
 
     const std::string& getName() const { return m_desc.getName(); }
     StatState::Type getState() const { return m_state; }
@@ -214,6 +232,7 @@ public:
 
 private:
     void setStream( MetadataStream* pMetadataStream );
+    MetadataStream* getStream() const;
 
     bool isActive() const { return m_isActive; }
     void updateState( StatState::Type state );

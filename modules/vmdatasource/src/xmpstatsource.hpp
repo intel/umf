@@ -27,9 +27,9 @@ public:
 
     explicit XMPStatSource(const std::shared_ptr<SXMPMeta>& statStorage);
 
-    void save(const std::vector< Stat* >& stats);
+    void save(const std::vector< Stat >& stats);
 
-    void load(MetadataStream& stream);
+    void load(std::vector< Stat >& stats);
 
     virtual void clear();
 

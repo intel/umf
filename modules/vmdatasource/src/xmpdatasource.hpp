@@ -71,10 +71,6 @@ public:
 
     virtual void load(std::map<MetaString, std::shared_ptr<vmf::MetadataSchema> >& schemas);
 
-    virtual void saveStats(const std::vector< Stat* >& stats);
-
-    virtual void loadStats(MetadataStream& stream);
-
     virtual void clear();
 
     virtual void save(const vmf::IdType& id);
@@ -96,6 +92,10 @@ public:
     virtual void setCompressor(const vmf_string& id);
 
     virtual void pushChanges();
+
+    virtual void saveStats(const std::vector< Stat >& stats);
+
+    virtual void loadStats(std::vector< Stat >& stats);
 
     /*!
      * \brief Initializes XMPDataSource class dependecies

@@ -56,7 +56,7 @@ public:
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
-        MetadataStream& stream) = 0;
+        std::vector< Stat >& stats) = 0;
 
     /*!
     * \brief Deserialize input string to a schemas vector
@@ -72,7 +72,7 @@ public:
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;
 
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
-    virtual bool parseStats(const std::string& text, MetadataStream& stream) = 0;
+    virtual bool parseStats(const std::string& text, std::vector< Stat >& stats) = 0;
 };
 
 }//vmf

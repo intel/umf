@@ -88,7 +88,6 @@
 #define TAG_STAT_FIELD "field"
 
 #define ATTR_STAT_NAME "name"
-#define ATTR_STAT_UPDATE_MODE "update-mode"
 #define ATTR_STAT_FIELD_NAME "name"
 #define ATTR_STAT_FIELD_SCHEMA_NAME "schema-name"
 #define ATTR_STAT_FIELD_METADATA_NAME "metadata-name"

@@ -252,24 +252,20 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
-static void parseStatFromNode(xmlNodePtr statNode, MetadataStream& stream)
+static void parseStatFromNode(xmlNodePtr statNode, std::vector< Stat >& stats)
 {
-    std::string statName, updateModeStr;
+    std::string statName;
 
     for(xmlAttr* cur_prop = statNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
         if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_NAME))
             statName = (char*)xmlGetProp(statNode, cur_prop->name);
-        else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_UPDATE_MODE))
-            updateModeStr = (char*)xmlGetProp(statNode, cur_prop->name);
     }
 
     if(statName.empty())
         VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat name");
-    if(updateModeStr.empty())
-        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat update mode");
 
-    StatUpdateMode::Type updateMode = StatUpdateMode::fromString(updateModeStr);
+    const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
 
     std::vector< StatField > fields;
 
@@ -308,7 +304,7 @@ static void parseStatFromNode(xmlNodePtr statNode, MetadataStream& stream)
         }
     }
 
-    stream.addStat(statName, fields, updateMode);
+    stats.emplace_back(statName, fields, updateMode);
 }
 
 XMLReader::XMLReader(){}
@@ -503,7 +499,7 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata,
-    MetadataStream& stream)
+    std::vector< Stat >& stats)
 {
     if(text.empty())
     {
@@ -661,7 +657,7 @@ bool XMLReader::parseVideoSegments(const std::string& text,
     return true;
 }
 
-bool XMLReader::parseStats(const std::string& text, MetadataStream& stream)
+bool XMLReader::parseStats(const std::string& text, std::vector< Stat >& stats)
 {
     if(text.empty())
     {
@@ -695,7 +691,7 @@ bool XMLReader::parseStats(const std::string& text, MetadataStream& stream)
     {
         try
         {
-            parseStatFromNode(root, stream);
+            parseStatFromNode(root, stats);
         }
         catch(Exception& e)
         {
@@ -710,7 +706,7 @@ bool XMLReader::parseStats(const std::string& text, MetadataStream& stream)
             {
                 try
                 {
-                    parseStatFromNode(node, stream);
+                    parseStatFromNode(node, stats);
                 }
                 catch(Exception& e)
                 {
@@ -728,7 +724,7 @@ bool XMLReader::parseStats(const std::string& text, MetadataStream& stream)
                     {
                         try
                         {
-                            parseStatFromNode(node, stream);
+                            parseStatFromNode(node, stats);
                         }
                         catch(Exception& e)
                         {

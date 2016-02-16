@@ -53,11 +53,12 @@ bool MetadataStream::open( const std::string& sFilePath, MetadataStream::OpenMod
         dataSource->openFile(m_sFilePath, eMode);
         dataSource->loadVideoSegments(videoSegments);
         dataSource->load(m_mapSchemas);
-        dataSource->loadStats(*this);
+        dataSource->loadStats(m_stats);
         m_eMode = eMode;
         m_sFilePath = sFilePath;
         nextId = dataSource->loadId();
         m_sChecksumMedia = dataSource->loadChecksum();
+        activateStats();
 
         return true;
     }
@@ -651,12 +652,12 @@ void MetadataStream::deserialize(const std::string& text, IReader& reader)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     std::string filePath;
-    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, segments, schemas, metadata, *this);
+    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, segments, schemas, metadata, m_stats);
     if(m_sFilePath.empty())
         m_sFilePath = filePath;
     std::for_each( segments.begin(), segments.end(), [&]( std::shared_ptr< VideoSegment >& spSegment )
     {
-	addVideoSegment(spSegment);
+        addVideoSegment(spSegment);
     });
     std::for_each( schemas.begin(), schemas.end(), [&]( std::shared_ptr< MetadataSchema >& spSchema )
     {
@@ -666,6 +667,7 @@ void MetadataStream::deserialize(const std::string& text, IReader& reader)
     {
         add(spMetadata);
     });
+    activateStats();
 }
 
 std::string MetadataStream::computeChecksum()
@@ -850,17 +852,17 @@ void MetadataStream::convertFrameIndexToTimestamp(
 
 void MetadataStream::notifyStat(StatAction::Type action, std::shared_ptr< Metadata > spMetadata)
 {
-    std::for_each( m_stats.begin(), m_stats.end(), [&]( Stat* stat )
+    for( auto& stat : m_stats )
     {
-        stat->notify(action, spMetadata);
-    });
+        stat.notify(action, spMetadata);
+    }
 }
 
 void MetadataStream::addStat(const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode)
 {
-    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)->bool
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
     {
-        return stat->getName() == name;
+        return s.getName() == name;
     });
 
     if (it != m_stats.end())
@@ -868,16 +870,51 @@ void MetadataStream::addStat(const std::string& name, const std::vector< StatFie
         VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
     }
 
-    Stat* stat = new Stat(name, fields, updateMode);
-    m_stats.push_back(stat);
-    stat->setStream(this);
+    m_stats.emplace_back(name, fields, updateMode);
+    m_stats.back().setStream(this);
 }
 
-Stat* MetadataStream::getStat(const std::string& name) const
+void MetadataStream::addStat(const Stat& stat)
 {
-    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)->bool
+    const std::string& name = stat.getName();
+
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
     {
-        return stat->getName() == name;
+        return s.getName() == name;
+    });
+
+    if (it != m_stats.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
+    }
+
+    m_stats.push_back(stat);
+    m_stats.back().setStream(this);
+}
+
+void MetadataStream::addStat(Stat&& stat)
+{
+    const std::string& name = stat.getName();
+
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
+    {
+        return s.getName() == name;
+    });
+
+    if (it != m_stats.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
+    }
+
+    m_stats.push_back(stat);
+    m_stats.back().setStream(this);
+}
+
+Stat& MetadataStream::getStat(const std::string& name) const
+{
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& stat)->bool
+    {
+        return stat.getName() == name;
     });
 
     if (it == m_stats.end())
@@ -885,36 +922,38 @@ Stat* MetadataStream::getStat(const std::string& name) const
         VMF_EXCEPTION(vmf::NotFoundException, "Statistics object not found: '" + name + "'");
     }
 
-    return *it;
+    return (Stat&)*it;
 }
 
 std::vector< std::string > MetadataStream::getAllStatNames() const
 {
     std::vector< std::string > names;
 
-    std::for_each(m_stats.begin(), m_stats.end(), [&]( const Stat* stat)
+    for (auto& stat : m_stats)
     {
-        names.push_back(stat->getName());
-    });
+        names.push_back(stat.getName());
+    }
 
     return names;
+}
+
+void MetadataStream::activateStats()
+{
+    if (!m_stats.empty())
+    {
+        for (auto& stat : m_stats)
+            stat.setStream(this);
+    }
 }
 
 void MetadataStream::clearStats()
 {
     if (!m_stats.empty())
     {
-        for (auto it = m_stats.begin(); it != m_stats.end();  ++it)
-        {
-            Stat* stat = *it;
-            if (stat != nullptr)
-            {
-                stat->setStream(nullptr);
-                delete stat;
-                *it = nullptr;
-            }
-        }
-        std::vector< Stat* >().swap(m_stats); // m_stats.clear()
+        for (auto& stat : m_stats)
+            stat.setStream(nullptr);
+        m_stats.clear();
+        std::vector< Stat >().swap(m_stats);
     }
 }
 

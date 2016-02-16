@@ -345,7 +345,9 @@ public:
         long long& timestamp, long long& duration );
 
     void addStat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
-    Stat* getStat( const std::string& name ) const;
+    void addStat( const Stat& stat );
+    void addStat( Stat&& stat );
+    Stat& getStat( const std::string& name ) const;
     std::vector< std::string > getAllStatNames() const;
 
     /*!
@@ -362,6 +364,7 @@ protected:
     void internalAdd(const std::shared_ptr< Metadata >& spMetadata);
 
 private:
+    void activateStats();
     void clearStats();
 
     OpenMode m_eMode;
@@ -377,7 +380,7 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
-    std::vector< Stat* > m_stats;
+    std::vector< Stat > m_stats;
 };
 
 }

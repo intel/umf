@@ -58,7 +58,7 @@ public:
 	std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
-        MetadataStream& stream);
+        std::vector< Stat >& stats);
 
     virtual bool parseSchemas(const std::string& text,
                               std::vector<std::shared_ptr<MetadataSchema>>& schemas);
@@ -68,7 +68,7 @@ public:
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata );
 
     virtual bool parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
-    virtual bool parseStats(const std::string& text, MetadataStream& stream);
+    virtual bool parseStats(const std::string& text, std::vector< Stat >& stats);
 };
 
 }//vmf

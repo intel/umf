@@ -23,7 +23,6 @@
 #define VMF_STAT                     "stat"
 
 #define VMF_STAT_NAME                "name"
-#define VMF_STAT_UPDATE_MODE         "update_mode"
 
 #define VMF_STAT_FIELD               "field"
 
@@ -45,7 +44,7 @@ XMPStatSource::~XMPStatSource()
 {
 }
 
-void XMPStatSource::save(const std::vector< Stat* >& stats)
+void XMPStatSource::save(const std::vector< Stat >& stats)
 {
     metadata->DeleteProperty(VMF_NS, VMF_STATISTICS);
 
@@ -54,7 +53,7 @@ void XMPStatSource::save(const std::vector< Stat* >& stats)
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_STATISTICS, kXMP_ArrayLastItem, &pathToStatData);
     metadata->SetStructField(VMF_NS, pathToStatData.c_str(), VMF_NS, VMF_STAT, nullptr, kXMP_PropValueIsArray);
 
-    std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+    for( auto& stat : stats )
     {
         MetaString pathToStatArray;
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStatData.c_str(), VMF_NS, VMF_STAT, &pathToStatArray);
@@ -64,19 +63,16 @@ void XMPStatSource::save(const std::vector< Stat* >& stats)
 
         MetaString tmpPath;
 
-        if (stat->getName().empty())
+        if (stat.getName().empty())
             VMF_EXCEPTION(DataStorageException, "Invalid stat object: name is invalid!");
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
-        metadata->SetProperty(VMF_NS, tmpPath.c_str(), stat->getName().c_str());
+        metadata->SetProperty(VMF_NS, tmpPath.c_str(), stat.getName().c_str());
 
-        SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_UPDATE_MODE, &tmpPath);
-        metadata->SetProperty(VMF_NS, tmpPath.c_str(), StatUpdateMode::toString(stat->getUpdateMode()).c_str());
-
-        std::vector< std::string > fieldNames = stat->getAllFieldNames();
-        std::for_each(fieldNames.begin(), fieldNames.end(), [&](const std::string& fieldName)
+        std::vector< std::string > fieldNames = stat.getAllFieldNames();
+        for( auto fieldName : fieldNames )
         {
-            const StatField& field = stat->getField(fieldName);
+            const StatField& field = stat.getField(fieldName);
 
             MetaString pathToFieldArray;
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_FIELD, &pathToFieldArray);
@@ -113,11 +109,11 @@ void XMPStatSource::save(const std::vector< Stat* >& stats)
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_OP_NAME, &tmpPath);
             metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getOpName().c_str());
-        });
-    });
+        }
+    }
 }
 
-void XMPStatSource::load(MetadataStream& stream)
+void XMPStatSource::load(std::vector< Stat >& stats)
 {
     MetaString pathToStatData;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_STATISTICS, kXMP_ArrayLastItem, &pathToStatData);
@@ -130,16 +126,11 @@ void XMPStatSource::load(MetadataStream& stream)
     while (statsIter.Next(nullptr, &pathToStat))
     {
         MetaString tmpPath, statName, tmpStr;
-        StatUpdateMode::Type updateMode;
+        const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
         if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &statName, 0) )
             VMF_EXCEPTION(DataStorageException, "Broken stat name");
-
-        SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_UPDATE_MODE, &tmpPath);
-        if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &tmpStr, 0) )
-            VMF_EXCEPTION(DataStorageException, "Broken stat update mode");
-        updateMode = StatUpdateMode::fromString(tmpStr);
 
         std::vector< StatField > fields;
 
@@ -175,7 +166,7 @@ void XMPStatSource::load(MetadataStream& stream)
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }
 
-        stream.addStat(statName, fields, updateMode);
+        stats.emplace_back(statName, fields, updateMode);
     }
 }
 

@@ -93,19 +93,6 @@ public:
     virtual void load(std::map< MetaString, std::shared_ptr<MetadataSchema> >& schemas) = 0;
 
     /*!
-     * \brief Saves statistics objects in the file with specified name
-     * \param [in] stats statistics object vector to be saved
-     * \throw DataStorageException
-     */
-    virtual void saveStats(const std::vector< Stat* >& stats) = 0;
-
-    /*!
-     * \brief Loads all statistics objects described in current metafile
-     * \param [in] stream stream with metadata
-     */
-    virtual void loadStats(MetadataStream& stream) = 0;
-
-    /*!
      * \brief Load saved next identifier for new VMF objects
      * \return new numeric identifier
      */
@@ -169,6 +156,19 @@ public:
      *\brief Commits saved changes to file
      */
     virtual void pushChanges() = 0;
+
+    /*!
+     * \brief Saves statistics objects in the file with specified name
+     * \param [in] stats statistics object vector to be saved
+     * \throw DataStorageException
+     */
+    virtual void saveStats(const std::vector< Stat >& stats) = 0;
+
+    /*!
+     * \brief Loads all statistics objects described in current metafile
+     * \param [in] stats statistics object vector to be loaded
+     */
+    virtual void loadStats(std::vector< Stat >& stats) = 0;
 };
 
 } /* vmf */

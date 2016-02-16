@@ -45,8 +45,8 @@ public:
         {}
 
 public:
-    virtual const std::string& getName() const
-        { return className; }
+    virtual const std::string& name() const
+        { return opName(); }
     virtual void reset()
         { m_value = ""; }
     virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& inputValue )
@@ -65,7 +65,7 @@ public:
             }
             return true;
         }
-    virtual const vmf::Variant& getValue() const
+    virtual const vmf::Variant& value() const
         { m_temp = vmf::Variant( (vmf::vmf_string)m_value ); return m_temp; }
 
 private:
@@ -75,10 +75,12 @@ private:
 public:
     static IStatOp* createInstance()
         { return new StrCatOp(); }
-    static const std::string className;
+    static const std::string& opName()
+        {
+            static const std::string name( "User.StrCatOp" );
+            return name;
+        }
 };
-
-const std::string StrCatOp::className = "User.StrCatOp";
 
 inline std::ostream& operator<<( std::ostream& os, const vmf::Variant& value )
 {
@@ -94,30 +96,30 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
     std::vector< std::string > statNames = mdStream.getAllStatNames();
     if( !statNames.empty() )
     {
-        std::for_each( statNames.begin(), statNames.end(), [&]( const std::string& statName )
+        for( auto& statName : statNames )
         {
-            const vmf::Stat* stat = mdStream.getStat( statName );
-            std::cout << "statistics: '" << stat->getName() << "'" << std::endl;
+            const vmf::Stat& stat = mdStream.getStat( statName );
+            std::cout << "statistics: '" << stat.getName() << "'" << std::endl;
 
-            std::vector< std::string > fieldNames = stat->getAllFieldNames();
+            std::vector< std::string > fieldNames = stat.getAllFieldNames();
             if( !fieldNames.empty() )
             {
-                std::for_each( fieldNames.begin(), fieldNames.end(), [&]( const std::string& fieldName )
+                for( auto& fieldName : fieldNames )
                 {
-                    const vmf::StatField& field = stat->getField( fieldName );
+                    const vmf::StatField& field = stat.getField( fieldName );
 
                     std::cout << "  name='" << field.getName()
                               << "'  metadata='" << field.getMetadataDesc()->getMetadataName()
                               << "'  field='" << field.getFieldName()
                               << "'  value=" << field.getValue()
                               << std::endl;
-                });
+                }
             }
             else
             {
                 std::cout << "  no field(s) defined" << std::endl;
             }
-        });
+        }
     }
     else
     {
@@ -199,15 +201,15 @@ int sample(int argc, char *argv[])
     mdStream.addSchema(gpsSchema);
 
     // Register user operation: exactly one of two calls must be issued once for each user op
-    //vmf::StatOpFactory::registerUserOp( StrCatOp::className, StrCatOp::createInstance );
+    // vmf::StatOpFactory::registerUserOp( StrCatOp::opName(), StrCatOp::createInstance );
     vmf::StatOpFactory::registerUserOp< StrCatOp >();
 
     // Set up statistics object(s)
     std::vector< vmf::StatField > fields;
-    fields.push_back( vmf::StatField( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::countName() ));
-    fields.push_back( vmf::StatField( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName() ));
-    fields.push_back( vmf::StatField( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::className ));
-    fields.push_back( vmf::StatField( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::className ));
+    fields.emplace_back( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::countName() );
+    fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName() );
+    fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
+    fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
     mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Manual );
 
     std::shared_ptr<vmf::Metadata> gpsMetadata;

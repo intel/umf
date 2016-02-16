@@ -460,7 +460,7 @@ void XMPDataSource::load(std::map<MetaString, std::shared_ptr<MetadataSchema> >&
     }
 }
 
-void XMPDataSource::saveStats(const std::vector< Stat* >& stats)
+void XMPDataSource::saveStats(const std::vector< Stat >& stats)
 {
     statSourceCheck();
     try
@@ -478,12 +478,12 @@ void XMPDataSource::saveStats(const std::vector< Stat* >& stats)
     }
 }
 
-void XMPDataSource::loadStats(MetadataStream& stream)
+void XMPDataSource::loadStats(std::vector< Stat >& stats)
 {
     statSourceCheck();
     try
     {
-        statSource->load(stream);
+        statSource->load(stats);
     }
     catch(const XMP_Error& e)
     {

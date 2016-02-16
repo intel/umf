@@ -32,20 +32,20 @@ static void add(JSONNode& schemaNode, const std::shared_ptr<MetadataSchema>& spS
     JSONNode descsArrayNode(JSON_ARRAY);
     descsArrayNode.set_name(TAG_DESCRIPTIONS_ARRAY);
     auto vDescs = spSchema->getAll();
-    for( auto spDescriptor = vDescs.begin(); spDescriptor != vDescs.end(); spDescriptor++)
+    for( auto spDescriptor : vDescs )
     {
         JSONNode descNode(JSON_NODE);
-        descNode.push_back(JSONNode(ATTR_NAME, (*spDescriptor)->getMetadataName() ) );
+        descNode.push_back(JSONNode(ATTR_NAME, spDescriptor->getMetadataName() ) );
 
         JSONNode fieldsArrayNode(JSON_ARRAY);
         fieldsArrayNode.set_name(TAG_FIELDS_ARRAY);
-        auto vFields = spDescriptor->get()->getFields();
-        for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
+        auto vFields = spDescriptor.get()->getFields();
+        for( auto fieldDesc : vFields )
         {
             JSONNode fieldNode(JSON_NODE);
-            fieldNode.push_back(JSONNode(ATTR_NAME, fieldDesc->name) );
-            fieldNode.push_back(JSONNode(ATTR_FIELD_TYPE, vmf::Variant::typeToString(fieldDesc->type) ) );
-            if(fieldDesc->optional)
+            fieldNode.push_back(JSONNode(ATTR_NAME, fieldDesc.name) );
+            fieldNode.push_back(JSONNode(ATTR_FIELD_TYPE, vmf::Variant::typeToString(fieldDesc.type) ) );
+            if(fieldDesc.optional)
                 fieldNode.push_back(JSONNode(ATTR_FIELD_OPTIONAL, "true") );
 
             fieldsArrayNode.push_back(fieldNode);
@@ -53,18 +53,18 @@ static void add(JSONNode& schemaNode, const std::shared_ptr<MetadataSchema>& spS
 
         JSONNode referencesArrayNode(JSON_ARRAY);
         referencesArrayNode.set_name(TAG_METADATA_REFERENCES_ARRAY);
-        auto vReference = (*spDescriptor)->getAllReferenceDescs();
-        for (auto refDesc = vReference.begin(); refDesc != vReference.end(); refDesc++)
+        auto vReference = spDescriptor->getAllReferenceDescs();
+        for (auto refDesc : vReference )
         {
-            if ((*refDesc)->name.empty())
+            if (refDesc->name.empty())
                 continue;
 
             JSONNode refsNode(JSON_NODE);
-            refsNode.push_back(JSONNode(ATTR_NAME, (*refDesc)->name));
-            if ((*refDesc)->isUnique)
+            refsNode.push_back(JSONNode(ATTR_NAME, refDesc->name));
+            if (refDesc->isUnique)
                 refsNode.push_back(JSONNode(ATTR_REFERENCE_UNIQUE, "true"));
 
-            if ((*refDesc)->isCustom)
+            if (refDesc->isCustom)
                 refsNode.push_back(JSONNode(ATTR_REFERENCE_CUSTOM, "true"));
 
             referencesArrayNode.push_back(refsNode);
@@ -118,13 +118,13 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
     JSONNode metadataFieldsArrayNode(JSON_ARRAY);
     metadataFieldsArrayNode.set_name(TAG_FIELDS_ARRAY);
     auto vFields = spMetadata->getDesc()->getFields();
-    for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
+    for( auto fieldDesc : vFields )
     {
-        Variant val = spMetadata->getFieldValue(fieldDesc->name);
+        Variant val = spMetadata->getFieldValue(fieldDesc.name);
         if (!val.isEmpty())
         {
             JSONNode metadataFieldNode(JSON_NODE);
-            metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc->name) );
+            metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc.name) );
             metadataFieldNode.push_back( JSONNode(ATTR_VALUE, val.toString()) );
             metadataFieldsArrayNode.push_back(metadataFieldNode);
         }
@@ -136,12 +136,12 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
     {
         JSONNode referencesArrayNode(JSON_ARRAY);
         referencesArrayNode.set_name(TAG_METADATA_REFERENCES_ARRAY);
-        for( auto reference = refs.begin(); reference != refs.end(); reference++)
+        for( auto reference : refs )
         {
             JSONNode referenceNode(JSON_NODE);
             referenceNode.set_name(TAG_METADATA_REFERENCE);
-            referenceNode.push_back(JSONNode(ATTR_NAME, reference->getReferenceDescription()->name));
-            referenceNode.push_back(JSONNode(ATTR_ID, reference->getReferenceMetadata().lock()->getId()));
+            referenceNode.push_back(JSONNode(ATTR_NAME, reference.getReferenceDescription()->name));
+            referenceNode.push_back(JSONNode(ATTR_ID, reference.getReferenceMetadata().lock()->getId()));
             referencesArrayNode.push_back(referenceNode);
         }
         metadataNode.push_back(referencesArrayNode);
@@ -169,23 +169,22 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-static void add(JSONNode& statNode, const Stat* stat)
+static void add(JSONNode& statNode, const Stat& stat)
 {
-    if (stat->getName().empty())
+    if (stat.getName().empty())
         VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
-    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat->getName()));
-    statNode.push_back(JSONNode(ATTR_STAT_UPDATE_MODE, StatUpdateMode::toString(stat->getUpdateMode())));
+    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat.getName()));
 
-    std::vector< std::string > fieldNames = stat->getAllFieldNames();
+    std::vector< std::string > fieldNames = stat.getAllFieldNames();
     if (!fieldNames.empty())
     {
         JSONNode fieldsArrayNode(JSON_ARRAY);
         fieldsArrayNode.set_name(TAG_STAT_FIELDS_ARRAY);
 
-        std::for_each(fieldNames.begin(), fieldNames.end(), [&](const std::string& fieldName)
+        for(auto& fieldName : fieldNames)
         {
-            const StatField& field = stat->getField(fieldName);
+            const StatField& field = stat.getField(fieldName);
 
             if (field.getName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
@@ -212,7 +211,7 @@ static void add(JSONNode& statNode, const Stat* stat)
             fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_OP_NAME, field.getOpName()));
 
             fieldsArrayNode.push_back(fieldNode);
-        });
+        }
 
         statNode.push_back(fieldsArrayNode);
     }
@@ -263,14 +262,14 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>
     JSONNode schemasArrayNode(JSON_ARRAY);
     schemasArrayNode.set_name(TAG_SCHEMAS_ARRAY);
 
-    std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+    for(auto spSchema : schemas)
     {
         if( spSchema == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
         JSONNode schemaNode(JSON_NODE);
         add(schemaNode, spSchema);
         schemasArrayNode.push_back(schemaNode);
-    });
+    }
 
     JSONNode root(JSON_NODE);
     root.push_back(schemasArrayNode);
@@ -287,14 +286,14 @@ std::string JSONWriter::store(const MetadataSet& set)
     JSONNode metadataArrayNode(JSON_ARRAY);
     metadataArrayNode.set_name(TAG_METADATA_ARRAY);
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         if( spMetadata == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         JSONNode metadataNode(JSON_NODE);
         add(metadataNode, spMetadata);
         metadataArrayNode.push_back(metadataNode);
-    });
+    }
 
     JSONNode root(JSON_NODE);
     root.push_back(metadataArrayNode);
@@ -309,22 +308,22 @@ std::string JSONWriter::store(const IdType& nextId,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const MetadataSet& set,
-    const std::vector< Stat* >& stats)
+    const std::vector< Stat >& stats)
 {
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         bool NoSchemaForMetadata = true;
-        std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+        for(auto spSchema : schemas)
         {
             if(spMetadata->getSchemaName() == spSchema->getName())
                 NoSchemaForMetadata = false;
-        });
+        }
         if(NoSchemaForMetadata)
             VMF_EXCEPTION(IncorrectParamException, "MetadataSet item references unknown schema");
-    });
+    }
 
     JSONNode vmfRootNode(JSON_NODE);
     vmfRootNode.set_name(TAG_VMF);
@@ -338,14 +337,14 @@ std::string JSONWriter::store(const IdType& nextId,
 	JSONNode segmentsArrayNode(JSON_ARRAY);
 	segmentsArrayNode.set_name(TAG_VIDEO_SEGMENTS_ARRAY);
 
-	std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
+        for(auto spSegment : segments)
 	{
 	    if( spSegment == nullptr )
 		VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
 	    JSONNode segmentNode(JSON_NODE);
 	    add(segmentNode, spSegment);
 	    segmentsArrayNode.push_back(segmentNode);
-	});
+        }
 
 	vmfRootNode.push_back(segmentsArrayNode);
     }
@@ -355,14 +354,12 @@ std::string JSONWriter::store(const IdType& nextId,
         JSONNode statsArrayNode(JSON_ARRAY);
         statsArrayNode.set_name(TAG_STATS_ARRAY);
 
-        std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+        for(auto& stat : stats)
         {
-            if( stat == nullptr )
-                VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
             JSONNode statNode(JSON_NODE);
             add(statNode, stat);
             statsArrayNode.push_back(statNode);
-        });
+        }
 
         vmfRootNode.push_back(statsArrayNode);
     }
@@ -370,28 +367,28 @@ std::string JSONWriter::store(const IdType& nextId,
     JSONNode schemasArrayNode(JSON_ARRAY);
     schemasArrayNode.set_name(TAG_SCHEMAS_ARRAY);
 
-    std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+    for(auto spSchema : schemas)
     {
         if( spSchema == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
         JSONNode schemaNode(JSON_NODE);
         add(schemaNode, spSchema);
         schemasArrayNode.push_back(schemaNode);
-    });
+    }
 
     vmfRootNode.push_back(schemasArrayNode);
 
     JSONNode metadataArrayNode(JSON_ARRAY);
     metadataArrayNode.set_name(TAG_METADATA_ARRAY);
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         if( spMetadata == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         JSONNode metadataNode(JSON_NODE);
         add(metadataNode, spMetadata);
         metadataArrayNode.push_back(metadataNode);
-    });
+    }
 
     vmfRootNode.push_back(metadataArrayNode);
 
@@ -427,14 +424,14 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
     JSONNode segmentsArrayNode(JSON_ARRAY);
     segmentsArrayNode.set_name(TAG_VIDEO_SEGMENTS_ARRAY);
 
-    std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
+    for(auto spSegment : segments)
     {
         if( spSegment == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+	        VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
         JSONNode segmentNode(JSON_NODE);
         add(segmentNode, spSegment);
         segmentsArrayNode.push_back(segmentNode);
-    });
+    }
 
     JSONNode root(JSON_NODE);
     root.push_back(segmentsArrayNode);
@@ -443,7 +440,7 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
     return formatted;
 }
 
-std::string JSONWriter::store(const std::vector< Stat* >& stats)
+std::string JSONWriter::store(const std::vector< Stat >& stats)
 {
     if(stats.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input stat object vector is empty");
@@ -451,14 +448,12 @@ std::string JSONWriter::store(const std::vector< Stat* >& stats)
     JSONNode statsArrayNode(JSON_ARRAY);
     statsArrayNode.set_name(TAG_STATS_ARRAY);
 
-    std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+    for(auto& stat : stats)
     {
-        if( stat == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
         JSONNode statNode(JSON_NODE);
         add(statNode, stat);
         statsArrayNode.push_back(statNode);
-    });
+    }
 
     JSONNode root(JSON_NODE);
     root.push_back(statsArrayNode);
@@ -466,11 +461,8 @@ std::string JSONWriter::store(const std::vector< Stat* >& stats)
     return root.write_formatted();
 }
 
-std::string JSONWriter::store(const Stat* stat)
+std::string JSONWriter::store(const Stat& stat)
 {
-    if( stat == nullptr )
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
-
     JSONNode statNode(JSON_NODE);
     statNode.set_name(TAG_STAT);
 

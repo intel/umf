@@ -33,51 +33,51 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
         VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (schema author)" );
 
     auto vDescs = spSchema->getAll();
-    for( auto spDescriptor = vDescs.begin(); spDescriptor != vDescs.end(); spDescriptor++)
+    for( auto spDescriptor : vDescs )
     {
         xmlNodePtr descNode = xmlNewChild(schemaNode, NULL, BAD_CAST TAG_DESCRIPTION, NULL);
         if(descNode == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for description" );
 
-        if(xmlNewProp(descNode, BAD_CAST ATTR_NAME , BAD_CAST spDescriptor->get()->getMetadataName().c_str()) == NULL)
+        if(xmlNewProp(descNode, BAD_CAST ATTR_NAME , BAD_CAST spDescriptor.get()->getMetadataName().c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (description name)" );
 
-        auto vFields = spDescriptor->get()->getFields();
-        for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
+        auto vFields = spDescriptor.get()->getFields();
+        for( auto fieldDesc : vFields )
         {
             xmlNodePtr fieldNode = xmlNewChild(descNode, NULL, BAD_CAST TAG_FIELD, NULL);
             if(fieldNode == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for field" );
 
-            if(xmlNewProp(fieldNode, BAD_CAST ATTR_NAME , BAD_CAST fieldDesc->name.c_str()) == NULL)
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_NAME , BAD_CAST fieldDesc.name.c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (field name)" );
 
-            if(xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_TYPE , BAD_CAST Variant::typeToString(fieldDesc->type).c_str()) == NULL)
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_TYPE , BAD_CAST Variant::typeToString(fieldDesc.type).c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (field type)" );
 
-            if(fieldDesc->optional)
+            if(fieldDesc.optional)
                 if(xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_OPTIONAL , BAD_CAST "true") == NULL)
                     VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (field is optional)" );
         }
 
-        auto vRefs = (*spDescriptor)->getAllReferenceDescs();
-        for (auto refDesc = vRefs.begin(); refDesc != vRefs.end(); refDesc++)
+        auto vRefs = spDescriptor->getAllReferenceDescs();
+        for( auto refDesc : vRefs )
         {
-            if ((*refDesc)->name.empty())
+            if (refDesc->name.empty())
                 continue;
 
             xmlNodePtr refNode = xmlNewChild(descNode, NULL, BAD_CAST TAG_METADATA_REFERENCE, NULL);
             if (refNode == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for reference." );
 
-            if (xmlNewProp(refNode, BAD_CAST ATTR_NAME, BAD_CAST (*refDesc)->name.c_str()) == NULL)
+            if (xmlNewProp(refNode, BAD_CAST ATTR_NAME, BAD_CAST refDesc->name.c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (reference name)");
 
-            if ((*refDesc)->isUnique)
+            if (refDesc->isUnique)
                 if (xmlNewProp(refNode, BAD_CAST ATTR_REFERENCE_UNIQUE, BAD_CAST "true") == NULL)
                     VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (reference is unique)");
 
-            if ((*refDesc)->isCustom)
+            if (refDesc->isCustom)
                 if (xmlNewProp(refNode, BAD_CAST ATTR_REFERENCE_CUSTOM, BAD_CAST "true") == NULL)
                     VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (reference is custom)");
         }
@@ -121,16 +121,16 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata duration)" );
 
     auto vFields = spMetadata->getDesc()->getFields();
-    for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
+    for( auto fieldDesc : vFields )
     {
-        Variant val = spMetadata->getFieldValue(fieldDesc->name);
+        Variant val = spMetadata->getFieldValue(fieldDesc.name);
         if (!val.isEmpty())
         {
             xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
             if (metadataFieldNode == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata field");
 
-            if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
+            if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc.name.c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field name)");
 
             if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_VALUE, BAD_CAST val.toString().c_str()) == NULL)
@@ -141,16 +141,16 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
     auto refs = spMetadata->getAllReferences();
     if(!refs.empty())
     {
-        for( auto reference = refs.begin(); reference != refs.end(); reference++)
+        for( auto reference : refs )
         {
             xmlNodePtr referenceNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_METADATA_REFERENCE, NULL);
             if(referenceNode == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata reference" );
 
-            if (xmlNewProp(referenceNode, BAD_CAST ATTR_NAME, BAD_CAST reference->getReferenceDescription()->name.c_str()) == NULL)
+            if (xmlNewProp(referenceNode, BAD_CAST ATTR_NAME, BAD_CAST reference.getReferenceDescription()->name.c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata reference name)");
 
-	        if (xmlNewProp(referenceNode, BAD_CAST ATTR_ID, BAD_CAST TYPE2STR((*reference).getReferenceMetadata().lock()->getId()).c_str()) == NULL)
+                if (xmlNewProp(referenceNode, BAD_CAST ATTR_ID, BAD_CAST TYPE2STR(reference.getReferenceMetadata().lock()->getId()).c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata reference id)" );
         }
     }
@@ -186,23 +186,20 @@ static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::V
     }
 }
 
-static void add(xmlNodePtr statNode, const Stat* stat)
+static void add(xmlNodePtr statNode, const Stat& stat)
 {
-    if (stat->getName().empty())
+    if (stat.getName().empty())
         VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
-    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat->getName().c_str()) == NULL)
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat.getName().c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
 
-    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_UPDATE_MODE, BAD_CAST StatUpdateMode::toString(stat->getUpdateMode()).c_str() ) == NULL)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object update mode)");
-
-    std::vector< std::string > fieldNames = stat->getAllFieldNames();
+    std::vector< std::string > fieldNames = stat.getAllFieldNames();
     if (!fieldNames.empty())
     {
-        std::for_each(fieldNames.begin(), fieldNames.end(), [&](const std::string& fieldName)
+        for(auto fieldName : fieldNames)
         {
-            const StatField& field = stat->getField(fieldName);
+            const StatField& field = stat.getField(fieldName);
 
             if (field.getName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
@@ -237,7 +234,7 @@ static void add(xmlNodePtr statNode, const Stat* stat)
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
                 VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
-        });
+        }
     }
 }
 
@@ -319,13 +316,13 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>&
     if(xmlDocSetRootElement(doc, schemasArrayNode) != 0)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
-    std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+    for(auto spSchema : schemas)
     {
         if( spSchema == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
         xmlNodePtr schemaNode = xmlNewChild(schemasArrayNode, NULL, BAD_CAST TAG_SCHEMA, NULL);
         add(schemaNode, spSchema);
-    });
+    }
 
     xmlChar *buf;
     int size;
@@ -356,13 +353,13 @@ std::string XMLWriter::store(const MetadataSet& set)
     if(xmlDocSetRootElement(doc, metadataArrayNode) != 0)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         if( spMetadata == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         xmlNodePtr metadataNode = xmlNewChild(metadataArrayNode, NULL, BAD_CAST TAG_METADATA, NULL);
         add(metadataNode, spMetadata);
-    });
+    }
 
     xmlChar *buf;
     int size;
@@ -386,22 +383,22 @@ std::string XMLWriter::store(const IdType& nextId,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const MetadataSet& set,
-    const std::vector< Stat* >& stats)
+    const std::vector< Stat >& stats)
 {
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         bool NoSchemaForMetadata = true;
-        std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+        for(auto spSchema : schemas)
         {
             if(spMetadata->getSchemaName() == spSchema->getName())
                 NoSchemaForMetadata = false;
-        });
+        }
         if(NoSchemaForMetadata)
             VMF_EXCEPTION(vmf::IncorrectParamException, "MetadataSet item references unknown schema");
-    });
+    }
 
     xmlDocPtr doc = xmlNewDoc(NULL);
     xmlNodePtr vmfRootNode = xmlNewNode(NULL, BAD_CAST TAG_VMF);
@@ -433,29 +430,43 @@ std::string XMLWriter::store(const IdType& nextId,
     if(metadataArrayNode == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for metadata array");
 
-    std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
+    xmlNodePtr statsArrayNode = NULL;
+    if(!stats.empty())
+    {
+        statsArrayNode = xmlNewNode(NULL, BAD_CAST TAG_STATS_ARRAY);
+        if(statsArrayNode == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for stat object array");
+    }
+
+    for(auto spSegment : segments)
     {
 	if( spSegment == nullptr )
 	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
 	xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
 	add(segmentNode, spSegment);
-    });
+    }
 
-    std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
+    for(auto spSchema : schemas)
     {
         if( spSchema == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
         xmlNodePtr schemaNode = xmlNewChild(schemasArrayNode, NULL, BAD_CAST TAG_SCHEMA, NULL);
         add(schemaNode, spSchema);
-    });
+    }
 
-    std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
+    for(auto spMetadata : set)
     {
         if( spMetadata == nullptr )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         xmlNodePtr metadataNode = xmlNewChild(metadataArrayNode, NULL, BAD_CAST TAG_METADATA, NULL);
         add(metadataNode, spMetadata);
-    });
+    }
+
+    for(auto& stat : stats)
+    {
+        xmlNodePtr statNode = xmlNewChild(statsArrayNode, NULL, BAD_CAST TAG_STAT, NULL);
+        add(statNode, stat);
+    }
 
     xmlChar *buf;
     int size;
@@ -518,13 +529,13 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
     if(xmlDocSetRootElement(doc, segmentsArrayNode) != 0)
 	VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
-    std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
+    for(auto spSegment : segments)
     {
 	if( spSegment == nullptr )
 	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
 	xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
 	add(segmentNode, spSegment);
-    });
+    }
 
     xmlChar *buf;
     int size;
@@ -542,11 +553,8 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
     return outputString;
 }
 
-std::string XMLWriter::store(const Stat* stat)
+std::string XMLWriter::store(const Stat& stat)
 {
-    if( stat == nullptr )
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
-
     xmlDocPtr doc = xmlNewDoc(NULL);
     xmlNodePtr statNode = xmlNewNode(NULL, BAD_CAST TAG_STAT);
     if(statNode == NULL)
@@ -573,7 +581,7 @@ std::string XMLWriter::store(const Stat* stat)
     return outputString;
 }
 
-std::string XMLWriter::store(const std::vector< Stat* >& stats)
+std::string XMLWriter::store(const std::vector< Stat >& stats)
 {
     if(stats.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input stat object vector is empty");
@@ -586,15 +594,12 @@ std::string XMLWriter::store(const std::vector< Stat* >& stats)
     if(xmlDocSetRootElement(doc, statsArrayNode) != 0)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
-    std::for_each(stats.begin(), stats.end(), [&](const Stat* stat)
+    for(auto& stat : stats)
     {
-        if( stat == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Stat object pointer is null");
-
         xmlNodePtr statNode = xmlNewChild(statsArrayNode, NULL, BAD_CAST TAG_STAT, NULL);
 
         add(statNode, stat);
-    });
+    }
 
     xmlChar *buf;
     int size;
