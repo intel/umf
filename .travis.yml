@@ -1,19 +1,28 @@
 # .travis.yml
 sudo: false
 language: android
-android:
-  components:
-    - sys-img-x86-android-17
 git:
   depth : 1
 matrix:
   include:
     - os: linux
-      env: CC=gcc
+      env:
+        - CC=gcc-4.8
+        - CXX=g++-4.8
+        - VMF_SHARED=ON
+        - VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'
     - os: linux
-      env: CC=clang
+      env:
+        - CC=clang-3.7
+        - CXX=clang++-3.7
+        - VMF_SHARED=OFF
+        - VMF_ANDROID_BUILD=ON
     - os: osx
-      env: CC=clang
+      env:
+        - CC=clang
+        - CXX=clang++
+        - VMF_SHARED=ON
+        - VMF_IOS_BUILD=ON
 addons:
   apt:
     sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
@@ -21,23 +30,24 @@ addons:
 before_install:
   - env
   - if [ $TRAVIS_OS_NAME == linux ]; then android list; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then android-update-sdk --components=sys-img-x86-android-17; fi
 # coverage
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
+  #- if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == gcc ]; then export VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user cpp-coveralls; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user codecov; fi
 # android
-  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == clang ]; then export VMF_ANDROID_BUILD='ON'; fi
+  #- if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == clang ]; then export VMF_ANDROID_BUILD='ON'; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then git clone --depth=1 https://github.com/urho3d/android-ndk.git $HOME/android-ndk; export ANDROID_NDK=$HOME/android-ndk; fi
 # iOS
-  - if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then export VMF_IOS_BUILD='ON'; fi
+  #- if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then export VMF_IOS_BUILD='ON'; fi
 before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then if [ $CC  == gcc ]; then export CC=gcc-4.8; export CXX=g++-4.8; else export CC=clang-3.7; export CXX=clang++-3.7; fi; fi
-  - if [ $TRAVIS_OS_NAME == osx ];   then if [ $CC  == gcc ]; then export CXX=g++; else export export CXX=clang++; fi; fi
+  #- if [ $TRAVIS_OS_NAME == linux ]; then if [ $CC  == gcc ]; then export CC=gcc-4.8; export CXX=g++-4.8; else export CC=clang-3.7; export CXX=clang++-3.7; fi; fi
+  #- if [ $TRAVIS_OS_NAME == osx ];   then if [ $CC  == gcc ]; then export CXX=g++; else export export CXX=clang++; fi; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then ldd --version; fi
-  - if [[ $CC  == gcc*  ]]; then VMF_SHARED=ON; else VMF_SHARED=OFF; fi
+  #- if [[ $CC  == gcc*  ]]; then VMF_SHARED=ON; else VMF_SHARED=OFF; fi
   - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED $VMF_GCOV_OPTS ../vmf
   - make
   - cd ./bin/
