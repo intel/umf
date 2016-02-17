@@ -1,14 +1,19 @@
 # .travis.yml
 sudo: false
 language: android
+android:
+  components:
+    - sys-img-x86-android-17
 git:
   depth : 1
-os:
-  - linux
-  - osx
-env:
-  - CC=gcc
-  - CC=clang
+matrix:
+  include:
+    - os: linux
+      env: CC=gcc
+    - os: linux
+      env: CC=clang
+    - os: osx
+      env: CC=clang
 addons:
   apt:
     sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
@@ -23,6 +28,8 @@ before_install:
 # android
   - if [ $TRAVIS_OS_NAME == linux ] && [ $CC  == clang ]; then export VMF_ANDROID_BUILD='ON'; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then git clone --depth=1 https://github.com/urho3d/android-ndk.git $HOME/android-ndk; export ANDROID_NDK=$HOME/android-ndk; fi
+# iOS
+  - if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then export VMF_IOS_BUILD='ON'; fi
 before_script:
   - mkdir ../build
   - cd ../build
@@ -37,12 +44,13 @@ script:
   - ./unit-tests
   - ./unit-tests-ds
 # iOS
-  - if [ $TRAVIS_OS_NAME == osx ] && [ $CC  == clang ]; then cd ..; mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
+  - if [ "$VMF_IOS_BUILD" != "" ]; then cd ..; mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
 # android
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then cd ..; rm -rf _android; mkdir _android; cd _android; cmake -DCMAKE_TOOLCHAIN_FILE=../../vmf/cmake/android.toolchain.cmake -DANDROID_ABI=x86 -DANDROID_STL=gnustl_static -DBUILD_SHARED_LIBS=OFF ../../vmf; make -j4 all; fi
 after_success:
   - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root ../.. --build-root ..; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root ../.. --gcov-exec gcov-4.8; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-x86-17 -t android-17 --abi x86; emulator -avd avd-x86-17 -no-audio -no-window &; android-wait-for-emulator; fi
 notifications:
   email: false
   webhooks: https://coveralls.io/webhook?repo_token=kXDrxzQdBiK3aEgUSlsbL3IVMP0Mvr4oH
