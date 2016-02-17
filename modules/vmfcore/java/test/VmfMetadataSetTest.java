@@ -145,14 +145,17 @@ public class VmfMetadataSetTest
         mdSet2 = mdSet.queryByNameAndFields ("person", fvs);
         assertEquals(1, mdSet2.getSize());
         
-        mdSet2 = stream.queryByReference ("person");
+        mdSet2 = mdSet.queryByReference ("person");
         assertEquals(1, mdSet2.getSize());
         
-        mdSet2 = stream.queryByReference ("person", fv);
+        mdSet2 = mdSet.queryByReference ("person", fv);
         assertEquals(1, mdSet2.getSize());
         
-        mdSet2 = stream.queryByReference ("person", fvs);
+        mdSet2 = mdSet.queryByReference ("person", fvs);
         assertEquals(1, mdSet2.getSize());
+        
+        mdSet.shift(25, 6, 2, mdSet2);
+        mdSet.shift(25, 6);
     }
 
     @Test
