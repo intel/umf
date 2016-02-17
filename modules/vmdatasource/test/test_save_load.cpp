@@ -1375,8 +1375,51 @@ public:
     }
 };
 
+enum CryptAlgo
+{
+    DEFAULT, BAD, NONE
+};
 
-class TestSaveLoadCompression : public ::testing::TestWithParam<std::string>
+//Some testing class for encryption
+class BadEncryptor : public vmf::Encryptor
+{
+public:
+    BadEncryptor(char _key) : key(_key) { }
+
+    virtual void encrypt(const vmf::vmf_string &input, vmf::vmf_rawbuffer &output)
+    {
+        output.clear();
+        output.reserve(input.length());
+        for(char c : input)
+        {
+            output.push_back(c ^ key);
+        }
+    }
+
+    virtual void decrypt(const vmf::vmf_rawbuffer &input, vmf::vmf_string &output)
+    {
+        output.clear();
+        output.reserve(input.size());
+        for(char c : input)
+        {
+            output.push_back(c ^ key);
+        }
+    }
+
+    virtual vmf::vmf_string getHint()
+    {
+        return vmf::vmf_string("bad encryptor for tests");
+    }
+
+    virtual ~BadEncryptor() { }
+
+private:
+    char key;
+};
+
+
+class TestSaveLoadCompressionEncryption : public ::testing::TestWithParam< std::tuple<std::string,
+                                                                                      CryptAlgo> >
 {
 protected:
     void SetUp()
@@ -1393,16 +1436,32 @@ protected:
         vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
         vmf::terminate();
     }
+
+    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    {
+        switch(algo)
+        {
+            case CryptAlgo::DEFAULT:
+                return std::make_shared<vmf::DefaultEncryptor>();
+            case CryptAlgo::BAD:
+                return std::make_shared<BadEncryptor>(42);
+            default:
+                return nullptr;
+        }
+    }
 };
 
 
-TEST_P(TestSaveLoadCompression, Checksum)
+TEST_P(TestSaveLoadCompressionEncryption, Checksum)
 {
-    std::string name = GetParam();
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
 
     std::string checksum1, checksum2;
     {
         vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(true);
 
         ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
 
@@ -1423,6 +1482,8 @@ TEST_P(TestSaveLoadCompression, Checksum)
     if(name != "unregistered")
     {
         vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
         ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update));
         checksum2 = stream.getChecksum();
         stream.close();
@@ -1432,14 +1493,18 @@ TEST_P(TestSaveLoadCompression, Checksum)
 }
 
 
-TEST_P(TestSaveLoadCompression, CheckIgnoreUnknownCompressor)
+TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
 {
-    std::string name = GetParam();
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
 
     if(name == "com.intel.vmf.compressor.test.bloating")
     {
         {
             vmf::MetadataStream stream;
+            stream.setEncryptor(encryptor);
+            stream.setUseEncryption(true);
+
             stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
             //arbitrary content
@@ -1454,6 +1519,7 @@ TEST_P(TestSaveLoadCompression, CheckIgnoreUnknownCompressor)
 
         {
             vmf::MetadataStream stream;
+            stream.setEncryptor(encryptor);
             ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly |
                                                vmf::MetadataStream::IgnoreUnknownCompressor));
             std::vector<std::string> schemaNames = stream.getAllSchemaNames();
@@ -1468,7 +1534,374 @@ TEST_P(TestSaveLoadCompression, CheckIgnoreUnknownCompressor)
 }
 
 
-INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompression,
-                        ::testing::Values("com.intel.vmf.compressor.zlib",
-                                          "unregistered",
-                                          "com.intel.vmf.compressor.test.bloating"));
+TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
+{
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
+
+    std::string checksum1, checksum2;
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(true);
+
+        ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
+
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        checksum1 = stream.computeChecksum();
+        stream.setChecksum(checksum1);
+        if(name == "unregistered")
+        {
+            ASSERT_FALSE(stream.save(name));
+        }
+        else
+        {
+            ASSERT_TRUE(stream.save(name));
+        }
+        stream.close();
+    }
+
+    if(name != "unregistered" && encryptor)
+    {
+        vmf::MetadataStream stream;
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update |
+                                           vmf::MetadataStream::IgnoreUnknownEncryptor));
+        //TODO schema name, field name
+        std::vector<std::string> schemaNames = stream.getAllSchemaNames();
+        ASSERT_EQ(schemaNames.size(), 1);
+        ASSERT_EQ(schemaNames[0], "com.intel.vmf.encrypted-metadata");
+        vmf::MetadataSet eSet = stream.queryBySchema(schemaNames[0]);
+        ASSERT_FALSE(eSet.empty());
+        std::shared_ptr<vmf::Metadata> eItem = eSet[0];
+        ASSERT_EQ((vmf::vmf_string)eItem->getFieldValue("hint"), encryptor->getHint());
+    }
+}
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompressionEncryption,
+                        ::testing::Combine(
+                            ::testing::Values("com.intel.vmf.compressor.zlib",
+                                              "unregistered",
+                                              "com.intel.vmf.compressor.test.bloating"),
+                            ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::BAD, CryptAlgo::NONE)
+                            ));
+
+
+class TestSaveLoadEncryptionSubsets : public ::testing::TestWithParam<CryptAlgo>
+{
+protected:
+    void SetUp()
+    {
+        copyFile(TEST_FILE_SRC, TEST_FILE);
+        vmf::initialize();
+        TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
+        TEST_DESC_NAME = "TEST_DESC_NAME";
+        TEST_FIELD_NAME = "name";
+        TEST_FIELD_AGE = "age";
+        TEST_FIELD_ADDRESS = "address";
+        TEST_VALUE_ADDRESS = "221b Baker St, London NW1 6XE, UK";
+    }
+
+    void TearDown()
+    {
+        vmf::terminate();
+    }
+
+    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    {
+        switch(algo)
+        {
+            case CryptAlgo::DEFAULT:
+                return std::make_shared<vmf::DefaultEncryptor>();
+            case CryptAlgo::BAD:
+                return std::make_shared<BadEncryptor>(42);
+            default:
+                return nullptr;
+        }
+    }
+
+    vmf::vmf_string TEST_SCHEMA_NAME;
+    vmf::vmf_string TEST_DESC_NAME;
+    vmf::vmf_string TEST_FIELD_NAME;
+    vmf::vmf_string TEST_FIELD_AGE;
+    vmf::vmf_string TEST_FIELD_ADDRESS;
+    vmf::vmf_string TEST_VALUE_ADDRESS;
+};
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, OneField)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
+        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->findField(TEST_FIELD_ADDRESS)->setEncrypted(true);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        ASSERT_TRUE(stream.save());
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
+        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+        address->setUseEncryption(true);
+
+        stream.add(address);
+
+        ASSERT_TRUE(stream.save());
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
+        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        ASSERT_TRUE(stream.save());
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        vmf::FieldDesc& field = desc->getFieldDesc(TEST_FIELD_ADDRESS);
+        ASSERT_TRUE(field.useEncryption);
+
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields, true);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
+        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        ASSERT_TRUE(stream.save());
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        ASSERT_TRUE(desc->getUseEncryption());
+
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, Schema)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME, true);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
+        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        ASSERT_TRUE(stream.save());
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        ASSERT_TRUE(schema->getUseEncryption());
+
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadEncryptionSubsets,
+                        ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::BAD, CryptAlgo::NONE));
+
+
