@@ -17,15 +17,58 @@
 #include "test_precomp.hpp"
 #include "fstream"
 
+using namespace vmf;
+
 enum SerializerType
 {
     TypeXML = 0,
     TypeJson = 1
 };
 
-using namespace vmf;
+enum CryptAlgo
+{
+    DEFAULT, BAD, NONE
+};
 
-class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string> >
+//Some testing class for encryption
+class BadEncryptor : public vmf::Encryptor
+{
+public:
+    BadEncryptor(char _key) : key(_key) { }
+
+    virtual void encrypt(const vmf_string &input, vmf_rawbuffer &output)
+    {
+        output.clear();
+        output.reserve(input.length());
+        for(char c : input)
+        {
+            output.push_back(c ^ key);
+        }
+    }
+
+    virtual void decrypt(const vmf_rawbuffer &input, vmf_string &output)
+    {
+        output.clear();
+        output.reserve(input.size());
+        for(char c : input)
+        {
+            output.push_back(c ^ key);
+        }
+    }
+
+    virtual vmf_string getHint()
+    {
+        return vmf_string("bad encryptor for tests");
+    }
+
+    virtual ~BadEncryptor() { }
+
+private:
+    char key;
+};
+
+
+class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string, CryptAlgo> >
 {
 protected:
     void SetUp()
@@ -148,6 +191,42 @@ protected:
         }
     }
 
+    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    {
+        switch(algo)
+        {
+            case CryptAlgo::DEFAULT:
+                return std::make_shared<DefaultEncryptor>();
+            case CryptAlgo::BAD:
+                return std::make_shared<BadEncryptor>(42);
+            default:
+                return nullptr;
+        }
+    }
+
+    void makeReaderWriter(SerializerType type, vmf_string compressorId, CryptAlgo algo,
+                          bool encryptAll = true, bool ignoreUnknownEncryptor = false)
+    {
+        std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(algo);
+
+        std::shared_ptr<IWriter> formatWriter, cWriter;
+        std::shared_ptr<IReader> formatReader, cReader;
+        if (type == TypeXML)
+        {
+            formatWriter = std::make_shared<XMLWriter>();
+            formatReader = std::make_shared<XMLReader>();
+        }
+        else if (type == TypeJson)
+        {
+            formatWriter = std::make_shared<JSONWriter>();
+            formatReader = std::make_shared<JSONReader>();
+        }
+        cWriter = std::make_shared<WriterCompressed>(formatWriter, compressorId);
+        cReader = std::make_shared<ReaderCompressed>(formatReader);
+        writer.reset(new WriterEncrypted(cWriter, encryptor, encryptAll));
+        reader.reset(new ReaderEncrypted(cReader, encryptor, ignoreUnknownEncryptor));
+    }
+
     MetadataStream stream;
     MetadataSet set;
 
@@ -164,18 +243,8 @@ protected:
 /*
 TEST_P(TestSerialization, Parse_schema)
 {
-    SerializerType type = GetParam();
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     std::string result = writer->store(spSchemaPeople);
 
@@ -188,18 +257,8 @@ TEST_P(TestSerialization, Parse_schema)
 
 TEST_P(TestSerialization, Parse_schemasArray)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -216,18 +275,9 @@ TEST_P(TestSerialization, Parse_schemasArray)
 
 TEST_P(TestSerialization, Parse_schemasAll)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
@@ -243,18 +293,8 @@ TEST_P(TestSerialization, Parse_schemasAll)
 /*
 TEST_P(TestSerialization, Parse_metadata)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     auto item = stream.getAll()[0];
     std::string result = writer->store(item);
@@ -272,18 +312,8 @@ TEST_P(TestSerialization, Parse_metadata)
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     std::string result = writer->store(set);
 
@@ -309,18 +339,8 @@ TEST_P(TestSerialization, Parse_metadataArray)
 
 TEST_P(TestSerialization, Parse_metadataAll)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -346,18 +366,8 @@ TEST_P(TestSerialization, Parse_metadataAll)
 
 TEST_P(TestSerialization, Parse_All)
 {
-    SerializerType type     = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -381,23 +391,14 @@ TEST_P(TestSerialization, Parse_All)
 
 TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {
-    SerializerType type = std::get<0>(GetParam());
+    auto param = GetParam();
 
     vmf_string compressorId = "unknown_compressor";
     std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
     vmf::Compressor::registerNew(fake);
 
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>(), true));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>(), true));
-    }
+    makeReaderWriter(std::get<0>(param), compressorId, std::get<2>(param));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -413,7 +414,148 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 }
 
 
+TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+    std::string result = stream.serialize(*writer);
+
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), CryptAlgo::NONE, true, true);
+    //TODO: schema name
+    reader->parseSchemas(result, schemas);
+    ASSERT_EQ(schemas.size(), 1);
+    ASSERT_EQ("com.intel.vmf.encrypted-metadata", schemas[0]->getName());
+}
+
+
+TEST_P(TestSerialization, EncryptOneField)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+
+    MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
+    ASSERT_EQ(toEncSet.size(), 1);
+    std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
+    toBeEncrypted->at(0).setEncrypted(true);
+
+    std::string result = stream.serialize(*writer);
+
+    MetadataStream testStream;
+    testStream.deserialize(result, *reader);
+
+    std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    compareMetadata(toBeEncrypted, encrypted);
+}
+
+
+TEST_P(TestSerialization, EncryptOneRecord)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+
+    MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
+    ASSERT_EQ(toEncSet.size(), 1);
+    std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
+    toBeEncrypted->setUseEncryption(true);
+
+    std::string result = stream.serialize(*writer);
+
+    MetadataStream testStream;
+    testStream.deserialize(result, *reader);
+
+    std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    compareMetadata(toBeEncrypted, encrypted);
+}
+
+
+TEST_P(TestSerialization, EncryptFieldDesc)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+
+    std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
+    std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
+    FieldDesc& field = metadesc->getFieldDesc("address");
+    field.useEncryption = true;
+    MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
+    ASSERT_EQ(toEncSet.size(), 1);
+    std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
+
+    std::string result = stream.serialize(*writer);
+
+    MetadataStream testStream;
+    testStream.deserialize(result, *reader);
+
+    schema = testStream.getSchema(n_schemaPeople);
+    metadesc = schema->findMetadataDesc("person");
+    field = metadesc->getFieldDesc("address");
+    ASSERT_TRUE(field.useEncryption);
+
+    std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    compareMetadata(toBeEncrypted, encrypted);
+}
+
+
+TEST_P(TestSerialization, EncryptMetaDesc)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+
+    std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
+    std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
+    metadesc->setUseEncryption(true);
+
+    MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
+    ASSERT_EQ(toEncSet.size(), 1);
+    std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
+
+    std::string result = stream.serialize(*writer);
+
+    MetadataStream testStream;
+    testStream.deserialize(result, *reader);
+
+    schema = testStream.getSchema(n_schemaPeople);
+    metadesc = schema->findMetadataDesc("person");
+    ASSERT_TRUE(metadesc->getUseEncryption());
+
+    std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    compareMetadata(toBeEncrypted, encrypted);
+}
+
+
+TEST_P(TestSerialization, EncryptSchema)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+
+    std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
+    schema->setUseEncryption(true);
+
+    MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
+    ASSERT_EQ(toEncSet.size(), 1);
+    std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
+
+    std::string result = stream.serialize(*writer);
+
+    MetadataStream testStream;
+    testStream.deserialize(result, *reader);
+
+    schema = testStream.getSchema(n_schemaPeople);
+    ASSERT_TRUE(schema->getUseEncryption());
+
+    std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    compareMetadata(toBeEncrypted, encrypted);
+}
+
+
 //don't check for incorrect compressors
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
-                                           ::testing::Values("com.intel.vmf.compressor.zlib", "")));
+                                           ::testing::Values("com.intel.vmf.compressor.zlib", ""),
+                                           ::testing::Values(CryptAlgo::DEFAULT,
+                                                             CryptAlgo::BAD,
+                                                             CryptAlgo::NONE)));
