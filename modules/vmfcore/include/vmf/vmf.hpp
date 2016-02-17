@@ -32,6 +32,7 @@
 #include "vmf/jsonwriter.hpp"
 #include "vmf/reader_compressed.hpp"
 #include "vmf/writer_compressed.hpp"
+#include "vmf/default_encryptor.hpp"
 #include "vmf/reader_encrypted.hpp"
 #include "vmf/writer_encrypted.hpp"
 
