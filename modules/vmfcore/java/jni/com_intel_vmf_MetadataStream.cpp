@@ -1009,7 +1009,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addVideoSegment (JNI
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((segment == NULL) || (*segment == NULL) || (segment->get() == NULL))
+        if ((segment == NULL) || (segment->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         (*obj)->addVideoSegment(*segment);
