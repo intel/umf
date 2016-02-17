@@ -143,6 +143,33 @@ bool MetadataDesc::getFieldDesc( FieldDesc& field, const std::string& sFieldName
     return bRet;
 }
 
+
+FieldDesc& MetadataDesc::getFieldDesc(const std::string &sFieldName)
+{
+    if( sFieldName.empty() )
+    {
+        if( m_vFields.size() == 1 )
+        {
+            return m_vFields[0];
+        }
+    }
+    else
+    {
+        auto it = std::find_if( m_vFields.begin(), m_vFields.end(), [&sFieldName]( FieldDesc fieldDesc )->bool
+        {
+            return fieldDesc.name == sFieldName;
+        });
+
+        if( it != m_vFields.end() )
+        {
+            return *it;
+        }
+    }
+
+    VMF_EXCEPTION(IncorrectParamException, "No field description found: \"" + sFieldName + "\"");
+}
+
+
 const std::vector<std::shared_ptr<ReferenceDesc>>& MetadataDesc::getAllReferenceDescs() const
 {
     return m_vRefDesc;

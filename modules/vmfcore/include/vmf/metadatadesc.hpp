@@ -135,7 +135,7 @@ public:
     * \brief Get metadata name
     * \return metadata name
     */
-    std::string	getMetadataName() const;
+    std::string getMetadataName() const;
 
     /*!
     * \brief Get metadata schema name
@@ -177,6 +177,14 @@ public:
     * \retval false otherwise
     */
     bool getFieldDesc( FieldDesc& field, const std::string& sFieldName = "" ) const;
+
+    /*!
+    * \brief Get metadata description field by name
+    * \param sFieldName [in] field name. This should be empty for single value descriptor or array-type descriptor.
+    * \retval field description
+    * \throw IncorrectParamException if there's no such field
+    */
+    FieldDesc& getFieldDesc(const std::string &sFieldName);
 
 protected:
     void validate();
