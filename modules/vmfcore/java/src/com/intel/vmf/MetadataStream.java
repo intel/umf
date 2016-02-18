@@ -270,11 +270,6 @@ public class MetadataStream implements IQuery
         n_clear (nativeObj);
     }
     
-    public void sortById ()
-    {
-        n_sortMdSetById (nativeObj);
-    }
-    
     public String serialize (IWriter formater)
     {
         return n_serialize (nativeObj, formater.getNativeAddr());
@@ -290,9 +285,12 @@ public class MetadataStream implements IQuery
         return n_computeChecksum (nativeObj);
     }
     
-    public String computeChecksum (long XMPPacketSize, long XMPPacketOffset)
+    public String computeChecksum (long options[])
     {
-        return n_computeChecksum (nativeObj, XMPPacketSize, XMPPacketOffset);
+        if (options.length != 2)
+            throw new java.lang.IllegalArgumentException ("Argument must contain 2 elements");
+        
+        return n_computeChecksum (nativeObj, options);
     }
     
     public String getChecksum ()
@@ -480,11 +478,10 @@ public class MetadataStream implements IQuery
     private native static boolean n_importSet (long nativeObj, long srcStreamAddr, long srcSetAddr, long tarFrameIndex,
                                                long srcFrameIndex, long numOfFrames, long setFailureAddr);
     private native static void n_clear (long nativeObjAddr);
-    private native static void n_sortMdSetById (long nativeObjAddr);
     private native static String n_serialize (long nativeObjAddr, long formaterAddr);
     private native static void n_deserialize (long nativeObj, String text, long formaterAddr);
     private native static String n_computeChecksum (long nativeObjAddr);
-    private native static String n_computeChecksum (long nativeObjAddr, long XMPPacketSize, long XMPPacketOffset);
+    private native static String n_computeChecksum (long nativeObjAddr, long options[]);
     private native static String n_getChecksum (long nativeObjAddr);
     private native static void n_setChecksum (long nativeObj, String checksum);
     private native static void n_addVideoSegment (long nativeObj, long newSegmentAddr);

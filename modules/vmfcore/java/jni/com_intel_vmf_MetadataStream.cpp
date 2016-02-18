@@ -728,12 +728,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getAll (JNIEnv *env
  * Signature: (JJJJJJJ)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEnv *env, jclass, jlong self, jlong srcStreamAddr,
-                                                                          jlong srcSetAddr, jlong dstFrameIndex, jlong srcFrameIndex, jlong numOfFrames, jlong setFalureAddr);
+                                                                          jlong srcSetAddr, jlong dstFrameIndex, jlong srcFrameIndex, jlong numOfFrames, jlong setFailureAddr);
 
 
 JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEnv *env, jclass, jlong self, jlong srcStreamAddr,
                                                                            jlong srcSetAddr, jlong dstFrameIndex, jlong srcFrameIndex,
-                                                                           jlong numOfFrames, jlong setFalureAddr)
+                                                                           jlong numOfFrames, jlong setFailureAddr)
 {
     static const char method_name[] = "MetadataStream::n_1importSet";
 
@@ -742,15 +742,19 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEn
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
         std::shared_ptr <MetadataStream>* srcStream = (std::shared_ptr <MetadataStream>*) srcStreamAddr;
         std::shared_ptr <MetadataSet>* srcSet = (std::shared_ptr <MetadataSet>*) srcSetAddr;
-        std::shared_ptr <MetadataSet>* setFalure = (std::shared_ptr <MetadataSet>*) setFalureAddr;
 
-        if ((obj == NULL) || (obj->get() == NULL) || (srcStream == NULL) || (srcStream == NULL) || (srcStream->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL) || (srcStream == NULL) || (srcStream->get() == NULL))
             return JNI_FALSE;
 
-        if ((srcSet == NULL) || (*srcSet == NULL) || (srcSet->get() == NULL))
+        if ((srcSet == NULL) || (srcSet->get() == NULL))
             return JNI_FALSE;
 
-        return (jboolean)(*obj)->import((**srcStream), (**srcSet), (long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFalure->get());
+        std::shared_ptr <MetadataSet>* setFailure = (std::shared_ptr <MetadataSet>*) setFailureAddr;
+
+        if ((setFailure != NULL) && (*setFailure != NULL))
+            return (jboolean)(*obj)->import((**srcStream), (**srcSet), (long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames, setFailure->get());
+        else
+            return (jboolean)(*obj)->import((**srcStream), (**srcSet), (long long)dstFrameIndex, (long long)srcFrameIndex, (long long)numOfFrames);
     }
     catch (const std::exception &e)
     {
@@ -762,37 +766,6 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_MetadataStream_n_1importSet (JNIEn
     }
 
     return 0;
-}
-
-/*
- * Class:     com_intel_vmf_MetadataStream
- * Method:    n_sortMdSetById
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1sortMdSetById(JNIEnv *env, jclass, jlong self);
-
-
-JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1sortMdSetById (JNIEnv *env, jclass, jlong self)
-{
-    static const char method_name[] = "MetadataStream::n_1sortMdSetById";
-
-    try
-    {
-        std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-
-        if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
-
-        (*obj)->sortById();
-    }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
 }
 
 /*
@@ -853,7 +826,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1deserialize (JNIEnv 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((reader == NULL) || (*reader == NULL) || (reader->get() == NULL))
+        if ((reader == NULL) || (reader->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Reader is null pointer.");
 
         const char* tmp = env->GetStringUTFChars(text, NULL);
@@ -907,14 +880,14 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
 }
 
 /*
- * Class:     com_intel_vmf_MetadataStream
- * Method:    n_computeChecksum
- * Signature: (JJJ)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__JJJ(JNIEnv *env, jclass, jlong self, jlong XMPPacketSize, jlong XMPPacketOffset);
+* Class:     com_intel_vmf_MetadataStream
+* Method:    n_computeChecksum
+* Signature: (J[J)Ljava/lang/String;
+*/
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__J_3J (JNIEnv *env, jclass, jlong self, jlongArray options);
 
 
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__JJJ (JNIEnv *env, jclass, jlong self, jlong XMPPacketSize, jlong XMPPacketOffset)
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__J_3J(JNIEnv *env, jclass, jlong self, jlongArray options)
 {
     static const char method_name[] = "MetadataStream::n_1computeChecksum__JJJ";
 
@@ -925,10 +898,16 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1computeChecksum__
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
-        long long packetSize = (long long)XMPPacketSize;
-        long long packetOffset = (long long)XMPPacketOffset;
+        jlong* cArray = env->GetLongArrayElements(options, 0);
+        long long packetSize;
+        long long packetOffset;
 
-        std::string result = (*obj)->computeChecksum(packetSize, packetOffset);
+        std::string result = (*obj)->computeChecksum (packetSize, packetOffset);
+        cArray[0] = (jlong)packetSize;
+        cArray[1] = (jlong)packetOffset;
+
+        env->ReleaseLongArrayElements(options, cArray, 0);
+
         return env->NewStringUTF(result.c_str());
     }
     catch (const std::exception &e)
