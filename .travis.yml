@@ -13,12 +13,13 @@ matrix:
         - VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'
     - os: linux
       env:
-        - CC=clang-3.7
-        - CXX=clang++-3.7
-        - VMF_SHARED=OFF
+         - CC=clang-3.7
+         - CXX=clang++-3.7
+         - VMF_SHARED=OFF
     - os: linux
       env:
         - VMF_ANDROID_BUILD=ON
+        - VMF_CPU_ARCH=armeabi-v7a # x86 isn't supported by Travis yet :(
     - os: osx
       env:
         - CC=clang
@@ -33,12 +34,13 @@ addons:
     packages: ['cmake', 'g++-4.8', 'clang-3.7']
 before_install:
   - env
+  - if [ $TRAVIS_OS_NAME == linux ]; then cat /proc/cpuinfo; fi
 # coverage
   - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user cpp-coveralls; pip install --user codecov; fi
 # android
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then git clone --depth=1 https://github.com/urho3d/android-ndk.git $HOME/android-ndk; export ANDROID_NDK=$HOME/android-ndk; fi
   #- if [ "$VMF_ANDROID_BUILD" != "" ]; then android list; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then android-update-sdk --components=sys-img-x86-android-17; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then android-update-sdk --components=sys-img-${VMF_CPU_ARCH}-android-17; fi
 before_script:
   - mkdir ../build
   - cd ../build
@@ -49,15 +51,16 @@ script:
 # iOS
   - if [ "$VMF_IOS_BUILD" != "" ]; then mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
 # android
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then mkdir build_android; cd build_android; cmake -DCMAKE_TOOLCHAIN_FILE=../../vmf/cmake/android.toolchain.cmake -DANDROID_ABI=x86 -DANDROID_STL=gnustl_static -DBUILD_SHARED_LIBS=OFF ../../vmf; make -j2 all; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then mkdir build_android; cd build_android; cmake -DCMAKE_TOOLCHAIN_FILE=../../vmf/cmake/android.toolchain.cmake -DANDROID_ABI=$VMF_CPU_ARCH -DANDROID_STL=gnustl_static -DBUILD_SHARED_LIBS=OFF ../../vmf; make -j2 all; fi
 after_success:
 # coverage
   - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root .. --build-root .; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8; fi
 # android emulator
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-x86-17 -t android-17 --abi x86; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then ( emulator -avd avd-x86-17 -no-audio -no-window & ); fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then jobs; timeout 200 android-wait-for-emulator; adb devices; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-test -t android-17 --abi $VMF_CPU_ARCH; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then ( emulator -avd avd-test -no-audio -no-window & ); timeout 200 android-wait-for-emulator; adb devices; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/; adb shell chmod 777 /data/local/tmp/unit-tests; adb shell /data/local/tmp/unit-tests; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; adb shell chmod 777 /data/local/tmp/unit-tests-ds; adb shell /data/local/tmp/unit-tests-ds; fi
 notifications:
   email: false
   webhooks: https://coveralls.io/webhook?repo_token=kXDrxzQdBiK3aEgUSlsbL3IVMP0Mvr4oH
