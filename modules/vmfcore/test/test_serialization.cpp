@@ -440,7 +440,7 @@ TEST_P(TestSerialization, EncryptOneField)
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
-    toBeEncrypted->at(0).setEncrypted(true);
+    toBeEncrypted->findField("name")->setEncrypted(true);
 
     std::string result = stream.serialize(*writer);
 
@@ -479,7 +479,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
-    FieldDesc& field = metadesc->getFieldDesc("address");
+    FieldDesc& field = metadesc->getFieldDesc("name");
     field.useEncryption = true;
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -492,7 +492,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
-    field = metadesc->getFieldDesc("address");
+    field = metadesc->getFieldDesc("name");
     ASSERT_TRUE(field.useEncryption);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
