@@ -9,6 +9,7 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
+import com.intel.vmf.XMLReader;
 import com.intel.vmf.XMLWriter;
 import com.intel.vmf.MetadataSchema;
 
@@ -127,10 +128,25 @@ public class VmfMetadataStreamTest
         assertEquals(schema.getAll().length, stream.getSchema("test_schema").getAll().length);
     	
         assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
-        stream.getChecksum ();
+        assertTrue (stream.getChecksum ().isEmpty());
         
         String str = stream.computeChecksum ();
         assertFalse (str.isEmpty());
+        
+        long packetSize = 0, packetOffset = 0;
+        long options[] = new long [2];
+        options [0] = packetSize;
+        options [1] = packetOffset;
+        
+        assertFalse (stream.computeChecksum (options).isEmpty());
+        assertNotEquals(0, options [0]);
+        assertNotEquals(0, options [1]);
+        
+        stream.setChecksum("");
+        assertEquals ("", stream.getChecksum());
+        
+        stream.setChecksum(str);
+        assertEquals (str, stream.getChecksum());
         
         var1.setTo ("Anna");
         var2.setTo ("Smith");
@@ -141,6 +157,11 @@ public class VmfMetadataStreamTest
         md2.setFieldValue("age", var3);
         
         stream.addSchema(schema);
+        
+        md1.setFrameIndex(30);
+        md2.setFrameIndex(40);
+        md1.setTimestamp(1500);
+        md2.setTimestamp(1800);
         
         stream.add(md1);
         stream.add(md2);
@@ -190,6 +211,8 @@ public class VmfMetadataStreamTest
         md3.setFieldValue("name", var1);
         md3.setFieldValue("last name", var2);
         md3.setFieldValue("age", var3);
+        md3.setFrameIndex(60);
+        md3.setTimestamp(2100);
         
         stream.add(md3);
         
@@ -198,6 +221,13 @@ public class VmfMetadataStreamTest
         
         md2.addReference(md3, "friend");
         md2.addReference(md3, "colleague");
+        
+        mdSet4 = stream.queryByFrameIndex(40);
+        assertEquals(1, mdSet4.getSize());
+        assertTrue(md2.equals(mdSet4.getElement(0)));
+        
+        mdSet4 = stream.queryByTime(1500, 1900);
+        assertEquals(2, mdSet4.getSize());
         
         mdSet4 = stream.queryByName ("person");
         assertEquals(3, mdSet4.getSize());
@@ -219,9 +249,14 @@ public class VmfMetadataStreamTest
         assertEquals(1, mdSet9.getSize());
         
         XMLWriter writer = new XMLWriter ();
-        
         String serialized = stream.serialize (writer);
         assertFalse (serialized.isEmpty());
+        
+        XMLReader reader = new XMLReader ();
+        MetadataStream newStream = new MetadataStream();
+        assertEquals(0, newStream.getAllSchemaNames().length);
+        newStream.deserialize(serialized, reader);
+        assertEquals(1, newStream.getAllSchemaNames().length);
         
         stream.remove (mdSet4);
         mdSet4 = stream.queryByName("person");
@@ -280,7 +315,6 @@ public class VmfMetadataStreamTest
         assertEquals(0, stream.getAllSchemaNames().length);
     }
     
-    
     @Test
     public void testImport()
     {
@@ -316,18 +350,22 @@ public class VmfMetadataStreamTest
     @Test
     public void testVideoSegments()
     {
-        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 35, 30);
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 20, 0);
         MetadataStream.VideoSegment s2 = new MetadataStream.VideoSegment();
         MetadataStream.VideoSegment s3 = new MetadataStream.VideoSegment();
         
         s2.setTitle("vacation");
         s3.setTitle("rest");
         
-        s2.setTime(0);
-        s3.setTime(65);
+        s2.setTime(5000);
+        s3.setTime(15000);
         
-        s2.setFPS(25);
-        s3.setFPS(40);
+        s2.setFPS(20);
+        s3.setFPS(20);
+        
+        s1.setDuration(5000);
+        s2.setDuration(10000);
+        s3.setDuration(1000);
         
         stream.addVideoSegment (s1);
         stream.addVideoSegment (s2);
@@ -335,10 +373,27 @@ public class VmfMetadataStreamTest
         
         VideoSegment vs[] = stream.getAllVideoSegments ();
         assertEquals(3, vs.length);
+        
+        assertEquals(30, stream.convertTimestampToFrameIndex(1500, 100));
+        assertEquals(2, stream.convertDurationToNumOfFrames(1500, 100));
+        assertEquals(1500, stream.convertFrameIndexToTimestamp(30, 2));
+        assertEquals(100, stream.convertNumOfFramesToDuration(30, 2));
     }
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+    @Test
+    public void testAddSegmentTrown()
+    {
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 20, 0);
+        MetadataStream.VideoSegment s2 = new MetadataStream.VideoSegment("vacation", 20, 3000);
+        s1.setDuration(4000);
+        s2.setDuration(10000);
+        stream.addVideoSegment (s1);
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Input segment intersects a one of the already created segments");
+        stream.addVideoSegment (s2);
+    }
     
     @Test
     public void testClearReopenTrown()
