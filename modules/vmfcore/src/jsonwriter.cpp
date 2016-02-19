@@ -169,8 +169,8 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-JSONWriter::JSONWriter() {};
-JSONWriter::~JSONWriter() {};
+JSONWriter::JSONWriter() : IWriter() { }
+JSONWriter::~JSONWriter() { }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
 {
@@ -185,7 +185,8 @@ std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
     JSONNode root(JSON_NODE);
     root.push_back(schemaNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::shared_ptr<Metadata>& spMetadata)
@@ -201,7 +202,8 @@ std::string JSONWriter::store(const std::shared_ptr<Metadata>& spMetadata)
     JSONNode root(JSON_NODE);
     root.push_back(metadataNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
@@ -224,7 +226,8 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>
     JSONNode root(JSON_NODE);
     root.push_back(schemasArrayNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const MetadataSet& set)
@@ -247,7 +250,8 @@ std::string JSONWriter::store(const MetadataSet& set)
     JSONNode root(JSON_NODE);
     root.push_back(metadataArrayNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const IdType& nextId,
@@ -327,7 +331,8 @@ std::string JSONWriter::store(const IdType& nextId,
     JSONNode root(JSON_NODE);
     root.push_back(vmfRootNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
@@ -343,7 +348,8 @@ std::string JSONWriter::store(const std::shared_ptr<MetadataStream::VideoSegment
     JSONNode root(JSON_NODE);
     root.push_back(segmentNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
@@ -356,17 +362,18 @@ std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataStream::
 
     std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
     {
-	if( spSegment == nullptr )
-	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-	JSONNode segmentNode(JSON_NODE);
-	add(segmentNode, spSegment);
-	segmentsArrayNode.push_back(segmentNode);
+        if( spSegment == nullptr )
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+        JSONNode segmentNode(JSON_NODE);
+        add(segmentNode, spSegment);
+        segmentsArrayNode.push_back(segmentNode);
     });
 
     JSONNode root(JSON_NODE);
     root.push_back(segmentsArrayNode);
 
-    return root.write_formatted();
+    std::string formatted = root.write_formatted();
+    return formatted;
 }
 
 }//vmf

@@ -266,10 +266,11 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 
 }
 
-JSONReader::JSONReader(){}
-JSONReader::~JSONReader(){}
+JSONReader::JSONReader() : IReader() { }
+JSONReader::~JSONReader(){ }
 
-bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+bool JSONReader::parseSchemas(const std::string& text,
+                                      std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(text.empty())
     {
@@ -302,7 +303,7 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
     {
         try
         {
-	    std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(localRootNode);
+            std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(localRootNode);
             schemas.push_back(spSchema);
         }
         catch(Exception& e)
@@ -345,8 +346,8 @@ bool JSONReader::parseSchemas(const std::string& text, std::vector<std::shared_p
 }
 
 bool JSONReader::parseMetadata(const std::string& text,
-    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+                                       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                       std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -423,9 +424,9 @@ bool JSONReader::parseMetadata(const std::string& text,
 }
 
 bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -467,8 +468,8 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
         if(checksumIter != localRootNode.end() )
             checksum = checksumIter->as_string();
 
-	if(!parseVideoSegments(text, segments))
-	    return false;
+        if(!parseVideoSegments(text, segments))
+            return false;
         if(!parseSchemas(text, schemas))
             return false;
         if(!parseMetadata(text, schemas, metadata))
@@ -483,12 +484,13 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
     return true;
 }
 
+
 bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
     if(text.empty())
     {
-	VMF_LOG_ERROR("Empty input JSON string");
-	return false;
+        VMF_LOG_ERROR("Empty input JSON string");
+        return false;
     }
 
     segments.clear();
@@ -496,18 +498,18 @@ bool JSONReader::parseVideoSegments(const std::string& text, std::vector<std::sh
     JSONNode root(JSON_NODE);
     try
     {
-	root = libjson::parse(text);
+        root = libjson::parse(text);
     }
     catch(...)
     {
-	VMF_LOG_ERROR("JSON document has no root element");
-	return false;
+        VMF_LOG_ERROR("JSON document has no root element");
+        return false;
     }
 
     if(root.size() != 1)
     {
-	VMF_LOG_ERROR("More than one JSON root");
-	return false;
+        VMF_LOG_ERROR("More than one JSON root");
+        return false;
     }
 
     JSONNode localRootNode = root[0];

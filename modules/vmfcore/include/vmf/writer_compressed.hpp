@@ -16,36 +16,43 @@
  */
 
 /*!
-* \file jsonwriter.hpp
-* \brief %JSONWriter class header file
+* \file writer_compressed.hpp
+* \brief Serialization based on instances of Compressor and IWriter classes
 */
 
-#ifndef __VMF_JSONWRITER_H__
-#define __VMF_JSONWRITER_H__
+#pragma once
 
-#include "metadataset.hpp"
-#include "metadataschema.hpp"
+#ifndef VMF_WRITER_COMPRESSED_HPP
+#define VMF_WRITER_COMPRESSED_HPP
+
 #include "iwriter.hpp"
 
 namespace vmf
 {
+
 /*!
-* class JSONWriter
-* \brief JSONWriter class is a %IWriter interface implementation for JSON format representation
-*/
-class VMF_EXPORT JSONWriter : public IWriter
+ * \class WriterCompressed
+ * \brief WriterCompressed class performs serialization with compression based on provided instances
+ * of Compressor and IWriter
+ */
+class VMF_EXPORT WriterCompressed : public IWriter
 {
 public:
     /*!
-    * \brief Default class constructor
-    */
-    JSONWriter();
-
+     * \brief Constructor taking compressor and writer to be used at data writing
+     * \param _writer Shared pointer to instance of IWriter
+     * \param _compressorId Shared pointer to instance of Compressor
+     */
+    WriterCompressed(std::shared_ptr<IWriter> _writer, std::string _compressorId) :
+    IWriter(), compressorId(_compressorId), writer(_writer)
+    { }
+    
     /*!
-    * \brief Class destructor
-    */
-    virtual ~JSONWriter();
-
+     * \brief Class destructor
+     */
+    virtual ~WriterCompressed()
+    { }
+    
     // IWriter implementation
     virtual std::string store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas);
     virtual std::string store(const MetadataSet& set);
@@ -58,12 +65,19 @@ public:
     virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
-private:
-    // hiding API that may be removed soon
-    virtual std::string store(const std::shared_ptr<MetadataSchema>& spSchema);
-    virtual std::string store(const std::shared_ptr<Metadata>& spMetadata);
+protected:
+    /*!
+     * \brief Performs compression of text data
+     * \param input Input string
+     * \return Compressed string
+     */
+    virtual std::string compress(const std::string& input);
+
+    std::string compressorId;
+    std::shared_ptr<IWriter> writer;
 };
+
 
 }//vmf
 
-#endif //__VMF_JSONWRITER_H__
+#endif /* VMF_WRITER_COMPRESSED_HPP */

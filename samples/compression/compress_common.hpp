@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2015 Intel(r) Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,16 @@
  * limitations under the License.
  *
  */
-#pragma once
 
-#ifndef _TEST_PRECOMP_HPP
-#define _TEST_PRECOMP_HPP
+#ifndef VMF_COMPRESS_COMMON_HPP
+#define VMF_COMPRESS_COMMON_HPP
 
-#include "gtest/gtest.h"
 #include "vmf/vmf.hpp"
-#include "fake_compressor.hpp"
 
-#endif //_TEST_PRECOMP_HPP
+void generateMetadata(vmf::MetadataStream& mdStream);
+void readAndDumpMetadata(const vmf::vmf_string& videoFile);
+
+int compress_builtin(const std::string& videoFile);
+int compress_custom(const std::string& videoFile);
+
+#endif //VMF_COMPRESS_COMMON_HPP

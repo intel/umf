@@ -31,6 +31,7 @@
 #include "metadatainternal.hpp"
 #include "metadataset.hpp"
 #include "metadataschema.hpp"
+#include "compressor.hpp"
 #include "iquery.hpp"
 #include <map>
 #include <memory>
@@ -53,15 +54,16 @@ class VMF_EXPORT MetadataStream : public IQuery
 {
 public:
     /*!
-    * \brief File open mode enumeration
+    * \brief File open mode flags
     */
-    enum OpenMode
+    enum OpenModeFlags
     {
-        InMemory, /**< Stream data are in-memory */
-        ReadOnly, /**< Open file for read only */
-        ReadWrite, /**< Open file for read and write */
-
+        InMemory  = 0, /**< Stream data are in-memory */
+        ReadOnly  = 1, /**< Open file for read only */
+        Update = 2, /**< Open file for read and write */
+        IgnoreUnknownCompressor = 4 /**< Represent compressed data as VMF metadata if decompressor is unknown*/
     };
+    typedef int OpenMode;
 
     class VMF_EXPORT VideoSegment
     {
@@ -141,17 +143,21 @@ public:
 
     /*!
     * \brief Save loaded data to media file
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return Save operation result
     */
-    bool save();
+    bool save(const vmf_string& compressorId = vmf_string());
 
 
     /*!
     * \brief Save the in-memory metadata to a different video file.
     * \param sFilePath the path of the new file.
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return true if succeed.
     */
-    bool saveTo( const std::string& sFilePath );
+    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string() );
 
 
     /*!

@@ -222,18 +222,18 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     long width = 0, height = 0;
     for(xmlAttr* cur_prop = segmentNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
-	if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
-	    title = (char*)xmlGetProp(segmentNode, cur_prop->name);
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
-	    fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
-	    timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
-	    duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
-	    width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-	else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
-	    height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
+            title = (char*)xmlGetProp(segmentNode, cur_prop->name);
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
+            fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
+            timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
+            duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
+            width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
+            height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
     }
 
     if(title.empty())
@@ -252,9 +252,12 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
-XMLReader::XMLReader(){}
+
+XMLReader::XMLReader() : IReader() { }
 XMLReader::~XMLReader(){}
 
+
+//this version of parseSchemas always gets uncompressed text as input
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(text.empty())
@@ -345,9 +348,11 @@ bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_pt
     return true;
 }
 
+
+//this version of parseMetadata always gets uncompressed input
 bool XMLReader::parseMetadata(const std::string& text,
-    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                              std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -436,10 +441,13 @@ bool XMLReader::parseMetadata(const std::string& text,
     return true;
 }
 
-bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+
+//this version of parseAll always gets uncompressed text
+bool XMLReader::parseAll(const std::string& text, IdType& nextId,
+                         std::string& filepath, std::string& checksum,
+                         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                         std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -457,7 +465,8 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
         return false;
     }
 
-    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(),
+                                      NULL, NULL, 0);
     if(doc == NULL)
     {
         VMF_LOG_ERROR("Can't create XML document");
@@ -482,8 +491,8 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
             else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_CHECKSUM))
                 checksum = (char*)xmlGetProp(root, cur_prop->name);
         }
-	if(!parseVideoSegments(text, segments))
-	    return false;
+        if(!parseVideoSegments(text, segments))
+            return false;
         if(!parseSchemas(text, schemas))
             return false;
         if(!parseMetadata(text, schemas, metadata))
@@ -503,13 +512,15 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
     return true;
 }
 
-bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
-{
 
+//this version of parseVideoSegments always gets uncompressed text
+bool XMLReader::parseVideoSegments(const std::string& text,
+                                   std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
+{
     if(text.empty())
     {
-	VMF_LOG_ERROR("Empty input XML string");
-	return false;
+        VMF_LOG_ERROR("Empty input XML string");
+        return false;
     }
 
     segments.clear();
@@ -517,73 +528,73 @@ bool XMLReader::parseVideoSegments(const std::string& text, std::vector<std::sha
     xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
     if (ctxt == NULL)
     {
-	VMF_LOG_ERROR("Failed to allocate XML parser context");
-	return false;
+        VMF_LOG_ERROR("Failed to allocate XML parser context");
+        return false;
     }
     xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
 
     //xmlDocPtr doc = xmlParseMemory(text.c_str(), (int)text.size());
     if(doc == NULL)
     {
-	VMF_LOG_ERROR("Can't create XML document");
-	return false;
+        VMF_LOG_ERROR("Can't create XML document");
+        return false;
     }
 
     xmlNodePtr root = xmlDocGetRootElement(doc);
     if(root == NULL)
     {
-	VMF_LOG_ERROR("XML tree has no root element");
-	return false;
+        VMF_LOG_ERROR("XML tree has no root element");
+        return false;
     }
 
     if( (char*)root->name == std::string(TAG_VIDEO_SEGMENT) )
     {
-	try
-	{
-	    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(root);
-	    segments.push_back(spSegment);
-	}
-	catch(Exception& e)
-	{
-	    VMF_LOG_ERROR("Exception: %s", e.what());
-	    return false;
-	}
+        try
+        {
+            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(root);
+            segments.push_back(spSegment);
+        }
+        catch(Exception& e)
+        {
+            VMF_LOG_ERROR("Exception: %s", e.what());
+            return false;
+        }
     }
     else if( (char*)root->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY) )
     {
-	for(xmlNodePtr node = root->children; node; node = node->next)
-	    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
-	    {
-		try
-		{
-		    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
-		    segments.push_back(spSegment);
-		}
-		catch(Exception& e)
-		{
-		    VMF_LOG_ERROR("Exception: %s", e.what());
-		    return false;
-		}
-	    }
+        for(xmlNodePtr node = root->children; node; node = node->next)
+            if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
+            {
+                try
+                {
+                    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
+                    segments.push_back(spSegment);
+                }
+                catch(Exception& e)
+                {
+                    VMF_LOG_ERROR("Exception: %s", e.what());
+                    return false;
+                }
+            }
     }
     else if( (char*)root->name == std::string(TAG_VMF) )
     {
-	for(xmlNodePtr rootChildNode = root->children; rootChildNode; rootChildNode = rootChildNode->next)
-	    if(rootChildNode->type == XML_ELEMENT_NODE && (char*)rootChildNode->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
-		for(xmlNodePtr node = rootChildNode->children; node; node = node->next)
-		    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
-		    {
-			try
-			{
-			    std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
-			    segments.push_back(spSegment);
-			}
-			catch(Exception& e)
-			{
-			    VMF_LOG_ERROR("Exception: %s", e.what());
-			    return false;
-			}
-		    }
+        for(xmlNodePtr rootChildNode = root->children; rootChildNode; rootChildNode = rootChildNode->next)
+            if(rootChildNode->type == XML_ELEMENT_NODE && (char*)rootChildNode->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
+                for(xmlNodePtr node = rootChildNode->children; node; node = node->next)
+                    if(node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENT))
+                    {
+                        try
+                        {
+                            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(node);
+                            segments.push_back(spSegment);
+                        }
+                        catch(Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception: %s", e.what());
+                            return false;
+                        }
+                    }
     }
 
     xmlFreeDoc(doc);

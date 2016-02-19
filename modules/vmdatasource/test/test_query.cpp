@@ -55,7 +55,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        if (!stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite))
+        if (!stream.open(TEST_FILE, vmf::MetadataStream::Update))
             std::cout << "Cann't open stream!" << std::endl;
 
         stream.addSchema(schema);

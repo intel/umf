@@ -145,6 +145,16 @@ public:
     * \brief Loads stored video segments
     */
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
+
+    /*
+     * \brief Sets registered compressor for compression operations at saving
+     */
+    virtual void setCompressor(const vmf_string& id) = 0;
+
+    /*
+     *\brief Commits saved changes to file
+     */
+    virtual void pushChanges() = 0;
 };
 
 } /* vmf */

@@ -25,7 +25,7 @@ enum SerializerType
 
 using namespace vmf;
 
-class TestSerialization : public ::testing::TestWithParam<SerializerType>
+class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string> >
 {
 protected:
     void SetUp()
@@ -165,15 +165,16 @@ protected:
 TEST_P(TestSerialization, Parse_schema)
 {
     SerializerType type = GetParam();
-    if(type == TypeXML)
+    vmf_string compressorId = std::get<1>(GetParam());
+    if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
-    else if(type == TypeJson)
+    else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     std::string result = writer->store(spSchemaPeople);
@@ -187,16 +188,17 @@ TEST_P(TestSerialization, Parse_schema)
 
 TEST_P(TestSerialization, Parse_schemasArray)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -214,16 +216,17 @@ TEST_P(TestSerialization, Parse_schemasArray)
 
 TEST_P(TestSerialization, Parse_schemasAll)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -240,16 +243,17 @@ TEST_P(TestSerialization, Parse_schemasAll)
 /*
 TEST_P(TestSerialization, Parse_metadata)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     auto item = stream.getAll()[0];
@@ -268,16 +272,17 @@ TEST_P(TestSerialization, Parse_metadata)
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     std::string result = writer->store(set);
@@ -304,16 +309,17 @@ TEST_P(TestSerialization, Parse_metadataArray)
 
 TEST_P(TestSerialization, Parse_metadataAll)
 {
-    SerializerType type = GetParam();
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -340,16 +346,17 @@ TEST_P(TestSerialization, Parse_metadataAll)
 
 TEST_P(TestSerialization, Parse_All)
 {
-    SerializerType type = GetParam();
+    SerializerType type     = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
     if (type == TypeXML)
     {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
     }
     else if (type == TypeJson)
     {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -371,4 +378,42 @@ TEST_P(TestSerialization, Parse_All)
     });
 }
 
-INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization, ::testing::Values(TypeXML, TypeJson) );
+
+TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
+{
+    SerializerType type = std::get<0>(GetParam());
+
+    vmf_string compressorId = "unknown_compressor";
+    std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
+    std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
+    vmf::Compressor::registerNew(fake);
+
+    if (type == TypeXML)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>(), true));
+    }
+    else if (type == TypeJson)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>(), true));
+    }
+
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+    std::string result = stream.serialize(*writer);
+
+    vmf::Compressor::unregister(compressorId);
+
+    reader->parseSchemas(result, schemas);
+
+    ASSERT_EQ(1, schemas.size());
+    ASSERT_EQ("com.intel.vmf.compressed-metadata", schemas[0]->getName());
+}
+
+
+//don't check for incorrect compressors
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
+                        ::testing::Combine(::testing::Values(TypeXML, TypeJson),
+                                           ::testing::Values("com.intel.vmf.compressor.zlib", "")));

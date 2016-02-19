@@ -37,6 +37,12 @@ namespace vmf
 class VMF_EXPORT IWriter
 {
 public:
+    IWriter()
+    { }
+
+    virtual ~IWriter()
+    { }
+
     /*!
     * \brief Export a schemas vector to a string representation
     */
@@ -53,8 +59,8 @@ public:
     virtual std::string store( const IdType& nextId,
                                const std::string& filepath,
                                const std::string& checksum,
-			       const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-			       const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                               const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                const MetadataSet& set ) = 0;
 
     /*!
@@ -66,7 +72,6 @@ public:
     * \brief Export a video segments vector to a string representation.
     */
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments) = 0;
-
 };
 
 }//vmf

@@ -41,7 +41,7 @@ bool MetadataStream::open( const std::string& sFilePath, MetadataStream::OpenMod
 {
     try
     {
-        if (m_eMode != InMemory)
+        if((m_eMode & ReadOnly) || (m_eMode & Update))
             return false;
         dataSource = ObjectFactory::getInstance()->getDataSource();
         if (!dataSource)
@@ -104,13 +104,14 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
     }
 }
 
-bool MetadataStream::save()
+bool MetadataStream::save(const vmf_string &compressorId)
 {
     dataSourceCheck();
     try
     {
-        if( m_eMode == ReadWrite && !m_sFilePath.empty() )
+        if( (m_eMode & Update) && !m_sFilePath.empty() )
         {
+            dataSource->setCompressor(compressorId);
             dataSource->remove(removedIds);
             removedIds.clear();
 
@@ -141,6 +142,8 @@ bool MetadataStream::save()
 
             addedIds.clear();
 
+            dataSource->pushChanges();
+
             return true;
         }
         else
@@ -157,7 +160,7 @@ bool MetadataStream::save()
 bool MetadataStream::reopen( OpenMode eMode )
 {
     dataSourceCheck();
-    if( m_eMode != InMemory )
+    if((m_eMode & ReadOnly) || (m_eMode & Update))
         VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
 
     if( m_sFilePath.empty())
@@ -175,9 +178,9 @@ bool MetadataStream::reopen( OpenMode eMode )
     return false;
 }
 
-bool MetadataStream::saveTo( const std::string& sFilePath )
+bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
 {
-    if( m_eMode != InMemory )
+    if((m_eMode & ReadOnly) || (m_eMode & Update))
         throw std::runtime_error("The previous file has not been closed!");
     try
     {
@@ -195,10 +198,10 @@ bool MetadataStream::saveTo( const std::string& sFilePath )
         bool bRet = false;
 
         // Do not load anything from the file by calling reopen()
-        if( this->reopen( ReadWrite ) )
+        if( this->reopen( Update ) )
         {
             dataSource->clear();
-            bRet = this->save();
+            bRet = this->save(compressorId);
         }
         dataSource->closeFile();
 
@@ -215,7 +218,7 @@ void MetadataStream::close()
 {
     try
     {
-        m_eMode = InMemory;
+        m_eMode = (m_eMode & ~Update) & ~ReadOnly;
         if (dataSource)
             dataSource->closeFile();
     }
@@ -552,7 +555,6 @@ void MetadataStream::clear()
     m_sFilePath = "";
     m_oMetadataSet.clear();
     m_mapSchemas.clear();
-    removedSchemas.clear();
     removedIds.clear();
     addedIds.clear();
     videoSegments.clear();

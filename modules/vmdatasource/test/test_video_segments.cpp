@@ -45,7 +45,7 @@ protected:
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::initialize();
 
-        stream.open(TEST_FILE, MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, MetadataStream::Update);
 
         spSchema = std::make_shared<MetadataSchema>("schema");
         vFields.push_back(FieldDesc("field", Variant::type_integer));
@@ -102,7 +102,7 @@ TEST_F(TestVideoSegments, SaveLoad)
     {
         vmf::MetadataStream stream;
         ASSERT_NO_THROW(stream.addVideoSegment(segment1));
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         auto loadedSegments = stream.getAllVideoSegments();
         ASSERT_EQ(segments.size(), loadedSegments.size());
         for (unsigned int i = 0; i < loadedSegments.size(); i++)

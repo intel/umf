@@ -56,7 +56,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        if(!stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite))
+        if(!stream.open(TEST_FILE, vmf::MetadataStream::Update))
             std::cout << "Cann't open stream!" << std::endl;
 
         stream.addSchema(schema);
@@ -104,7 +104,7 @@ protected:
 TEST_F(TestRemoving, RemoveOne)
 {
     vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    newStream.open(TEST_FILE, vmf::MetadataStream::Update);
     newStream.load(TEST_SCHEMA_NAME);
 
     auto set = newStream.queryByName(TEST_PROPERTY_NAME1);
@@ -148,7 +148,7 @@ TEST_F(TestRemoving, RemoveSet)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load(TEST_SCHEMA_NAME);
         auto set = newStream.queryByName(TEST_PROPERTY_NAME1);
         newStream.remove(set);
@@ -173,7 +173,7 @@ TEST_F(TestRemoving, RemoveAll)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
 
         auto set = newStream.getAll();
@@ -196,7 +196,7 @@ TEST_F(TestRemoving, RemoveWithReferences)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load(TEST_SCHEMA_NAME);
 
         auto set1 = newStream.queryByName(TEST_PROPERTY_NAME1);
@@ -250,7 +250,7 @@ TEST_F(TestRemovingSchema, RemoveOneSchema)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
         newStream.remove(schemaForRemoving);
@@ -270,7 +270,7 @@ TEST_F(TestRemovingSchema, RemoveOneSchema)
 TEST_F(TestRemovingSchema, RemoveUnknownSchema)
 {
     vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    newStream.open(TEST_FILE, vmf::MetadataStream::Update);
     newStream.load();
     std::shared_ptr<vmf::MetadataSchema> schemaForRemoving(new vmf::MetadataSchema("Invalid schema") );
     EXPECT_THROW(newStream.remove(schemaForRemoving), vmf::Exception);
@@ -281,7 +281,7 @@ TEST_F(TestRemovingSchema, RemoveAllSchemas)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto schemasNames = newStream.getAllSchemaNames();
         for (auto schemaName = schemasNames.begin(); schemaName != schemasNames.end(); schemaName++)
@@ -303,7 +303,7 @@ TEST_F(TestRemovingSchema, RemoveAll)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         newStream.remove();
         newStream.save();
@@ -329,7 +329,7 @@ TEST_F(TestRemovingSchema, RemoveAllAddSchema)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         newStream.remove();
         newStream.save();
@@ -340,7 +340,7 @@ TEST_F(TestRemovingSchema, RemoveAllAddSchema)
             VMF_FIELD_INT(TEST_FIELD_NAME);
         VMF_METADATA_END(newSchema);
 
-        newStream.reopen(vmf::MetadataStream::ReadWrite);
+        newStream.reopen(vmf::MetadataStream::Update);
         newStream.addSchema(newSchema);
         newStream.save();
         newStream.close();
@@ -365,7 +365,7 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchema)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
         newStream.remove(schemaForRemoving);
@@ -377,7 +377,7 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchema)
             VMF_FIELD_INT(TEST_FIELD_NAME);
         VMF_METADATA_END(newSchema);
 
-        newStream.reopen(vmf::MetadataStream::ReadWrite);
+        newStream.reopen(vmf::MetadataStream::Update);
         newStream.addSchema(newSchema);
         newStream.save();
         newStream.close();
@@ -402,7 +402,7 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchemaBeforeSaving)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
         newStream.remove(schemaForRemoving);
@@ -435,7 +435,7 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchemaBeforeSaving)
 TEST_F(TestRemovingSchema, RemoveOneAddSchemaNoSaving)
 {
     vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    newStream.open(TEST_FILE, vmf::MetadataStream::Update);
     newStream.load();
     auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
     newStream.remove(schemaForRemoving);
@@ -460,7 +460,7 @@ TEST_F(TestRemovingSchema, RemovingWithReferences)
 {
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto set1 = newStream.queryBySchema(TEST_SCHEMA_NAME);
         auto set2 = newStream.queryBySchema(TEST_SCHEMA_NAME_2);
@@ -474,7 +474,7 @@ TEST_F(TestRemovingSchema, RemovingWithReferences)
 
     {
         vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        newStream.open(TEST_FILE, vmf::MetadataStream::Update);
         newStream.load();
         auto set1 = newStream.queryBySchema(TEST_SCHEMA_NAME);
         auto set2 = newStream.queryBySchema(TEST_SCHEMA_NAME_2);

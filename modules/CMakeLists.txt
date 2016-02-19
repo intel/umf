@@ -25,6 +25,9 @@ endif()
 set(XMP_PUBLIC_DIR "${VMF_3PTY_DIR}/xmp/public/include")
 set(LIBXML2_PUBLIC_DIR "${VMF_3PTY_DIR}/libxml2/src/include")
 set(LIBJSON_PUBLIC_DIR "${VMF_3PTY_DIR}/libjson/src" "${VMF_3PTY_DIR}/libjson/src/_internal/Source")
+set(ZLIB_PUBLIC_DIR "${VMF_3PTY_DIR}/xmp/third-party/zlib")
+set(XMPCORE_SOURCE_DIR "${VMF_3PTY_DIR}/xmp/XMPCore/source")
+set(XMP_ROOT_DIR "${VMF_3PTY_DIR}/xmp")
 
 if (BUILD_JAVA_API)
     find_package(Java 1.7 REQUIRED COMPONENTS Development)
@@ -69,7 +72,7 @@ if (BUILD_JAVA_API)
     file(GLOB VMFCORE_JAVA_JUNIT "${VMFCORE_JAVA_DIR}/test/lib/*.jar")
 endif()
 
-source_group(vmfcore\\include\\vmf FILES ${VMFCORE_HEADERS})
+source_group(vmfcore\\include FILES ${VMFCORE_HEADERS})
 source_group(vmfcore\\src FILES ${VMFCORE_SOURCES})
 source_group(vmfcore\\src\\details FILES ${VMFCORE_DETAILS})
 
@@ -94,9 +97,9 @@ file(GLOB VMDATASOURCE_SOURCES "${VMDATASOURCE_SOURCE_DIR}/*.hpp" "${VMDATASOURC
 file(GLOB VMDATASOURCE_TESTS "${VMDATASOURCE_TESTS_DIR}/*.hpp" "${VMDATASOURCE_TESTS_DIR}/*.cpp")
 
 source_group(vmdatasource\\src FILES ${VMDATASOURCE_SOURCES})
-source_group(vmdatasource\\include\\vmf FILES ${VMDATASOURCE_HEADERS})
+source_group(vmdatasource\\include FILES ${VMDATASOURCE_HEADERS})
 
-include_directories(${CMAKE_BINARY_DIR} ${VMFCORE_PUBLIC_DIR} ${VMFCORE_DETAILS_DIR} ${VMDATASOURCE_PUBLIC_DIR} ${XMP_PUBLIC_DIR} ${LIBXML2_PUBLIC_DIR} ${LIBJSON_PUBLIC_DIR})
+include_directories(${CMAKE_BINARY_DIR} ${VMFCORE_PUBLIC_DIR} ${VMFCORE_DETAILS_DIR} ${VMDATASOURCE_PUBLIC_DIR} ${XMP_PUBLIC_DIR} ${LIBXML2_PUBLIC_DIR} ${LIBJSON_PUBLIC_DIR} ${ZLIB_PUBLIC_DIR} ${XMPCORE_SOURCE_DIR} ${XMP_ROOT_DIR})
 
 if (BUILD_JAVA_API)
     add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES} ${VMFCORE_JNI})
@@ -136,7 +139,7 @@ elseif(UNIX)
     target_link_libraries(${VMF_LIBRARY_NAME} dl)
 endif()
 
-set_target_properties(${VMF_LIBRARY_NAME} PROPERTIES FOLDER "vmf")
+set_target_properties(${VMF_LIBRARY_NAME} PROPERTIES FOLDER "vmf library")
 
 include_directories(${GTEST_INCLUDE_DIR})
 

@@ -67,7 +67,7 @@ int main(int argc, char** argv)
         vmf::initialize();
 
         vmf::MetadataStream stream;
-        if (!stream.open(dstFileName, vmf::MetadataStream::ReadWrite))
+        if (!stream.open(dstFileName, vmf::MetadataStream::Update))
             throw vmf::Exception("Can't open file by VMF stream");
 
         string originalFileChecksum = stream.computeChecksum();
