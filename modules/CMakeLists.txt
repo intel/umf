@@ -72,7 +72,7 @@ if(APPLE AND NOT IOS)
   target_link_libraries(${VMF_LIBRARY_NAME} "-framework CoreFoundation" "-framework CoreServices")
 endif()
 
-if(UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE AND NOT ANDROID)
   # fix build with glibc < 2.17
   target_link_libraries(${VMF_LIBRARY_NAME} rt)
 endif()
