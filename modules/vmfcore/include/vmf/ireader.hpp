@@ -72,12 +72,6 @@ public:
     */
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
-    /*!
-     * \brief Performs decompression of previously compressed data
-     * \param input Input string
-     * \return Decompressed string
-     */
-    virtual std::string decompress(const std::string& input) = 0;
 };
 
 }//vmf
