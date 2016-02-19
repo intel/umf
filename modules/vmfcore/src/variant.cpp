@@ -23,7 +23,6 @@
 #include <limits>
 #include <iomanip>
 
-
 namespace vmf
 {
 

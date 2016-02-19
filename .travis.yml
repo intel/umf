@@ -2,6 +2,9 @@
 sudo: false
 git:
   depth : 5
+branches:
+  only:
+    - vmf-3.0
 language: android
 matrix:
   include:
@@ -31,8 +34,8 @@ matrix:
         - VMF_IOS_BUILD=ON
 addons:
   apt:
-    sources: ['kalakris-cmake', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-    packages: ['cmake', 'g++-4.8', 'clang-3.7']
+    sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+    packages: ['cmake', 'cmake-data', 'g++-4.8', 'clang-3.7']
 before_install:
   - env
   - if [ $TRAVIS_OS_NAME == linux ]; then cat /proc/cpuinfo; fi
@@ -48,7 +51,8 @@ before_script:
 script:
   - if [ $TRAVIS_OS_NAME == linux ]; then ldd --version; fi
 # desktop build
-  - if [ "$VMF_ANDROID_BUILD" == "" ] && [ "$VMF_IOS_BUILD" == "" ]; then cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED $VMF_GCOV_OPTS ../vmf; make -j2; cd ./bin/; ./unit-tests; ./unit-tests-ds; cd ..; fi
+  - if [ "$VMF_ANDROID_BUILD" == "" ] && [ "$VMF_IOS_BUILD" == "" ]; then cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED $VMF_GCOV_OPTS ../vmf; make -j2; cd ./bin/; ./unit-tests; ./unit-tests-ds; fi
+  - if [ -f vmf_java.jar ]; then java -Djava.library.path=../lib -cp vmf_java.jar:vmf_java_test.jar:junit-4.11.jar org.junit.runner.JUnitCore VmfTestSuite; fi
 # iOS
   - if [ "$VMF_IOS_BUILD" != "" ]; then mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
 # android
@@ -58,6 +62,7 @@ script:
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/; adb shell chmod 777 /data/local/tmp/unit-tests; adb shell /data/local/tmp/unit-tests; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds"; fi
 after_success:
+  - cd $TRAVIS_BUILD_DIR/../build
 # coverage
   - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root .. --build-root .; fi
   - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8; fi

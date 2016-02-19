@@ -15,6 +15,7 @@
 #      - VMF_INCLUDE_DIR           : The VMF include directory.
 #      - VMF_BIN_DIR               : The VMF binaries directory.
 #      - VMF_DATA_DIR              : The VMF data directory.
+#      - VMF_JAR_PATH              : The VMF data directory.
 
 
 # use static lib unless dynamic is forced via VMF_STATIC or BUILD_SHARED_LIBS
@@ -79,6 +80,10 @@ if(EXISTS "${VMF_INCLUDE_DIR}/vmf/vmf.hpp" AND EXISTS "${VMF_LIB_DIR}")
 else()
   set(VMF_FOUND NO)
   message(FATAL_ERROR "[FindVMF] VMF SDK files are absent at '${VMF_INCLUDE_DIR}' or '${VMF_LIB_DIR}'")
+endif()
+
+if(EXISTS "${VMF_DIR}/java/vmf_java.jar")
+  set(VMF_JAR_PATH "${VMF_DIR}/java/vmf_java.jar")
 endif()
 
 if(VMF_FOUND AND WIN32 AND NOT VMF_STATIC)

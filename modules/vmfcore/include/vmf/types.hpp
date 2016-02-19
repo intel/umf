@@ -29,6 +29,7 @@
 #include <cstring>
 #include <utility>
 #include <vector>
+#include <limits>
 
 namespace vmf
 {

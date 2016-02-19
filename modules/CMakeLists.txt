@@ -1,7 +1,9 @@
 project(vmf-library)
-cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 set(VMF_LIBRARY_NAME "vmf")
+set(VMF_JAR_NAME ${VMF_LIBRARY_NAME}_java)
+set(VMF_JAR_TEST_NAME ${VMF_LIBRARY_NAME}_java_test)
 
 macro(append_target_property _target _property _value)
     get_target_property(TEMP_VAR ${_target} ${_property})
@@ -24,6 +26,13 @@ set(XMP_PUBLIC_DIR "${VMF_3PTY_DIR}/xmp/public/include")
 set(LIBXML2_PUBLIC_DIR "${VMF_3PTY_DIR}/libxml2/src/include")
 set(LIBJSON_PUBLIC_DIR "${VMF_3PTY_DIR}/libjson/src" "${VMF_3PTY_DIR}/libjson/src/_internal/Source")
 
+if (BUILD_JAVA_API)
+    find_package(Java 1.7 REQUIRED COMPONENTS Development)
+    find_package(JNI REQUIRED)
+    include(UseJava)
+    include_directories(${JAVA_INCLUDE_PATH} ${JNI_INCLUDE_DIRS})
+endif()
+
 if(CODE_COVERAGE)
     add_definitions(--coverage)
 endif()
@@ -39,6 +48,13 @@ set(VMFCORE_DETAILS_DIR "${VMFCORE_SOURCE_DIR}/details")
 set(VMFCORE_TESTS_DIR "${VMFCORE_DIR}/test")
 set(VMFCORE_TEST_EXECUTABLE "unit-tests")
 
+set(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/BlueSquare.avi")
+
+if (BUILD_JAVA_API)
+    set(VMFCORE_JAVA_DIR "${VMFCORE_DIR}/java")
+    set(VMFCORE_JNI_DIR "${VMFCORE_JAVA_DIR}/jni")
+endif()
+
 configure_file("${VMFCORE_PUBLIC_DIR}/vmf/config.hpp.in" "${CMAKE_BINARY_DIR}/config.hpp")
 
 file(GLOB VMFCORE_HEADERS "${VMFCORE_PUBLIC_DIR}/vmf/*.hpp"  "${CMAKE_BINARY_DIR}/config.hpp")
@@ -46,9 +62,26 @@ file(GLOB VMFCORE_SOURCES "${VMFCORE_SOURCE_DIR}/*.hpp"  "${VMFCORE_SOURCE_DIR}/
 file(GLOB VMFCORE_DETAILS "${VMFCORE_DETAILS_DIR}/*.hpp" "${VMFCORE_DETAILS_DIR}/*.cpp")
 file(GLOB VMFCORE_TESTS "${VMFCORE_TESTS_DIR}/*.hpp"     "${VMFCORE_TESTS_DIR}/*.cpp")
 
+if (BUILD_JAVA_API)
+    file(GLOB VMFCORE_JNI "${VMFCORE_JNI_DIR}/*.cpp")
+    file(GLOB VMFCORE_JAVA_API "${VMFCORE_JAVA_DIR}/src/com/intel/vmf/*.java")
+    file(GLOB VMFCORE_JAVA_TEST "${VMFCORE_JAVA_DIR}/test/*.java")
+    file(GLOB VMFCORE_JAVA_JUNIT "${VMFCORE_JAVA_DIR}/test/lib/*.jar")
+endif()
+
 source_group(vmfcore\\include\\vmf FILES ${VMFCORE_HEADERS})
 source_group(vmfcore\\src FILES ${VMFCORE_SOURCES})
 source_group(vmfcore\\src\\details FILES ${VMFCORE_DETAILS})
+
+if (BUILD_JAVA_API)
+    source_group(vmfcore\\jni FILES ${VMFCORE_JNI})
+    add_jar (${VMF_JAR_NAME} ${VMFCORE_JAVA_API} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    add_dependencies(${VMF_JAR_NAME} ${VMF_LIBRARY_NAME})
+    add_jar (${VMF_JAR_TEST_NAME} ${VMFCORE_JAVA_TEST} INCLUDE_JARS ${VMF_JAR_NAME} ${VMFCORE_JAVA_JUNIT} OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+    add_dependencies(${VMF_JAR_TEST_NAME} ${VMF_JAR_NAME})
+    file(COPY ${VMFCORE_JAVA_JUNIT} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+    file(COPY ${VIDEO_PATH} DESTINATION ${CMAKE_BINARY_DIR}/bin)
+endif()
 
 set(VMDATASOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vmdatasource")
 set(VMDATASOURCE_PUBLIC_DIR "${VMDATASOURCE_DIR}/include")
@@ -65,7 +98,12 @@ source_group(vmdatasource\\include\\vmf FILES ${VMDATASOURCE_HEADERS})
 
 include_directories(${CMAKE_BINARY_DIR} ${VMFCORE_PUBLIC_DIR} ${VMFCORE_DETAILS_DIR} ${VMDATASOURCE_PUBLIC_DIR} ${XMP_PUBLIC_DIR} ${LIBXML2_PUBLIC_DIR} ${LIBJSON_PUBLIC_DIR})
 
-add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES})
+if (BUILD_JAVA_API)
+    add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES} ${VMFCORE_JNI})
+else()
+    add_library(${VMF_LIBRARY_NAME} ${VMDATASOURCE_HEADERS} ${VMDATASOURCE_SOURCES} ${VMFCORE_HEADERS} ${VMFCORE_SOURCES} ${VMFCORE_DETAILS} ${XMP_SOURCES} ${LIBXML2_SOURCES} ${LIBJSON_SOURCES})
+endif()
+
 target_compile_definitions(${VMF_LIBRARY_NAME} PRIVATE $<$<CONFIG:Debug>:JSON_DEBUG> PRIVATE $<$<CONFIG:Release>:NDEBUG>)
 if(APPLE AND NOT IOS)
   #set_property(TARGET ${VMF_LIBRARY_NAME} PROPERTY LINK_FLAGS "-framework CoreFoundation -framework CoreServices")
@@ -161,13 +199,13 @@ endif()
 
 # tests
 if(BUILD_TESTS)
-	add_executable(${VMDATASOURCE_TEST_EXECUTABLE} ${VMDATASOURCE_TESTS})
-	target_link_libraries(${VMDATASOURCE_TEST_EXECUTABLE} gtest vmf)
-	set_target_properties(${VMDATASOURCE_TEST_EXECUTABLE} PROPERTIES FOLDER "tests")
+    add_executable(${VMDATASOURCE_TEST_EXECUTABLE} ${VMDATASOURCE_TESTS})
+    target_link_libraries(${VMDATASOURCE_TEST_EXECUTABLE} gtest vmf)
+    set_target_properties(${VMDATASOURCE_TEST_EXECUTABLE} PROPERTIES FOLDER "tests")
 
-	add_executable(${VMFCORE_TEST_EXECUTABLE} ${VMFCORE_TESTS})
-	target_link_libraries(${VMFCORE_TEST_EXECUTABLE} gtest vmf)
-	set_target_properties(${VMFCORE_TEST_EXECUTABLE} PROPERTIES FOLDER "tests")
+    add_executable(${VMFCORE_TEST_EXECUTABLE} ${VMFCORE_TESTS})
+    target_link_libraries(${VMFCORE_TEST_EXECUTABLE} gtest vmf)
+    set_target_properties(${VMFCORE_TEST_EXECUTABLE} PROPERTIES FOLDER "tests")
 
     if(CODE_COVERAGE)
         append_target_property(${VMFCORE_TEST_EXECUTABLE} LINK_FLAGS "--coverage")
@@ -175,11 +213,10 @@ if(BUILD_TESTS)
     endif()
 
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
-		append_target_property(${VMFCORE_TEST_EXECUTABLE} LINK_FLAGS "-Wl,-z,muldefs")
-		append_target_property(${VMDATASOURCE_TEST_EXECUTABLE} LINK_FLAGS "-Wl,-z,muldefs")
-	endif()
+        append_target_property(${VMFCORE_TEST_EXECUTABLE} LINK_FLAGS "-Wl,-z,muldefs")
+        append_target_property(${VMDATASOURCE_TEST_EXECUTABLE} LINK_FLAGS "-Wl,-z,muldefs")
+    endif()
 
-    set(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/BlueSquare.avi")
     set(OUTPUT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}")
 
     if (CMAKE_HOST_WIN32)
