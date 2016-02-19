@@ -1571,6 +1571,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
         std::vector<std::string> schemaNames = stream.getAllSchemaNames();
         ASSERT_EQ(schemaNames.size(), 1);
         ASSERT_EQ(schemaNames[0], "com.intel.vmf.encrypted-metadata");
+        ASSERT_TRUE(stream.load(schemaNames[0]));
         vmf::MetadataSet eSet = stream.queryBySchema(schemaNames[0]);
         ASSERT_FALSE(eSet.empty());
         std::shared_ptr<vmf::Metadata> eItem = eSet[0];
@@ -1671,7 +1672,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
         stream.setEncryptor(encryptor);
 
         ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
-
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
@@ -1722,7 +1723,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
         stream.setEncryptor(encryptor);
 
         ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
-
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
@@ -1781,6 +1782,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
         vmf::FieldDesc& field = desc->getFieldDesc(TEST_FIELD_ADDRESS);
         ASSERT_TRUE(field.useEncryption);
 
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
@@ -1838,6 +1840,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
         desc = schema->findMetadataDesc(TEST_DESC_NAME);
         ASSERT_TRUE(desc->getUseEncryption());
 
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
@@ -1893,6 +1896,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
         schema = stream.getSchema(TEST_SCHEMA_NAME);
         ASSERT_TRUE(schema->getUseEncryption());
 
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
