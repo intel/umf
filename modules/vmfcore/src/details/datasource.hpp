@@ -152,6 +152,11 @@ public:
     virtual void setCompressor(const vmf_string& id) = 0;
 
     /*
+     * \brief Sets encryption algorithm implementation for reading/writing encrypted data
+     */
+    virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor) = 0;
+
+    /*
      *\brief Commits saved changes to file
      */
     virtual void pushChanges() = 0;

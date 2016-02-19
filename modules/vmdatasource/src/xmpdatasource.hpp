@@ -26,6 +26,7 @@
 
 #include "vmf/metadataschema.hpp"
 #include "vmf/compressor.hpp"
+#include "vmf/encryptor.hpp"
 
 #define TXMP_STRING_TYPE vmf::MetaString
 #define XMP_INCLUDE_XMPFILES 1
@@ -90,6 +91,8 @@ public:
 
     virtual void setCompressor(const vmf_string& id);
 
+    virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor);
+
     virtual void pushChanges();
 
     /*!
@@ -121,7 +124,9 @@ private:
     vmf::MetaString metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
+    std::shared_ptr<Encryptor>  encryptor;
     std::shared_ptr<vmf::MetadataSchema> schemaCompression;
+    std::shared_ptr<vmf::MetadataSchema> schemaEncryption;
 };
 
 #ifdef _MSC_VER
