@@ -3,6 +3,7 @@ import com.intel.vmf.MetadataStream.VideoSegment;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.MetadataInternal;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.FieldValue;
 import com.intel.vmf.ReferenceDesc;
@@ -17,13 +18,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.io.File;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class VmfMetadataStreamTest 
 {
@@ -70,9 +72,14 @@ public class VmfMetadataStreamTest
     protected Metadata md1;
     protected Metadata md2;
     
+    Variant var1;
+    Variant var2;
+    Variant var3;
+    
     @Before
-    public void setUp ()
+    public void setUp () throws IOException
     {
+        copy (srcFile, dstFile);
         fields = new FieldDesc [3];
     	schema = new MetadataSchema ("test_schema");
         fields[0] = new FieldDesc ("name", Variant.type_string, false);
@@ -92,20 +99,29 @@ public class VmfMetadataStreamTest
         
         md1 = new Metadata(mdDesc);
         md2 = new Metadata(mdDesc);
+        
+        var1 = new Variant ("Den");
+        var2 = new Variant ("Smith");
+        var3 = new Variant (24);
+        
+        md1.setFieldValue("name", var1);
+        md1.setFieldValue("last name", var2);
+        md1.setFieldValue("age", var3);
     }
     
     @After
     public void tearDown()
     {
         if (stream != null)
+        {
+            stream.close();
             stream.clear();
+        }
     }
     
     @Test
     public void testSaveLoadAndQueries() throws IOException
     {
-    	copy (srcFile, dstFile);
-    	
     	assertEquals(schema.getName(), stream.getSchema("test_schema").getName());
         assertEquals(schema.getAuthor(), stream.getSchema("test_schema").getAuthor());
         assertEquals(schema.getAll().length, stream.getSchema("test_schema").getAll().length);
@@ -115,14 +131,6 @@ public class VmfMetadataStreamTest
         
         String str = stream.computeChecksum ();
         assertFalse (str.isEmpty());
-        
-        Variant var1 = new Variant ("Den");
-        Variant var2 = new Variant ("Smith");
-        Variant var3 = new Variant (24);
-        
-        md1.setFieldValue("name", var1);
-        md1.setFieldValue("last name", var2);
-        md1.setFieldValue("age", var3);
         
         var1.setTo ("Anna");
         var2.setTo ("Smith");
@@ -149,7 +157,8 @@ public class VmfMetadataStreamTest
         
         assertTrue (stream.reopen(MetadataStream.ReadOnly));
         
-        stream.load ("test_schema");
+        assertTrue(stream.load ("test_schema"));
+        assertTrue(stream.load("test_schema","person"));
         
         MetadataSet mdSet2 = stream.queryBySchema("test_schema");
         assertEquals(2, mdSet2.getSize());
@@ -183,6 +192,9 @@ public class VmfMetadataStreamTest
         md3.setFieldValue("age", var3);
         
         stream.add(md3);
+        
+        Metadata newMd = stream.getById(0);
+        assertTrue(newMd.equals(md1));
         
         md2.addReference(md3, "friend");
         md2.addReference(md3, "colleague");
@@ -218,14 +230,87 @@ public class VmfMetadataStreamTest
         stream.add(md3);
         stream.add(md1);
         
+        assertEquals(2, stream.getAll().getSize());
+        
+        long num = md3.getID();
+        stream.remove(num);
+        
+        assertEquals(1, stream.getAll().getSize());
+        
+        MetadataInternal mdInt = new MetadataInternal(md3);
+        stream.add(mdInt);
+        
         stream.remove(schema);
         mdSet1 = stream.queryBySchema("test_schema");
         assertEquals(0, mdSet1.getSize());
         
         mdSet1 = stream.getAll();
         assertEquals(0, mdSet1.getSize());
-
-        new File(dstFile).delete();
+        
+        stream.close();
+        
+        copy (srcFile, "new.avi");
+        stream.saveTo("new.avi");
+    }
+    
+    @Test
+    public void testRemoveAll()
+    {
+        assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
+        
+        var1.setTo ("Anna");
+        var2.setTo ("Smith");
+        var3.setTo (22);
+        
+        md2.setFieldValue("name", var1);
+        md2.setFieldValue("last name", var2);
+        md2.setFieldValue("age", var3);
+        
+        stream.addSchema(schema);
+        
+        stream.add(md1);
+        stream.add(md2);
+        
+        assertEquals(2, stream.getAll().getSize());
+        stream.remove();
+        assertEquals(0, stream.getAll().getSize());
+        
+        assertEquals(0, stream.queryBySchema("test_schema").getSize());
+        assertEquals(null, stream.getSchema("test_schema"));
+        assertEquals(0, stream.getAllSchemaNames().length);
+    }
+    
+    
+    @Test
+    public void testImport()
+    {
+        assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
+        
+        var1.setTo ("Anna");
+        var2.setTo ("Smith");
+        var3.setTo (22);
+        
+        md2.setFieldValue("name", var1);
+        md2.setFieldValue("last name", var2);
+        md2.setFieldValue("age", var3);
+        
+        stream.addSchema(schema);
+        
+        md1.setFrameIndex(4, 8);
+        md2.setFrameIndex(5, 10);
+        
+        stream.add(md1);
+        stream.add(md2);
+        
+        MetadataStream newStream = new MetadataStream();
+        assertTrue (newStream.open("new.avi", MetadataStream.ReadWrite));
+        
+        newStream.addSchema(schema);
+        
+        MetadataSet set = stream.getAll();
+        assertEquals(2, set.getSize());
+        
+        newStream.importSet(stream, set, 6, 2);
     }
     
     @Test
@@ -252,7 +337,49 @@ public class VmfMetadataStreamTest
         assertEquals(3, vs.length);
     }
     
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    
+    @Test
+    public void testClearReopenTrown()
+    {
+        stream.clear();
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: No files has been assosiated with this stream");
+        stream.reopen(MetadataStream.ReadOnly);
+    }
 
+    /*@Test
+    public void testReopen2Trown()
+    {
+        stream.open(dstFile, MetadataStream.ReadWrite);
+        
+        thrown.expect(com.intel.vmf.VmfException.class);
+        //thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
+        stream.reopen(MetadataStream.ReadWrite);
+    }*/
+    
+    @Test
+    public void testMdIntAddTrown()
+    {
+        stream.open(dstFile, MetadataStream.ReadWrite);
+        MetadataDesc desc = new MetadataDesc ("people", fields);
+        
+        MetadataInternal mdInt = new MetadataInternal(desc);
+         
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Metadata schema is not in the stream");
+        stream.add(mdInt);
+    }
+    
+    @Test
+    public void testAddSchemaTrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Metadata Schema already exists!");
+        stream.addSchema(schema);
+    }
+    
     @Test
     public void testDeleteByGC()
     {
