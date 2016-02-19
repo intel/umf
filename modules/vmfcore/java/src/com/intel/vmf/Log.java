@@ -1,5 +1,7 @@
 package com.intel.vmf;
 
+import com.intel.vmf.Vmf;
+
 public class Log
 {
     static

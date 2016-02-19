@@ -13,7 +13,7 @@ import com.intel.vmf.JSONWriter;
 
 import static org.junit.Assert.*;
 import org.junit.*;
-import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 public class VmfJSONTest 
@@ -138,6 +138,9 @@ public class VmfJSONTest
         writer = new JSONWriter();
     }
     
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    
     @Test
     public void testJSONReaderAndWriter()
     {
@@ -160,6 +163,36 @@ public class VmfJSONTest
         assertEquals (3, videoSegs.length);
     }
    
+    @Test
+    public void testParseSchemaThrown()
+    {
+        String text = "";
+        
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Schemas can not be parsed.");
+        reader.parseSchemas(text);
+    }
+    
+    @Test
+    public void testParseMetadataThrown()
+    {
+        String text = "";
+        
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Metadata can not be parsed.");
+        reader.parseMetadata(text);
+    }
+    
+    @Test
+    public void testParseSegmentsThrown()
+    {
+        String text = "";
+        
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segments can not be parsed.");
+        reader.parseVideoSegments(text);
+    }
+    
     @Test
     public void testDeleteByGC()
     {

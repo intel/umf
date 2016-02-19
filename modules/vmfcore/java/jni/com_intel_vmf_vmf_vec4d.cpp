@@ -70,7 +70,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD (JNIEn
  * Method:    n_setTo
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
+/*JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo(JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr);
 
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jcla
     {
         throwJavaException(env, 0, method_name);
     }
-}
+}*/
 
 /*
 * Class:     com_intel_vmf_vmf_vec4d
