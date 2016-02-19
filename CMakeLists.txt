@@ -67,9 +67,31 @@ set(VMF_VERSION_MAJOR "3")
 set(VMF_VERSION_MINOR "0")
 set(VMF_VERSION_TYPE  "dev") # dev, alpha, beta
 
+# adding git info to the version if possible
+if(NOT COMMAND find_host_package)
+  macro(find_host_package)
+    find_package(${ARGN})
+  endmacro()
+endif()
+find_host_package(Git QUIET)
+if(GIT_FOUND)
+  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always --dirty
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE VMF_VERSION_VCS
+    RESULT_VARIABLE GIT_RESULT
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  if(NOT GIT_RESULT EQUAL 0)
+    set(VMF_VERSION_VCS "unknown")
+  endif()
+else()
+  set(VMF_VERSION_VCS "unknown")
+endif()
+
 # reporting build settings
 message(STATUS "*** VMF build configuration ***")
-message(STATUS "    VMF version: ${VMF_VERSION_MAJOR}.${VMF_VERSION_MINOR}.${VMF_VERSION_TYPE}")
+message(STATUS "    VMF version: ${VMF_VERSION_MAJOR}.${VMF_VERSION_MINOR}.${VMF_VERSION_TYPE} (VCS: ${VMF_VERSION_VCS})")
 message(STATUS "    CMake generator: ${CMAKE_GENERATOR}")
 message(STATUS "    CMake build tool: ${CMAKE_BUILD_TOOL}")
 if(NOT CMAKE_GENERATOR MATCHES "Xcode|Visual Studio")
