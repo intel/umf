@@ -33,6 +33,12 @@ namespace vmf
 class VMF_EXPORT DefaultEncryptor : public Encryptor
 {
 public:
+    DefaultEncryptor()
+    {
+        VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
+        //IncorrectParamException in case of incorrect encryption parameters
+    }
+
     /*!
      * \brief Encrypt data
      * \param [in] input input text data
@@ -41,6 +47,7 @@ public:
     virtual void encrypt(const vmf_string& input, vmf_rawbuffer& output)
     {
         VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
+        //IncorrectParamException in case of incorrect encryption parameters
     }
 
     /*!
@@ -51,6 +58,7 @@ public:
     virtual void decrypt(const vmf_rawbuffer& input, vmf_string& output)
     {
         VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
+        //IncorrectParamException in case of incorrect encryption parameters (like key, etc.)
     }
 
     /*!
