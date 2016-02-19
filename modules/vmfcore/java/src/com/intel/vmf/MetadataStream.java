@@ -44,10 +44,28 @@ public class MetadataStream implements IQuery
             long duration = 0;
             int width = 0;
             int height = 0;
-                
-            nativeObj = n_VideoSegment (title, fps, startTime, duration, width, height);
+
+            long addr = n_VideoSegment (title, fps, startTime, duration, width, height);
+
+            if (addr == 0)
+                throw new java.lang.IllegalArgumentException ("Native object address is NULL");
+
+            nativeObj = addr;
         }
-            
+
+        public VideoSegment (String title, double fps, long startTime, long duration)
+        {
+            int width = 0;
+            int height = 0;
+
+            long addr = n_VideoSegment (title, fps, startTime, duration, width, height);
+
+            if (addr == 0)
+                throw new java.lang.IllegalArgumentException ("Native object address is NULL");
+
+            nativeObj = addr;
+        }
+
         public VideoSegment (String title, double fps, long startTime, long duration, int width, int height)
         {
             this (n_VideoSegment (title, fps, startTime, duration, width, height));
