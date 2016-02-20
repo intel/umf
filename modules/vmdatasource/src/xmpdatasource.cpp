@@ -652,6 +652,7 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
     }
 }
 
+
 std::string XMPDataSource::loadChecksum()
 {
     std::string checksum;
@@ -659,6 +660,7 @@ std::string XMPDataSource::loadChecksum()
         return "";
     return checksum;
 }
+
 
 void XMPDataSource::saveChecksum(const MetaString& checksum)
 {

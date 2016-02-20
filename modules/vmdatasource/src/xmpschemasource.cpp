@@ -26,11 +26,13 @@
 #define SCHEMA_NAME "schema"
 #define SCHEMA_PROPERTIES "descriptors"
 #define SCHEMA_AUTHOR "schema-author"
+#define SCHEMA_ENCRYPTED "schema-encrypted"
 
 
 #define PROPERTY_NAME "name"
 #define PROPERTY_FIELDS "fields"
 #define PROPERTY_REFERENCES "references"
+#define PROPERTY_ENCRYPTED "encrypted"
 
 #define REFERENCE_NAME "name"
 #define REFERENCE_UNIQUE "unique"
@@ -39,6 +41,7 @@
 #define FIELD_NAME "name"
 #define FIELD_TYPE "type"
 #define FIELD_OPTIONALITY "optional"
+#define FIELD_ENCRYPTED "encrypted"
 
 
 using namespace std;
@@ -80,7 +83,7 @@ void XMPSchemaSource::save(const shared_ptr<MetadataSchema>& schema)
         MetaString currentSchemaName;
         if (!metadata->GetStructField(VMF_NS, currentSchemaPath.c_str(), VMF_NS, SCHEMA_NAME, &currentSchemaName, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrputed schema by path" + currentSchemaPath);
+            VMF_EXCEPTION(DataStorageException, "Corrupted schema by path" + currentSchemaPath);
         }
         if (currentSchemaName == schema->getName())
         {
@@ -98,6 +101,11 @@ void XMPSchemaSource::save(const shared_ptr<MetadataSchema>& schema)
     if(!author.empty())
     {
         metadata->SetStructField(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_AUTHOR, schema->getAuthor());
+    }
+    bool useEncryption = schema->getUseEncryption();
+    if(useEncryption)
+    {
+        metadata->SetStructField(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_ENCRYPTED, "true");
     }
 
     MetaString pathToDescriptions;
@@ -135,6 +143,12 @@ void XMPSchemaSource::saveDescription(const MetadataDesc& desc, const MetaString
         metadata->SetStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_NAME, desc.getMetadataName());
     }
 
+    bool useEncryption = desc.getUseEncryption();
+    if(useEncryption)
+    {
+        metadata->SetStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_ENCRYPTED, "true");
+    }
+
     metadata->DeleteStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_FIELDS);
     MetaString pathToFields;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_FIELDS, &pathToFields);
@@ -167,6 +181,8 @@ void XMPSchemaSource::saveField(const FieldDesc& desc, const MetaString& pathToF
     metadata->SetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_TYPE, Variant::typeToString(desc.type).c_str());
     if(desc.optional)
         metadata->SetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_OPTIONALITY, "true");
+    if(desc.useEncryption)
+        metadata->SetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_ENCRYPTED, "true");
 }
 
 void XMPSchemaSource::saveReference(const std::shared_ptr<ReferenceDesc> ref, const MetaString& pathToRefs)
@@ -207,7 +223,10 @@ shared_ptr<MetadataSchema> XMPSchemaSource::loadMetadataSchemaByPath(const MetaS
         VMF_EXCEPTION(DataStorageException, "Corrupted schema description by path " + pathToSchema);
     }
     metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_AUTHOR, &thisSchemaAuthor, nullptr);
-    auto schema = make_shared<MetadataSchema>(thisSchemaName, thisSchemaAuthor);
+    MetaString thisSchemaEncrypted;
+    bool useEncryption = metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_ENCRYPTED, &thisSchemaEncrypted, nullptr);
+    useEncryption = useEncryption && (thisSchemaEncrypted == "true");
+    auto schema = make_shared<MetadataSchema>(thisSchemaName, thisSchemaAuthor, useEncryption);
 
     MetaString thisSchemaDescriptors;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_PROPERTIES, &thisSchemaDescriptors);
@@ -229,6 +248,11 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const MetaString& path
     {
         VMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToDesc);
     }
+    MetaString encryptedDescStr;
+    bool useEncryptionDesc = metadata->GetStructField(VMF_NS, pathToDesc.c_str(), VMF_NS,
+                                                      PROPERTY_ENCRYPTED, &encryptedDescStr, NULL);
+    useEncryptionDesc = useEncryptionDesc && encryptedDescStr == "true";
+
     vector<FieldDesc> fields;
     MetaString pathToFields;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToDesc.c_str(), VMF_NS, PROPERTY_FIELDS, &pathToFields);
@@ -254,7 +278,12 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const MetaString& path
         if(!metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS, FIELD_OPTIONALITY, NULL, NULL))
             optional = false;
 
-        fields.push_back(FieldDesc(name, type, optional));
+        MetaString encryptedFieldStr;
+        bool useEncryptionField = metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS,
+                                                           FIELD_ENCRYPTED, &encryptedFieldStr, NULL);
+        useEncryptionField = useEncryptionField && encryptedFieldStr == "true";
+
+        fields.push_back(FieldDesc(name, type, optional, useEncryptionField));
     }
 
     vector < shared_ptr<ReferenceDesc> > refs;
@@ -281,7 +310,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const MetaString& path
         refs.push_back(make_shared<ReferenceDesc>(name, isUnique, isCustom));
     }
 
-    return shared_ptr<MetadataDesc>(new MetadataDesc(propertyName, fields, refs));
+    return shared_ptr<MetadataDesc>(new MetadataDesc(propertyName, fields, refs, useEncryptionDesc));
 }
 
 void XMPSchemaSource::clear()
