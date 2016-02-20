@@ -142,7 +142,7 @@ void XMPDataSource::loadXMPstructs()
     std::shared_ptr<XMPSchemaSource> tmpSchemaSource;
     tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
     tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
-    if(!tmpMetaSource || tmpSchemaSource)
+    if(!tmpMetaSource || !tmpSchemaSource)
     {
         VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
     }
