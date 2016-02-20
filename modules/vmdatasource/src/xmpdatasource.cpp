@@ -25,6 +25,7 @@
 
 #define VMF_GLOBAL_NEXT_ID "next-id"
 #define VMF_GLOBAL_CHECKSUM "media-checksum"
+#define VMF_GLOBAL_HINT "hint-encryption"
 
 #define VMF_INTERNAL "internal"
 #define VMF_VIDEO_SEGMENTS "video-segments"
@@ -663,6 +664,22 @@ void XMPDataSource::saveChecksum(const MetaString& checksum)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
 }
+
+
+std::string XMPDataSource::loadHintEncryption()
+{
+    std::string hint;
+    if(!xmp->GetProperty(VMF_NS, VMF_GLOBAL_HINT, &hint, NULL))
+        return "";
+    return hint;
+}
+
+
+void XMPDataSource::saveHintEncryption(const vmf_string& hint)
+{
+    xmp->SetProperty(VMF_NS, VMF_GLOBAL_HINT, hint.c_str());
+}
+
 
 void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {

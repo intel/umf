@@ -136,27 +136,39 @@ public:
     */
     virtual std::string computeChecksum(long long& XMPPacketSize, long long& XMPPacketOffset) = 0;
 
-    /*
+    /*!
     * \brief Saves all video segments
     */
     virtual void saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
 
-    /*
+    /*!
     * \brief Loads stored video segments
     */
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
 
-    /*
+    /*!
      * \brief Sets registered compressor for compression operations at saving
      */
     virtual void setCompressor(const vmf_string& id) = 0;
 
-    /*
+    /*!
      * \brief Sets encryption algorithm implementation for reading/writing encrypted data
      */
     virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor) = 0;
 
-    /*
+    /*!
+     * \brief Loads a human-readable hint for decryption
+     * \return String containing hint
+     */
+    virtual std::string loadHintEncryption() = 0;
+
+    /*!
+     * \brief Saves a human-readable hint for encryption
+     * \param hint String containing hint
+     */
+    virtual void saveHintEncryption(const vmf_string& hint) = 0;
+
+    /*!
      *\brief Commits saved changes to file
      */
     virtual void pushChanges() = 0;

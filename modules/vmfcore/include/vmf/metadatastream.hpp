@@ -389,6 +389,7 @@ private:
     std::string m_sChecksumMedia;
     bool m_useEncryption;
     std::shared_ptr<Encryptor> m_encryptor;
+    std::string m_hintEncryption;
 };
 
 }

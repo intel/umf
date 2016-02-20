@@ -28,7 +28,7 @@ namespace vmf
 {
 MetadataStream::MetadataStream(void)
     : m_eMode( InMemory ), dataSource(nullptr), nextId(0), m_sChecksumMedia(""),
-      m_useEncryption(false), m_encryptor(nullptr)
+      m_useEncryption(false), m_encryptor(nullptr), m_hintEncryption("")
 {
 }
 
@@ -54,12 +54,14 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         //encryption of all scopes except whole stream should be performed by MetadataStream
         //dataSource should know nothing about that
         dataSource->setEncryptor(m_useEncryption ? m_encryptor : nullptr);
+
         dataSource->openFile(m_sFilePath, eMode);
         dataSource->loadVideoSegments(videoSegments);
         dataSource->load(m_mapSchemas);
         m_eMode = eMode;
         m_sFilePath = sFilePath;
         nextId = dataSource->loadId();
+        m_hintEncryption = dataSource->loadHintEncryption();
         m_sChecksumMedia = dataSource->loadChecksum();
 
         return true;
@@ -120,6 +122,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
             //encryption of all scopes except whole stream should be performed by MetadataStream
             //dataSource should know nothing about that
             dataSource->setEncryptor(m_useEncryption ? m_encryptor : nullptr);
+
             dataSource->remove(removedIds);
             removedIds.clear();
 
@@ -144,6 +147,9 @@ bool MetadataStream::save(const vmf_string &compressorId)
             dataSource->saveVideoSegments(videoSegments);
 
             dataSource->save(nextId);
+
+            if(!m_hintEncryption.empty())
+                dataSource->saveHintEncryption(m_hintEncryption);
 
             if(!m_sChecksumMedia.empty())
                 dataSource->saveChecksum(m_sChecksumMedia);
@@ -569,6 +575,7 @@ void MetadataStream::clear()
     addedIds.clear();
     videoSegments.clear();
     m_encryptor.reset();
+    m_hintEncryption.clear();
 }
 
 void MetadataStream::dataSourceCheck()

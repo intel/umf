@@ -93,6 +93,10 @@ public:
 
     virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor);
 
+    virtual std::string loadHintEncryption();
+
+    virtual void saveHintEncryption(const vmf_string& hint);
+
     virtual void pushChanges();
 
     /*!
