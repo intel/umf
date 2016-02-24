@@ -26,9 +26,15 @@
 #include "variant.hpp"
 #include "global.hpp"
 #include "metadatadesc.hpp"
+
 #include <map>
 #include <memory>
 #include <string>
+
+#include <atomic>
+#include <condition_variable>
+#include <queue>
+#include <thread>
 
 namespace vmf
 {
@@ -169,7 +175,7 @@ public:
     StatState::Type getState() const { return m_state; }
 
     void update( bool doRescan = false );
-    StatState::Type handle( StatAction::Type action, std::shared_ptr< Metadata > metadata );
+    StatState::Type handle( std::shared_ptr< Metadata > metadata );
 
     const Variant& getValue() const { return m_op->value(); }
 
@@ -189,6 +195,7 @@ private:
 class VMF_EXPORT Stat
 {
     friend class MetadataStream; // setStream()
+    friend class StatWorker;     // handle()
 
 private:
     class StatDesc
@@ -208,6 +215,175 @@ private:
         std::string m_name;
     };
 
+private:
+    class StatWorker
+    {
+    public:
+        explicit StatWorker( Stat* stat )
+            : m_stat( stat )
+            , m_worker( &StatWorker::operator(), this )
+            , m_wakeupForced( false )
+            , m_updateScheduled( false )
+            , m_rescanScheduled( false )
+            , m_exitScheduled( false )
+            , m_exitImmediate( false )
+            {}
+        ~StatWorker()
+            {
+                scheduleExit();
+                m_worker.join();
+                m_stat = nullptr;
+            }
+        void operator()()
+            {
+                // worker is starting
+                for(;;)
+                {
+                    // worker is going to sleep
+                    {
+                        std::unique_lock< std::mutex > lock( m_lock );
+                        if( m_stat->getUpdateMode() == StatUpdateMode::OnTimer )
+                        {
+                            const unsigned tmo = std::max( m_stat->getUpdateTimeout(), (unsigned)10 );
+                            bool awaken = false;
+                            do {
+                                awaken = m_signal.wait_for( lock, std::chrono::milliseconds(tmo), [&]
+                                {
+                                    return m_exitScheduled ||
+                                            m_rescanScheduled ||
+                                            m_wakeupForced ||
+                                            (m_updateScheduled && !m_items.empty());
+                                });
+                            } while( !awaken );
+                        }
+                        else
+                        {
+                            m_signal.wait( lock, [&]
+                            {
+                                return m_exitScheduled ||
+                                        m_rescanScheduled ||
+                                        m_wakeupForced ||
+                                        (m_updateScheduled && !m_items.empty());
+                            });
+                        }
+                        m_wakeupForced = false;
+                        if( m_exitScheduled && m_exitImmediate )
+                            break;
+                    }
+                    // worker has awaken
+                    if( m_rescanScheduled )
+                    {
+                        // rescan
+                        if( m_stat != nullptr )
+                            m_stat->rescan();
+                        {
+                            std::unique_lock< std::mutex > lock( m_lock );
+                            m_rescanScheduled = false;
+                        }
+                        if( m_stat != nullptr )
+                            m_stat->resetState();
+                    }
+                    else if( m_updateScheduled )
+                    {
+                        std::shared_ptr< Metadata > metadata;
+                        while( tryPop( metadata ))
+                        {
+                            // processing of item
+                            if( m_stat != nullptr )
+                                m_stat->handle( metadata );
+                        }
+                        {
+                            std::unique_lock< std::mutex > lock( m_lock );
+                            m_updateScheduled = false;
+                        }
+                        if( m_stat != nullptr )
+                            m_stat->resetState();
+                    }
+                    {
+                        std::unique_lock< std::mutex > lock( m_lock );
+                        if( m_exitScheduled && !m_exitImmediate )
+                            break;
+                    }
+                }
+                // worker is finishing
+            }
+        void scheduleUpdate( const std::shared_ptr< Metadata > val, bool doWake = true )
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                m_items.push( val );
+                if( doWake && !m_updateScheduled && !m_items.empty() )
+                {
+                    m_updateScheduled = true;
+                    m_signal.notify_one();
+                }
+            }
+        void scheduleRescan( bool doWake = true )
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                if( doWake && !m_rescanScheduled )
+                {
+                    m_rescanScheduled = true;
+                    m_signal.notify_one();
+                }
+            }
+
+        void scheduleExit( bool doImmediate = false )
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                if( !m_exitScheduled )
+                {
+                    m_exitScheduled = true;
+                    m_exitImmediate = doImmediate;
+                    m_signal.notify_one();
+                }
+            }
+        void wakeup( bool doForceWakeup = false )
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                m_updateScheduled = (m_updateScheduled || !m_items.empty());
+                m_wakeupForced = doForceWakeup;
+                if( m_exitScheduled || m_updateScheduled | m_wakeupForced )
+                {
+                    m_signal.notify_one();
+                }
+            }
+        void reset()
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                if( !m_items.empty() )
+                    std::queue< std::shared_ptr< Metadata >>().swap( m_items );
+                m_updateScheduled = false;
+                m_rescanScheduled = false;
+                m_exitScheduled = false;
+                m_exitImmediate = false;
+            }
+
+    private:
+        bool tryPop( std::shared_ptr< Metadata >& metadata )
+            {
+                std::unique_lock< std::mutex > lock( m_lock );
+                if( !m_items.empty() ) {
+                    metadata = m_items.front();
+                    m_items.pop();
+                    return true;
+                }
+                m_updateScheduled = false;
+                return false;
+            }
+
+    private:
+        Stat* m_stat;
+        std::thread m_worker;
+        std::queue< std::shared_ptr< Metadata >> m_items;
+        std::atomic< bool > m_wakeupForced;
+        std::atomic< bool > m_updateScheduled;
+        std::atomic< bool > m_rescanScheduled;
+        std::atomic< bool > m_exitScheduled;
+        std::atomic< bool > m_exitImmediate;
+        std::condition_variable m_signal;
+        std::mutex m_lock;
+    };
+
 public:
     Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
     explicit Stat( const Stat& other );
@@ -223,6 +399,9 @@ public:
     StatUpdateMode::Type getUpdateMode() const { return m_updateMode; }
     void setUpdateMode( StatUpdateMode::Type updateMode );
 
+    void setUpdateTimeout( unsigned ms ) { m_updateTimeout = ms; }
+    unsigned getUpdateTimeout() const { return m_updateTimeout; }
+
     void update( bool doRescan = false );
     void notify( StatAction::Type action, std::shared_ptr< Metadata > metadata );
 
@@ -235,11 +414,16 @@ private:
     MetadataStream* getStream() const;
 
     bool isActive() const { return m_isActive; }
-    void updateState( StatState::Type state );
+
+    void handle( const std::shared_ptr< Metadata > metadata );
+    void rescan();
+    void resetState() { m_state = StatState::UpToDate; }
 
     StatDesc m_desc;
     std::vector< StatField > m_fields;
+    StatWorker m_worker;
     StatUpdateMode::Type m_updateMode;
+    unsigned m_updateTimeout;
     StatState::Type m_state;
     bool m_isActive;
 };

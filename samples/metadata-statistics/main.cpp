@@ -23,6 +23,8 @@
 #include <iostream>
 #include <cstdio>
 #include <cassert>
+#include <chrono>
+#include <thread>
 
 #include "vmf/vmf.hpp"
 
@@ -210,7 +212,13 @@ int sample(int argc, char *argv[])
     fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName() );
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
-    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Manual );
+    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Disabled );
+//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Manual );
+//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::OnAdd );
+//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::OnTimer );
+
+    mdStream.getStat(GPS_STAT_NAME).setUpdateTimeout( 50 );
+    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::OnTimer );
 
     std::shared_ptr<vmf::Metadata> gpsMetadata;
 
@@ -235,6 +243,8 @@ int sample(int argc, char *argv[])
     gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
 
+//    mdStream.getStat(GPS_STAT_NAME).update();
+
     t = "21.02.2013 21:02";
     cout << "Adding metadata's item '" << GPS_METADATA_ITEM3 << "' with associated time " << t << endl;
 
@@ -250,6 +260,8 @@ int sample(int argc, char *argv[])
     gpsMetadata->push_back(vmf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM4));
     gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
+
+    mdStream.getStat(GPS_STAT_NAME).update();
 
     // dump statistics
     dumpStatistics( mdStream );
@@ -277,6 +289,9 @@ int sample(int argc, char *argv[])
         cerr << "Can't load schema " << GPS_SCHEMA_NAME << endl;
         exit(1);
     }
+
+    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::Manual );
+    mdStream.getStat(GPS_STAT_NAME).update( true );
 
     // Select all metadata items from loaded schema
     auto dataSet = loadStream.queryBySchema(GPS_SCHEMA_NAME);

@@ -639,7 +639,7 @@ StatField& StatField::operator=( StatField&& other )
     return *this;
 }
 
-StatState::Type StatField::handle( StatAction::Type action, std::shared_ptr< Metadata > metadata )
+StatState::Type StatField::handle( std::shared_ptr< Metadata > metadata )
 {
     const std::shared_ptr< MetadataDesc > metadataDesc = metadata->getDesc();
     if( metadataDesc && (this->getMetadataDesc() == metadataDesc ))
@@ -648,7 +648,7 @@ StatState::Type StatField::handle( StatAction::Type action, std::shared_ptr< Met
         Metadata::iterator it = metadata->findField( fieldName );
         if( it != metadata->end() )
         {
-            updateState( m_op->handle( action, *it ));
+            updateState( m_op->handle( StatAction::Add, *it ));
         }
     }
     return getState();
@@ -662,7 +662,7 @@ void StatField::update( bool doRescan )
         MetadataSet metadataSet = getStream()->getAll();
         for( auto metadata : metadataSet )
         {
-            handle( StatAction::Add, metadata );
+            handle( metadata );
         }
         m_state = StatState::UpToDate;
     }
@@ -716,7 +716,8 @@ void StatField::setStream( MetadataStream* pMetadataStream )
 Stat::Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode )
     : m_desc( name )
     , m_fields( fields )
-    , m_updateMode( StatUpdateMode::Manual )
+    , m_worker( this )
+    , m_updateMode( updateMode )
     , m_state( StatState::UpToDate )
     , m_isActive( false )
 {
@@ -725,6 +726,7 @@ Stat::Stat( const std::string& name, const std::vector< StatField >& fields, Sta
 Stat::Stat( const Stat& other )
     : m_desc( other.m_desc )
     , m_fields( other.m_fields )
+    , m_worker( this )
     , m_updateMode( other.m_updateMode )
     , m_state( other.m_state )
     , m_isActive( other.m_isActive )
@@ -734,6 +736,7 @@ Stat::Stat( const Stat& other )
 Stat::Stat( Stat&& other )
     : m_desc( std::move( other.m_desc ))
     , m_fields( std::move( other.m_fields ))
+    , m_worker( this )
     , m_updateMode( other.m_updateMode )
     , m_state( other.m_state )
     , m_isActive( other.m_isActive )
@@ -746,14 +749,14 @@ Stat::~Stat()
 
 Stat& Stat::operator=( const Stat& other )
 {
-    setStream( nullptr );
+    m_worker.reset();
 
+    setStream( nullptr );
     m_desc       = other.m_desc;
     m_fields     = other.m_fields;
     m_updateMode = other.m_updateMode;
     m_state      = other.m_state;
     m_isActive   = other.m_isActive;
-
     setStream( other.getStream() );
 
     return *this;
@@ -761,14 +764,14 @@ Stat& Stat::operator=( const Stat& other )
 
 Stat& Stat::operator=( Stat&& other )
 {
-    setStream( nullptr );
+    m_worker.reset();
 
+    setStream( nullptr );
     m_desc       = std::move( other.m_desc );
     m_fields     = std::move( other.m_fields );
     m_updateMode = std::move( other.m_updateMode );
     m_state      = std::move( other.m_state );
     m_isActive   = std::move( other.m_isActive );
-
     setStream( other.getStream() );
 
     return *this;
@@ -776,24 +779,92 @@ Stat& Stat::operator=( Stat&& other )
 
 void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata )
 {
-    if( isActive() && (m_updateMode != StatUpdateMode::Disabled) )
+    if( isActive() )
     {
-        for( auto& statField : m_fields )
+        switch( action )
         {
-            updateState( statField.handle( action, metadata ));
+        case StatAction::Add:
+            switch( m_updateMode )
+            {
+            case StatUpdateMode::Disabled:
+                break;
+            case StatUpdateMode::Manual:
+                m_state = StatState::NeedUpdate;
+                m_worker.scheduleUpdate( metadata, false );
+                break;
+            case StatUpdateMode::OnAdd:
+            case StatUpdateMode::OnTimer:
+                m_state = StatState::NeedUpdate;
+                m_worker.scheduleUpdate( metadata, true );
+                break;
+            }
+            break;
+        case StatAction::Remove:
+            switch( m_updateMode )
+            {
+            case StatUpdateMode::Disabled:
+                break;
+            case StatUpdateMode::Manual:
+                m_state = StatState::NeedRescan;
+                break;
+            case StatUpdateMode::OnAdd:
+            case StatUpdateMode::OnTimer:
+                m_state = StatState::NeedRescan;
+                m_worker.scheduleRescan();
+                break;
+            }
+            break;
         }
     }
 }
 
 void Stat::update( bool doRescan )
 {
-    if( isActive() && (m_updateMode != StatUpdateMode::Disabled) && (getState() != StatState::UpToDate) )
+    if( isActive() && ((getState() != StatState::UpToDate) || doRescan) )
     {
-        for( auto& statField : m_fields )
+        switch( m_updateMode )
         {
-            statField.update( doRescan );
+        case StatUpdateMode::Disabled:
+            break;
+        case StatUpdateMode::Manual:
+        case StatUpdateMode::OnAdd:
+        case StatUpdateMode::OnTimer:
+            if( doRescan )
+            {
+                m_state = StatState::NeedRescan;
+                m_worker.scheduleRescan();
+            }
+            else
+            {
+                m_state = StatState::NeedUpdate;
+                m_worker.wakeup();
+            }
+            break;
         }
-        m_state = StatState::UpToDate;
+/*
+// TODO: Busy wait loop. Perhaps it would be better to wait on conditional variable.
+//       Also, why we don't add an argument flag: wait or not to wait for update
+//----
+        while( m_state != StatState::UpToDate )
+            ;
+//----
+*/
+    }
+}
+
+void Stat::handle( const std::shared_ptr< Metadata > metadata )
+{
+    for( auto& statField : m_fields )
+    {
+        statField.handle( metadata );
+    }
+}
+
+void Stat::rescan()
+{
+    for( auto& statField : m_fields )
+    {
+        statField.update( true );
     }
 }
 
@@ -803,36 +874,18 @@ void Stat::setUpdateMode( StatUpdateMode::Type updateMode )
     {
         switch( updateMode )
         {
+        case StatUpdateMode::Disabled:
+            m_updateMode = updateMode;
+            break;
+        case StatUpdateMode::Manual:
         case StatUpdateMode::OnAdd:
         case StatUpdateMode::OnTimer:
-            VMF_LOG_WARNING( "Asynchronous update modes not implemented yet, StatUpdateMode::Manual used instead" );
-            updateMode = StatUpdateMode::Manual;
-            // fall down
-        case StatUpdateMode::Disabled:
-        case StatUpdateMode::Manual:
             m_updateMode = updateMode;
+            m_worker.wakeup( true );
             break;
         default:
             VMF_EXCEPTION( vmf::NotImplementedException, "Unknown update mode" );
         }
-    }
-}
-
-void Stat::updateState( StatState::Type state )
-{
-    switch( state )
-    {
-    case StatState::NeedRescan:
-        if( unsigned(state) > unsigned(m_state) )
-            m_state = state;
-        break;
-    case StatState::NeedUpdate:
-        if( unsigned(state) > unsigned(m_state) )
-            m_state = state;
-        break;
-    case StatState::UpToDate:
-    default:
-        break;
     }
 }
 
@@ -878,3 +931,4 @@ MetadataStream* Stat::getStream() const
 }
 
 } // namespace vmf
+
