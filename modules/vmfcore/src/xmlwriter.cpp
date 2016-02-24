@@ -238,9 +238,6 @@ static void add(xmlNodePtr statNode, const Stat& stat)
     }
 }
 
-XMLWriter::XMLWriter() {}
-XMLWriter::~XMLWriter() {}
-
 std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
 {
     if( spSchema == nullptr )

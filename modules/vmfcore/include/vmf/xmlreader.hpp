@@ -45,12 +45,12 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLReader();
+    XMLReader() {}
 
     /*!
     * \brief Class destructor
     */
-    virtual ~XMLReader();
+    virtual ~XMLReader() {}
 
     //these methods always get uncompressed text as input
     virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,

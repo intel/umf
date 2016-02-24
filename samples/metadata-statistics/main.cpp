@@ -175,7 +175,7 @@ int sample(int argc, char *argv[])
 
     // Open metadata stream
     vmf::MetadataStream mdStream;
-    if (!mdStream.open(FILE_NAME, vmf::MetadataStream::ReadWrite))
+    if (!mdStream.open(FILE_NAME, vmf::MetadataStream::Update))
     {
         cerr << "Can't open file " << FILE_NAME << endl;
         exit(1);

@@ -56,7 +56,8 @@ public:
                           std::string& filepath, std::string& checksum,
                           std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                           std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                          std::vector<std::shared_ptr<MetadataInternal>>& metadata);
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+                          std::vector< Stat >& stats);
 
     virtual bool parseSchemas(const std::string& text,
                               std::vector<std::shared_ptr<MetadataSchema>>& schemas);
@@ -67,6 +68,9 @@ public:
 
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+    virtual bool parseStats(const std::string& text, std::vector< Stat >& stats);
+
 
     /*!
      * \brief Performs decompression of previously compressed data

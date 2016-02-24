@@ -39,12 +39,12 @@ public:
     /*!
     * \brief Default class constructor
     */
-    XMLWriter();
+    XMLWriter() {}
 
     /*!
     * \brief Class destructor
     */
-    virtual ~XMLWriter();
+    virtual ~XMLWriter() {}
 
     // IWriter implementation
     virtual std::string store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas);

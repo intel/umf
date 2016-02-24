@@ -39,12 +39,12 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONWriter();
+    JSONWriter() {}
 
     /*!
     * \brief Class destructor
     */
-    virtual ~JSONWriter();
+    virtual ~JSONWriter() {}
 
     // IWriter implementation
     virtual std::string store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas);

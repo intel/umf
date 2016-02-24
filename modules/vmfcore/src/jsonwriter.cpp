@@ -217,9 +217,6 @@ static void add(JSONNode& statNode, const Stat& stat)
     }
 }
 
-JSONWriter::JSONWriter() {};
-JSONWriter::~JSONWriter() {};
-
 std::string JSONWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
 {
     if( spSchema == nullptr )

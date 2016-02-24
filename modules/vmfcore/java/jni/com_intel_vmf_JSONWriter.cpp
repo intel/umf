@@ -127,10 +127,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet (JNI
  * Method:    n_storeAll
  * Signature: (JJLjava/lang/String;Ljava/lang/String;[J[JJ)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr);
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr, jlongArray statsAddrs);
 
 
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr)
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr, jlongArray statsAddrs)
 {
     static const char method_name[] = "JSONWriter::n_1storeAll";
 
@@ -147,6 +147,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
 
         std::vector <std::shared_ptr<MetadataStream::VideoSegment>> vecSegments;
         std::vector <std::shared_ptr<MetadataSchema>> vecSchemas;
+        std::vector <Stat> vecStats;
 
         const char* file = env->GetStringUTFChars(path, NULL);
         const char* sum = env->GetStringUTFChars(checksum, NULL);
@@ -158,10 +159,12 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
         env->ReleaseStringUTFChars (checksum, sum);
 
         jlong* segmentsArray = env->GetLongArrayElements (segAddrs, 0);
-        jlong* schemasArray = env->GetLongArrayElements (schemaAddrs, 0);
+        jlong* schemasArray  = env->GetLongArrayElements (schemaAddrs, 0);
+        jlong* statsArray    = env->GetLongArrayElements (statsAddrs, 0);
 
         jsize lenSegments = env->GetArrayLength (segAddrs);
-        jsize lenSchemas = env->GetArrayLength (schemaAddrs);
+        jsize lenSchemas  = env->GetArrayLength (schemaAddrs);
+        jsize lenStats    = env->GetArrayLength(statsAddrs);
 
         for (int i = 0; i < lenSegments; i++)
         {
@@ -175,10 +178,17 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
             vecSchemas.push_back(*pSpSchema);
         }
 
+        for (int j = 0; j < lenStats; j++)
+        {
+            Stat* pStat = (Stat*) statsArray[j];
+            vecStats.push_back(*pStat);
+        }
+
         env->ReleaseLongArrayElements(segAddrs, segmentsArray, 0);
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
+        env->ReleaseLongArrayElements(statsAddrs, schemasArray, 0);
                 
-        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set));
+        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set), vecStats);
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)

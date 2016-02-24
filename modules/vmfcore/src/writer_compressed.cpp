@@ -37,9 +37,10 @@ std::string WriterCompressed::store(const IdType& nextId, const std::string& fil
                                     const std::string& checksum,
                                     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                    const MetadataSet& set)
+                                    const MetadataSet& set,
+                                    const std::vector< Stat >& stats)
 {
-    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set);
+    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, stats);
     return compress(text);
 }
 
@@ -55,6 +56,17 @@ std::string WriterCompressed::store(const std::vector<std::shared_ptr<MetadataSt
     return compress(text);
 }
 
+std::string WriterCompressed::store(const Stat& stat)
+{
+    std::string text = writer->store(stat);
+    return compress(text);
+}
+
+std::string WriterCompressed::store(const std::vector<Stat>& stats)
+{
+    std::string text = writer->store(stats);
+    return compress(text);
+}
 
 class MetadataAccessor: public Metadata
 {
@@ -105,10 +117,11 @@ std::string WriterCompressed::compress(const std::string& input)
         const std::string filePath = "";
         const std::string checksum = "";
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
+        std::vector<Stat> stats;
 
         //create writer with no compression enabled
         std::string outputString;
-        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet);
+        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet, stats);
 
         return outputString;
     }

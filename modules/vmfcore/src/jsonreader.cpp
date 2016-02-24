@@ -321,8 +321,6 @@ static void parseStatFromNode(JSONNode& statNode, std::vector< Stat >& stats)
     stats.emplace_back(statName, fields, updateMode);
 }
 
-JSONReader::JSONReader(){}
-
 bool JSONReader::parseSchemas(const std::string& text,
                                       std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {

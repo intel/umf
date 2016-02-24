@@ -123,10 +123,8 @@ void XMPDataSource::loadXMPstructs()
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     xmpFile.GetXMP(compressedXMP.get());
 
-    std::shared_ptr<XMPMetadataSource> cMetaSource;
-    std::shared_ptr<XMPSchemaSource> cSchemaSource;
-    cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
-    cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
+    std::shared_ptr<XMPSchemaSource> cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
+    std::shared_ptr<XMPMetadataSource> cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
     if (!cMetaSource || !cSchemaSource)
     {
         VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
@@ -159,6 +157,7 @@ void XMPDataSource::loadXMPstructs()
                 xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 schemaSource = make_shared<XMPSchemaSource>(xmp);
                 metadataSource = make_shared<XMPMetadataSource>(xmp);
+                statSource = make_shared<XMPStatSource>(xmp);
             }
             catch(IncorrectParamException& ce)
             {
@@ -168,6 +167,7 @@ void XMPDataSource::loadXMPstructs()
                     xmp = compressedXMP;
                     schemaSource = cSchemaSource;
                     metadataSource = cMetaSource;
+                    statSource = make_shared<XMPStatSource>(xmp);
                 }
                 else
                 {
@@ -180,6 +180,7 @@ void XMPDataSource::loadXMPstructs()
             xmp = compressedXMP;
             schemaSource = cSchemaSource;
             metadataSource = cMetaSource;
+            statSource = make_shared<XMPStatSource>(xmp);
         }
     }
     catch(const XMP_Error& e)
@@ -290,9 +291,6 @@ void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMod
         }
 
         loadXMPstructs();
-
-        xmpFile.GetXMP(xmp.get());
-        statSource = make_shared<XMPStatSource>(xmp); // TODO: move this to loadXMPstructs()
    }
     catch (const XMP_Error& e)
     {

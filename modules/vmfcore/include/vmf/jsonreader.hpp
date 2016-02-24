@@ -46,12 +46,12 @@ public:
     /*!
     * \brief Default class constructor
     */
-    JSONReader();
+    JSONReader() {}
 
     /*!
     * \brief Class destructor
     */
-    ~JSONReader();
+    ~JSONReader() {}
 
     //these methods always get uncompressed text as input
     virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,

@@ -307,9 +307,6 @@ static void parseStatFromNode(xmlNodePtr statNode, std::vector< Stat >& stats)
     stats.emplace_back(statName, fields, updateMode);
 }
 
-XMLReader::XMLReader(){}
-XMLReader::~XMLReader(){}
-
 
 //this version of parseSchemas always gets uncompressed text as input
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)
