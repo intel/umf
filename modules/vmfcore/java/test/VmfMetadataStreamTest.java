@@ -6,6 +6,7 @@ import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.MetadataInternal;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.FieldValue;
+import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
@@ -34,6 +35,7 @@ public class VmfMetadataStreamTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -382,8 +384,9 @@ public class VmfMetadataStreamTest
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+    
     @Test
-    public void testAddSegmentTrown()
+    public void testAddSegmentThrown()
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 20, 0);
         MetadataStream.VideoSegment s2 = new MetadataStream.VideoSegment("vacation", 20, 3000);
@@ -396,7 +399,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testClearReopenTrown()
+    public void testClearReopenThrown()
     {
         stream.clear();
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -405,17 +408,17 @@ public class VmfMetadataStreamTest
     }
 
     /*@Test
-    public void testReopen2Trown()
+    public void testReopen2Thrown()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         
         thrown.expect(com.intel.vmf.VmfException.class);
-        //thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
+        thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
         stream.reopen(MetadataStream.ReadWrite);
     }*/
     
     @Test
-    public void testMdIntAddTrown()
+    public void testMdIntAddThrown()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         MetadataDesc desc = new MetadataDesc ("people", fields);
@@ -428,7 +431,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testAddSchemaTrown()
+    public void testAddSchemaThrown()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: Metadata Schema already exists!");

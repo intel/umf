@@ -1,10 +1,11 @@
+import com.intel.vmf.Log;
 import com.intel.vmf.MetadataStream;
 import com.intel.vmf.Vmf;
 
 import static org.junit.Assert.*;
 
 import org.junit.*;
-import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class VmfVideoSegmentTest 
 {
@@ -12,6 +13,7 @@ public class VmfVideoSegmentTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -22,6 +24,7 @@ public class VmfVideoSegmentTest
     
     protected MetadataStream.VideoSegment vs1;
     protected MetadataStream.VideoSegment vs2;
+    protected MetadataStream.VideoSegment newSegment;
     
     @Before
     public void setUp ()
@@ -74,5 +77,81 @@ public class VmfVideoSegmentTest
         
         assertEquals (1360, vs2.getWidth ());
         assertEquals (768, vs2.getHeight ());
+    }
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    
+    @Test
+    public void testCreateSegmentTitleTrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment title can't be empty");
+        newSegment = new MetadataStream.VideoSegment("", 25, 0);
+    }
+    
+    @Test
+    public void testCreateSegmentFPSThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment fps must be positive");
+        newSegment = new MetadataStream.VideoSegment("vacation", -1, 0);
+    }
+    
+    @Test
+    public void testCreateSegmentStartThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment start time must be positive");
+        newSegment = new MetadataStream.VideoSegment("vacation", 20, -1);
+    }
+    
+    @Test
+    public void testCreateSegmentDurationThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment duration must be positive");
+        newSegment = new MetadataStream.VideoSegment("vacation", 20, 0, -1);
+    }
+    
+    @Test
+    public void testSetSegmentTitleThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment title can't be empty");
+        vs1.setTitle("");
+    }
+    
+    @Test
+    public void testSetSegmentFPSThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment fps must be positive");
+        vs1.setFPS(0);
+    }
+    
+    @Test
+    public void testSetSegmentDurationThrown()
+    {
+        newSegment = new MetadataStream.VideoSegment();
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment duration must positive");
+        newSegment.setDuration(-1);
+    }
+    
+    @Test
+    public void testSetSegmentTimeThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment start time must be positive");
+        vs1.setTime(-1);
+    }
+    
+    @Test
+    public void testSetSegmentResolutionThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment resoulution width and height must be positive");
+        vs1.setResolution(0, 0);
     }
  }
