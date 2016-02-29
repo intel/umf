@@ -191,7 +191,7 @@ void readAndDumpEncryptedMetadata(const vmf_string& videoFile, std::shared_ptr<E
                         cout << separator << f << "=";
                         try { cout << item->getFieldValue(f).toString(); }
                         catch (vmf::Exception& e) { cout << '<' << e.what() << '>'; }
-                        if(item->findField(f)->getEncrypted())
+                        if(item->findField(f)->getUseEncryption())
                         {
                             cout << " encrypted";
                         }

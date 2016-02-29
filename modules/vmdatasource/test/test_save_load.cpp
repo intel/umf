@@ -1658,7 +1658,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
         address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
         address->setFieldValue(TEST_FIELD_AGE, 33);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
-        address->findField(TEST_FIELD_ADDRESS)->setEncrypted(true);
+        address->findField(TEST_FIELD_ADDRESS)->setUseEncryption(true);
         address->setTimestamp(vmf::getTimestamp());
 
         stream.add(address);

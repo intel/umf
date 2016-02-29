@@ -27,7 +27,7 @@ namespace vmf
 class VMF_EXPORT FieldValue : public vmf::Variant
 {
 public:
-    FieldValue() : m_name("")
+    FieldValue() : m_name(""), m_useEncryption(false), m_encryptedData("")
     {
     }
 
@@ -49,9 +49,13 @@ public:
 
     const std::string& getName() const { return m_name; }
 
-    const bool getEncrypted() const { return m_useEncryption; }
+    const bool getUseEncryption() const { return m_useEncryption; }
 
-    void setEncrypted(bool useEncryption) { m_useEncryption = useEncryption; }
+    void setUseEncryption(bool useEncryption) { m_useEncryption = useEncryption; }
+
+    const std::string& getEncryptedData() const { return m_encryptedData; }
+
+    void setEncryptedData(std::string& encryptedData) { m_encryptedData = encryptedData; }
 
     FieldValue& operator = ( const FieldValue& other )
     {
@@ -72,6 +76,7 @@ public:
 private:
     MetaString m_name;
     bool m_useEncryption;
+    MetaString m_encryptedData;
 };
 
 }

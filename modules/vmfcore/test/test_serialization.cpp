@@ -440,7 +440,7 @@ TEST_P(TestSerialization, EncryptOneField)
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
-    toBeEncrypted->findField("name")->setEncrypted(true);
+    toBeEncrypted->findField("name")->setUseEncryption(true);
 
     std::string result = stream.serialize(*writer);
 

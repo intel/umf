@@ -281,6 +281,18 @@ public:
      */
     void setUseEncryption(bool useEncryption);
 
+    /*!
+     * \brief Get base64-encoded string containing encrypted data (if any)
+     * \return encryptedData
+     */
+    std::string getEncryptedData() const;
+
+    /*!
+     * \brief Sets a string containing encrypted data
+     * \param encData
+     */
+    void setEncryptedData(const std::string& encData);
+
     enum {
         UNDEFINED_FRAME_INDEX = -1, UNDEFINED_FRAMES_NUMBER = 0,
         UNDEFINED_TIMESTAMP = -1, UNDEFINED_DURATION = 0,
@@ -305,6 +317,7 @@ private:
     std::string     m_sName;
     std::string     m_sSchemaName;
     bool            m_useEncryption;
+    std::string     m_encryptedData;
 
     std::vector<Reference> m_vReferences;
     std::shared_ptr< MetadataDesc >	m_spDesc;

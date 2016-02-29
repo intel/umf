@@ -29,6 +29,7 @@ Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool u
     , m_sName( "" )
     , m_sSchemaName( "" )
     , m_useEncryption(useEncryption)
+    , m_encryptedData("")
     , m_spDesc( spDescription )
     , m_pStream(nullptr)
 {
@@ -594,6 +595,16 @@ bool Metadata::getUseEncryption() const
 void Metadata::setUseEncryption(bool useEncryption)
 {
     m_useEncryption = useEncryption;
+}
+
+std::string Metadata::getEncryptedData() const
+{
+    return m_encryptedData;
+}
+
+void Metadata::setEncryptedData(const std::string &encData)
+{
+    m_encryptedData = encData;
 }
 
 bool Metadata::isValid() const
