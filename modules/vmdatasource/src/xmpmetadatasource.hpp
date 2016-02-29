@@ -52,8 +52,10 @@ private:
     void loadSchemaName(const vmf::MetaString& pathToSchema, vmf::MetaString& schemaName);
     void loadReference(const vmf::MetaString& thisRefPath, const std::shared_ptr<vmf::Metadata>& md, vmf::MetadataStream& stream);
 
-    void loadField(const vmf::MetaString& fieldPath, const std::shared_ptr<vmf::Metadata>& md, const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
-    void saveField(const vmf::MetaString& fieldName, const vmf::Variant& value, const vmf::MetaString& fieldsPath);
+    void loadField(const vmf::MetaString& fieldPath, const std::shared_ptr<vmf::Metadata>& md,
+                   const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
+    void saveField(const vmf::MetaString& fieldName, const vmf::Variant& value, const bool isEncrypted,
+                   const vmf::MetaString& encryptedData, const vmf::MetaString& fieldsPath);
 
     void loadIds();
     void loadIds(const vmf::MetaString& pathToSchema);
@@ -69,6 +71,11 @@ private:
 
     void loadMetadataTime(const vmf::MetaString& pathToProperty, long long& timestamp);
     void saveMetadataTime(const vmf::MetaString& pathToProperty, const long long& timestamp);
+
+    void loadMetadataEncrypted(const vmf::MetaString& pathToProperty, bool &isEncrypted,
+                               vmf::MetaString& encryptedData);
+    void saveMetadataEncrypted(const vmf::MetaString& pathToProperty, bool isEncrypted,
+                               const vmf::MetaString& encryptedData);
 
     void loadMetadataDuration(const vmf::MetaString& pathToProperty, long long& duration);
     void saveMetadataDuration(const vmf::MetaString& pathToProperty, const long long& duration);
