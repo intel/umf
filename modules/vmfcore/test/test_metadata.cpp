@@ -27,11 +27,13 @@ protected:
         vFields.emplace_back( vmf::FieldDesc( "email", vmf::Variant::type_string ));
         spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( "people", vFields ));
         spJessica = std::shared_ptr< vmf::Metadata >(new vmf::Metadata(spDesc));
+        spHumanInternal = std::shared_ptr< vmf::MetadataInternal >(new vmf::MetadataInternal(spDesc));
     }
 
     std::vector< vmf::FieldDesc > vFields;
     std::shared_ptr< vmf::MetadataDesc > spDesc;
     std::shared_ptr< vmf::Metadata > spJessica;
+    std::shared_ptr< vmf::MetadataInternal > spHumanInternal;
 };
 
 TEST_F(TestMetadata, CreateFromDesc)
@@ -45,6 +47,11 @@ TEST_F(TestMetadata, CreateFromDesc)
     ASSERT_EQ(spJessica->getName(), "people");
     ASSERT_EQ(spJessica->getSchemaName(), vmf::vmf_string());
     ASSERT_EQ(spJessica->getId(), vmf::INVALID_ID);
+
+    vmf::MetadataInternal newMdInt(*spHumanInternal);
+    ASSERT_EQ(newMdInt.getName(), "people");
+    ASSERT_EQ(newMdInt.getSchemaName(), vmf::vmf_string());
+    ASSERT_EQ(newMdInt.getId(), vmf::INVALID_ID);
 }
 
 TEST_F(TestMetadata, CreateNullPtr)

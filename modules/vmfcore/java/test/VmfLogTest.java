@@ -41,7 +41,9 @@ public class VmfLogTest
         String str = in.readLine();
         assertTrue (str == null);
         
-        Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 30);
+        Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 44);
+        Log.log(Log.LOG_WARNING, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 45);
+        Log.log(6, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 46);
         
         str = in.readLine();
         assertFalse (str.isEmpty());

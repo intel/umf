@@ -54,6 +54,17 @@ protected:
     std::vector<vmf::FieldDesc> fields;
 };
 
+TEST_F(TestGlobal, GetTimeStamp)
+{
+    ASSERT_THROW(vmf::getTimestamp(1965, 1, 1), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 13, 1), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 1, 32), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 1, 14, 26), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 1, 14, 9, 65), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 1, 14, 9, 30, 65), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::getTimestamp(1989, 1, 14, 9, 30, 40, 1500), vmf::IncorrectParamException);
+}
+
 TEST_F(TestGlobal, Open)
 {
     ASSERT_FALSE(stream.open(NO_FILE, vmf::MetadataStream::Update));

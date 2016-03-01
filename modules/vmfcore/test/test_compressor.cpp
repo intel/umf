@@ -92,6 +92,16 @@ protected:
     std::shared_ptr<Compressor> compressor;
 };
 
+TEST_P(TestCompressor, TryRegisterNewNull)
+{
+    std::shared_ptr<Compressor> newBloating = NULL;
+    ASSERT_THROW(vmf::Compressor::registerNew(newBloating), IncorrectParamException);
+}
+
+TEST_P(TestCompressor, TryUnregisterNonExisting)
+{
+    ASSERT_THROW(vmf::Compressor::unregister("trampampam"), IncorrectParamException);
+}
 
 TEST_P(TestCompressor, CreateByName)
 {
