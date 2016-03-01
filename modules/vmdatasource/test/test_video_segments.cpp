@@ -123,29 +123,6 @@ TEST_F(TestVideoSegments, SaveLoad)
     }
 }
 
-TEST_P(TestVideoSegments, ParseSegment)
-{
-    SerializerType type = GetParam();
-    if(type == TypeXML)
-    {
-	writer.reset(new XMLWriter());
-	reader.reset(new XMLReader());
-    }
-    else if(type == TypeJson)
-    {
-	writer.reset(new JSONWriter());
-	reader.reset(new JSONReader());
-    }
-
-    std::string result = writer->store(segments[0]);
-
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    reader->parseVideoSegments(result, loadedSegments);
-
-    ASSERT_EQ(1u, loadedSegments.size());
-    compareSegments(segments[0], loadedSegments[0]);
-}
-
 TEST_P(TestVideoSegments, ParseSegmentsArray)
 {
     SerializerType type = GetParam();

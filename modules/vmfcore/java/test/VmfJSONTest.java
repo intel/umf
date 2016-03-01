@@ -175,12 +175,6 @@ public class VmfJSONTest
         MetadataStream.VideoSegment videoSegs1[] = reader.parseVideoSegments(segments);
         assertEquals (3, videoSegs1.length);
         
-        String segment = writer.store(videoSeg1);
-        assertFalse(segment.isEmpty());
-        
-        MetadataStream.VideoSegment videoSegs2[] = reader.parseVideoSegments(segment);
-        assertEquals (1, videoSegs2.length);
-        
         String all = writer.store(1, "path.txt", "trampampam", videoSegs, schemas, mdSet);
         assertFalse(all.isEmpty());
     }

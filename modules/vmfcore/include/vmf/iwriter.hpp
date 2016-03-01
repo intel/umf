@@ -62,12 +62,7 @@ public:
                                const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                const MetadataSet& set ) = 0;
-
-    /*!
-    * \brief Export a video segment to a string representation
-    */
-    virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment) = 0;
-
+        
     /*!
     * \brief Export a video segments vector to a string representation.
     */

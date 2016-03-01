@@ -161,31 +161,6 @@ protected:
     vmf_string n_schemaPeople, n_schemaFrames;
 };
 
-/*
-TEST_P(TestSerialization, Parse_schema)
-{
-    SerializerType type = GetParam();
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
-
-    std::string result = writer->store(spSchemaPeople);
-
-    std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    reader->parseSchemas(result, schemas);
-    ASSERT_EQ(1u, schemas.size());
-    compareSchemas(spSchemaPeople, schemas[0]);
-}
-*/
-
 TEST_P(TestSerialization, Parse_schemasArray)
 {
     SerializerType type = std::get<0>(GetParam());
@@ -239,36 +214,6 @@ TEST_P(TestSerialization, Parse_schemasAll)
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
-
-/*
-TEST_P(TestSerialization, Parse_metadata)
-{
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
-
-    auto item = stream.getAll()[0];
-    std::string result = writer->store(item);
-
-    std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(spSchemaFrames);
-    schemas.push_back(spSchemaPeople);
-    std::vector<std::shared_ptr<MetadataInternal>> md;
-    reader->parseMetadata(result, schemas, md);
-    ASSERT_EQ(1u, md.size());
-    compareMetadata(item, md[0], false);
-    ASSERT_EQ(item->getAllReferences().size(), md[0]->vRefs.size());
-}
-*/
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
