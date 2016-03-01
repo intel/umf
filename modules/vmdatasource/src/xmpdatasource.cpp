@@ -164,13 +164,35 @@ void XMPDataSource::loadXMPstructs()
             std::shared_ptr<Metadata> eItem = eSet[0];
             vmf_string hint      = eItem->getFieldValue(encryptionHintPropName);
             vmf_string encodedB64 = eItem->getFieldValue(encryptedDataPropName);
-            try
+            bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
+            if(!encryptor)
+            {
+                if(!ignoreBad)
+                {
+                    VMF_EXCEPTION(IncorrectParamException,
+                                  "No decryption algorithm provided for encrypted data");
+                }
+            }
+            else
             {
                 string decodedFromB64;
                 XMPUtils::DecodeFromBase64(encodedB64.data(), encodedB64.length(), &decodedFromB64);
                 vmf_rawbuffer encrypted(decodedFromB64.c_str(), decodedFromB64.size());
                 string theData;
-                encryptor->decrypt(encrypted, theData);
+                try
+                {
+                    encryptor->decrypt(encrypted, theData);
+                }
+                catch(Exception& ee)
+                {
+                    //if we've failed with decryption (whatever the reason was)
+                    //and we're allowed to ignore that
+                    if(!ignoreBad)
+                    {
+                        string message = "Decryption failed: " + string(ee.what()) + ", hint: " + hint;
+                        VMF_EXCEPTION(IncorrectParamException, message);
+                    }
+                }
                 //replace tmp XMP entities
                 tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
@@ -179,17 +201,6 @@ void XMPDataSource::loadXMPstructs()
                 {
                     VMF_EXCEPTION(DataStorageException,
                                   "Failed to create metadata source or schema source");
-                }
-            }
-            catch(IncorrectParamException& ee)
-            {
-                //if we failed with decryption and we're allowed to ignore that
-                if(!(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor))
-                {
-                    string message = encryptor ?
-                                     ("Decryption failed: " + string(ee.what()) + ", hint: " + hint) :
-                                      "No decryption algorithm provided for encrypted data";
-                    VMF_EXCEPTION(IncorrectParamException, message);
                 }
             }
         }
@@ -208,6 +219,7 @@ void XMPDataSource::loadXMPstructs()
             std::shared_ptr<Metadata> cItem = cSet[0];
             vmf_string algo    = cItem->getFieldValue(compressionAlgoPropName);
             vmf_string encoded = cItem->getFieldValue(compressedDataPropName);
+            bool ignoreBad = openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor;
             try
             {
                 std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
@@ -229,7 +241,15 @@ void XMPDataSource::loadXMPstructs()
             catch(IncorrectParamException& ce)
             {
                 //if there's no such compressor and we're allowed to ignore that
-                if(!(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor))
+                if(!ignoreBad)
+                {
+                    VMF_EXCEPTION(IncorrectParamException, ce.what());
+                }
+            }
+            catch(InternalErrorException& ce)
+            {
+                //if there was an error during decompression
+                if(!ignoreBad)
                 {
                     VMF_EXCEPTION(IncorrectParamException, ce.what());
                 }
