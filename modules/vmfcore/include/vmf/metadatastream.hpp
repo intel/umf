@@ -372,6 +372,8 @@ protected:
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
     void internalAdd(const std::shared_ptr< Metadata >& spMetadata);
+    void decrypt();
+    void encrypt();
 
 private:
     OpenMode m_eMode;

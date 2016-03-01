@@ -21,6 +21,7 @@
 #include "object_factory.hpp"
 #include <algorithm>
 #include <stdexcept>
+#include <set>
 
 #include <iostream>
 
@@ -88,6 +89,11 @@ bool MetadataStream::load( const std::string& sSchemaName )
         {
             dataSource->loadSchema(sSchemaName, *this);
         }
+
+        //need to decrypt everything, not just loaded schema
+        //because the referenced metadata records are also loaded
+        decrypt();
+
         return true;
     }
     catch(...)
@@ -102,6 +108,11 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
     try
     {
         dataSource->loadProperty(sSchemaName, sMetadataName, *this);
+
+        //need to decrypt everything, not just loaded schema/description
+        //because the referenced metadata records are also loaded
+        decrypt();
+
         return true;
     }
     catch(...)
@@ -118,6 +129,9 @@ bool MetadataStream::save(const vmf_string &compressorId)
     {
         if( (m_eMode & Update) && !m_sFilePath.empty() )
         {
+            MetadataStream encryptedStream(*this);
+            encryptedStream.encrypt();
+
             dataSource->setCompressor(compressorId);
             //encryption of all scopes except whole stream should be performed by MetadataStream
             //dataSource should know nothing about that
@@ -140,7 +154,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
 
             for(auto& p : m_mapSchemas)
             {
-                dataSource->saveSchema(p.first, *this);
+                dataSource->saveSchema(p.first, encryptedStream);
                 dataSource->save(p.second);
             }
 
@@ -647,10 +661,14 @@ MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName,
 
 std::string MetadataStream::serialize(IWriter& writer)
 {
+    MetadataStream encryptedStream(*this);
+    encryptedStream.encrypt();
+
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     for(auto spMetadataIter = m_mapSchemas.begin(); spMetadataIter != m_mapSchemas.end(); spMetadataIter++)
         schemas.push_back(spMetadataIter->second);
-    return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas, m_oMetadataSet);
+    return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas,
+                        encryptedStream.m_oMetadataSet);
 }
 
 void MetadataStream::deserialize(const std::string& text, IReader& reader)
@@ -674,6 +692,8 @@ void MetadataStream::deserialize(const std::string& text, IReader& reader)
     {
         add(spMetadata);
     });
+
+    decrypt();
 }
 
 std::string MetadataStream::computeChecksum()
@@ -717,6 +737,188 @@ std::shared_ptr<Encryptor> MetadataStream::getEncryptor() const
 void MetadataStream::setEncryptor(std::shared_ptr<Encryptor> encryptor)
 {
     m_encryptor = encryptor;
+}
+
+
+void MetadataStream::encrypt()
+{
+    //check everything we want to encrypt
+    //[schemaName][descName][fieldName], descName and fieldName can be ""
+    std::map<std::string, std::map<std::string, std::map<std::string, bool> > > toEncrypt;
+    for(auto itSchema : m_mapSchemas)
+    {
+        std::string schemaName = itSchema.second->getName();
+        if(itSchema.second->getUseEncryption())
+        {
+            toEncrypt[schemaName][""][""] = true;
+        }
+        else
+        {
+            for(auto itDesc : itSchema.second->getAll())
+            {
+                std::string descName = itDesc->getMetadataName();
+                if(itDesc->getUseEncryption())
+                {
+                    toEncrypt[schemaName][descName][""] = true;
+                }
+                else
+                {
+                    for(FieldDesc& fd : itDesc->getFields())
+                    {
+                        if(fd.useEncryption)
+                        {
+                            toEncrypt[schemaName][descName][fd.name] = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //do not change useEncryption field
+    for(std::shared_ptr<Metadata>& meta : m_oMetadataSet)
+    {
+        //clone those SPs to MD records which need to be encrypted
+        meta = std::make_shared<Metadata>(*meta);
+        if(meta->getUseEncryption() || toEncrypt[meta->getSchemaName()].count("") > 0 ||
+           toEncrypt[meta->getSchemaName()][meta->getName()].count("") > 0)
+        {
+            //serialize and kill fields
+            std::vector<std::string> fvStrings;
+            for(std::string fvName : meta->getFieldNames())
+            {
+                FieldValue& fv = *meta->findField(fvName);
+                fvStrings.push_back(fvName);
+                fvStrings.push_back(fv.toString());
+                fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
+            }
+            std::string serialized = Variant(fvStrings).toString();
+
+            vmf_rawbuffer encryptedBuf;
+            m_encryptor->encrypt(serialized, encryptedBuf);
+            meta->setEncryptedData(Variant::base64encode(encryptedBuf));
+        }
+        else
+        {
+            for(std::string fvName : meta->getFieldNames())
+            {
+                FieldValue& fv = *meta->findField(fvName);
+                if(fv.getUseEncryption() ||
+                   toEncrypt[meta->getSchemaName()][meta->getName()][fv.getName()])
+                {
+                    vmf_rawbuffer encryptedBuf;
+                    m_encryptor->encrypt(fv.toString(), encryptedBuf);
+                    std::string encoded = Variant::base64encode(encryptedBuf);
+                    fv.setEncryptedData(encoded);
+                    //kill the field
+                    fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
+                }
+            }
+        }
+    }
+}
+
+
+void MetadataStream::decrypt()
+{
+    bool ignoreBad = (m_eMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
+
+    //just try to decrypt everything
+    //but do not change useEncryption field
+    for(std::shared_ptr<Metadata>& meta : m_oMetadataSet)
+    {
+        const std::string& encryptedData = meta->getEncryptedData();
+        if(encryptedData.length() > 0)
+        {
+            if(!m_encryptor)
+            {
+                if(!ignoreBad)
+                {
+                    VMF_EXCEPTION(IncorrectParamException,
+                                  "No decryption algorithm provided for encrypted data");
+                }
+            }
+            else
+            {
+                vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
+                std::string serialized;
+                try
+                {
+                    m_encryptor->decrypt(encBuf, serialized);
+                }
+                catch(Exception& ee)
+                {
+                    //if we've failed with decryption (whatever the reason was)
+                    //and we're allowed to ignore that
+                    if(!ignoreBad)
+                    {
+                        std::string message = "Decryption failed: " + std::string(ee.what()) +
+                                              ", hint: " + m_encryptor->getHint();
+                        VMF_EXCEPTION(IncorrectParamException, message);
+                    }
+                }
+                Variant varStrings; varStrings.fromString(Variant::type_string_vector, serialized);
+                std::vector<std::string> vStrings = varStrings.get_string_vector();
+                std::map<std::string, std::string> fvStrings;
+                for(size_t i = 0; i < vStrings.size()/2; i++)
+                {
+                    std::string& sName = vStrings[i*2];
+                    std::string& sVal  = vStrings[i*2+1];
+                    fvStrings[sName] = sVal;
+                }
+                for(std::string fvName : meta->getFieldNames())
+                {
+                    FieldValue& fv = *meta->findField(fvName);
+                    std::string& sVal = fvStrings[fvName];
+                    Variant v; v.fromString(fv.getType(), sVal);
+                    fv = FieldValue(fvName, v, fv.getUseEncryption());
+                }
+                meta->setEncryptedData("");
+            }
+        }
+        else
+        {
+            for(std::string fvName : meta->getFieldNames())
+            {
+                FieldValue& fv = *meta->findField(fvName);
+                const std::string& encryptedData = fv.getEncryptedData();
+                if(encryptedData.length() > 0)
+                {
+                    if(!m_encryptor)
+                    {
+                        if(!ignoreBad)
+                        {
+                            VMF_EXCEPTION(IncorrectParamException,
+                                          "No decryption algorithm provided for encrypted data");
+                        }
+                    }
+                    else
+                    {
+                        vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
+                        std::string decrypted;
+                        try
+                        {
+                            m_encryptor->decrypt(encBuf, decrypted);
+                        }
+                        catch(Exception& ee)
+                        {
+                            //if we've failed with decryption (whatever the reason was)
+                            //and we're allowed to ignore that
+                            if(!ignoreBad)
+                            {
+                                std::string message = "Decryption failed: " + std::string(ee.what()) +
+                                                      ", hint: " + m_encryptor->getHint();
+                                VMF_EXCEPTION(IncorrectParamException, message);
+                            }
+                        }
+                        Variant v; v.fromString(fv.getType(), decrypted);
+                        fv = FieldValue(fvName, v, fv.getUseEncryption());
+                        fv.setEncryptedData("");
+                    }
+                }
+            }
+        }
+    }
 }
 
 

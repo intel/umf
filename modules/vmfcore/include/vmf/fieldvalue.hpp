@@ -55,7 +55,7 @@ public:
 
     const std::string& getEncryptedData() const { return m_encryptedData; }
 
-    void setEncryptedData(std::string& encryptedData) { m_encryptedData = encryptedData; }
+    void setEncryptedData(const std::string& encryptedData) { m_encryptedData = encryptedData; }
 
     FieldValue& operator = ( const FieldValue& other )
     {

@@ -285,7 +285,7 @@ public:
      * \brief Get base64-encoded string containing encrypted data (if any)
      * \return encryptedData
      */
-    std::string getEncryptedData() const;
+    const std::string& getEncryptedData() const;
 
     /*!
      * \brief Sets a string containing encrypted data

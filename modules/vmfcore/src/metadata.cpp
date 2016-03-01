@@ -597,7 +597,7 @@ void Metadata::setUseEncryption(bool useEncryption)
     m_useEncryption = useEncryption;
 }
 
-std::string Metadata::getEncryptedData() const
+const std::string& Metadata::getEncryptedData() const
 {
     return m_encryptedData;
 }
