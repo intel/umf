@@ -61,7 +61,8 @@ script:
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-test -t ${VMF_API_LEVEL} --abi $VMF_CPU_ARCH; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then ( emulator -avd avd-test -no-audio -no-window & ); timeout 200 android-wait-for-emulator; adb devices; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/; adb shell chmod 777 /data/local/tmp/unit-tests; adb shell /data/local/tmp/unit-tests; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds"; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds" | tee "unit-tests-ds.log"; LAST_LINE=`tail -1 "unit-tests-ds.log"`; if [[ $LAST_LINE == *"FAILED"* ]]; then $(exit 1); fi; fi
 after_success:
   - cd $TRAVIS_BUILD_DIR/../build
 # coverage
