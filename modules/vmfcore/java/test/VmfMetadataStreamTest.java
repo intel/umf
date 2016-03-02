@@ -399,6 +399,36 @@ public class VmfMetadataStreamTest
     }
     
     @Test
+    public void testAddSegmentTitleThrown()
+    {
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment contains empty 'title' value");
+        stream.addVideoSegment (s1);
+    }
+    
+    @Test
+    public void testAddSegmentStartTimeThrown()
+    {
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
+        s1.setTitle("title");
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment contains invalid 'timeStart' value");
+        stream.addVideoSegment (s1);
+    }
+    
+    @Test
+    public void testAddSegmentFPSThrown()
+    {
+        MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
+        s1.setTitle("title");
+        s1.setTime(0);
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment contains invalid 'FPS' value");
+        stream.addVideoSegment (s1);
+    }
+    
+    @Test
     public void testClearReopenThrown()
     {
         stream.clear();

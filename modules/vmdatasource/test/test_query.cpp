@@ -114,3 +114,18 @@ TEST_F(TestQuery, QueryByNameAndValue)
         newStream.close();
     }
 }
+
+TEST_F(TestQuery, Query)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    newStream.load(TEST_SCHEMA_NAME);
+    
+    vmf::MetadataSet set = newStream.query([&](const std::shared_ptr< vmf::Metadata >& spItem)->bool
+    {
+        return (spItem->getName() == TEST_PROPERTY_NAME1);
+    });
+
+    ASSERT_EQ(set.size(), 10);
+    newStream.close();
+}

@@ -169,6 +169,8 @@ TEST_F(TestNamedReferences, AddReferences)
     auto refs = md[0]->getAllReferences();
     EXPECT_EQ(0u, refs.size());
 
+    EXPECT_THROW(md[0]->addReference(nullptr, "CAR"), NullPointerException);
+
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[1], "SPOUSE");
     md[0]->addReference(md[0]);

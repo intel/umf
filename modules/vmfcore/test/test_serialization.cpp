@@ -187,6 +187,13 @@ TEST_P(TestSerialization, Parse_schemasArray)
     {
         compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
     });
+
+    schemas.clear();
+    std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
+    schemas.emplace_back(spSchemaNull);
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+    ASSERT_THROW(writer->store(schemas), vmf::IncorrectParamException);
 }
 
 TEST_P(TestSerialization, Parse_schemasAll)

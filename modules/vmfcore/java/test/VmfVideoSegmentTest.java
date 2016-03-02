@@ -115,6 +115,14 @@ public class VmfVideoSegmentTest
     }
     
     @Test
+    public void testCreateSegmentResolutionThrown()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Segment resoulution width and height must be positive");
+        newSegment = new MetadataStream.VideoSegment("vacation", 20, 0, 0, -1, 0);
+    }
+    
+    @Test
     public void testSetSegmentTitleThrown()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
