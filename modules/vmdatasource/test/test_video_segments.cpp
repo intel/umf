@@ -119,6 +119,10 @@ TEST_F(TestVideoSegments, SaveLoad)
         auto loadedSegments = stream.getAllVideoSegments();
         ASSERT_EQ(1u, loadedSegments.size());
         compareSegments(segment1, loadedSegments[0]);
+
+        std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
+        ASSERT_THROW(stream.addVideoSegment(nullSegment), vmf::NullPointerException);
+
         stream.close();
     }
 }
@@ -145,6 +149,10 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
     ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
 	compareSegments(segments[i], loadedSegments[i]);
+
+    std::shared_ptr<MetadataStream::VideoSegment> nullSegment = nullptr;
+    segments.emplace_back(nullSegment);
+    ASSERT_THROW(writer->store(segments), vmf::IncorrectParamException);
 }
 
 TEST_P(TestVideoSegments, ParseSegmentsAll)

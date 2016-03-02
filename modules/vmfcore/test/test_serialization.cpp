@@ -236,7 +236,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
         writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
         reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
     }
-
+    
     std::string result = writer->store(set);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -257,6 +257,10 @@ TEST_P(TestSerialization, Parse_metadataArray)
     {
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
     });
+
+    std::shared_ptr<Metadata> nullElement = nullptr;
+    set.push_back(nullElement);
+    ASSERT_THROW(writer->store(set), vmf::IncorrectParamException);
 }
 
 TEST_P(TestSerialization, Parse_metadataAll)

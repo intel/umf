@@ -217,6 +217,21 @@ TEST_F(TestNamedReferences, AddReferences)
     newStream.close();
 }
 
+TEST_F(TestNamedReferences, QueryByReference)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    newStream.load();
+
+    vmf::MetadataSet set = newStream.queryByReference([&](const std::shared_ptr< vmf::Metadata >& spItem, const std::shared_ptr< vmf::Metadata >& spReferenceMd)->bool
+    {
+        return (spItem->getName() == spReferenceMd->getName());
+    });
+
+    ASSERT_EQ(set.size(), 2);
+    newStream.close();
+}
+
 TEST_F(TestNamedReferences, RemoveReferences)
 {
     vmf::MetadataStream newStream;
