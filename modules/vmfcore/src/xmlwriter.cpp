@@ -267,9 +267,15 @@ std::string XMLWriter::store(const IdType& nextId,
 
     std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
     {
+        if (spMetadata == nullptr)
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
+
         bool NoSchemaForMetadata = true;
         std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
         {
+            if (spSchema == nullptr)
+                VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
             if(spMetadata->getSchemaName() == spSchema->getName())
                 NoSchemaForMetadata = false;
         });
@@ -317,16 +323,15 @@ std::string XMLWriter::store(const IdType& nextId,
 
     std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
     {
-        if( spSchema == nullptr )
+        if (spSchema == nullptr)
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
         xmlNodePtr schemaNode = xmlNewChild(schemasArrayNode, NULL, BAD_CAST TAG_SCHEMA, NULL);
         add(schemaNode, spSchema);
     });
 
     std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
     {
-        if( spMetadata == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         xmlNodePtr metadataNode = xmlNewChild(metadataArrayNode, NULL, BAD_CAST TAG_METADATA, NULL);
         add(metadataNode, spMetadata);
     });

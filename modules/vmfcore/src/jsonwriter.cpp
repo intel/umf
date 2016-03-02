@@ -232,9 +232,15 @@ std::string JSONWriter::store(const IdType& nextId,
 
     std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
     {
+        if (spMetadata == nullptr)
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
+
         bool NoSchemaForMetadata = true;
         std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
         {
+            if (spSchema == nullptr)
+                VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
             if(spMetadata->getSchemaName() == spSchema->getName())
                 NoSchemaForMetadata = false;
         });
@@ -257,8 +263,9 @@ std::string JSONWriter::store(const IdType& nextId,
 	std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 	{
 	    if( spSegment == nullptr )
-		VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-	    JSONNode segmentNode(JSON_NODE);
+		    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+	    
+        JSONNode segmentNode(JSON_NODE);
 	    add(segmentNode, spSegment);
 	    segmentsArrayNode.push_back(segmentNode);
 	});
@@ -271,8 +278,9 @@ std::string JSONWriter::store(const IdType& nextId,
 
     std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
     {
-        if( spSchema == nullptr )
+        if (spSchema == nullptr)
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
         JSONNode schemaNode(JSON_NODE);
         add(schemaNode, spSchema);
         schemasArrayNode.push_back(schemaNode);
@@ -285,8 +293,6 @@ std::string JSONWriter::store(const IdType& nextId,
 
     std::for_each(set.begin(), set.end(), [&](const std::shared_ptr<Metadata>& spMetadata)
     {
-        if( spMetadata == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         JSONNode metadataNode(JSON_NODE);
         add(metadataNode, spMetadata);
         metadataArrayNode.push_back(metadataNode);
