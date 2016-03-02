@@ -413,6 +413,7 @@ void XMPDataSource::serializeAndParse()
     xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
     schemaSource = make_shared<XMPSchemaSource>(xmp);
     metadataSource = make_shared<XMPMetadataSource>(xmp);
+    statSource = make_shared<XMPStatSource>(xmp);
 }
 
 
@@ -464,7 +465,6 @@ void XMPDataSource::saveStats(const std::vector< Stat >& stats)
     try
     {
         statSource->save(stats);
-        pushChanges();
     }
     catch(const XMP_Error& e)
     {

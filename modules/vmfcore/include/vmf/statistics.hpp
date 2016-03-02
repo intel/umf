@@ -221,13 +221,14 @@ private:
     public:
         explicit StatWorker( Stat* stat )
             : m_stat( stat )
-            , m_worker( &StatWorker::operator(), this )
             , m_wakeupForced( false )
             , m_updateScheduled( false )
             , m_rescanScheduled( false )
             , m_exitScheduled( false )
             , m_exitImmediate( false )
-            {}
+            {
+                m_worker = std::thread( &StatWorker::operator(), this );
+            }
         ~StatWorker()
             {
                 scheduleExit();
@@ -326,7 +327,6 @@ private:
                     m_signal.notify_one();
                 }
             }
-
         void scheduleExit( bool doImmediate = false )
             {
                 std::unique_lock< std::mutex > lock( m_lock );
@@ -402,7 +402,7 @@ public:
     void setUpdateTimeout( unsigned ms ) { m_updateTimeout = ms; }
     unsigned getUpdateTimeout() const { return m_updateTimeout; }
 
-    void update( bool doRescan = false );
+    void update( bool doRescan = false, bool doWait = false );
     void notify( StatAction::Type action, std::shared_ptr< Metadata > metadata );
 
     std::vector< std::string > getAllFieldNames() const;

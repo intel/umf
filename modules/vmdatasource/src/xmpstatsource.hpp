@@ -25,7 +25,7 @@ class XMPStatSource
 {
 public:
 
-    explicit XMPStatSource(const std::shared_ptr<SXMPMeta>& statStorage);
+    explicit XMPStatSource(const std::shared_ptr<SXMPMeta> statStorage);
 
     void save(const std::vector< Stat >& stats);
 

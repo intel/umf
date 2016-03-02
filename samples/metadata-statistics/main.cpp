@@ -28,7 +28,6 @@
 
 #include "vmf/vmf.hpp"
 
-
 //using namespace vmf;
 using namespace std;
 
@@ -290,8 +289,8 @@ int sample(int argc, char *argv[])
         exit(1);
     }
 
-    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::Manual );
-    mdStream.getStat(GPS_STAT_NAME).update( true );
+    loadStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::Manual );
+//    loadStream.getStat(GPS_STAT_NAME).update( true );
 
     // Select all metadata items from loaded schema
     auto dataSet = loadStream.queryBySchema(GPS_SCHEMA_NAME);
@@ -308,6 +307,8 @@ int sample(int argc, char *argv[])
         string time = metadataItem->getFieldValue(GPS_TIME_FIELD);
         cout << "\tAssociated time is: " << time << endl;
     }
+
+    loadStream.getStat(GPS_STAT_NAME).update( true, true );
 
     // dump statistics
     dumpStatistics( loadStream );

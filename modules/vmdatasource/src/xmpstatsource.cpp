@@ -35,7 +35,7 @@
 using namespace std;
 using namespace vmf;
 
-XMPStatSource::XMPStatSource(const std::shared_ptr<SXMPMeta>& statStorage)
+XMPStatSource::XMPStatSource(const std::shared_ptr<SXMPMeta> statStorage)
     : metadata(statStorage)
 {
 }

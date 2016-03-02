@@ -818,7 +818,7 @@ void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata
     }
 }
 
-void Stat::update( bool doRescan )
+void Stat::update( bool doRescan, bool doWait )
 {
     if( isActive() && ((getState() != StatState::UpToDate) || doRescan) )
     {
@@ -841,14 +841,17 @@ void Stat::update( bool doRescan )
             }
             break;
         }
-/*
-// TODO: Busy wait loop. Perhaps it would be better to wait on conditional variable.
-//       Also, why we don't add an argument flag: wait or not to wait for update
-//----
-        while( m_state != StatState::UpToDate )
-            ;
-//----
-*/
+        if( doWait )
+        {
+            /*
+            // TODO: Busy wait loop. Perhaps it would be better to wait on conditional variable.
+            //       Also, it can be potentially dangerous and leads to deadlocks.
+            //----
+            //----
+            */
+            while( m_state != StatState::UpToDate )
+                ;
+        }
     }
 }
 
