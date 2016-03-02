@@ -742,76 +742,79 @@ void MetadataStream::setEncryptor(std::shared_ptr<Encryptor> encryptor)
 
 void MetadataStream::encrypt()
 {
-    //check everything we want to encrypt
-    //[schemaName][descName][fieldName], descName and fieldName can be ""
-    std::map<std::string, std::map<std::string, std::map<std::string, bool> > > toEncrypt;
-    for(auto itSchema : m_mapSchemas)
+    if(m_encryptor)
     {
-        std::string schemaName = itSchema.second->getName();
-        if(itSchema.second->getUseEncryption())
+        //check everything we want to encrypt
+        //[schemaName][descName][fieldName], descName and fieldName can be ""
+        std::map<std::string, std::map<std::string, std::map<std::string, bool> > > toEncrypt;
+        for(auto itSchema : m_mapSchemas)
         {
-            toEncrypt[schemaName][""][""] = true;
-        }
-        else
-        {
-            for(auto itDesc : itSchema.second->getAll())
+            std::string schemaName = itSchema.second->getName();
+            if(itSchema.second->getUseEncryption())
             {
-                std::string descName = itDesc->getMetadataName();
-                if(itDesc->getUseEncryption())
+                toEncrypt[schemaName][""][""] = true;
+            }
+            else
+            {
+                for(auto itDesc : itSchema.second->getAll())
                 {
-                    toEncrypt[schemaName][descName][""] = true;
-                }
-                else
-                {
-                    for(FieldDesc& fd : itDesc->getFields())
+                    std::string descName = itDesc->getMetadataName();
+                    if(itDesc->getUseEncryption())
                     {
-                        if(fd.useEncryption)
+                        toEncrypt[schemaName][descName][""] = true;
+                    }
+                    else
+                    {
+                        for(FieldDesc& fd : itDesc->getFields())
                         {
-                            toEncrypt[schemaName][descName][fd.name] = true;
+                            if(fd.useEncryption)
+                            {
+                                toEncrypt[schemaName][descName][fd.name] = true;
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    //do not change useEncryption field
-    for(std::shared_ptr<Metadata>& meta : m_oMetadataSet)
-    {
-        //clone those SPs to MD records which need to be encrypted
-        meta = std::make_shared<Metadata>(*meta);
-        if(meta->getUseEncryption() || toEncrypt[meta->getSchemaName()].count("") > 0 ||
-           toEncrypt[meta->getSchemaName()][meta->getName()].count("") > 0)
+        //do not change useEncryption field
+        for(std::shared_ptr<Metadata>& meta : m_oMetadataSet)
         {
-            //serialize and kill fields
-            std::vector<std::string> fvStrings;
-            for(std::string fvName : meta->getFieldNames())
+            //clone those SPs to MD records which need to be encrypted
+            meta = std::make_shared<Metadata>(*meta);
+            if(meta->getUseEncryption() || toEncrypt[meta->getSchemaName()].count("") > 0 ||
+               toEncrypt[meta->getSchemaName()][meta->getName()].count("") > 0)
             {
-                FieldValue& fv = *meta->findField(fvName);
-                fvStrings.push_back(fvName);
-                fvStrings.push_back(fv.toString());
-                fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
-            }
-            std::string serialized = Variant(fvStrings).toString();
-
-            vmf_rawbuffer encryptedBuf;
-            m_encryptor->encrypt(serialized, encryptedBuf);
-            meta->setEncryptedData(Variant::base64encode(encryptedBuf));
-        }
-        else
-        {
-            for(std::string fvName : meta->getFieldNames())
-            {
-                FieldValue& fv = *meta->findField(fvName);
-                if(fv.getUseEncryption() ||
-                   toEncrypt[meta->getSchemaName()][meta->getName()][fv.getName()])
+                //serialize and kill fields
+                std::vector<std::string> fvStrings;
+                for(std::string fvName : meta->getFieldNames())
                 {
-                    vmf_rawbuffer encryptedBuf;
-                    m_encryptor->encrypt(fv.toString(), encryptedBuf);
-                    std::string encoded = Variant::base64encode(encryptedBuf);
-                    fv.setEncryptedData(encoded);
-                    //kill the field
+                    FieldValue& fv = *meta->findField(fvName);
+                    fvStrings.push_back(fvName);
+                    fvStrings.push_back(fv.toString());
                     fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
+                }
+                std::string serialized = Variant(fvStrings).toString();
+
+                vmf_rawbuffer encryptedBuf;
+                m_encryptor->encrypt(serialized, encryptedBuf);
+                meta->setEncryptedData(Variant::base64encode(encryptedBuf));
+            }
+            else
+            {
+                for(std::string fvName : meta->getFieldNames())
+                {
+                    FieldValue& fv = *meta->findField(fvName);
+                    if(fv.getUseEncryption() ||
+                       toEncrypt[meta->getSchemaName()][meta->getName()][fv.getName()])
+                    {
+                        vmf_rawbuffer encryptedBuf;
+                        m_encryptor->encrypt(fv.toString(), encryptedBuf);
+                        std::string encoded = Variant::base64encode(encryptedBuf);
+                        fv.setEncryptedData(encoded);
+                        //kill the field
+                        fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
+                    }
                 }
             }
         }
