@@ -50,7 +50,13 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         {
             VMF_EXCEPTION(InternalErrorException, "Failed to get datasource instance. Possible, call of vmf::initialize is missed");
         }
-        clear();
+        //don't call clear(), reset exactly the things needed to be reset
+        m_oMetadataSet.clear();
+        m_mapSchemas.clear();
+        removedIds.clear();
+        addedIds.clear();
+        videoSegments.clear();
+
         m_sFilePath = sFilePath;
         //encryption of all scopes except whole stream should be performed by MetadataStream
         //dataSource should know nothing about that
