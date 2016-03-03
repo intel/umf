@@ -42,7 +42,7 @@ int encrypt_builtin(const string& videoFile, EncryptionScope scope)
         exit(1);
     }
 
-    std::shared_ptr<Encryptor> encryptor = std::make_shared<DefaultEncryptor>();
+    std::shared_ptr<Encryptor> encryptor = std::make_shared<DefaultEncryptor>("thereisnospoon");
 
     cout << "Generating metadata..." << endl;
     generateEncryptedMetadata(mdStream, scope);

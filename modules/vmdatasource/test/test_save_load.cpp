@@ -1442,7 +1442,7 @@ protected:
         switch(algo)
         {
             case CryptAlgo::DEFAULT:
-                return std::make_shared<vmf::DefaultEncryptor>();
+                return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
             case CryptAlgo::BAD:
                 return std::make_shared<BadEncryptor>(42);
             default:
@@ -1642,7 +1642,7 @@ protected:
         switch(algo)
         {
             case CryptAlgo::DEFAULT:
-                return std::make_shared<vmf::DefaultEncryptor>();
+                return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
             case CryptAlgo::BAD:
                 return std::make_shared<BadEncryptor>(42);
             default:

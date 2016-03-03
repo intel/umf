@@ -79,7 +79,7 @@ protected:
         switch(algo)
         {
             case CryptAlgo::DEFAULT:
-                return std::make_shared<DefaultEncryptor>();
+                return std::make_shared<DefaultEncryptor>("thereisnospoon");
             case CryptAlgo::BAD:
                 return std::make_shared<BadEncryptor>(42);
             default:
