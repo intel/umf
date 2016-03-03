@@ -79,9 +79,13 @@ void MetadataDesc::validate()
     }
 
     // Check single value case
-    if( vFieldNames.empty() && vFieldNames.size() > 1 )
+    if (vFieldNames.size() > 1)
     {
-        VMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!" );
+        for (auto it = vFieldNames.begin(); it != vFieldNames.end(); it++)
+        {
+            if (it->empty())
+                VMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!");
+        }
     }
 }
 

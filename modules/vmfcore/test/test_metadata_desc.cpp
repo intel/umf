@@ -45,6 +45,9 @@ TEST_F(TestMetadataDesc, CreateWithFieldsIncorrect)
 {
     vFields.emplace_back( vmf::FieldDesc( "sex", vmf::Variant::type_string ));
     EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( "people", vFields )), vmf::ValidateException);
+    vFields.pop_back();
+    vFields.emplace_back(vmf::FieldDesc("", vmf::Variant::type_integer));
+    EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc("people", vFields)), vmf::ValidateException);
 }
 
 TEST_F(TestMetadataDesc, CreateWithFieldsEmptyName)
