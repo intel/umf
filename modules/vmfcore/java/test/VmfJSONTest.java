@@ -10,6 +10,7 @@ import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.JSONReader;
 import com.intel.vmf.JSONWriter;
+import com.intel.vmf.Log;
 
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -22,6 +23,7 @@ public class VmfJSONTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -180,7 +182,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONParseSchemaThrown()
+    public void testJSONParseSchemaThrow()
     {
         String text = "";
         
@@ -190,7 +192,7 @@ public class VmfJSONTest
     }
 
     @Test
-    public void testJSONParseMetadataThrown()
+    public void testJSONParseMetadataThrow()
     {
         String text = "";
         
@@ -200,7 +202,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONParseSegmentsThrown()
+    public void testJSONParseSegmentsThrow()
     {
         String text = "";
         
@@ -210,7 +212,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONStoreSchemaThrown()
+    public void testJSONStoreSchemaThrow()
     {
         MetadataSchema emptySchemas[] = new MetadataSchema[0];
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -219,7 +221,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONStoreSetThrown()
+    public void testJSONStoreSetThrow()
     {
         MetadataSet set = new MetadataSet();
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -228,7 +230,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONStoreSegmentThrown()
+    public void testJSONStoreSegmentThrow()
     {
         MetadataStream.VideoSegment segment = new MetadataStream.VideoSegment();
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -237,7 +239,7 @@ public class VmfJSONTest
     }
 
     @Test
-    public void testJSONStoreAllThrown()
+    public void testJSONStoreAllThrow()
     {
         MetadataSchema emptySchemas[] = new MetadataSchema[0];
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -246,7 +248,7 @@ public class VmfJSONTest
     }
     
     @Test
-    public void testJSONStoreSegmentsThrown()
+    public void testJSONStoreSegmentsThrow()
     {
         MetadataStream.VideoSegment segments[] = new MetadataStream.VideoSegment[0];
         thrown.expect(com.intel.vmf.VmfException.class);

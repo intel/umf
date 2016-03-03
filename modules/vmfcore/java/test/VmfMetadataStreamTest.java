@@ -16,6 +16,7 @@ import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,9 +76,9 @@ public class VmfMetadataStreamTest
     protected Metadata md1;
     protected Metadata md2;
     
-    Variant var1;
-    Variant var2;
-    Variant var3;
+    protected Variant var1;
+    protected Variant var2;
+    protected Variant var3;
     
     @Before
     public void setUp () throws IOException
@@ -120,6 +121,10 @@ public class VmfMetadataStreamTest
             stream.close();
             stream.clear();
         }
+        
+        File newFile = new File("new.avi");
+        if (newFile.exists())
+            newFile.delete();
     }
     
     @Test
@@ -290,10 +295,13 @@ public class VmfMetadataStreamTest
         
         stream.close();
         
-        //stream.reopen(MetadataStream.)
-        
         copy (srcFile, "new.avi");
         stream.saveTo("new.avi");
+        stream.close();
+        
+        assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
+        assertFalse (stream.open(dstFile, MetadataStream.ReadWrite));
+        stream.close();
     }
     
     @Test
@@ -324,7 +332,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testImport()
+    public void testImport() throws IOException
     {
         assertTrue (stream.open(dstFile, MetadataStream.ReadWrite));
         
@@ -344,6 +352,7 @@ public class VmfMetadataStreamTest
         stream.add(md1);
         stream.add(md2);
         
+        copy (srcFile, "new.avi");
         MetadataStream newStream = new MetadataStream();
         assertTrue (newStream.open("new.avi", MetadataStream.ReadWrite));
         
@@ -392,7 +401,7 @@ public class VmfMetadataStreamTest
     public ExpectedException thrown = ExpectedException.none();
     
     @Test
-    public void testAddSegmentThrown()
+    public void testAddSegmentThrow()
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment("holiday", 20, 0);
         MetadataStream.VideoSegment s2 = new MetadataStream.VideoSegment("vacation", 20, 3000);
@@ -405,7 +414,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testAddSegmentTitleThrown()
+    public void testAddSegmentTitleThrow()
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -414,7 +423,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testAddSegmentStartTimeThrown()
+    public void testAddSegmentStartTimeThrow()
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
         s1.setTitle("title");
@@ -424,7 +433,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testAddSegmentFPSThrown()
+    public void testAddSegmentFPSThrow()
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
         s1.setTitle("title");
@@ -435,7 +444,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testClearReopenThrown()
+    public void testClearReopenThrow()
     {
         stream.clear();
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -444,7 +453,7 @@ public class VmfMetadataStreamTest
     }
 
     @Test
-    public void testReopen2Thrown()
+    public void testReopen2Throw()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         
@@ -454,7 +463,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testReopen3Thrown()
+    public void testReopen3Throw()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         stream.close();
@@ -465,7 +474,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testMdIntAddThrown()
+    public void testMdIntAddThrow()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         MetadataDesc desc = new MetadataDesc ("people", fields);
@@ -478,7 +487,7 @@ public class VmfMetadataStreamTest
     }
     
     @Test
-    public void testAddSchemaThrown()
+    public void testAddSchemaThrow()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: Metadata Schema already exists!");

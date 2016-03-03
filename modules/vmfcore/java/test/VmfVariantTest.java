@@ -200,7 +200,7 @@ public class VmfVariantTest
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testConvertToThrown ()
+    public void testConvertToThrow ()
     {
         long longValue = 555555;
         var1.setTo(longValue);
@@ -210,7 +210,7 @@ public class VmfVariantTest
     }
 
     @Test
-    public void testConvertToStringThrown ()
+    public void testConvertToStringThrow ()
     {
         long longValue = 555555;
         var1.setTo(longValue);

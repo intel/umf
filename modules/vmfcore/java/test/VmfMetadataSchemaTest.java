@@ -1,6 +1,7 @@
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
@@ -21,6 +22,7 @@ public class VmfMetadataSchemaTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -104,7 +106,7 @@ public class VmfMetadataSchemaTest
     public ExpectedException thrown = ExpectedException.none();
     
     @Test
-    public void testAddTrown()
+    public void testAddThrow()
     {
         schema.add(mdDesc1);
         thrown.expect(com.intel.vmf.VmfException.class);
@@ -113,7 +115,7 @@ public class VmfMetadataSchemaTest
     }
     
     @Test
-    public void testCreateSchemaTrown()
+    public void testCreateSchemaThrow()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: Schema name can't be empty.");

@@ -1,6 +1,7 @@
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
@@ -21,6 +22,7 @@ public class VmfMetadataDescTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -117,7 +119,7 @@ public class VmfMetadataDescTest
     public ExpectedException thrown = ExpectedException.none();
     
     @Test
-    public void testDeclareCustomReferenceTrown()
+    public void testDeclareCustomReferenceThrown()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: This reference name already exist!");
@@ -125,7 +127,7 @@ public class VmfMetadataDescTest
     }
     
     @Test
-    public void testCreateTrown()
+    public void testCreateThrown()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: Invalid metadata descriprion type.");

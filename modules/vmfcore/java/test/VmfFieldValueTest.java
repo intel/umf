@@ -1,4 +1,5 @@
 import com.intel.vmf.FieldValue;
+import com.intel.vmf.Log;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.Variant;
 import static org.junit.Assert.*;
@@ -16,6 +17,7 @@ public class VmfFieldValueTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass

@@ -4,6 +4,7 @@ import com.intel.vmf.MetadataSet;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.FieldValue;
+import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
@@ -22,6 +23,7 @@ public class VmfMetadataSetTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass

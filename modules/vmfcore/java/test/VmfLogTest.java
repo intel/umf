@@ -52,6 +52,8 @@ public class VmfLogTest
         newFile.delete();
         
         Log.setLogToConsole ();
+        
+        Log.setVerbosityLevel(Log.LOG_INFO);
         assertEquals(Log.LOG_INFO, Log.getVerbosityLevel());
         
         Log.setVerbosityLevel(Log.LOG_WARNING);

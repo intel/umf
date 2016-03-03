@@ -1,3 +1,4 @@
+import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Vmf;
 
@@ -14,6 +15,7 @@ public class VmfReferenceDescTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
 
     @AfterClass
