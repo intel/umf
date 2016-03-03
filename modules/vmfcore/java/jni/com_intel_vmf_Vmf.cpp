@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass
 
     try
     {
-        vmf::initialize();
+        //vmf::initialize();
     }
     catch (const std::exception &e)
     {
@@ -47,7 +47,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate (JNIEnv *env, jclass)
 
     try
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
     catch (const std::exception &e)
     {

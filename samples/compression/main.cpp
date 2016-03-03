@@ -39,8 +39,6 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    initialize();
-
     string videoFile(argv[1]);
 
     MetadataStream mds;
@@ -69,6 +67,5 @@ int main(int argc, char** argv)
 
     compress_custom(videoFile);
 
-    vmf::terminate();
     return 0;
 }

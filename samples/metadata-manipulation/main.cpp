@@ -166,13 +166,6 @@ void removeMetadata(const string& path, const string& schemaName = "", const str
 
 int main(int argc, char* argv[])
 {
-    class VMF_init
-    {
-    public:
-        VMF_init()  { vmf::initialize(); }
-        ~VMF_init() { vmf::terminate();  }
-    } vmf_init;
-
     if(argc != 2)
     {
         cout << "Usage: " << argv[0] << " video_file_path" << endl;

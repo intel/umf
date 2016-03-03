@@ -36,7 +36,7 @@ protected:
 
         copyFile(VIDEO_FILE, SCHEMA_TEST_FILE);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
         desc = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME, vmf::Variant::type_string));
@@ -45,7 +45,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema;

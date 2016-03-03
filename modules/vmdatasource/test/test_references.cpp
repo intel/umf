@@ -111,7 +111,7 @@ protected:
 
     virtual void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     MetadataStream stream;
@@ -271,7 +271,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         schema[0] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_0));
         schema[1] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_1));
@@ -285,7 +285,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema[2];

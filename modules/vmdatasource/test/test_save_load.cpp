@@ -36,7 +36,7 @@ TEST(TestSaveLoadMetadataTyped, String)
     const vmf::vmf_string atom(TEST_VALUE);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     {
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -74,7 +74,7 @@ TEST(TestSaveLoadMetadataTyped, String)
         ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, TwoStrings)
@@ -84,7 +84,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     const vmf::vmf_string atom(TEST_VALUE);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     {
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -123,7 +123,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
         ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 #define DECLARE_INT_TEST(subname, Type, testValue)\
@@ -133,7 +133,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     const vmf::vmf_string atom(TEST_PROPERTY_NAME);\
     const vmf::vmf_string atom(TEST_FIELD_NAME);\
     const vmf::vmf_##Type TEST_VALUE(testValue);\
-    vmf::initialize();\
+    \
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));\
     std::vector<vmf::FieldDesc> fields;\
     fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME,vmf::Variant::type_##Type));\
@@ -165,7 +165,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     ASSERT_EQ(vmf::Variant::type_##Type, value.getType());\
     ASSERT_EQ(TEST_VALUE, (vmf::vmf_##Type) value);\
 }\
-    vmf::terminate();\
+\
 }
 
 DECLARE_INT_TEST(Max_integer, integer, (vmf::vmf_integer) 0x7FFFFFFFFFFFFFFF)
@@ -179,7 +179,7 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
     const vmf::vmf_real TEST_VALUE(100.500);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -218,7 +218,7 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
         ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, DoubleNeg)
@@ -228,7 +228,7 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
     const vmf::vmf_real TEST_VALUE(-100.500);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -267,7 +267,7 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
         ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, Rawbuffer)
@@ -278,7 +278,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 
     const vmf::vmf_rawbuffer TEST_VALUE("Raw <buffer \0 content>\n&", 25);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -318,7 +318,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
         ASSERT_TRUE(result);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, Vectors)
@@ -355,7 +355,7 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
     test_vec4d_value.push_back(vmf::vmf_vec4d(33.33, 57.75, 99.12, 45.14));
     test_vec4d_value.push_back(vmf::vmf_vec4d(-72, 15.67, 0, 16.79));
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema("test_schema"));
     std::vector<vmf::FieldDesc> fields;
@@ -435,7 +435,7 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         ASSERT_TRUE(result);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 class TestSaveLoadMetadataTypeVec : public ::testing::Test
@@ -450,7 +450,7 @@ protected:
         TEST_FIELD_NAME_4D = "TEST_FIELD_NAME_4D";
         TEST_VALUE = vmf::vmf_vec4d(42.42, 24.24, 42.24, 24.42);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
         std::vector<vmf::FieldDesc> fields;
@@ -480,7 +480,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     vmf::vmf_string TEST_SCHEMA_NAME;
@@ -561,7 +561,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
         desc = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME, vmf::Variant::type_string));
@@ -570,7 +570,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema;
@@ -1171,7 +1171,7 @@ class TestSaveLoadFields : public ::testing::Test
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        //vmf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_DESC_NAME = "TEST_DESC_NAME";
@@ -1203,7 +1203,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema;
@@ -1295,12 +1295,12 @@ protected:
     void SetUp()
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        vmf::initialize();
+        //vmf::initialize();
     }
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 };
 
@@ -1382,7 +1382,7 @@ protected:
     void SetUp()
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        vmf::initialize();
+        //vmf::initialize();
         //register bloating compressor
         std::shared_ptr<vmf::Compressor> bloating = std::make_shared<BloatingCompressor>();
         vmf::Compressor::registerNew(bloating);
@@ -1391,7 +1391,7 @@ protected:
     void TearDown()
     {
         vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
-        vmf::terminate();
+        //vmf::terminate();
     }
 };
 

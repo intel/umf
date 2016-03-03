@@ -34,7 +34,7 @@ protected:
     {
         n = 10;
 
-        vmf::initialize();
+        //vmf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_PROPERTY_NAME1 = "TEST_PROPERTY_NAME1";
@@ -82,7 +82,7 @@ protected:
 
     virtual void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     virtual void someMoreAddings() {}
