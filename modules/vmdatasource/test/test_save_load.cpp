@@ -840,7 +840,9 @@ TEST_F(TestSaveLoadMetadata, FrameIndex)
 TEST_F(TestSaveLoadMetadata, Timestamp)
 {
     const long long TEST_TIME = vmf::getTimestamp();
+    ASSERT_GT(TEST_TIME, 0);
     const long long TEST_TIME_2 = vmf::getTimestamp(1970, 1, 2, 0, 0, 1);
+    ASSERT_GT(TEST_TIME_2, 0);
     const long long TEST_DURATION = 1000;
 
     {
