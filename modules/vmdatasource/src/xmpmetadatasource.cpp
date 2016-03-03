@@ -173,24 +173,26 @@ void XMPMetadataSource::saveField(const MetaString& fieldName, const Variant& _v
         SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &thisFieldPath);
         xmp->SetQualifier(VMF_NS, thisFieldPath.c_str(), VMF_NS, FIELD_NAME, fieldName.c_str(), kXMP_NoOptions);
     }
-    MetaString tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &tmpPath);
+    MetaString encBoolPath;
+    SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encBoolPath);
     if(isEncrypted)
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "true");
+        xmp->SetQualifier(VMF_NS, encBoolPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, "true", kXMP_NoOptions);
     }
     else
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "false");
+        xmp->SetQualifier(VMF_NS, encBoolPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, "false", kXMP_NoOptions);
     }
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &tmpPath);
+    MetaString encDataPath;
+    SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encDataPath);
     if(!encryptedData.empty())
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData.c_str());
+        xmp->SetQualifier(VMF_NS, encDataPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA,
+                          encryptedData.c_str(), kXMP_NoOptions);
     }
     else
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "");
+        xmp->SetQualifier(VMF_NS, encDataPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, "", kXMP_NoOptions);
     }
 }
 
@@ -347,11 +349,11 @@ void XMPMetadataSource::loadField(const MetaString& fieldPath, const shared_ptr<
 
     bool isEncrypted;
     MetaString encBool;
-    xmp->GetStructField(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &encBool, nullptr);
+    xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &encBool, NULL);
     isEncrypted = (encBool=="true") ;
 
     MetaString encData;
-    xmp->GetStructField(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &encData, nullptr);
+    xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &encData, NULL);
     if(encData.empty() && isEncrypted)
     {
         VMF_EXCEPTION(DataStorageException, "No encrypted data provided in field");
@@ -712,7 +714,6 @@ void XMPMetadataSource::saveMetadataFields(const MetaString& pathToMetadata, con
             saveField(*it, md->getFieldValue(*it), fv.getUseEncryption(), fv.getEncryptedData(), fieldsPath);
         }
     }
-
 }
 
 void XMPMetadataSource::saveMetadataReferences(const MetaString& pathToMetadata, const shared_ptr<Metadata>& md)
