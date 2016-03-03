@@ -412,14 +412,17 @@ TEST_P(TestSerialization, Parse_All)
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
     });
 
-    segments.clear();
-    schemas.clear();
     std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
     IdType nextId = 1;
     std::string path = "";
     std::string check = "";
 
     ASSERT_THROW(reader->parseAll("", nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
+
+    schemas.pop_back();
+    std::string strSchemas = writer->store(schemas);
+
+    ASSERT_THROW(reader->parseAll(strSchemas, nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
 }
 
 TEST_P(TestSerialization, Parse_segmentArray)

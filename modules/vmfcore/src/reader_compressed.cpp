@@ -76,7 +76,7 @@ std::string ReaderCompressed::decompress(const std::string& input)
         std::vector<std::shared_ptr<MetadataInternal>> metadata;
         if(!reader->parseMetadata(input, schemas, metadata))
         {
-            VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
+            VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse metadata in input data");
         }
 
         std::shared_ptr<Metadata> cMetadata = metadata[0];

@@ -46,9 +46,13 @@ TEST_F(TestVariant, CreateReal)
 TEST_F(TestVariant, CreateString)
 {
     vmf::Variant v("string");
+
     ASSERT_EQ(v.getType(), vmf::Variant::type_string);
     ASSERT_EQ((vmf::vmf_string) v, "string");
     ASSERT_EQ(v.get_string(), "string");
+ 
+    const char str[] = "";
+    v = str;
 }
 
 TEST_F(TestVariant, CreateVec2d)
