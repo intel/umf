@@ -117,7 +117,7 @@ TEST_F(TestVideoSegments, SaveLoad)
         vmf::MetadataStream stream;
         stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
         auto loadedSegments = stream.getAllVideoSegments();
-        ASSERT_EQ(1, loadedSegments.size());
+        ASSERT_EQ(1u, loadedSegments.size());
         compareSegments(segment1, loadedSegments[0]);
         stream.close();
     }
@@ -142,7 +142,7 @@ TEST_P(TestVideoSegments, ParseSegment)
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     reader->parseVideoSegments(result, loadedSegments);
 
-    ASSERT_EQ(1, loadedSegments.size());
+    ASSERT_EQ(1u, loadedSegments.size());
     compareSegments(segments[0], loadedSegments[0]);
 }
 
@@ -165,7 +165,7 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     reader->parseVideoSegments(result, loadedSegments);
 
-    ASSERT_EQ(2, loadedSegments.size());
+    ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
 	compareSegments(segments[i], loadedSegments[i]);
 }
@@ -189,7 +189,7 @@ TEST_P(TestVideoSegments, ParseSegmentsAll)
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     reader->parseVideoSegments(result, loadedSegments);
 
-    ASSERT_EQ(2, loadedSegments.size());
+    ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
 	compareSegments(segments[i], loadedSegments[i]);
 }

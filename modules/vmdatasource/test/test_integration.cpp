@@ -194,7 +194,7 @@ TEST(Integration, Hongwu1)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("event");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> birthday = set.at(0);
         ASSERT_EQ(4001, birthday->getFrameIndex());
         ASSERT_EQ(2500, birthday->getNumOfFrames());
@@ -231,9 +231,9 @@ TEST(Integration, Hongwu2)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("ints");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> numbers = set.at(0);
-        ASSERT_EQ(5, numbers->size());
+        ASSERT_EQ(5u, numbers->size());
         for(int i = 0; i < 5; ++i)
             ASSERT_EQ(i+1, (vmf::vmf_integer) numbers->at(i));
     }
