@@ -116,6 +116,7 @@ namespace vmf
         * \param [in] value The source value to be used to construct the object.
         */
         Variant(const int& value);
+        Variant(const unsigned int& value);
 
         /*!
         * \brief Constructor
@@ -128,6 +129,7 @@ namespace vmf
         * \param [in] value The source value to be used to construct the object.
         */
         Variant& operator = (const int& value);
+        Variant& operator = (const unsigned int& value);
 
         /*!
         * \brief Copy operator

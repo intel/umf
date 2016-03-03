@@ -44,7 +44,7 @@ TEST(TestVmfRawBuffer, operatorAssignMove)
 TEST(TestVmfRawBuffer, Constructors)
 {
     vmf::vmf_rawbuffer emptyRb;
-    ASSERT_EQ(emptyRb.size(), 0);
+    ASSERT_EQ(emptyRb.size(), 0u);
     ASSERT_EQ(emptyRb.data(), nullptr);
 
     std::string str = "Here is a string containing text";

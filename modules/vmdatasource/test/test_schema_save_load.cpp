@@ -78,13 +78,13 @@ TEST_F(TestSaveLoadSchema, OneField)
         auto schema = stream.getSchema(TEST_SCHEMA_NAME);
 
         ASSERT_EQ(TEST_SCHEMA_NAME, schema->getName());
-        ASSERT_EQ(1, schema->size());
+        ASSERT_EQ(1u, schema->size());
         std::shared_ptr<vmf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
         ASSERT_TRUE(desc != NULL);
         ASSERT_EQ(TEST_SCHEMA_NAME, desc->getSchemaName());
         ASSERT_EQ(TEST_DESC_NAME, desc->getMetadataName());
         auto fields = desc->getFields();
-        ASSERT_EQ(1, fields.size());
+        ASSERT_EQ(1u, fields.size());
         vmf::FieldDesc fieldDescr;
         ASSERT_TRUE(desc->getFieldDesc(fieldDescr, TEST_FIELD_NAME));
         ASSERT_EQ(vmf::Variant::type_string, fieldDescr.type);
@@ -106,13 +106,13 @@ TEST_F(TestSaveLoadSchema, Array)
 
         auto schema = stream.getSchema(TEST_SCHEMA_NAME);
 
-        ASSERT_EQ(1, schema->size());
+        ASSERT_EQ(1u, schema->size());
         std::shared_ptr<vmf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
         ASSERT_TRUE(desc.get() != NULL);
         ASSERT_EQ(TEST_SCHEMA_NAME, desc->getSchemaName());
         ASSERT_EQ(TEST_DESC_NAME, desc->getMetadataName());
         std::vector<vmf::FieldDesc> fields = desc->getFields();
-        ASSERT_EQ(1, fields.size());
+        ASSERT_EQ(1u, fields.size());
         vmf::FieldDesc field = fields.at(0);
         ASSERT_EQ(vmf::Variant::type_string, field.type);
         ASSERT_EQ("", field.name);
@@ -132,7 +132,7 @@ TEST_F(TestSaveLoadSchema, GetAllNames)
         stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
 
         auto schemaNames = stream.getAllSchemaNames();
-        ASSERT_EQ(1, schemaNames.size());
+        ASSERT_EQ(1u, schemaNames.size());
         ASSERT_EQ(TEST_SCHEMA_NAME, schemaNames[0]);
     }
 }
@@ -160,7 +160,7 @@ TEST_F(TestSaveLoadSchema, SchemaAuthor)
         stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
 
         auto schemaNames = stream.getAllSchemaNames();
-        ASSERT_EQ(2, schemaNames.size());
+        ASSERT_EQ(2u, schemaNames.size());
         for (auto schema = schemaNames.begin(); schema != schemaNames.end(); schema++)
         {
             auto desc = stream.getSchema(*schema);
