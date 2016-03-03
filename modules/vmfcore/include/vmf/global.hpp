@@ -43,6 +43,7 @@
 
 namespace vmf
 {
+
 template<typename T>
 std::string to_string(T val)
 {
@@ -104,6 +105,11 @@ inline double from_string(const std::string& str) {
     }
     return val;
 }
+
+/*!
+* \brief returns VMF build info string
+*/
+VMF_EXPORT std::string getBuildInfo();
 
 /*! 
 * \brief returns current time in milliseconds since "clock's epoch" (midnight 1 Jan 1970 UTC)

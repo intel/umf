@@ -29,6 +29,12 @@
 
 namespace vmf
 {
+std::string getBuildInfo()
+{
+#include "build-info.inc"
+
+    return vmf_build_info;
+}
 
 long long getTimestamp()
 {
