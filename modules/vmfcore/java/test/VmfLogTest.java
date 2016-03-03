@@ -66,7 +66,7 @@ public class VmfLogTest
         str = in.readLine();
         assertFalse (str == null);
         assertFalse (str.isEmpty());
-        assertTrue(str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:44"));
+        assertTrue(str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:61"));
         in.close();
         
         Log.setLogToConsole ();
@@ -74,11 +74,17 @@ public class VmfLogTest
         Log.setVerbosityLevel(Log.LOG_INFO);
         assertEquals(Log.LOG_INFO, Log.getVerbosityLevel());
         
+        Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 77);
+        
         Log.setVerbosityLevel(Log.LOG_WARNING);
         assertEquals(Log.LOG_WARNING, Log.getVerbosityLevel());
         
+        Log.log(Log.LOG_WARNING, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 82);
+        
         Log.setVerbosityLevel(Log.LOG_ERROR);
         assertEquals(Log.LOG_ERROR, Log.getVerbosityLevel());
+        
+        Log.log(Log.LOG_ERROR, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 87);
         
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
         assertEquals(Log.LOG_NO_MESSAGE, Log.getVerbosityLevel());

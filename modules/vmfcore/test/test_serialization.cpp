@@ -418,11 +418,6 @@ TEST_P(TestSerialization, Parse_All)
     std::string check = "";
 
     ASSERT_THROW(reader->parseAll("", nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
-
-    schemas.pop_back();
-    std::string strSchemas = writer->store(schemas);
-
-    ASSERT_THROW(reader->parseAll(strSchemas, nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
 }
 
 TEST_P(TestSerialization, Parse_segmentArray)
@@ -446,7 +441,7 @@ TEST_P(TestSerialization, Parse_segmentArray)
     reader->parseVideoSegments(result, loadedSegments);
 
     ASSERT_EQ(segments.size(), loadedSegments.size());
-    for (int i = 0; i < segments.size(); i++)
+    for (size_t i = 0; i < segments.size(); i++)
     {
         compareSegments(segments[i], loadedSegments[i]);
     }
