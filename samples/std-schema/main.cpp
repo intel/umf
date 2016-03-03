@@ -46,8 +46,6 @@ static void copyFile(const std::string& src, const std::string& dest)
 
 int main(int argc, char* argv[])
 {
-    vmf::initialize();
-
     MetadataStream stream;
 
     try
@@ -143,8 +141,6 @@ int main(int argc, char* argv[])
 
         return -1;
     }
-
-    vmf::terminate();
 
     return 0;
 }
