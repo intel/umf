@@ -128,31 +128,31 @@ TEST_F(TestNamedReferences, SaveLoad)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     auto refs = md[0]->getAllReferences();
-    EXPECT_EQ(0, refs.size());
+    EXPECT_EQ(0u, refs.size());
 
     refs = md[1]->getAllReferences();
-    EXPECT_EQ(3, refs.size());
+    EXPECT_EQ(3u, refs.size());
 
     refs = md[2]->getAllReferences();
-    EXPECT_EQ(3, refs.size());
+    EXPECT_EQ(3u, refs.size());
 
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[0]);
 
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(2, refs.size());
+    EXPECT_EQ(2u, refs.size());
 
     newStream.save();
     newStream.load();
 
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(2, refs.size());
+    EXPECT_EQ(2u, refs.size());
 
     auto mdSet = md[1]->getReferencesByName("COLLEAGUE");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.close();
 }
@@ -164,10 +164,10 @@ TEST_F(TestNamedReferences, AddReferences)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     auto refs = md[0]->getAllReferences();
-    EXPECT_EQ(0, refs.size());
+    EXPECT_EQ(0u, refs.size());
 
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[1], "SPOUSE");
@@ -179,38 +179,38 @@ TEST_F(TestNamedReferences, AddReferences)
     EXPECT_THROW(md[0]->addReference(md[2], "MODEL"), vmf::IncorrectParamException);
     
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(6, refs.size());
+    EXPECT_EQ(6u, refs.size());
 
     auto mdSet = md[0]->getReferencesByName("");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
     
     mdSet = md[0]->getReferencesByName("SPOUSE");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("CAR");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(2u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("MODEL");
-    EXPECT_EQ(0, mdSet.size());
+    EXPECT_EQ(0u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("FRIEND");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(2u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(5, mdSet.size());
+    EXPECT_EQ(5u, mdSet.size());
 
     md[0]->addReference(md[2], "SPOUSE");
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(4, mdSet.size());
+    EXPECT_EQ(4u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("CAR");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(2u, mdSet.size());
 
     newStream.save();
     newStream.load();
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(6, refs.size());
+    EXPECT_EQ(6u, refs.size());
 
     newStream.close();
 }
@@ -222,7 +222,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     ASSERT_FALSE(md[0]->isReference(2, "SPOUSE"));
 
@@ -238,7 +238,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     ASSERT_FALSE(md[1]->isReference(md[0], "SPOUSE"));
 
     auto mdSet = md[1]->getAllReferences();
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     ASSERT_TRUE(md[2]->isReference(md[2]));
     ASSERT_TRUE(md[2]->isReference(md[0], "OWNER"));
@@ -251,7 +251,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     ASSERT_FALSE(md[2]->isReference(md[0], "OWNER"));
 
     mdSet = md[2]->getAllReferences();
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.close();
 }
@@ -571,8 +571,8 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
         stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load();
         stream.close();
-        EXPECT_EQ(1, stream.queryByName(TEST_DESC_NAME_1).size());
-        EXPECT_EQ(3, stream.queryByName(TEST_DESC_NAME_0).size());
+        EXPECT_EQ(1u, stream.queryByName(TEST_DESC_NAME_1).size());
+        EXPECT_EQ(3u, stream.queryByName(TEST_DESC_NAME_0).size());
     }
 }
 

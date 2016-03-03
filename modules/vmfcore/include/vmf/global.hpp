@@ -44,15 +44,19 @@
 namespace vmf
 {
 template<typename T>
-std::string toString(T val)
+std::string to_string(T val)
 {
+#if defined ANDROID || (defined _MSC_VER && _MSC_VER < 1700)
     std::stringstream sstream;
     sstream << val;
     return sstream.str();
+#else
+    return std::to_string(val);
+#endif
 }
 
 template<typename T>
-T stringTo(const std::string& str)
+T from_string(const std::string& str)
 {
     T val;
     std::stringstream sstream(str);
@@ -66,7 +70,7 @@ T stringTo(const std::string& str)
 }
 
 template<>
-inline double stringTo(const std::string& str) {
+inline double from_string(const std::string& str) {
     const std::string STR_NAN = "NAN";
     const std::string STR_INF = "INF";
     std::string string_value(str);

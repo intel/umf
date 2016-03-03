@@ -181,7 +181,7 @@ TEST_P(TestSerialization, Parse_schema)
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     reader->parseSchemas(result, schemas);
-    ASSERT_EQ(1, schemas.size());
+    ASSERT_EQ(1u, schemas.size());
     compareSchemas(spSchemaPeople, schemas[0]);
 }
 */
@@ -207,7 +207,7 @@ TEST_P(TestSerialization, Parse_schemasArray)
     std::string result = writer->store(schemas);
 
     reader->parseSchemas(result, schemas);
-    ASSERT_EQ(2, schemas.size());
+    ASSERT_EQ(2u, schemas.size());
     std::for_each(schemas.begin(), schemas.end(), [&] (const std::shared_ptr<MetadataSchema>& spSchema)
     {
         compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
@@ -235,7 +235,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
 
     reader->parseSchemas(result, schemas);
 
-    ASSERT_EQ(2, schemas.size());
+    ASSERT_EQ(2u, schemas.size());
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
@@ -264,7 +264,7 @@ TEST_P(TestSerialization, Parse_metadata)
     schemas.push_back(spSchemaPeople);
     std::vector<std::shared_ptr<MetadataInternal>> md;
     reader->parseMetadata(result, schemas, md);
-    ASSERT_EQ(1, md.size());
+    ASSERT_EQ(1u, md.size());
     compareMetadata(item, md[0], false);
     ASSERT_EQ(item->getAllReferences().size(), md[0]->vRefs.size());
 }
@@ -367,7 +367,7 @@ TEST_P(TestSerialization, Parse_All)
     MetadataStream testStream;
     testStream.deserialize(result, *reader);
 
-    ASSERT_EQ(2, testStream.getAllSchemaNames().size());
+    ASSERT_EQ(2u, testStream.getAllSchemaNames().size());
     compareSchemas(spSchemaPeople, testStream.getSchema(n_schemaPeople));
     compareSchemas(spSchemaFrames, testStream.getSchema(n_schemaFrames));
 
@@ -408,7 +408,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 
     reader->parseSchemas(result, schemas);
 
-    ASSERT_EQ(1, schemas.size());
+    ASSERT_EQ(1u, schemas.size());
     ASSERT_EQ("com.intel.vmf.compressed-metadata", schemas[0]->getName());
 }
 
