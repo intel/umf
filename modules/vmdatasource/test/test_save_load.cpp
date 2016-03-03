@@ -1598,7 +1598,9 @@ protected:
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_DESC_NAME = "TEST_DESC_NAME";
         TEST_FIELD_NAME = "name";
+        TEST_VALUE_NAME = "Sherlock";
         TEST_FIELD_AGE = "age";
+        TEST_VALUE_AGE = 33;
         TEST_FIELD_ADDRESS = "address";
         TEST_VALUE_ADDRESS = "221b Baker St, London NW1 6XE, UK";
     }
@@ -1624,7 +1626,9 @@ protected:
     vmf::vmf_string TEST_SCHEMA_NAME;
     vmf::vmf_string TEST_DESC_NAME;
     vmf::vmf_string TEST_FIELD_NAME;
+    vmf::vmf_string TEST_VALUE_NAME;
     vmf::vmf_string TEST_FIELD_AGE;
+    vmf::vmf_string TEST_VALUE_AGE;
     vmf::vmf_string TEST_FIELD_ADDRESS;
     vmf::vmf_string TEST_VALUE_ADDRESS;
 };
@@ -1655,8 +1659,8 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
-        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
-        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
         address->findField(TEST_FIELD_ADDRESS)->setUseEncryption(true);
         address->setTimestamp(vmf::getTimestamp());
@@ -1706,8 +1710,8 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
-        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
-        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
         address->setTimestamp(vmf::getTimestamp());
         address->setUseEncryption(true);
@@ -1757,8 +1761,8 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
-        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
-        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
         address->setTimestamp(vmf::getTimestamp());
 
@@ -1816,8 +1820,8 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
-        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
-        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
         address->setTimestamp(vmf::getTimestamp());
 
@@ -1874,8 +1878,8 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
-        address->setFieldValue(TEST_FIELD_NAME, "Sherlock");
-        address->setFieldValue(TEST_FIELD_AGE, 33);
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
         address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
         address->setTimestamp(vmf::getTimestamp());
 
