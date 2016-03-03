@@ -69,7 +69,7 @@ TEST_F(TestGlobal, Reopen)
     meta->setFieldValue("last name", "Bogdanov");
     meta->setFieldValue("age", (vmf::vmf_integer) 21);
     stream.add(meta);
-    stream.save();
+    ASSERT_TRUE(stream.save());
     stream.close();
 
     ASSERT_TRUE(stream.reopen(vmf::MetadataStream::Update));
