@@ -151,6 +151,19 @@ protected:
         }
     }
 
+    void compareSegments(const std::shared_ptr<MetadataStream::VideoSegment>& idealSegment, const std::shared_ptr<MetadataStream::VideoSegment>& s)
+    {
+        ASSERT_EQ(idealSegment->getTitle(), s->getTitle());
+        ASSERT_EQ(idealSegment->getFPS(), s->getFPS());
+        ASSERT_EQ(idealSegment->getTime(), s->getTime());
+        ASSERT_EQ(idealSegment->getDuration(), s->getDuration());
+        long w1, h1, w2, h2;
+        idealSegment->getResolution(w1, h1);
+        s->getResolution(w2, h2);
+        ASSERT_EQ(w1, w2);
+        ASSERT_EQ(h1, h2);
+    }
+
     MetadataStream stream;
     MetadataSet set;
 
@@ -398,8 +411,43 @@ TEST_P(TestSerialization, Parse_All)
     {
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
     });
+
+    segments.clear();
+    schemas.clear();
+    std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
+    IdType nextId = 1;
+    std::string path = "";
+    std::string check = "";
+
+    ASSERT_THROW(reader->parseAll("", nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
 }
 
+TEST_P(TestSerialization, Parse_segmentArray)
+{
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    if (type == TypeXML)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
+    }
+    else if (type == TypeJson)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
+    }
+
+    std::string result = writer->store(segments);
+
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
+    reader->parseVideoSegments(result, loadedSegments);
+
+    ASSERT_EQ(segments.size(), loadedSegments.size());
+    for (int i = 0; i < segments.size(); i++)
+    {
+        compareSegments(segments[i], loadedSegments[i]);
+    }
+}
 
 TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {
