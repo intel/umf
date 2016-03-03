@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,13 +29,28 @@ public class VmfLogTest
         Vmf.terminate();
     }
     
+    protected File newFile; 
+    
+    @Before
+    public void setUp () throws IOException
+    {
+        Log.setVerbosityLevel(Log.LOG_INFO);
+        newFile = new File("myLogFile.txt");
+        
+        if (newFile.exists())
+            newFile.delete();
+    }
+    
+    @After
+    public void tearDown ()
+    {
+        if (newFile.exists())
+            newFile.delete();
+    }
+    
     @Test
     public void testLog () throws IOException
     {
-        File newFile = new File("myLogFile.txt");
-        if (newFile.exists())
-            newFile.delete();
-        
         assertTrue(newFile.createNewFile()); 
         
         Log.setLogToFile("myLogFile.txt");
@@ -41,15 +58,16 @@ public class VmfLogTest
         String str = in.readLine();
         assertTrue (str == null);
         
-        Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 44);
-        Log.log(Log.LOG_WARNING, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 45);
-        Log.log(6, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 46);
+        Log.log(Log.LOG_INFO, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 61);
+        Log.log(Log.LOG_WARNING, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 62);
+        Log.log(Log.LOG_ERROR, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 63);
+        Log.log(4, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 64);
         
         str = in.readLine();
+        assertFalse (str == null);
         assertFalse (str.isEmpty());
-        str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:30");
+        assertTrue(str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:44"));
         in.close();
-        newFile.delete();
         
         Log.setLogToConsole ();
         
