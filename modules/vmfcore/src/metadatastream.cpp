@@ -60,7 +60,7 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         m_sFilePath = sFilePath;
         //encryption of all scopes except whole stream should be performed by MetadataStream
         //dataSource should know nothing about that
-        dataSource->setEncryptor(m_useEncryption ? m_encryptor : nullptr);
+        dataSource->setEncryptor(m_encryptor);
 
         dataSource->openFile(m_sFilePath, eMode);
         dataSource->loadVideoSegments(videoSegments);
