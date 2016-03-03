@@ -181,12 +181,16 @@ void XMPMetadataSource::saveField(const MetaString& fieldName, const Variant& _v
     }
     else
     {
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "false");
     }
     SXMPUtils::ComposeStructFieldPath(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &tmpPath);
     if(!encryptedData.empty())
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData);
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData.c_str());
+    }
+    else
+    {
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "");
     }
 }
 
@@ -612,11 +616,11 @@ void XMPMetadataSource::saveMetadataEncrypted(const MetaString &pathToProperty, 
                                       METADATA_ENCRYPTED_DATA, &tmpPath);
     if(encryptedData.length() > 0)
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData);
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData.c_str());
     }
     else
     {
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "");
     }
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
                                       METADATA_ENCRYPTED_BOOL, &tmpPath);
@@ -626,7 +630,7 @@ void XMPMetadataSource::saveMetadataEncrypted(const MetaString &pathToProperty, 
     }
     else
     {
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "false");
     }
 }
 
