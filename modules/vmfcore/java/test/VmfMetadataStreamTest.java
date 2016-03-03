@@ -241,14 +241,18 @@ public class VmfMetadataStreamTest
         MetadataSet mdSet6 = stream.queryByNameAndFields ("person", fvs);
         assertEquals(1, mdSet6.getSize());
         
-        MetadataSet mdSet7 = stream.queryByReference ("person");
-        assertEquals(1, mdSet7.getSize());
+        mdSet6 = stream.queryByReference ("person");
+        assertEquals(1, mdSet6.getSize());
         
-        MetadataSet mdSet8 = stream.queryByReference ("person", fv);
-        assertEquals(1, mdSet8.getSize());
+        mdSet6 = stream.queryByReference ("person", fv);
+        assertEquals(1, mdSet6.getSize());
         
-        MetadataSet mdSet9 = stream.queryByReference ("person", fvs);
-        assertEquals(1, mdSet9.getSize());
+        mdSet6 = stream.queryByReference ("person", fvs);
+        assertEquals(1, mdSet6.getSize());
+        
+        FieldValue emptyNameFv = new FieldValue();
+        mdSet6 = stream.queryByReference ("person", emptyNameFv);
+        assertEquals(0, mdSet6.getSize());
         
         XMLWriter writer = new XMLWriter ();
         String serialized = stream.serialize (writer);
@@ -285,6 +289,8 @@ public class VmfMetadataStreamTest
         assertEquals(0, mdSet1.getSize());
         
         stream.close();
+        
+        //stream.reopen(MetadataStream.)
         
         copy (srcFile, "new.avi");
         stream.saveTo("new.avi");
@@ -437,7 +443,7 @@ public class VmfMetadataStreamTest
         stream.reopen(MetadataStream.ReadOnly);
     }
 
-    /*@Test
+    @Test
     public void testReopen2Thrown()
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
@@ -445,7 +451,18 @@ public class VmfMetadataStreamTest
         thrown.expect(com.intel.vmf.VmfException.class);
         thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
         stream.reopen(MetadataStream.ReadWrite);
-    }*/
+    }
+    
+    @Test
+    public void testReopen3Thrown()
+    {
+        stream.open(dstFile, MetadataStream.ReadWrite);
+        stream.close();
+        stream.clear();
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: The file path is emtpy!");
+        stream.reopen(MetadataStream.ReadWrite);
+    }
     
     @Test
     public void testMdIntAddThrown()
