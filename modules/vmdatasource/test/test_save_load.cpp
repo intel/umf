@@ -1474,7 +1474,16 @@ TEST_P(TestSaveLoadCompressionEncryption, Checksum)
         }
         else
         {
-            ASSERT_TRUE(stream.save(name));
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
         }
         stream.close();
     }
@@ -1511,7 +1520,16 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
             std::string checksum1 = stream.computeChecksum();
             stream.setChecksum(checksum1);
 
-            ASSERT_TRUE(stream.save(name));
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
             stream.close();
         }
 
@@ -1556,7 +1574,16 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
         }
         else
         {
-            ASSERT_TRUE(stream.save(name));
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
         }
         stream.close();
     }
@@ -1667,7 +1694,17 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
 
         stream.add(address);
 
-        ASSERT_TRUE(stream.save());
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            address->findField(TEST_FIELD_ADDRESS)->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
+
         stream.close();
     }
 
@@ -1718,7 +1755,16 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
 
         stream.add(address);
 
-        ASSERT_TRUE(stream.save());
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            address->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
         stream.close();
     }
 
@@ -1768,7 +1814,16 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
 
         stream.add(address);
 
-        ASSERT_TRUE(stream.save());
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            desc->getFieldDesc(TEST_FIELD_ADDRESS).useEncryption = false;
+            ASSERT_TRUE(stream.save());
+        }
         stream.close();
     }
 
@@ -1784,7 +1839,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
         schema = stream.getSchema(TEST_SCHEMA_NAME);
         desc = schema->findMetadataDesc(TEST_DESC_NAME);
         vmf::FieldDesc& field = desc->getFieldDesc(TEST_FIELD_ADDRESS);
-        ASSERT_TRUE(field.useEncryption);
+        ASSERT_EQ(field.useEncryption, (bool)encryptor);
 
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
@@ -1827,7 +1882,16 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
 
         stream.add(address);
 
-        ASSERT_TRUE(stream.save());
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            desc->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
         stream.close();
     }
 
@@ -1842,7 +1906,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
 
         schema = stream.getSchema(TEST_SCHEMA_NAME);
         desc = schema->findMetadataDesc(TEST_DESC_NAME);
-        ASSERT_TRUE(desc->getUseEncryption());
+        ASSERT_EQ(desc->getUseEncryption(), (bool)encryptor);
 
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
@@ -1885,7 +1949,16 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
 
         stream.add(address);
 
-        ASSERT_TRUE(stream.save());
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            schema->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
         stream.close();
     }
 
@@ -1898,7 +1971,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
         std::shared_ptr<vmf::MetadataSchema> schema;
 
         schema = stream.getSchema(TEST_SCHEMA_NAME);
-        ASSERT_TRUE(schema->getUseEncryption());
+        ASSERT_EQ(schema->getUseEncryption(), (bool)encryptor);
 
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
