@@ -20,6 +20,11 @@
 namespace vmf
 {
 MetadataDesc::MetadataDesc()
+    : m_sSchemaName()
+    , m_sMetadataName()
+    , m_vFields()
+    , m_useEncryption(false)
+
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
 }
@@ -27,6 +32,7 @@ MetadataDesc::MetadataDesc()
 MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
                            bool useEncryption)
     : m_sMetadataName(sMetadataName)
+    , m_sSchemaName()
     , m_vFields(vFields)
     , m_useEncryption(useEncryption)
 {
@@ -39,6 +45,7 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
     : m_sMetadataName( sMetadataName )
     , m_vFields( vFields )
     , m_vRefDesc( vRefs )
+    , m_sSchemaName()
     , m_useEncryption(useEncryption)
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
@@ -47,6 +54,8 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
 
 MetadataDesc::MetadataDesc( const std::string& sMetadataName, Variant::Type type )
     : m_sMetadataName( sMetadataName )
+    , m_sSchemaName()
+    , m_useEncryption(false)
 {
     if (type == Variant::type_unknown)
     {
