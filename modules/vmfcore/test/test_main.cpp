@@ -16,8 +16,11 @@
  */
 #include "test_precomp.hpp"
 
+#include <iostream>
+
 int main(int argc, char **argv) 
 {
+    std::cout << "VMF build info:\n" << vmf::getBuildInfo() << std::endl;
     ::testing::InitGoogleTest(&argc, argv);
     vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
 
