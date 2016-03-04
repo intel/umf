@@ -1563,8 +1563,6 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
         stream.setEncryptor(encryptor);
         stream.setUseEncryption(true);
 
-        ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
-
         stream.open(TEST_FILE, vmf::MetadataStream::Update);
         checksum1 = stream.computeChecksum();
         stream.setChecksum(checksum1);
