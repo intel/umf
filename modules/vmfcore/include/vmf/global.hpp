@@ -130,12 +130,6 @@ VMF_EXPORT long long getTimestamp();
 */
 VMF_EXPORT long long getTimestamp(int year, int month, int day, int hours = 0, int minutes = 0, int seconds = 0, int ms = 0);
 
-/*!
-* \typedef MetaString
-* \brief VMF string type
-*/
-typedef vmf_string MetaString;
-
 /*! 
 * \typedef IdType
 * \brief Object identifier type
