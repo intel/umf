@@ -125,6 +125,7 @@ private:
     std::shared_ptr<SXMPMeta> xmp;
     std::shared_ptr<XMPMetadataSource> metadataSource;
     std::shared_ptr<XMPSchemaSource> schemaSource;
+    std::shared_ptr<XMPStatSource> statSource;
     vmf::vmf_string metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;

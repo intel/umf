@@ -433,7 +433,7 @@ std::string XMLWriter::store(const IdType& nextId,
             VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
         xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
         add(segmentNode, spSegment);
-    });
+    }
 
     for(auto spSchema : schemas)
     {
@@ -524,7 +524,7 @@ std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::V
             VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
         xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
         add(segmentNode, spSegment);
-    });
+    }
 
     xmlChar *buf;
     int size;
