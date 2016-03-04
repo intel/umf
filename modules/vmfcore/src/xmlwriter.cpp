@@ -84,14 +84,6 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
     }
 }
 
-#if defined ANDROID || (defined WIN32 && _MSC_VER < 1700)
-template < typename T >
-static std::string type2str(T x)
-{ std::ostringstream oss; oss << x; return oss.str(); }
-#define TYPE2STR(x) type2str(x)
-#else
-#define TYPE2STR(x) std::to_string(x)
-#endif // ANDROID
 
 static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMetadata)
 {
@@ -101,23 +93,23 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
     if(xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_DESCRIPTION, BAD_CAST spMetadata->getName().c_str()) == NULL)
         VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata description name)" );
 
-    if (xmlNewProp(metadataNode, BAD_CAST ATTR_ID, BAD_CAST TYPE2STR(spMetadata->getId()).c_str()) == NULL)
+    if (xmlNewProp(metadataNode, BAD_CAST ATTR_ID, BAD_CAST to_string(spMetadata->getId()).c_str()) == NULL)
         VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata id)" );
 
     if(spMetadata->getFrameIndex() != Metadata::UNDEFINED_FRAME_INDEX)
-	if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_FRAME_IDX, BAD_CAST TYPE2STR(spMetadata->getFrameIndex()).c_str()) == NULL)
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_FRAME_IDX, BAD_CAST to_string(spMetadata->getFrameIndex()).c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata frame index)" );
 
     if(spMetadata->getNumOfFrames() != Metadata::UNDEFINED_FRAMES_NUMBER)
-	if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_NFRAMES, BAD_CAST TYPE2STR(spMetadata->getNumOfFrames()).c_str()) == NULL)
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_NFRAMES, BAD_CAST to_string(spMetadata->getNumOfFrames()).c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata number of frames)" );
 
     if(spMetadata->getTime() != Metadata::UNDEFINED_TIMESTAMP)
-	if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_TIMESTAMP, BAD_CAST TYPE2STR(spMetadata->getTime()).c_str()) == NULL)
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_TIMESTAMP, BAD_CAST to_string(spMetadata->getTime()).c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata timestamp)" );
 
     if(spMetadata->getDuration() != Metadata::UNDEFINED_DURATION)
-	if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_DURATION, BAD_CAST TYPE2STR(spMetadata->getDuration()).c_str()) == NULL)
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_DURATION, BAD_CAST to_string(spMetadata->getDuration()).c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata duration)" );
 
     auto vFields = spMetadata->getDesc()->getFields();
@@ -150,7 +142,7 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
             if (xmlNewProp(referenceNode, BAD_CAST ATTR_NAME, BAD_CAST reference->getReferenceDescription()->name.c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata reference name)");
 
-	        if (xmlNewProp(referenceNode, BAD_CAST ATTR_ID, BAD_CAST TYPE2STR((*reference).getReferenceMetadata().lock()->getId()).c_str()) == NULL)
+            if (xmlNewProp(referenceNode, BAD_CAST ATTR_ID, BAD_CAST to_string((*reference).getReferenceMetadata().lock()->getId()).c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata reference id)" );
         }
     }
@@ -158,31 +150,31 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
 
 static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 {
-    if(spSegment->getTitle() == "" || spSegment->getFPS() <= 0 || spSegment->getTime() < 0 )
-	VMF_EXCEPTION(IncorrectParamException, "Invalid segment. Segment must have not empty title, fps > 0 and start time >= 0");
+    if (spSegment->getTitle() == "" || spSegment->getFPS() <= 0 || spSegment->getTime() < 0)
+        VMF_EXCEPTION(IncorrectParamException, "Invalid segment. Segment must have not empty title, fps > 0 and start time >= 0");
 
-    if(xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_TITLE , BAD_CAST spSegment->getTitle().c_str()) == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+    if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_TITLE, BAD_CAST spSegment->getTitle().c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
 
-    if(xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_FPS , BAD_CAST TYPE2STR(spSegment->getFPS()).c_str() ) == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+    if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_FPS, BAD_CAST to_string(spSegment->getFPS()).c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
 
-    if(xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_TIME , BAD_CAST TYPE2STR(spSegment->getTime()).c_str() ) == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+    if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_TIME, BAD_CAST to_string(spSegment->getTime()).c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
 
-    if(spSegment->getDuration() > 0)
-	if(xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_DURATION , BAD_CAST TYPE2STR(spSegment->getDuration()).c_str() ) == NULL)
-	    VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+    if (spSegment->getDuration() > 0)
+        if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_DURATION, BAD_CAST to_string(spSegment->getDuration()).c_str()) == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
 
     long width, height;
     spSegment->getResolution(width, height);
     if (width > 0 && height > 0)
     {
-        if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_WIDTH, BAD_CAST TYPE2STR(width).c_str()) == NULL)
-	    VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+        if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_WIDTH, BAD_CAST to_string(width).c_str()) == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
 
-        if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_HEIGHT, BAD_CAST TYPE2STR(height).c_str()) == NULL)
-	    VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
+        if (xmlNewProp(segmentsNode, BAD_CAST ATTR_SEGMENT_HEIGHT, BAD_CAST to_string(height).c_str()) == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (video segment title)");
     }
 }
 
@@ -354,7 +346,7 @@ std::string XMLWriter::store(const IdType& nextId,
     if(xmlDocSetRootElement(doc, vmfRootNode) != 0)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
-    if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_NEXTID, BAD_CAST TYPE2STR(nextId).c_str()) == NULL)
+    if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_NEXTID, BAD_CAST to_string(nextId).c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Next Id");
     if(xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_FILEPATH , BAD_CAST filepath.c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Filepath");
@@ -362,11 +354,11 @@ std::string XMLWriter::store(const IdType& nextId,
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Checksum");
 
     xmlNodePtr segmentsArrayNode = NULL;
-    if(!segments.empty())
+    if (!segments.empty())
     {
-	segmentsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY, NULL);
-	if(segmentsArrayNode == NULL)
-	    VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments array");
+        segmentsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY, NULL);
+        if (segmentsArrayNode == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments array");
     }
 
     xmlNodePtr schemasArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_SCHEMAS_ARRAY, NULL);
@@ -379,10 +371,10 @@ std::string XMLWriter::store(const IdType& nextId,
 
     std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
     {
-	if( spSegment == nullptr )
-	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-	xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
-	add(segmentNode, spSegment);
+        if (spSegment == nullptr)
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+        xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
+        add(segmentNode, spSegment);
     });
 
     std::for_each(schemas.begin(), schemas.end(), [&](const std::shared_ptr<MetadataSchema>& spSchema)
@@ -419,17 +411,17 @@ std::string XMLWriter::store(const IdType& nextId,
 
 std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 {
-    if( spSegment == nullptr )
-	VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+    if (spSegment == nullptr)
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
 
     xmlDocPtr doc = xmlNewDoc(NULL);
 
     xmlNodePtr segmentNode = xmlNewNode(NULL, BAD_CAST TAG_VIDEO_SEGMENT);
-    if(segmentNode == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments" );
+    if (segmentNode == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments");
 
-    if(xmlDocSetRootElement(doc, segmentNode) != 0)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
+    if (xmlDocSetRootElement(doc, segmentNode) != 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
     add(segmentNode, spSegment);
 
@@ -437,7 +429,7 @@ std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>
     int size;
     xmlDocDumpMemory(doc, &buf, &size);
     if (buf == NULL)
-	VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into the buffer");
+        VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into the buffer");
 
     std::string outputString = (char *)buf;
 
@@ -451,30 +443,30 @@ std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>
 
 std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
-    if(segments.empty())
-	VMF_EXCEPTION(vmf::IncorrectParamException, "Input video segments vector is empty");
+    if (segments.empty())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Input video segments vector is empty");
 
     xmlDocPtr doc = xmlNewDoc(NULL);
     xmlNodePtr segmentsArrayNode = xmlNewNode(NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY);
-    if(segmentsArrayNode == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments array");
+    if (segmentsArrayNode == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments array");
 
-    if(xmlDocSetRootElement(doc, segmentsArrayNode) != 0)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
+    if (xmlDocSetRootElement(doc, segmentsArrayNode) != 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
 
     std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
     {
-	if( spSegment == nullptr )
-	    VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-	xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
-	add(segmentNode, spSegment);
+        if (spSegment == nullptr)
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
+        xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
+        add(segmentNode, spSegment);
     });
 
     xmlChar *buf;
     int size;
     xmlDocDumpMemory(doc, &buf, &size);
     if (buf == NULL)
-	VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
 
     std::string outputString = (char *)buf;
 

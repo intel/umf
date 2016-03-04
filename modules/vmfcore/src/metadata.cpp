@@ -72,12 +72,12 @@ void Metadata::setFrameIndex( long long nFrameIndex, long long nNumOfFrames )
 {
     if(nFrameIndex < 0 && nFrameIndex != UNDEFINED_FRAME_INDEX)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value: " + to_string(nFrameIndex));
     }
 
     if(nNumOfFrames < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value: " + to_string(nNumOfFrames));
     }
 
     m_nFrameIndex = nFrameIndex;
@@ -88,12 +88,12 @@ void Metadata::setTimestamp(long long timestamp, long long duration)
 {
     if(timestamp < 0 && timestamp != UNDEFINED_TIMESTAMP)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value: " + to_string(timestamp));
     }
 
     if(duration < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value: " + to_string(duration));
     }
 
     m_nTimestamp = timestamp;

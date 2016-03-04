@@ -29,34 +29,40 @@
 
 namespace vmf
 {
+std::string getBuildInfo()
+{
+#include "build-info.inc"
+
+    return vmf_build_info;
+}
 
 long long getTimestamp()
 {
 #ifdef _VMF_USE_STD_CHRONO
     return std::chrono::duration_cast<std::chrono::milliseconds> ( std::chrono::system_clock::now().time_since_epoch() ).count();
 #else
-    return std::time(NULL) * 1000LL;
+    return (long long) std::time(NULL) * 1000LL;
 #endif //_VMF_USE_STD_CHRONO
 }
 
-long long getTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int milliseconds)
+long long getTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int ms)
 {
     if(year < 1970)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid year param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid year: " + to_string(year));
     if( month > 12 || month < 1 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid month param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid month: " + to_string(month));
     if( day > 31 || day <= 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid day param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid day: " + to_string(day));
     if( hours >= 24 || hours < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid hours param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid hours: " + to_string(hours));
     if( minutes >= 60 || minutes < 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid minutes param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid minutes: " + to_string(minutes));
     if( seconds >= 60 || seconds < 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid seconds param");
-    if( milliseconds >= 1000 || milliseconds < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid milliseconds param");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid seconds: " + to_string(seconds));
+    if( ms >= 1000 || ms < 0)
+        VMF_EXCEPTION(IncorrectParamException, "Invalid milliseconds : " + to_string(ms));
 
-    std::tm timeinfo;
+    std::tm timeinfo = {0};
     timeinfo.tm_year = year - 1900;
     timeinfo.tm_mon = month - 1;
     timeinfo.tm_mday = day;
@@ -65,13 +71,20 @@ long long getTimestamp(int year, int month, int day, int hours, int minutes, int
     timeinfo.tm_sec = seconds;
 
     std::time_t time = std::mktime(&timeinfo);
+    if (time == -1)
+    {
+        char buff[128] = {0};
+        strftime(buff, sizeof(buff), "%c", &timeinfo);
+        VMF_EXCEPTION(InternalErrorException, std::string("Error converting date + time to a timestamp: ") + buff);
+    }
 
+    long long retVal;
 #ifdef _VMF_USE_STD_CHRONO
-    return (std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::from_time_t(time).time_since_epoch())).count() + (long long)milliseconds;
+    retVal = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(time).time_since_epoch())).count() + (long long)ms;
 #else
-    return time * 1000LL + milliseconds;
+    retVal = time * 1000LL + ms;
 #endif //_VMF_USE_STD_CHRONO
-
+    return retVal;
 }
 
 } // namespace vmf

@@ -70,7 +70,7 @@ class TestCompressor : public ::testing::TestWithParam<std::string>
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        //vmf::initialize();
         //register bloating compressor
         std::shared_ptr<Compressor> bloating = std::make_shared<BloatingCompressor>();
         vmf::Compressor::registerNew(bloating);
@@ -79,7 +79,7 @@ protected:
     void TearDown()
     {
         vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::string generateData(int nChars)

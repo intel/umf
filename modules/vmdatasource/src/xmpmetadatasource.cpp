@@ -79,8 +79,8 @@ XMPMetadataSource::XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta)
 void XMPMetadataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet)
 {
     shared_ptr<MetadataSchema> thisSchemaDescription = schemaDesc;
-    MetaString schemaName = schemaDesc->getName();
-    MetaString thisSchemaPath = findSchema(schemaName);
+    vmf_string schemaName = schemaDesc->getName();
+    vmf_string thisSchemaPath = findSchema(schemaName);
 
     if (thisSchemaPath.empty())
     {
@@ -159,8 +159,8 @@ void XMPMetadataSource::saveMetadata(const shared_ptr<Metadata>& md, const MetaS
 }
 
 
-void XMPMetadataSource::saveField(const MetaString& fieldName, const Variant& _value, const bool isEncrypted,
-                                  const MetaString &encryptedData, const MetaString& fieldsPath)
+void XMPMetadataSource::saveField(const vmf_string& fieldName, const Variant& _value, const bool isEncrypted,
+                                  const vmf_string &encryptedData, const vmf_string& fieldsPath)
 {
     std::string value = _value.toString();
     if(value.empty())

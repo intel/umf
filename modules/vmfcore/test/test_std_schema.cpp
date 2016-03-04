@@ -33,8 +33,8 @@ TEST(TestStdSchema, GetSchema)
     EXPECT_EQ(stdSchema->getAuthor(), "Intel Corporation");
 
     auto channels = stdSchema->getAll();
-    EXPECT_EQ(channels.size(), 23);
+    EXPECT_EQ(channels.size(), 23u);
     EXPECT_EQ(channels[0]->getMetadataName(), "person");
-    EXPECT_EQ(channels[0]->getFields().size(), 8);
+    EXPECT_EQ(channels[0]->getFields().size(), 8u);
 }
 

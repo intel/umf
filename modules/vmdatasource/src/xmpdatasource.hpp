@@ -28,7 +28,7 @@
 #include "vmf/compressor.hpp"
 #include "vmf/encryptor.hpp"
 
-#define TXMP_STRING_TYPE vmf::MetaString
+#define TXMP_STRING_TYPE vmf::vmf_string
 #define XMP_INCLUDE_XMPFILES 1
 #include <XMP.incl_cpp>
 #include <XMP.hpp>
@@ -55,13 +55,13 @@ public:
 
     ~XMPDataSource();
 
-    virtual void openFile(const vmf::MetaString& fileName, vmf::MetadataStream::OpenMode mode);
+    virtual void openFile(const vmf::vmf_string& fileName, vmf::MetadataStream::OpenMode mode);
 
     virtual void closeFile();
 
-    virtual void loadSchema(const vmf::MetaString& schemaName, vmf::MetadataStream& stream);
+    virtual void loadSchema(const vmf::vmf_string& schemaName, vmf::MetadataStream& stream);
 
-    virtual void loadProperty(const vmf::MetaString &schemaName, const vmf::MetaString &propertyName, MetadataStream &stream);
+    virtual void loadProperty(const vmf::vmf_string &schemaName, const vmf::vmf_string &propertyName, MetadataStream &stream);
 
     virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet);
 
@@ -69,7 +69,7 @@ public:
 
     virtual void remove(const std::vector<vmf::IdType>& ids);
 
-    virtual void load(std::map<MetaString, std::shared_ptr<vmf::MetadataSchema> >& schemas);
+    virtual void load(std::map<vmf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
 
     virtual void clear();
 
@@ -77,9 +77,9 @@ public:
 
     virtual vmf::IdType loadId();
 
-    virtual void removeSchema(const MetaString &schemaName);
+    virtual void removeSchema(const vmf_string &schemaName);
 
-    virtual void saveChecksum(const MetaString& checksum);
+    virtual void saveChecksum(const vmf_string& checksum);
 
     virtual std::string loadChecksum();
 
@@ -125,7 +125,7 @@ private:
     std::shared_ptr<SXMPMeta> xmp;
     std::shared_ptr<XMPMetadataSource> metadataSource;
     std::shared_ptr<XMPSchemaSource> schemaSource;
-    vmf::MetaString metaFileName;
+    vmf::vmf_string metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
     std::shared_ptr<Encryptor>  encryptor;
