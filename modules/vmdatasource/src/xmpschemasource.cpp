@@ -223,7 +223,7 @@ shared_ptr<MetadataSchema> XMPSchemaSource::loadMetadataSchemaByPath(const vmf_s
         VMF_EXCEPTION(DataStorageException, "Corrupted schema description by path " + pathToSchema);
     }
     metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_AUTHOR, &thisSchemaAuthor, nullptr);
-    MetaString thisSchemaEncrypted;
+    vmf_string thisSchemaEncrypted;
     bool useEncryption = metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_ENCRYPTED, &thisSchemaEncrypted, nullptr);
     useEncryption = useEncryption && (thisSchemaEncrypted == "true");
     auto schema = make_shared<MetadataSchema>(thisSchemaName, thisSchemaAuthor, useEncryption);
@@ -248,7 +248,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const vmf_string& path
     {
         VMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToDesc);
     }
-    MetaString encryptedDescStr;
+    vmf_string encryptedDescStr;
     bool useEncryptionDesc = metadata->GetStructField(VMF_NS, pathToDesc.c_str(), VMF_NS,
                                                       PROPERTY_ENCRYPTED, &encryptedDescStr, NULL);
     useEncryptionDesc = useEncryptionDesc && encryptedDescStr == "true";
@@ -278,7 +278,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const vmf_string& path
         if(!metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS, FIELD_OPTIONALITY, NULL, NULL))
             optional = false;
 
-        MetaString encryptedFieldStr;
+        vmf_string encryptedFieldStr;
         bool useEncryptionField = metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS,
                                                            FIELD_ENCRYPTED, &encryptedFieldStr, NULL);
         useEncryptionField = useEncryptionField && encryptedFieldStr == "true";

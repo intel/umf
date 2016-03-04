@@ -74,9 +74,9 @@ public:
     }
 
 private:
-    MetaString m_name;
+    vmf_string m_name;
     bool m_useEncryption;
-    MetaString m_encryptedData;
+    vmf_string m_encryptedData;
 };
 
 }

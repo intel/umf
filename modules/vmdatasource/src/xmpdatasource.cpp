@@ -152,7 +152,7 @@ void XMPDataSource::loadXMPstructs()
     {
         //load standard VMF metadata and decrypt them if there is a corresponding schema
         //or pass them further
-        std::map<MetaString, std::shared_ptr<MetadataSchema> > eSchemas;
+        std::map<vmf_string, std::shared_ptr<MetadataSchema> > eSchemas;
         tmpSchemaSource->load(eSchemas);
         auto itEncryption = eSchemas.find(encryptionSchemaName);
         if(itEncryption != eSchemas.end())
