@@ -135,7 +135,11 @@ bool MetadataStream::save(const vmf_string &compressorId)
     {
         if( (m_eMode & Update) && !m_sFilePath.empty() )
         {
-            MetadataStream encryptedStream(*this);
+            //don't copy everything, just things we need for an encryption
+            MetadataStream encryptedStream;
+            encryptedStream.m_encryptor = m_encryptor;
+            encryptedStream.m_oMetadataSet = MetadataSet(m_oMetadataSet);
+            encryptedStream.m_mapSchemas = m_mapSchemas;
             encryptedStream.encrypt();
 
             dataSource->setCompressor(compressorId);
