@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <cassert>
 
@@ -34,12 +35,20 @@ string workingPath;
 
 #define VIDEO_FILE (workingPath + "BlueSquare.avi")
 
-void copyFile(const string& srcName, const char *dstName);
+void copyFile(const string& srcName, const char *dstName)
+{
+    ifstream src(srcName, ios::binary);
+    ofstream dst(dstName, ios::binary);
+    if (src && dst)
+        dst << src.rdbuf();
+    else
+        VMF_EXCEPTION(IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+    //src.close();
+    //dst.close();
+}
 
 int main(int argc, char *argv[])
 {
-    initialize();
-
     string appPath = argv[0];
 #ifdef WIN32
     char delim = '\\';
@@ -182,9 +191,6 @@ int main(int argc, char *argv[])
 
     // Close metadata stream
     loadStream.close();
-
-    // Uninitialize VMF library to free allocated resources
-    vmf::terminate();
 
     return 0;
 }

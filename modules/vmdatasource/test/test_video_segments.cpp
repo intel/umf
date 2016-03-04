@@ -43,7 +43,7 @@ protected:
     void SetUp()
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        vmf::initialize();
+        //vmf::initialize();
 
         stream.open(TEST_FILE, MetadataStream::Update);
 
@@ -68,7 +68,7 @@ protected:
 
     void TearDown()
     {
-	vmf::terminate();
+	//vmf::terminate();
     }
 
     void compareSegments(const std::shared_ptr<MetadataStream::VideoSegment>& s1, const std::shared_ptr<MetadataStream::VideoSegment>& s2)

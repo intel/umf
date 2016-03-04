@@ -85,8 +85,6 @@ void demoLoadSchemaFromFile(const string& schemaFilePath, const string& schemaNa
 
 int main(int argc, char* argv[])
 {
-    vmf::initialize();
-
 	string schemaFilePath("demo_schema.xml");
 	string schemaName("vmf://ns.intel.com/vmf/demo-schema-1.0");
 	
@@ -106,8 +104,6 @@ int main(int argc, char* argv[])
 
 	// Run demo
 	demoLoadSchemaFromFile(workingPath + schemaFilePath, schemaName);
-
-    vmf::terminate();
 
     return 0;
 }
