@@ -348,6 +348,8 @@ void XMPDataSource::saveXMPstructs()
         tmpXMP = make_shared<SXMPMeta>();
         std::shared_ptr<XMPMetadataSource> eMetaSource;
         std::shared_ptr<XMPSchemaSource> eSchemaSource;
+        eSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+        eMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
         if(!eMetaSource || !eSchemaSource)
         {
             VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
