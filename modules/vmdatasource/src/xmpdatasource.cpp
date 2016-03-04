@@ -310,7 +310,7 @@ void XMPDataSource::saveXMPstructs()
 
         try
         {
-            cMetaSource->saveSchema(compressionSchemaName, cStream);
+            cMetaSource->saveSchema(schemaCompression, cStream.getAll());
             cSchemaSource->save(schemaCompression);
         }
         catch(const XMP_Error& e)
@@ -357,7 +357,7 @@ void XMPDataSource::saveXMPstructs()
 
         try
         {
-            eMetaSource->saveSchema(encryptionSchemaName, eStream);
+            eMetaSource->saveSchema(schemaEncryption, eStream.getAll());
             eSchemaSource->save(schemaEncryption);
         }
         catch(const XMP_Error& e)
@@ -482,12 +482,12 @@ void XMPDataSource::loadProperty(const MetaString &schemaName, const MetaString 
 }
 
 
-void XMPDataSource::saveSchema(const MetaString& schemaName, const MetadataStream& stream)
+void XMPDataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet)
 {
     metadataSourceCheck();
     try
     {
-        metadataSource->saveSchema(schemaName, stream);
+        metadataSource->saveSchema(schemaDesc, mdSet);
     }
     catch(const XMP_Error& e)
     {

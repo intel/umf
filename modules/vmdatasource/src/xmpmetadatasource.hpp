@@ -29,7 +29,7 @@ class XMPMetadataSource
 {
 public:
     explicit XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta);
-    void saveSchema(const vmf::MetaString& schemaName, const vmf::MetadataStream& stream);
+    void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const vmf::MetadataSet& mdSet);
     void loadSchema(const vmf::MetaString& schemaName, vmf::MetadataStream& stream);
     void loadProperty(const vmf::MetaString& schemaName, const vmf::MetaString& metadataName, vmf::MetadataStream& stream);
     void remove(const std::vector<vmf::IdType>& removedIds);

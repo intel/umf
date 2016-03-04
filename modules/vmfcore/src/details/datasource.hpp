@@ -72,11 +72,11 @@ public:
 
     /*!
      * \brief Saves all metadata belonging to the specified schema
-     * \param [in] schemaName name of the specified schema
-     * \param [in] stream stream with metadata
+     * \param [in] schemaDesc shared pointer to specified schema
+     * \param [in] mdSet metadata set of the stream this schema belongs to
      * \throw DataStorageException
      */
-    virtual void saveSchema(const MetaString& schemaName, const MetadataStream& stream) = 0;
+    virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet) = 0;
 
     /*!
      * \brief Saves schema in the file with specified name

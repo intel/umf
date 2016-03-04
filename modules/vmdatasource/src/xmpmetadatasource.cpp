@@ -76,10 +76,10 @@ XMPMetadataSource::XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta)
     loadIds();
 }
 
-void XMPMetadataSource::saveSchema(const MetaString& schemaName, const MetadataStream& stream)
+void XMPMetadataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet)
 {
-    shared_ptr<MetadataSchema> thisSchemaDescription = stream.getSchema(schemaName);
-
+    shared_ptr<MetadataSchema> thisSchemaDescription = schemaDesc;
+    MetaString schemaName = schemaDesc->getName();
     MetaString thisSchemaPath = findSchema(schemaName);
 
     if (thisSchemaPath.empty())
@@ -90,7 +90,7 @@ void XMPMetadataSource::saveSchema(const MetaString& schemaName, const MetadataS
         xmp->SetStructField(VMF_NS, thisSchemaPath.c_str(), VMF_NS, SCHEMA_SET, nullptr, kXMP_PropValueIsArray);
     }
 
-    MetadataSet thisSchemaSet = stream.queryBySchema(schemaName);
+    MetadataSet thisSchemaSet = mdSet.queryBySchema(schemaName);
     vector< shared_ptr<MetadataDesc> > thisSchemaProperties = thisSchemaDescription->getAll();
     for(auto descIter = thisSchemaProperties.begin(); descIter != thisSchemaProperties.end(); ++descIter)
     {

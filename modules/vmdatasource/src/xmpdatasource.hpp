@@ -63,7 +63,7 @@ public:
 
     virtual void loadProperty(const vmf::MetaString &schemaName, const vmf::MetaString &propertyName, MetadataStream &stream);
 
-    virtual void saveSchema(const vmf::MetaString& schemaName, const vmf::MetadataStream& stream);
+    virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet);
 
     virtual void save(const std::shared_ptr<vmf::MetadataSchema>& schema);
 

@@ -164,7 +164,7 @@ bool MetadataStream::save(const vmf_string &compressorId)
 
             for(auto& p : m_mapSchemas)
             {
-                dataSource->saveSchema(p.first, encryptedStream);
+                dataSource->saveSchema(p.second, encryptedStream.getAll());
                 dataSource->save(p.second);
             }
 
