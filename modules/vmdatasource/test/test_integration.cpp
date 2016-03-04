@@ -32,7 +32,7 @@ TEST(Integration, InitializeAndTerminate)
 TEST(Integration, fullFunctionality_1)
 {
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     const vmf::vmf_string atom(TEST_SCHEMA_NAME_0);
     const vmf::vmf_string atom(TEST_SCHEMA_NAME_1);
     const vmf::vmf_string atom(TEST_PROPERTY_NAME_0);
@@ -165,14 +165,14 @@ TEST(Integration, fullFunctionality_1)
         s.close();
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, Hongwu1)
 {
     const vmf::vmf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -194,20 +194,20 @@ TEST(Integration, Hongwu1)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("event");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> birthday = set.at(0);
         ASSERT_EQ(4001, birthday->getFrameIndex());
         ASSERT_EQ(2500, birthday->getNumOfFrames());
         ASSERT_EQ("Birthday", (vmf::vmf_string) birthday->at(0));
     }
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, Hongwu2)
 {
     const vmf::vmf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -231,20 +231,20 @@ TEST(Integration, Hongwu2)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("ints");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> numbers = set.at(0);
-        ASSERT_EQ(5, numbers->size());
+        ASSERT_EQ(5u, numbers->size());
         for(int i = 0; i < 5; ++i)
             ASSERT_EQ(i+1, (vmf::vmf_integer) numbers->at(i));
     }
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, structuresForDoc)
 {
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema("my schema"));
     std::vector<vmf::FieldDesc> fields;
@@ -271,5 +271,5 @@ TEST(Integration, structuresForDoc)
     stream.save();
     stream.close();
 
-    vmf::terminate();
+    //vmf::terminate();
 }

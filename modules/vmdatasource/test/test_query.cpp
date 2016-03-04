@@ -34,7 +34,7 @@ protected:
     {
         n = 10;
 
-        vmf::initialize();
+        //vmf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_PROPERTY_NAME1 = "TEST_PROPERTY_NAME1";
@@ -79,7 +79,7 @@ protected:
 
     virtual void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     int n;
@@ -108,7 +108,7 @@ TEST_F(TestQuery, QueryByNameAndValue)
             vmf::Variant value(2*i);
             vmf::FieldValue fieldValue(TEST_FIELD_NAME2, value);
             auto set = newStream.queryByNameAndValue(TEST_PROPERTY_NAME1, fieldValue);
-            ASSERT_EQ(set.size(), 1);
+            ASSERT_EQ(set.size(), 1u);
 
         }
         newStream.close();

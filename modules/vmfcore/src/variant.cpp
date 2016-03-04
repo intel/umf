@@ -130,10 +130,20 @@ IMPLEMENT_VECTOR_VMF_TYPE( vec3d )
 IMPLEMENT_VECTOR_VMF_TYPE( vec4d )
 
 Variant::Variant(const int& value) : data(new Data<vmf_integer>(value)), m_type(type_integer) {}
+Variant::Variant(const unsigned int& value) : data(new Data<vmf_integer>(value)), m_type(type_integer) {}
 
 Variant::Variant(const float& value) : data(new Data<vmf_real>(value)), m_type(type_real) {}
 
 Variant& Variant::operator = ( const int& value )
+{
+    release();
+
+    m_type = type_integer;
+    data = new Data<vmf_integer>(value);
+    return *this;
+}
+
+Variant& Variant::operator = (const unsigned int& value)
 {
     release();
 
@@ -179,14 +189,14 @@ Variant& Variant::operator = (const std::vector<float>& value)
     return *this;
 }
 
-Variant::Variant(const char* pszString) : data(new Data<MetaString>(std::string(pszString))), m_type(type_string) {}
+Variant::Variant(const char* pszString) : data(new Data<vmf_string>(std::string(pszString))), m_type(type_string) {}
 
 Variant& Variant::operator = ( const char* pszString )
 {
     release();
 
     m_type = type_string;
-    data = new Data<MetaString>(std::string(pszString));
+    data = new Data<vmf_string>(std::string(pszString));
     return *this;
 }
 

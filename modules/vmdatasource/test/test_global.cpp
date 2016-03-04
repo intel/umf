@@ -32,7 +32,7 @@ class TestGlobal : public ::testing::Test
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        //vmf::initialize();
         copyFile(VIDEO_FILE, TEST_FILE);
 
         fields.push_back(vmf::FieldDesc("name", vmf::Variant::type_string));
@@ -45,7 +45,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     vmf::MetadataStream stream;
@@ -74,7 +74,7 @@ TEST_F(TestGlobal, Reopen)
 
     ASSERT_TRUE(stream.reopen(vmf::MetadataStream::Update));
     stream.load();
-    ASSERT_EQ(1, stream.getAll().size());
+    ASSERT_EQ(1u, stream.getAll().size());
     ASSERT_TRUE(stream.save());
     stream.close();
 }
@@ -101,7 +101,7 @@ TEST_F(TestGlobal, SaveTo)
         stream.open(ANOTHER_TEST_FILE, vmf::MetadataStream::ReadOnly);
         stream.load();
         vmf::MetadataSet all = stream.getAll();
-        ASSERT_EQ(1, all.size());
+        ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> metadata = all.front();
         ASSERT_EQ("test value for another file", (vmf::vmf_string) metadata->front());
         ASSERT_EQ("schema for another file", metadata->getSchemaName());
@@ -124,7 +124,7 @@ TEST_F(TestGlobal, SaveTo)
         stream.open(ANOTHER_TEST_FILE, vmf::MetadataStream::ReadOnly);
         stream.load();
         vmf::MetadataSet all = stream.getAll();
-        ASSERT_EQ(1, all.size());
+        ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> me = all.front();
         ASSERT_EQ("Dmitry", (vmf::vmf_string) me->getFieldValue("name"));
         ASSERT_EQ("Bogdanov", (vmf::vmf_string) me->getFieldValue("last name"));
@@ -148,7 +148,7 @@ TEST_F(TestGlobal, AddBeforeOpen)
         stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
         stream.load();
         vmf::MetadataSet all = stream.getAll();
-        ASSERT_EQ(1, all.size());
+        ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> metadata = all.front();
         ASSERT_NE(vmf::INVALID_ID, metadata->getId());
         ASSERT_EQ("Dmitry", (vmf::vmf_string) metadata->getFieldValue("name"));
@@ -166,9 +166,9 @@ TEST_F(TestGlobal, Clear)
     metadata->setFieldValue("age", (vmf::vmf_integer) 21);
     stream.add(metadata);
 
-    ASSERT_EQ(1, stream.getAll().size());
+    ASSERT_EQ(1u, stream.getAll().size());
     stream.clear();
-    ASSERT_EQ(0, stream.getAll().size());
+    ASSERT_EQ(0u, stream.getAll().size());
 }
 
 /*!
@@ -198,7 +198,7 @@ TEST_F(TestGlobal, NoDestinationReference)
     stream2.open(TEST_FILE);
     stream2.load();
     vmf::MetadataSet all = stream2.getAll();
-    ASSERT_EQ(1, all.size());
+    ASSERT_EQ(1u, all.size());
     auto metadata3 = all.at(0);
     ASSERT_EQ("Dmitry", (vmf::vmf_string) metadata3->getFieldValue("name"));
     ASSERT_EQ("Bogdanov", (vmf::vmf_string) metadata3->getFieldValue("last name"));

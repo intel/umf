@@ -43,16 +43,21 @@
 
 namespace vmf
 {
+
 template<typename T>
-std::string toString(T val)
+std::string to_string(T val)
 {
+#if defined ANDROID || (defined _MSC_VER && _MSC_VER < 1700)
     std::stringstream sstream;
     sstream << val;
     return sstream.str();
+#else
+    return std::to_string(val);
+#endif
 }
 
 template<typename T>
-T stringTo(const std::string& str)
+T from_string(const std::string& str)
 {
     T val;
     std::stringstream sstream(str);
@@ -66,7 +71,7 @@ T stringTo(const std::string& str)
 }
 
 template<>
-inline double stringTo(const std::string& str) {
+inline double from_string(const std::string& str) {
     const std::string STR_NAN = "NAN";
     const std::string STR_INF = "INF";
     std::string string_value(str);
@@ -101,6 +106,11 @@ inline double stringTo(const std::string& str) {
     return val;
 }
 
+/*!
+* \brief returns VMF build info string
+*/
+VMF_EXPORT std::string getBuildInfo();
+
 /*! 
 * \brief returns current time in milliseconds since "clock's epoch" (midnight 1 Jan 1970 UTC)
 */
@@ -119,12 +129,6 @@ VMF_EXPORT long long getTimestamp();
 * \return milliseconds since "clock's epoch"
 */
 VMF_EXPORT long long getTimestamp(int year, int month, int day, int hours = 0, int minutes = 0, int seconds = 0, int ms = 0);
-
-/*!
-* \typedef MetaString
-* \brief VMF string type
-*/
-typedef vmf_string MetaString;
 
 /*! 
 * \typedef IdType
