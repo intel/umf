@@ -181,7 +181,11 @@ void XMPMetadataSource::saveField(const vmf_string& fieldName, const Variant& _v
     }
     else
     {
-        xmp->SetQualifier(VMF_NS, encBoolPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, "false", kXMP_NoOptions);
+        vmf_string tmpString;
+        if(xmp->GetQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &tmpString, NULL))
+        {
+            xmp->DeleteQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL);
+        }
     }
     vmf_string encDataPath;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encDataPath);
@@ -192,7 +196,11 @@ void XMPMetadataSource::saveField(const vmf_string& fieldName, const Variant& _v
     }
     else
     {
-        xmp->SetQualifier(VMF_NS, encDataPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, "", kXMP_NoOptions);
+        vmf_string tmpString;
+        if(xmp->GetQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &tmpString, NULL))
+        {
+            xmp->DeleteQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA);
+        }
     }
 }
 
@@ -622,7 +630,11 @@ void XMPMetadataSource::saveMetadataEncrypted(const vmf_string &pathToProperty, 
     }
     else
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "");
+        vmf_string tmpString;
+        if(xmp->GetProperty(VMF_NS, tmpPath.c_str(), &tmpString, nullptr))
+        {
+            xmp->DeleteStructField(VMF_NS, tmpPath.c_str(), VMF_NS, METADATA_ENCRYPTED_DATA);
+        }
     }
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
                                       METADATA_ENCRYPTED_BOOL, &tmpPath);
@@ -632,7 +644,11 @@ void XMPMetadataSource::saveMetadataEncrypted(const vmf_string &pathToProperty, 
     }
     else
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "false");
+        vmf_string tmpString;
+        if(xmp->GetProperty(VMF_NS, tmpPath.c_str(), &tmpString, nullptr))
+        {
+            xmp->DeleteStructField(VMF_NS, tmpPath.c_str(), VMF_NS, METADATA_ENCRYPTED_BOOL);
+        }
     }
 }
 

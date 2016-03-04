@@ -107,6 +107,14 @@ void XMPSchemaSource::save(const shared_ptr<MetadataSchema>& schema)
     {
         metadata->SetStructField(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_ENCRYPTED, "true");
     }
+    else
+    {
+        vmf_string tmpString;
+        if(metadata->GetStructField(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_ENCRYPTED, &tmpString, nullptr))
+        {
+            metadata->DeleteStructField(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_ENCRYPTED);
+        }
+    }
 
     vmf_string pathToDescriptions;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_PROPERTIES, &pathToDescriptions);
@@ -148,6 +156,14 @@ void XMPSchemaSource::saveDescription(const MetadataDesc& desc, const vmf_string
     {
         metadata->SetStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_ENCRYPTED, "true");
     }
+    else
+    {
+        vmf_string tmpString;
+        if(metadata->GetStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_ENCRYPTED, &tmpString, nullptr))
+        {
+            metadata->DeleteStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_ENCRYPTED);
+        }
+    }
 
     metadata->DeleteStructField(VMF_NS, propertyPath.c_str(), VMF_NS, PROPERTY_FIELDS);
     vmf_string pathToFields;
@@ -182,7 +198,17 @@ void XMPSchemaSource::saveField(const FieldDesc& desc, const vmf_string& pathToF
     if(desc.optional)
         metadata->SetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_OPTIONALITY, "true");
     if(desc.useEncryption)
+    {
         metadata->SetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_ENCRYPTED, "true");
+    }
+    else
+    {
+        vmf_string tmpString;
+        if(metadata->GetStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_ENCRYPTED, &tmpString, nullptr))
+        {
+            metadata->DeleteStructField(VMF_NS, thisField.c_str(), VMF_NS, FIELD_ENCRYPTED);
+        }
+    }
 }
 
 void XMPSchemaSource::saveReference(const std::shared_ptr<ReferenceDesc> ref, const vmf_string& pathToRefs)
