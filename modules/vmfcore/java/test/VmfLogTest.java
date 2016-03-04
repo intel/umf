@@ -44,8 +44,8 @@ public class VmfLogTest
     @After
     public void tearDown ()
     {
-        if (newFile.exists())
-            newFile.delete();
+        //if (newFile.exists())
+            //newFile.delete();
     }
     
     @Test
@@ -58,15 +58,15 @@ public class VmfLogTest
         String str = in.readLine();
         assertTrue (str == null);
         
-        Log.log(Log.LOG_INFO, "%Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 61);
-        Log.log(Log.LOG_WARNING, "%Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 62);
-        Log.log(Log.LOG_ERROR, "%Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 63);
-        Log.log(4, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 64);
+        Log.log(Log.LOG_INFO, "Hello World!%", "VmfLogTest::testLog", "VmfLogTest.java", 61);
+        Log.log(Log.LOG_WARNING, "Hello World!%", "VmfLogTest::testLog", "VmfLogTest.java", 62);
+        Log.log(Log.LOG_ERROR, "Hello World!%", "VmfLogTest::testLog", "VmfLogTest.java", 63);
+        Log.log(4, "Hello World!%", "VmfLogTest::testLog", "VmfLogTest.java", 64);
         
         str = in.readLine();
         assertFalse (str == null);
         assertFalse (str.isEmpty());
-        assertTrue(str.equals("INFO: Hello World! in VmfLogTest::testLog VmfLogTest.java:61"));
+        assertTrue(str.equals("INFO: Hello World!% in VmfLogTest::testLog VmfLogTest.java:61"));
         in.close();
         
         Log.setLogToConsole ();
@@ -74,12 +74,12 @@ public class VmfLogTest
         Log.setVerbosityLevel(Log.LOG_INFO);
         assertEquals(Log.LOG_INFO, Log.getVerbosityLevel());
         
-        Log.log(Log.LOG_INFO, "%Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 77);
+        Log.log(Log.LOG_INFO, "Hello World!%", "VmfLogTest::testLog", "VmfLogTest.java", 77);
         
         Log.setVerbosityLevel(Log.LOG_WARNING);
         assertEquals(Log.LOG_WARNING, Log.getVerbosityLevel());
         
-        Log.log(Log.LOG_WARNING, "%Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 82);
+        Log.log(Log.LOG_WARNING, "Hello World!", "VmfLogTest::testLog", "VmfLogTest.java", 82);
         
         Log.setVerbosityLevel(Log.LOG_ERROR);
         assertEquals(Log.LOG_ERROR, Log.getVerbosityLevel());
