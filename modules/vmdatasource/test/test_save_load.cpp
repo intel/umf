@@ -1650,14 +1650,14 @@ protected:
         }
     }
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_DESC_NAME;
-    vmf::vmf_string TEST_FIELD_NAME;
-    vmf::vmf_string TEST_VALUE_NAME;
-    vmf::vmf_string TEST_FIELD_AGE;
-    vmf::vmf_string TEST_VALUE_AGE;
-    vmf::vmf_string TEST_FIELD_ADDRESS;
-    vmf::vmf_string TEST_VALUE_ADDRESS;
+    vmf::vmf_string  TEST_SCHEMA_NAME;
+    vmf::vmf_string  TEST_DESC_NAME;
+    vmf::vmf_string  TEST_FIELD_NAME;
+    vmf::vmf_string  TEST_VALUE_NAME;
+    vmf::vmf_string  TEST_FIELD_AGE;
+    vmf::vmf_integer TEST_VALUE_AGE;
+    vmf::vmf_string  TEST_FIELD_ADDRESS;
+    vmf::vmf_string  TEST_VALUE_ADDRESS;
 };
 
 
