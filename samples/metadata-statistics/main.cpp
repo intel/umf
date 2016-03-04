@@ -37,7 +37,7 @@ string workingPath;
 
 void copyFile(const string& srcName, const char *dstName);
 
-class StrCatOp: public vmf::IStatOp
+class StrCatOp: public vmf::StatOpBase
 {
 public:
     StrCatOp()
@@ -46,41 +46,45 @@ public:
         {}
 
 public:
-    virtual const std::string& name() const
+    virtual std::string name() const
         { return opName(); }
     virtual void reset()
-        { m_value = ""; }
-    virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& inputValue )
         {
-            if( inputValue.getType() != vmf::Variant::type_string )
+            std::unique_lock< std::mutex > lock( m_lock );
+            m_value = "";
+        }
+    virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& fieldValue )
+        {
+            std::unique_lock< std::mutex > lock( m_lock );
+            if( fieldValue.getType() != vmf::Variant::type_string )
                 VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
             switch( action )
             {
             case vmf::StatAction::Add:
                 if( !m_value.empty() )
                     m_value += " | ";
-                m_value += inputValue.get_string();
+                m_value += fieldValue.get_string();
                 break;
             case vmf::StatAction::Remove:
                 return false;
             }
             return true;
         }
-    virtual const vmf::Variant& value() const
-        { m_temp = vmf::Variant( (vmf::vmf_string)m_value ); return m_temp; }
+    virtual vmf::Variant value() const
+        {
+            std::unique_lock< std::mutex > lock( m_lock );
+            return vmf::Variant( (vmf::vmf_string)m_value );
+        }
 
 private:
+    mutable std::mutex m_lock;
     std::string m_value;
-    mutable vmf::Variant m_temp; // temp return value for getValue()
 
 public:
-    static IStatOp* createInstance()
+    static StatOpBase* createInstance()
         { return new StrCatOp(); }
-    static const std::string& opName()
-        {
-            static const std::string name( "User.StrCatOp" );
-            return name;
-        }
+    static std::string opName()
+        { return "User.StrCatOp"; }
 };
 
 inline std::ostream& operator<<( std::ostream& os, const vmf::Variant& value )
@@ -110,6 +114,7 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
                     const vmf::StatField& field = stat.getField( fieldName );
 
                     std::cout << "  name='" << field.getName()
+                              << "  operation='" << field.getOpName()
                               << "'  metadata='" << field.getMetadataDesc()->getMetadataName()
                               << "'  field='" << field.getFieldName()
                               << "'  value=" << field.getValue()
@@ -203,12 +208,12 @@ int sample(int argc, char *argv[])
 
     // Register user operation: exactly one of two calls must be issued once for each user op
     // vmf::StatOpFactory::registerUserOp( StrCatOp::opName(), StrCatOp::createInstance );
-    vmf::StatOpFactory::registerUserOp< StrCatOp >();
+    vmf::StatOpFactory::registerUserOp( StrCatOp::createInstance );
 
     // Set up statistics object(s)
     std::vector< vmf::StatField > fields;
-    fields.emplace_back( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::countName() );
-    fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::countName() );
+    fields.emplace_back( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
+    fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
     mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Disabled );

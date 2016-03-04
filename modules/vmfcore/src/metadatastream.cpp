@@ -22,8 +22,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include <iostream>
-
 namespace vmf
 {
 MetadataStream::MetadataStream(void)
