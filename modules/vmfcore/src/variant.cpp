@@ -189,14 +189,14 @@ Variant& Variant::operator = (const std::vector<float>& value)
     return *this;
 }
 
-Variant::Variant(const char* pszString) : data(new Data<MetaString>(std::string(pszString))), m_type(type_string) {}
+Variant::Variant(const char* pszString) : data(new Data<vmf_string>(std::string(pszString))), m_type(type_string) {}
 
 Variant& Variant::operator = ( const char* pszString )
 {
     release();
 
     m_type = type_string;
-    data = new Data<MetaString>(std::string(pszString));
+    data = new Data<vmf_string>(std::string(pszString));
     return *this;
 }
 

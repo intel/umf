@@ -139,8 +139,8 @@ TEST_F(TestSaveLoadSchema, GetAllNames)
 
 TEST_F(TestSaveLoadSchema, SchemaAuthor)
 {
-    const vmf::MetaString TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
-    const vmf::MetaString TEST_AUTHOR_NAME = "< the \"Author\" >";
+    const vmf::vmf_string TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
+    const vmf::vmf_string TEST_AUTHOR_NAME = "< the \"Author\" >";
 
     {
         vmf::MetadataStream stream;
