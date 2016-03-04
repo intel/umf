@@ -40,7 +40,7 @@ std::string StatUpdateMode::toString( StatUpdateMode::Type val )
     CASE_VAL2STR( StatUpdateMode::OnAdd    );
     CASE_VAL2STR( StatUpdateMode::OnTimer  );
     }
-    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + std::to_string( (int)val ));
+    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + to_string( (int)val ));
 }
 #undef CASE_VAL2STR
 
@@ -542,7 +542,7 @@ StatOpFactory::UserOpMap& StatOpFactory::getClassMap()
     {
         ALL_BUILTIN_OPS( OP_NAME )
     }
-    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + std::to_string( (int)opType ));
+    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + to_string( (int)opType ));
 }
 #undef OP_NAME
 

@@ -60,9 +60,9 @@ script:
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then mkdir build_android; cd build_android; cmake -DCMAKE_TOOLCHAIN_FILE=../../vmf/cmake/android.toolchain.cmake -DANDROID_ABI=$VMF_CPU_ARCH -DANDROID_NATIVE_API_LEVEL=$VMF_API_LEVEL -DANDROID_STL=gnustl_static -DBUILD_SHARED_LIBS=OFF ../../vmf && time make -j3 all; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-test -t ${VMF_API_LEVEL} --abi $VMF_CPU_ARCH; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then ( emulator -avd avd-test -no-audio -no-window & ); timeout 200 android-wait-for-emulator; adb devices; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/; adb shell chmod 777 /data/local/tmp/unit-tests; adb shell /data/local/tmp/unit-tests | tee "unit-tests.log"; LAST_LINE=`tail -1 "unit-tests.log"`; if [[ $LAST_LINE == *"FAILED"* ]]; then $(exit 1); fi; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; fi
-  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds" | tee "unit-tests-ds.log"; LAST_LINE_DS=`tail -1 "unit-tests-ds.log"`; if [[ $LAST_LINE_DS == *"FAILED"* ]]; then $(exit 1); fi; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/ && adb shell "cd /data/local/tmp/ && chmod 777 unit-tests && ./unit-tests" | tee "unit-tests.log" && LAST_LINE=`tail -1 "unit-tests.log"` && if [[ $LAST_LINE == *"FAILED"* ]]; then $(exit 1); fi; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests-ds /data/local/tmp/ && adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds" | tee "unit-tests-ds.log" && LAST_LINE_DS=`tail -1 "unit-tests-ds.log"` && if [[ $LAST_LINE_DS == *"FAILED"* ]]; then $(exit 1); fi; fi
 after_success:
   - cd $TRAVIS_BUILD_DIR/../build
 # coverage

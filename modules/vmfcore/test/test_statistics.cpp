@@ -149,7 +149,7 @@ TEST_F( TestStatFields, Creation )
     {
         const NameData& n = *it;
 
-        const vmf::StatField* testField;
+        const vmf::StatField* testField = 0;
         EXPECT_NO_THROW( testField = &(stat->getField( fieldName )));
 
         ASSERT_EQ( testField->getName(), n.name );
@@ -202,6 +202,8 @@ protected:
         size_t pos = path.find_last_of( delim );
         if( pos != std::string::npos )
             path = path.substr( 0, pos + 1 );
+		else
+			path = "";
         return path;
     }
 
@@ -210,6 +212,8 @@ protected:
         std::string srcName = fnWorkingPath + fnInputName;
         std::ifstream source( srcName, std::ios::binary );
         std::ofstream dest( dstName, std::ios::binary );
+		if (!source) VMF_EXCEPTION(vmf::IncorrectParamException, "Error opening input file: "  + srcName);
+		if (!dest)   VMF_EXCEPTION(vmf::IncorrectParamException, "Error opening output file: " + dstName);
         dest << source.rdbuf();
     }
 
