@@ -177,18 +177,20 @@ protected:
         fnWorkingPath = getWorkingPath();
         fnInputName   = "BlueSquare.avi";
 
-        scSchemaName = "PersonSchema";
-        scDescName   = "Person";
-        scPersonName = "Name";
-        scAgeName    = "Age";
-        scGrowthName = "Growth";
+        mcSchemaName = "PersonSchema";
+        mcDescName   = "Person";
+        mcPersonName = "Name";
+        mcAgeName    = "Age";
+        mcGrowthName = "Growth";
+        mcSalaryName = "Salary";
 
-        stStatName            = "PersonStatistics";
-        stPersonNameCount     = "PersonNameCount";
-        stPersonNameLast      = "PersonNameLast";
-        stPersonAgeMin        = "PersonAgeMin";
-        stPersonAgeMax        = "PersonAgeMax";
-        stPersonGrowthAverage = "PersonGrowthAverage";
+        scStatName            = "PersonStatistics";
+        scPersonNameCount     = "PersonNameCount";
+        scPersonNameLast      = "PersonNameLast";
+        scPersonAgeMin        = "PersonAgeMin";
+        scPersonAgeMax        = "PersonAgeMax";
+        scPersonGrowthAverage = "PersonGrowthAverage";
+        scPersonSalarySum     = "PersonSalarySum";
     }
 
     void TearDown()
@@ -224,12 +226,13 @@ protected:
 
     void configureSchema( vmf::MetadataStream& stream )
     {
-        scFieldDesc.emplace_back( scPersonName, vmf::Variant::type_string );
-        scFieldDesc.emplace_back( scAgeName, vmf::Variant::type_integer );
-        scFieldDesc.emplace_back( scGrowthName, vmf::Variant::type_integer );
+        scFieldDesc.emplace_back( mcPersonName, vmf::Variant::type_string );
+        scFieldDesc.emplace_back( mcAgeName, vmf::Variant::type_integer );
+        scFieldDesc.emplace_back( mcGrowthName, vmf::Variant::type_integer );
+        scFieldDesc.emplace_back( mcSalaryName, vmf::Variant::type_integer );
 
-        scMetadataDesc = std::make_shared< vmf::MetadataDesc >( scDescName, scFieldDesc );
-        scMetadataSchema = std::make_shared< vmf::MetadataSchema >( scSchemaName );
+        scMetadataDesc = std::make_shared< vmf::MetadataDesc >( mcDescName, scFieldDesc );
+        scMetadataSchema = std::make_shared< vmf::MetadataSchema >( mcSchemaName );
 
         scMetadataSchema->add( scMetadataDesc );
         stream.addSchema( scMetadataSchema );
@@ -238,56 +241,123 @@ protected:
     void configureStatistics( vmf::MetadataStream& stream )
     {
         std::vector< vmf::StatField > fields;
-        fields.emplace_back( stPersonNameCount, scSchemaName, scDescName, scPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
-        fields.emplace_back( stPersonNameLast, scSchemaName, scDescName, scPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ));
-        fields.emplace_back( stPersonAgeMin, scSchemaName, scDescName, scAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ));
-        fields.emplace_back( stPersonAgeMax, scSchemaName, scDescName, scAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
-        fields.emplace_back( stPersonGrowthAverage, scSchemaName, scDescName, scGrowthName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
-        stream.addStat( stStatName, fields, vmf::StatUpdateMode::Disabled );
+        fields.emplace_back( scPersonNameCount, mcSchemaName, mcDescName, mcPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
+        fields.emplace_back( scPersonNameLast, mcSchemaName, mcDescName, mcPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ));
+        fields.emplace_back( scPersonAgeMin, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ));
+        fields.emplace_back( scPersonAgeMax, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
+        fields.emplace_back( scPersonGrowthAverage, mcSchemaName, mcDescName, mcGrowthName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
+        fields.emplace_back( scPersonSalarySum, mcSchemaName, mcDescName, mcSalaryName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ));
+        stream.addStat( scStatName, fields, vmf::StatUpdateMode::Disabled );
     }
 
-    void addMetadata( vmf::MetadataStream& stream )
+    void initStatistics()
     {
-        std::shared_ptr<vmf::Metadata> metadata;
+        stNameCount = 0;
+        stNameLast = "";
+        stAgeMin = 0;
+        stAgeMax = 0;
+        stGrowthAverage = 0.0; stGrowthAverageSum = 0; stGrowthAverageCount = 0;
+        stSalarySum = 0;
+        stFirstTimeOnce = true;
+    }
 
-        metadata = std::make_shared< vmf::Metadata >( scMetadataDesc );
-        metadata->emplace_back( scPersonName, "Peter" );
-        metadata->emplace_back( scAgeName, 53 );
-        metadata->emplace_back( scGrowthName, 185 );
+    void finalizeStatistics()
+    {
+        if( stGrowthAverageCount != 0 )
+            stGrowthAverage = (vmf::vmf_real)stGrowthAverageSum / (vmf::vmf_real)stGrowthAverageCount;
+        else
+            stGrowthAverage = 0.0;
+    }
+
+    void addMetadata( vmf::MetadataStream& stream, const vmf::vmf_string& name, vmf::vmf_integer age, vmf::vmf_integer growth, vmf::vmf_integer salary, bool doStatistics )
+    {
+        std::shared_ptr<vmf::Metadata> metadata = std::make_shared< vmf::Metadata >( scMetadataDesc );
+
+        metadata->emplace_back( mcPersonName, name );
+        if( doStatistics )
+        {
+            ++stNameCount;
+            stNameLast = name;
+        }
+
+        metadata->emplace_back( mcAgeName, age );
+        if( doStatistics )
+        {
+            stAgeMin = (stFirstTimeOnce ? age : std::min( stAgeMin, age ));
+            stAgeMax = (stFirstTimeOnce ? age : std::max( stAgeMax, age ));
+        }
+
+        metadata->emplace_back( mcGrowthName, growth );
+        if( doStatistics )
+        {
+            stGrowthAverageSum += growth;
+            ++stGrowthAverageCount;
+        }
+
+        metadata->emplace_back( mcSalaryName, salary );
+        if( doStatistics )
+        {
+            stSalarySum += salary;
+        }
+
         stream.add( metadata );
 
-        metadata = std::make_shared< vmf::Metadata >( scMetadataDesc );
-        metadata->emplace_back( scPersonName, "Jessica" );
-        metadata->emplace_back( scAgeName, 31 );
-        metadata->emplace_back( scGrowthName, 176 );
-        stream.add( metadata );
+        if( doStatistics )
+        {
+            stFirstTimeOnce = false;
+        }
+    }
+
+    void putMetadata( vmf::MetadataStream& stream, bool doStatistics )
+    {
+        if( doStatistics )
+            initStatistics();
+
+        addMetadata( stream, "Peter", 53, 185, 5000, doStatistics );
+        addMetadata( stream, "Jessica", 31, 176, 3000, doStatistics );
+        addMetadata( stream, "Matthias", 41, 192, 7000, doStatistics );
+        addMetadata( stream, "John", 29, 180, 5500, doStatistics );
+
+        if( doStatistics )
+            finalizeStatistics();
     }
 
     std::string fnWorkingPath;
     std::string fnInputName;
 
-    std::string scSchemaName;
-    std::string scDescName;
-    std::string scPersonName;
-    std::string scAgeName;
-    std::string scGrowthName;
+    std::string mcSchemaName;
+    std::string mcDescName;
+    std::string mcPersonName;
+    std::string mcAgeName;
+    std::string mcGrowthName;
+    std::string mcSalaryName;
 
     std::vector< vmf::FieldDesc > scFieldDesc;
     std::shared_ptr< vmf::MetadataDesc > scMetadataDesc;
     std::shared_ptr< vmf::MetadataSchema > scMetadataSchema;
 
-    std::string stStatName;
-    std::string stPersonNameCount;
-    std::string stPersonNameLast;
-    std::string stPersonAgeMin;
-    std::string stPersonAgeMax;
-    std::string stPersonGrowthAverage;
+    std::string scStatName;
+    std::string scPersonNameCount;
+    std::string scPersonNameLast;
+    std::string scPersonAgeMin;
+    std::string scPersonAgeMax;
+    std::string scPersonGrowthAverage;
+    std::string scPersonSalarySum;
+
+    vmf::vmf_integer stNameCount;
+    vmf::vmf_string stNameLast;
+    vmf::vmf_integer stAgeMin;
+    vmf::vmf_integer stAgeMax;
+    vmf::vmf_real stGrowthAverage; vmf::vmf_integer stGrowthAverageSum,stGrowthAverageCount;
+    vmf::vmf_integer stSalarySum;
+    bool stFirstTimeOnce;
 };
 
 TEST_P( TestStatistics, Gathering )
 {
     vmf::StatUpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
+    const bool doCheckStatistics = true;
 
     std::string fileName = "test_statistics.avi";
     createFile( fileName );
@@ -298,17 +368,18 @@ TEST_P( TestStatistics, Gathering )
     configureSchema( stream );
     configureStatistics( stream );
 
-    vmf::Stat& stat = stream.getStat( stStatName );
+    vmf::Stat& stat = stream.getStat( scStatName );
     stat.setUpdateTimeout( updateTimeout );
     stat.setUpdateMode( updateMode );
-    addMetadata( stream );
+    putMetadata( stream, doCheckStatistics );
     stat.update( true, true );
 
-    vmf::Variant nameCount     = stat[stPersonNameCount];
-    vmf::Variant nameLast      = stat[stPersonNameLast];
-    vmf::Variant ageMin        = stat[stPersonAgeMin];
-    vmf::Variant ageMax        = stat[stPersonAgeMax];
-    vmf::Variant growthAverage = stat[stPersonGrowthAverage];
+    vmf::Variant nameCount     = stat[scPersonNameCount];
+    vmf::Variant nameLast      = stat[scPersonNameLast];
+    vmf::Variant ageMin        = stat[scPersonAgeMin];
+    vmf::Variant ageMax        = stat[scPersonAgeMax];
+    vmf::Variant growthAverage = stat[scPersonGrowthAverage];
+    vmf::Variant salarySum     = stat[scPersonSalarySum];
 
     if( updateMode != vmf::StatUpdateMode::Disabled )
     {
@@ -317,12 +388,24 @@ TEST_P( TestStatistics, Gathering )
         ASSERT_EQ( ageMin.getType(), vmf::Variant::type_integer );
         ASSERT_EQ( ageMax.getType(), vmf::Variant::type_integer );
         ASSERT_EQ( growthAverage.getType(), vmf::Variant::type_real );
+        ASSERT_EQ( salarySum.getType(), vmf::Variant::type_integer );
 
 //        std::cout << "nameCount     = " << nameCount.get_integer() << std::endl;
 //        std::cout << "nameLast      = " << nameLast.get_string() << std::endl;
 //        std::cout << "ageMin        = " << ageMin.get_integer() << std::endl;
 //        std::cout << "ageMax        = " << ageMax.get_integer() << std::endl;
 //        std::cout << "growthAverage = " << growthAverage.get_real() << std::endl;
+//        std::cout << "salarySum     = " << salarySum.get_integer() << std::endl;
+
+        if( doCheckStatistics )
+        {
+            ASSERT_EQ( nameCount.get_integer(), stNameCount );
+            ASSERT_EQ( nameLast.get_string(), stNameLast );
+            ASSERT_EQ( ageMin.get_integer(), stAgeMin );
+            ASSERT_EQ( ageMax.get_integer(), stAgeMax );
+            ASSERT_EQ( growthAverage.get_real(), stGrowthAverage );
+            ASSERT_EQ( salarySum.get_integer(), stSalarySum );
+        }
     }
 
     stream.save();
@@ -331,9 +414,7 @@ TEST_P( TestStatistics, Gathering )
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
                         ::testing::Values(
-                            vmf::StatUpdateMode::Disabled,
-                            vmf::StatUpdateMode::Manual,
-                            vmf::StatUpdateMode::OnAdd,
-                            vmf::StatUpdateMode::OnTimer
+                            vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
+                            /*,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer*/
                             ));
 
