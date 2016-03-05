@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <cassert>
 #include <chrono>
@@ -35,7 +36,17 @@ string workingPath;
 
 #define VIDEO_FILE (workingPath + "BlueSquare.avi")
 
-void copyFile(const string& srcName, const char *dstName);
+void copyFile(const string& srcName, const char *dstName)
+{
+    std::ifstream src( srcName, ios::binary );
+    std::ofstream dst(dstName, ios::binary);
+    if (src && dst)
+        dst << src.rdbuf();
+    else
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+    //src.close();
+    //dst.close();
+}
 
 class StrCatOp: public vmf::StatOpBase
 {
@@ -113,11 +124,11 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
                 {
                     const vmf::StatField& field = stat.getField( fieldName );
 
-                    std::cout << "  name='" << field.getName()
-                              << "  operation='" << field.getOpName()
-                              << "'  metadata='" << field.getMetadataDesc()->getMetadataName()
-                              << "'  field='" << field.getFieldName()
-                              << "'  value=" << field.getValue()
+                    std::cout << "  name='" << field.getName() << "'"
+                                 "  operation='" << field.getOpName() << "'"
+                                 "  metadata='" << field.getMetadataDesc()->getMetadataName() << "'"
+                                 "  field='" << field.getFieldName() << "'"
+                                 "  value=" << field.getValue()
                               << std::endl;
                 }
             }

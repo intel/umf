@@ -917,6 +917,10 @@ public:
                 if( m_rescanScheduled )
                 {
                     // rescan
+                    {
+                        std::unique_lock< std::mutex > lock( m_lock );
+                        std::queue< std::shared_ptr< Metadata >>().swap( m_items );
+                    }
                     if( m_stat != nullptr )
                         m_stat->rescan();
                     {

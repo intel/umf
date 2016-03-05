@@ -210,10 +210,15 @@ protected:
     void createFile( const std::string& dstName )
     {
         std::string srcName = fnWorkingPath + fnInputName;
+
         std::ifstream source( srcName, std::ios::binary );
+        if( !source )
+            VMF_EXCEPTION( vmf::IncorrectParamException, "Error opening input file: "  + srcName );
+
         std::ofstream dest( dstName, std::ios::binary );
-		if (!source) VMF_EXCEPTION(vmf::IncorrectParamException, "Error opening input file: "  + srcName);
-		if (!dest)   VMF_EXCEPTION(vmf::IncorrectParamException, "Error opening output file: " + dstName);
+        if( !dest )
+            VMF_EXCEPTION( vmf::IncorrectParamException, "Error opening output file: " + dstName );
+
         dest << source.rdbuf();
     }
 
@@ -299,8 +304,6 @@ TEST_P( TestStatistics, Gathering )
     addMetadata( stream );
     stat.update( true, true );
 
-    stream.save();
-
     vmf::Variant nameCount     = stat[stPersonNameCount];
     vmf::Variant nameLast      = stat[stPersonNameLast];
     vmf::Variant ageMin        = stat[stPersonAgeMin];
@@ -322,10 +325,15 @@ TEST_P( TestStatistics, Gathering )
 //        std::cout << "growthAverage = " << growthAverage.get_real() << std::endl;
     }
 
+    stream.save();
     stream.close();
 }
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
-                        ::testing::Values( vmf::StatUpdateMode::Disabled, vmf::StatUpdateMode::Manual,
-                                           vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer ));
+                        ::testing::Values(
+                            vmf::StatUpdateMode::Disabled,
+                            vmf::StatUpdateMode::Manual,
+                            vmf::StatUpdateMode::OnAdd,
+                            vmf::StatUpdateMode::OnTimer
+                            ));
 
