@@ -322,6 +322,36 @@ protected:
             finalizeStatistics();
     }
 
+    void checkStatistics( const vmf::Stat& stat, vmf::StatUpdateMode::Type updateMode, bool doCompareValues )
+    {
+        vmf::Variant nameCount     = stat[scPersonNameCount];
+        vmf::Variant nameLast      = stat[scPersonNameLast];
+        vmf::Variant ageMin        = stat[scPersonAgeMin];
+        vmf::Variant ageMax        = stat[scPersonAgeMax];
+        vmf::Variant growthAverage = stat[scPersonGrowthAverage];
+        vmf::Variant salarySum     = stat[scPersonSalarySum];
+
+        if( updateMode != vmf::StatUpdateMode::Disabled )
+        {
+            ASSERT_EQ( nameCount.getType(), vmf::Variant::type_integer );
+            ASSERT_EQ( nameLast.getType(), vmf::Variant::type_string );
+            ASSERT_EQ( ageMin.getType(), vmf::Variant::type_integer );
+            ASSERT_EQ( ageMax.getType(), vmf::Variant::type_integer );
+            ASSERT_EQ( growthAverage.getType(), vmf::Variant::type_real );
+            ASSERT_EQ( salarySum.getType(), vmf::Variant::type_integer );
+
+            if( doCompareValues )
+            {
+                ASSERT_EQ( nameCount.get_integer(), stNameCount );
+                ASSERT_EQ( nameLast.get_string(), stNameLast );
+                ASSERT_EQ( ageMin.get_integer(), stAgeMin );
+                ASSERT_EQ( ageMax.get_integer(), stAgeMax );
+                ASSERT_EQ( growthAverage.get_real(), stGrowthAverage );
+                ASSERT_EQ( salarySum.get_integer(), stSalarySum );
+            }
+        }
+    }
+
     std::string fnWorkingPath;
     std::string fnInputName;
 
@@ -357,7 +387,7 @@ TEST_P( TestStatistics, Gathering )
 {
     vmf::StatUpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
-    const bool doCheckStatistics = true;
+    const bool doCompareValues = true;
 
     std::string fileName = "test_statistics.avi";
     createFile( fileName );
@@ -371,24 +401,119 @@ TEST_P( TestStatistics, Gathering )
     vmf::Stat& stat = stream.getStat( scStatName );
     stat.setUpdateTimeout( updateTimeout );
     stat.setUpdateMode( updateMode );
-    putMetadata( stream, doCheckStatistics );
+    putMetadata( stream, doCompareValues );
     stat.update( true, true );
 
-    vmf::Variant nameCount     = stat[scPersonNameCount];
-    vmf::Variant nameLast      = stat[scPersonNameLast];
-    vmf::Variant ageMin        = stat[scPersonAgeMin];
-    vmf::Variant ageMax        = stat[scPersonAgeMax];
-    vmf::Variant growthAverage = stat[scPersonGrowthAverage];
-    vmf::Variant salarySum     = stat[scPersonSalarySum];
+    checkStatistics( stat, updateMode, doCompareValues );
 
-    if( updateMode != vmf::StatUpdateMode::Disabled )
-    {
-        ASSERT_EQ( nameCount.getType(), vmf::Variant::type_integer );
-        ASSERT_EQ( nameLast.getType(), vmf::Variant::type_string );
-        ASSERT_EQ( ageMin.getType(), vmf::Variant::type_integer );
-        ASSERT_EQ( ageMax.getType(), vmf::Variant::type_integer );
-        ASSERT_EQ( growthAverage.getType(), vmf::Variant::type_real );
-        ASSERT_EQ( salarySum.getType(), vmf::Variant::type_integer );
+    stream.save();
+    stream.close();
+}
+
+TEST_P( TestStatistics, SaveLoad )
+{
+    vmf::StatUpdateMode::Type updateMode = GetParam();
+    unsigned updateTimeout = 100;
+    const bool doCompareValues = true;
+
+    std::string fileName = "test_statistics.avi";
+    createFile( fileName );
+
+    vmf::MetadataStream saveStream;
+    ASSERT_EQ( saveStream.open( fileName, vmf::MetadataStream::Update ), true );
+
+    configureSchema( saveStream );
+    configureStatistics( saveStream );
+    putMetadata( saveStream, doCompareValues );
+
+    saveStream.save();
+    saveStream.close();
+
+    vmf::MetadataStream loadStream;
+    ASSERT_EQ( loadStream.open( fileName, vmf::MetadataStream::ReadOnly ), true );
+    ASSERT_EQ( loadStream.load( mcSchemaName ), true );
+
+    vmf::Stat& stat = loadStream.getStat( scStatName );
+    stat.setUpdateTimeout( updateTimeout );
+    stat.setUpdateMode( updateMode );
+
+    stat.update( true, true );
+
+    checkStatistics( stat, updateMode, doCompareValues );
+
+    loadStream.close();
+}
+
+TEST_P( TestStatistics, ExportImportXML )
+{
+    vmf::StatUpdateMode::Type updateMode = GetParam();
+    unsigned updateTimeout = 100;
+    const bool doCompareValues = true;
+
+    vmf::MetadataStream saveStream;
+
+    configureSchema( saveStream );
+    configureStatistics( saveStream );
+    putMetadata( saveStream, doCompareValues );
+
+    vmf::XMLWriter writer;
+    std::string data = saveStream.serialize( writer );
+
+    saveStream.close();
+
+    vmf::MetadataStream loadStream;
+
+    vmf::XMLReader reader;
+    loadStream.deserialize( data, reader );
+
+    vmf::Stat& stat = loadStream.getStat( scStatName );
+    stat.setUpdateTimeout( updateTimeout );
+    stat.setUpdateMode( updateMode );
+
+    stat.update( true, true );
+
+    checkStatistics( stat, updateMode, doCompareValues );
+
+    loadStream.close();
+}
+
+TEST_P( TestStatistics, ExportImportJSON )
+{
+    vmf::StatUpdateMode::Type updateMode = GetParam();
+    unsigned updateTimeout = 100;
+    const bool doCompareValues = true;
+
+    vmf::MetadataStream saveStream;
+
+    configureSchema( saveStream );
+    configureStatistics( saveStream );
+    putMetadata( saveStream, doCompareValues );
+
+    vmf::JSONWriter writer;
+    std::string data = saveStream.serialize( writer );
+
+    saveStream.close();
+
+    vmf::MetadataStream loadStream;
+    vmf::JSONReader reader;
+    loadStream.deserialize( data, reader );
+
+    vmf::Stat& stat = loadStream.getStat( scStatName );
+    stat.setUpdateTimeout( updateTimeout );
+    stat.setUpdateMode( updateMode );
+
+    stat.update( true, true );
+
+    checkStatistics( stat, updateMode, doCompareValues );
+
+    loadStream.close();
+}
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
+                        ::testing::Values(
+                            vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
+                            //,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
+                            ));
 
 //        std::cout << "nameCount     = " << nameCount.get_integer() << std::endl;
 //        std::cout << "nameLast      = " << nameLast.get_string() << std::endl;
@@ -396,25 +521,4 @@ TEST_P( TestStatistics, Gathering )
 //        std::cout << "ageMax        = " << ageMax.get_integer() << std::endl;
 //        std::cout << "growthAverage = " << growthAverage.get_real() << std::endl;
 //        std::cout << "salarySum     = " << salarySum.get_integer() << std::endl;
-
-        if( doCheckStatistics )
-        {
-            ASSERT_EQ( nameCount.get_integer(), stNameCount );
-            ASSERT_EQ( nameLast.get_string(), stNameLast );
-            ASSERT_EQ( ageMin.get_integer(), stAgeMin );
-            ASSERT_EQ( ageMax.get_integer(), stAgeMax );
-            ASSERT_EQ( growthAverage.get_real(), stGrowthAverage );
-            ASSERT_EQ( salarySum.get_integer(), stSalarySum );
-        }
-    }
-
-    stream.save();
-    stream.close();
-}
-
-INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
-                        ::testing::Values(
-                            vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
-                            /*,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer*/
-                            ));
 

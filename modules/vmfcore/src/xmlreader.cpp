@@ -287,20 +287,20 @@ static void parseStatFromNode(xmlNodePtr statNode, std::vector< Stat >& stats)
                     metadataFieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
                 else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_OP_NAME))
                     opName = (char*)xmlGetProp(fieldNode, cur_prop->name);
-
-                if(fieldName.empty())
-                    VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field name");
-                if(schemaName.empty())
-                    VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata schema name");
-                if(metadataName.empty())
-                    VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata name");
-                if(metadataFieldName.empty())
-                    VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata field name");
-                if(opName.empty())
-                    VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field operation name");
-
-                fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
             }
+
+            if(fieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field name");
+            if(schemaName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata schema name");
+            if(metadataName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata name");
+            if(metadataFieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata field name");
+            if(opName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field operation name");
+
+            fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }
     }
 
@@ -545,6 +545,8 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId, std::string& f
         if(!parseSchemas(text, schemas))
             return false;
         if(!parseMetadata(text, schemas, metadata))
+            return false;
+        if(!parseStats(text, stats))
             return false;
     }
     else

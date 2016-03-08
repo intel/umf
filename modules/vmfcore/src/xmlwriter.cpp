@@ -422,7 +422,7 @@ std::string XMLWriter::store(const IdType& nextId,
     xmlNodePtr statsArrayNode = NULL;
     if(!stats.empty())
     {
-        statsArrayNode = xmlNewNode(NULL, BAD_CAST TAG_STATS_ARRAY);
+        statsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
         if(statsArrayNode == NULL)
             VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for stat object array");
     }
