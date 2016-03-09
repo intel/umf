@@ -1,3 +1,4 @@
+import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
 import com.intel.vmf.Vmf;
 import com.intel.vmf.vmf_vec2d;
@@ -19,6 +20,7 @@ public class VmfVariantTest
     public static void init()
     {
         Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     @AfterClass
@@ -199,6 +201,19 @@ public class VmfVariantTest
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Test
+    public void testFromStringThrow ()
+    {
+        vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
+        vec4dArray[0] = new vmf_vec4d();
+        vec4dArray[1] = new vmf_vec4d();
+        
+        var1.setTo(vec4dArray);
+        
+        thrown.expect(com.intel.vmf.VmfException.class);
+        var1.fromString(Variant.type_vec4d_vector, "0 0 0 0 : 0 0 0 0");
+    }
+    
     @Test
     public void testConvertToThrow ()
     {

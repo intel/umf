@@ -44,8 +44,8 @@ public class VmfLogTest
     @After
     public void tearDown ()
     {
-        //if (newFile.exists())
-            //newFile.delete();
+        if (newFile.exists())
+            newFile.delete();
     }
     
     @Test
