@@ -42,10 +42,10 @@ class Metadata;
 class MetadataSchema;
 class MetadataStream;
 
-struct StatState { enum Type { UpToDate=1, NeedUpdate=2, NeedRescan=3 }; };
-struct StatAction { enum Type { Add, Remove /*, Change*/ }; };
+struct VMF_EXPORT StatState { enum Type { UpToDate=1, NeedUpdate=2, NeedRescan=3 }; };
+struct VMF_EXPORT StatAction { enum Type { Add, Remove /*, Change*/ }; };
 
-struct StatUpdateMode
+struct VMF_EXPORT StatUpdateMode
 {
     enum Type { Disabled, Manual, OnAdd, OnTimer };
 
