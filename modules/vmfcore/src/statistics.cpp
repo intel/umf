@@ -558,12 +558,12 @@ public:
           m_metadataDesc( nullptr ), m_fieldName( fieldName ), m_fieldDesc(),
           m_opName( opName ), m_pMetadataStream( nullptr )
         {}
-    explicit StatFieldDesc( const StatFieldDesc& other )
+    StatFieldDesc( const StatFieldDesc& other )
         : m_name( other.m_name ), m_schemaName( other.m_schemaName ), m_metadataName( other.m_metadataName ),
           m_metadataDesc( nullptr ), m_fieldName( other.m_fieldName ), m_fieldDesc(),
           m_opName( other.m_opName ), m_pMetadataStream( nullptr )
         {}
-    explicit StatFieldDesc( StatFieldDesc&& other )
+    StatFieldDesc( StatFieldDesc&& other )
         : m_name( std::move( other.m_name )), m_schemaName( std::move( other.m_schemaName )),
           m_metadataName( std::move( other.m_metadataName )), m_metadataDesc( std::move( nullptr )),
           m_fieldName( std::move( other.m_fieldName )), m_fieldDesc( std::move( other.m_fieldDesc )),
@@ -831,10 +831,10 @@ public:
     explicit StatDesc( const std::string& name )
         : m_name( name )
         {}
-    explicit StatDesc( const StatDesc& other )
+    StatDesc( const StatDesc& other )
         : m_name( other.m_name )
         {}
-    explicit StatDesc( StatDesc&& other )
+    StatDesc( StatDesc&& other )
         : m_name( std::move( other.m_name ))
         {}
     ~StatDesc()

@@ -95,8 +95,8 @@ public:
     StatField( const std::string& name, const std::string& schemaName,
                const std::string& metadataName, const std::string& fieldName,
                const std::string& opName );
-    explicit StatField( const StatField& other );
-    explicit StatField( StatField&& other );
+    StatField( const StatField& other );
+    StatField( StatField&& other );
     StatField();
     ~StatField();
 
@@ -140,8 +140,8 @@ class VMF_EXPORT Stat
 
 public:
     Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
-    explicit Stat( const Stat& other );
-    explicit Stat( Stat&& other );
+    Stat( const Stat& other );
+    Stat( Stat&& other );
     ~Stat();
 
     Stat& operator=( const Stat& other );

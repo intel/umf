@@ -366,7 +366,7 @@ protected:
         delete op;
     }
 
-    void testUserOperation()
+    void testStatOpFactory()
     {
         std::string name,str;
         vmf::StatOpBase* op = nullptr;
@@ -475,9 +475,9 @@ TEST_F( TestStatOperations, BuiltinLast )
                  InputAny | OutputSame | ResetEmpty | CanAdd );
 }
 
-TEST_F( TestStatOperations, UserOperation )
+TEST_F( TestStatOperations, StatOpFactory )
 {
-    testUserOperation();
+    testStatOpFactory();
 }
 
 class TestStatistics : public ::testing::TestWithParam< vmf::StatUpdateMode::Type >
