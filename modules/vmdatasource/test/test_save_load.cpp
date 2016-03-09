@@ -1084,6 +1084,9 @@ TEST_F(TestSaveLoadMetadata, shift)
         stream.add(meta1);
         stream.add(meta2);
 
+        meta1->addReference(meta2);
+        meta2->addReference(meta1);
+
         vmf::MetadataSet set = stream.queryByFrameIndex(6);
         ASSERT_EQ(set.size(), 2u);
 

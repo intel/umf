@@ -202,15 +202,23 @@ public class VmfVariantTest
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
+    public void testDecodeThrow ()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Invalid base64 string: more than 2 trailing '=' symbols");
+        Variant.base64Decode("trampampampam===");
+    }
+    
+    @Test
     public void testFromStringThrow ()
     {
         vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
         vec4dArray[0] = new vmf_vec4d();
         vec4dArray[1] = new vmf_vec4d();
-        
         var1.setTo(vec4dArray);
         
         thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Invalid array item separator");
         var1.fromString(Variant.type_vec4d_vector, "0 0 0 0 : 0 0 0 0");
     }
     

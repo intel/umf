@@ -444,6 +444,15 @@ public class VmfMetadataStreamTest
     }
     
     @Test
+    public void testSaveToThrow()
+    {
+        stream.open(dstFile, MetadataStream.ReadWrite);
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
+        stream.saveTo("stream.log");
+    }
+    
+    @Test
     public void testClearReopenThrow()
     {
         stream.clear();
