@@ -243,114 +243,125 @@ protected:
         EXPECT_NO_THROW( str = op->name() );
         ASSERT_EQ( str, name );
 
-        // check reset result
-        EXPECT_NO_THROW( op->reset() );
-        EXPECT_NO_THROW( res = op->value() );
-
-        ASSERT_NE( flags & ResetMask, 0 );
-        vmf::Variant::Type resetType = res.getType();
-        if( flags & ResetInt )
-            ASSERT_EQ( resetType, vmf::Variant::type_integer );
-        else if( flags & ResetReal )
-            ASSERT_EQ( resetType, vmf::Variant::type_real );
-        else /*if( flags & ResetEmpty )*/
-            ASSERT_EQ( resetType, vmf::Variant::type_unknown );
-
-        // provide right output type
-        ASSERT_NE( flags & OutputMask, 0 );
-        vmf::Variant::Type outputType = vmf::Variant::type_unknown;
-        if( flags & OutputInt )
-            outputType = vmf::Variant::type_integer;
-        else if( flags & OutputReal )
-            outputType = vmf::Variant::type_real;
-        else /*if( flags & OutputSame )*/
-            outputType = vmf::Variant::type_unknown; // depends on input type, see below
-
-        // provide consistent test inputs
-        ASSERT_NE( flags & InputMask, 0 );
-        if( flags & InputInt )
+        do
         {
-            val1 = vmf::Variant( (vmf::vmf_integer)131 );
-            val2 = vmf::Variant( (vmf::vmf_integer)-13 );
-            val3 = vmf::Variant( (vmf::vmf_integer) 75 );
-            bad = vmf::Variant( (vmf::vmf_real)77.13 );
-            if( flags & OutputSame )
-                outputType = vmf::Variant::type_integer; // depends on input type, fixed
-        }
-        else if( flags & InputReal )
-        {
-            val1 = vmf::Variant( (vmf::vmf_real) 36.6 );
-            val2 = vmf::Variant( (vmf::vmf_real)307.1 );
-            val3 = vmf::Variant( (vmf::vmf_real)-3.14 );
-            bad = vmf::Variant( (vmf::vmf_integer)77 );
-            if( flags & OutputSame )
-                outputType = vmf::Variant::type_real; // depends on input type, fixed
-        }
-        else /*if( flags & InputAny )*/
-        {
-            val1 = vmf::Variant( (vmf::vmf_integer) 352 );
-            val2 = vmf::Variant( (vmf::vmf_real)   13.7 );
-            val3 = vmf::Variant( (vmf::vmf_string)"any" );
-            bad = vmf::Variant(); // op accepts any type, so there's no bad
-            // output depends on input type of individual value, must be checked individually
-        }
+            // check reset result
+            EXPECT_NO_THROW( op->reset() );
+            EXPECT_NO_THROW( res = op->value() );
 
-        // try to remove anything on empty state
-        if( flags & CanRemove )
-        {
-            EXPECT_THROW( status = op->handle( vmf::StatAction::Remove, val1 ), vmf::NotImplementedException );
-        }
+            ASSERT_NE( flags & ResetMask, 0 );
+            vmf::Variant::Type resetType = res.getType();
+            if( flags & ResetInt )
+                ASSERT_EQ( resetType, vmf::Variant::type_integer );
+            else if( flags & ResetReal )
+                ASSERT_EQ( resetType, vmf::Variant::type_real );
+            else /*if( flags & ResetEmpty )*/
+                ASSERT_EQ( resetType, vmf::Variant::type_unknown );
 
-        // must always support Add
-        ASSERT_NE( flags & CanAdd, 0 );
+            // provide right output type
+            ASSERT_NE( flags & OutputMask, 0 );
+            vmf::Variant::Type outputType = vmf::Variant::type_unknown;
+            if( flags & OutputInt )
+                outputType = vmf::Variant::type_integer;
+            else if( flags & OutputReal )
+                outputType = vmf::Variant::type_real;
+            else /*if( flags & OutputSame )*/
+                outputType = vmf::Variant::type_unknown; // depends on input type, see below
 
-        // Add first value
-        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val1 ));
-        ASSERT_EQ( status, true );
+            // provide consistent test inputs
+            ASSERT_NE( flags & InputMask, 0 );
+            if( flags & InputInt )
+            {
+                val1 = vmf::Variant( (vmf::vmf_integer)131 );
+                val2 = vmf::Variant( (vmf::vmf_integer)-13 );
+                val3 = vmf::Variant( (vmf::vmf_integer) 75 );
+                bad = vmf::Variant( (vmf::vmf_real)77.13 );
+                if( flags & OutputSame )
+                    outputType = vmf::Variant::type_integer; // depends on input type, fixed
+            }
+            else if( flags & InputReal )
+            {
+                val1 = vmf::Variant( (vmf::vmf_real) 36.6 );
+                val2 = vmf::Variant( (vmf::vmf_real)307.1 );
+                val3 = vmf::Variant( (vmf::vmf_real)-3.14 );
+                bad = vmf::Variant( (vmf::vmf_integer)77 );
+                if( flags & OutputSame )
+                    outputType = vmf::Variant::type_real; // depends on input type, fixed
+            }
+            else /*if( flags & InputAny )*/
+            {
+                val1 = vmf::Variant( (vmf::vmf_integer) 352 );
+                val2 = vmf::Variant( (vmf::vmf_real)   13.7 );
+                val3 = vmf::Variant( (vmf::vmf_string)"any" );
+                bad = vmf::Variant(); // op accepts any type, so there's no bad
+                // output depends on input type of individual value, must be checked individually
+            }
 
-        EXPECT_NO_THROW( res = op->value() );
-        if( outputType == vmf::Variant::type_unknown )
-            ASSERT_EQ( res.getType(), val1.getType() );
-        else
-            ASSERT_EQ( res.getType(), outputType );
+            // try to remove anything on empty state
+            if( flags & CanRemove )
+            {
+                EXPECT_THROW( status = op->handle( vmf::StatAction::Remove, val1 ), vmf::NotImplementedException );
+            }
 
-        // Add second value
-        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val2 ));
-        ASSERT_EQ( status, true );
+            // must always support Add
+            ASSERT_NE( flags & CanAdd, 0 );
 
-        EXPECT_NO_THROW( res = op->value() );
-        if( outputType == vmf::Variant::type_unknown )
-            ASSERT_EQ( res.getType(), val2.getType() );
-        else
-            ASSERT_EQ( res.getType(), outputType );
-
-        // Add third value
-        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val3 ));
-        ASSERT_EQ( status, true );
-
-        EXPECT_NO_THROW( res = op->value() );
-        if( outputType == vmf::Variant::type_unknown )
-            ASSERT_EQ( res.getType(), val3.getType() );
-        else
-            ASSERT_EQ( res.getType(), outputType );
-
-        // try to handle bad input
-        if( bad.getType() == vmf::Variant::type_unknown )
-        {
-            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, bad ));
+            // Add first value
+            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val1 ));
             ASSERT_EQ( status, true );
-        }
-        else
-        {
-            EXPECT_THROW( status = op->handle( vmf::StatAction::Add, bad ), vmf::TypeCastException );
-        }
 
-        // try to remove anything on non-empty state
-        if( flags & CanRemove )
-        {
-            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Remove, val1 ));
+            EXPECT_NO_THROW( res = op->value() );
+            if( outputType == vmf::Variant::type_unknown )
+                ASSERT_EQ( res.getType(), val1.getType() );
+            else
+                ASSERT_EQ( res.getType(), outputType );
+
+            // Add second value
+            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val2 ));
             ASSERT_EQ( status, true );
+
+            EXPECT_NO_THROW( res = op->value() );
+            if( outputType == vmf::Variant::type_unknown )
+                ASSERT_EQ( res.getType(), val2.getType() );
+            else
+                ASSERT_EQ( res.getType(), outputType );
+
+            // Add third value
+            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val3 ));
+            ASSERT_EQ( status, true );
+
+            EXPECT_NO_THROW( res = op->value() );
+            if( outputType == vmf::Variant::type_unknown )
+                ASSERT_EQ( res.getType(), val3.getType() );
+            else
+                ASSERT_EQ( res.getType(), outputType );
+
+            // try to handle bad input
+            if( bad.getType() == vmf::Variant::type_unknown )
+            {
+                EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, bad ));
+                ASSERT_EQ( status, true );
+            }
+            else
+            {
+                EXPECT_THROW( status = op->handle( vmf::StatAction::Add, bad ), vmf::TypeCastException );
+            }
+
+            // try to remove anything on non-empty state
+            if( flags & CanRemove )
+            {
+                EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Remove, val1 ));
+                ASSERT_EQ( status, true );
+            }
+
+            if( flags & InputInt )
+                flags &= ~InputInt;
+            else if( flags & InputReal )
+                flags &= ~InputReal;
+            else /*if( flags & InputAny )*/
+                flags &= ~InputMask;
         }
+        while( (flags & InputMask) != 0 );
 
         delete op;
     }
