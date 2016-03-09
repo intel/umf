@@ -67,6 +67,38 @@ TEST_F( TestStat, UpdateMode )
     ASSERT_EQ( stat->getUpdateMode(), defUpdateMode );
 }
 
+#define CHECK_TO_STRING( _x ) \
+    { std::string _s_; EXPECT_NO_THROW( _s_ = vmf::StatUpdateMode::toString( _x )); ASSERT_EQ( _s_, #_x ); }
+#define CHECK_FROM_STRING( _x ) \
+    { vmf::StatUpdateMode::Type _v_; EXPECT_NO_THROW( _v_ = vmf::StatUpdateMode::fromString( #_x )); ASSERT_EQ( _v_, _x ); }
+TEST_F( TestStat, UpdateModeStrings )
+{
+    vmf::StatUpdateMode::Type val;
+    std::string str;
+
+    CHECK_TO_STRING( vmf::StatUpdateMode::Disabled );
+    CHECK_TO_STRING( vmf::StatUpdateMode::Manual );
+    CHECK_TO_STRING( vmf::StatUpdateMode::OnAdd );
+    CHECK_TO_STRING( vmf::StatUpdateMode::OnTimer );
+
+    val = vmf::StatUpdateMode::Type( int( vmf::StatUpdateMode::Disabled ) - 1 );
+    EXPECT_THROW( str = vmf::StatUpdateMode::toString( val ), vmf::IncorrectParamException );
+    val = vmf::StatUpdateMode::Type( int( vmf::StatUpdateMode::OnTimer ) + 1 );
+    EXPECT_THROW( str = vmf::StatUpdateMode::toString( val ), vmf::IncorrectParamException );
+
+    CHECK_FROM_STRING( vmf::StatUpdateMode::Disabled );
+    CHECK_FROM_STRING( vmf::StatUpdateMode::Manual );
+    CHECK_FROM_STRING( vmf::StatUpdateMode::OnAdd );
+    CHECK_FROM_STRING( vmf::StatUpdateMode::OnTimer );
+
+    str = "AnyUnknownStringYouWant";
+    EXPECT_THROW( val = vmf::StatUpdateMode::fromString( str ), vmf::IncorrectParamException );
+    str = "YetAnotherUnknownString";
+    EXPECT_THROW( val = vmf::StatUpdateMode::fromString( str ), vmf::IncorrectParamException );
+}
+#undef CHECK_TO_STRING
+#undef CHECK_FROM_STRING
+
 TEST_F( TestStat, UpdateTimeout )
 {
     unsigned updateTimeout = defUpdateTimeout + 100;
@@ -165,6 +197,276 @@ TEST_F( TestStatFields, Creation )
         ASSERT_NE( it, nameData.end() );
         ++it;
     }
+}
+
+class TestStatOperations : public ::testing::Test
+{
+protected:
+    enum Flags // operation capability flags
+    {
+        InputMask  = 0x000f, // input mask
+        InputInt   = 0x0001, //   accepts integer
+        InputReal  = 0x0002, //   accepts real
+        InputAny   = 0x0004, //   accepts any type (types can be mixed)
+        OutputMask = 0x00f0, // output mask
+        OutputInt  = 0x0010, //   produces integer
+        OutputReal = 0x0020, //   produces real
+        OutputSame = 0x0040, //   produces the same type as input
+        ResetMask  = 0x0f00, // reset mask
+        ResetInt   = 0x0100, //   reset to integer 0
+        ResetReal  = 0x0200, //   reset to real 0
+        ResetEmpty = 0x0400, //   reset to empty value (type_unknown)
+        CanMask    = 0xf000, // can mask
+        CanAdd     = 0x1000, //   can add value
+        CanRemove  = 0x2000  //   can remove value
+    };
+
+    // Min      i:i r:r A:t R:f
+    // Max
+    // Average  i:r r:r A:t R:t
+    // Count    any:i   A:t R:t
+    // Sum      i:i r:r A:t R:t
+    // Last     any:id  A:t R:f
+
+    void testBuiltin( const std::string& name, unsigned flags )
+    {
+        bool status;
+        std::string str;
+        vmf::Variant val1,val2,val3,bad,res;
+        vmf::StatOpBase* op = nullptr;
+
+        // created op by fabric call
+        EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
+        ASSERT_NE( op, nullptr );
+
+        // check name consistency
+        EXPECT_NO_THROW( str = op->name() );
+        ASSERT_EQ( str, name );
+
+        // check reset result
+        EXPECT_NO_THROW( op->reset() );
+        EXPECT_NO_THROW( res = op->value() );
+
+        ASSERT_NE( flags & ResetMask, 0 );
+        vmf::Variant::Type resetType = res.getType();
+        if( flags & ResetInt )
+            ASSERT_EQ( resetType, vmf::Variant::type_integer );
+        else if( flags & ResetReal )
+            ASSERT_EQ( resetType, vmf::Variant::type_real );
+        else /*if( flags & ResetEmpty )*/
+            ASSERT_EQ( resetType, vmf::Variant::type_unknown );
+
+        // provide right output type
+        ASSERT_NE( flags & OutputMask, 0 );
+        vmf::Variant::Type outputType = vmf::Variant::type_unknown;
+        if( flags & OutputInt )
+            outputType = vmf::Variant::type_integer;
+        else if( flags & OutputReal )
+            outputType = vmf::Variant::type_real;
+        else /*if( flags & OutputSame )*/
+            outputType = vmf::Variant::type_unknown; // depends on input type, see below
+
+        // provide consistent test inputs
+        ASSERT_NE( flags & InputMask, 0 );
+        if( flags & InputInt )
+        {
+            val1 = vmf::Variant( (vmf::vmf_integer)131 );
+            val2 = vmf::Variant( (vmf::vmf_integer)-13 );
+            val3 = vmf::Variant( (vmf::vmf_integer) 75 );
+            bad = vmf::Variant( (vmf::vmf_real)77.13 );
+            if( flags & OutputSame )
+                outputType = vmf::Variant::type_integer; // depends on input type, fixed
+        }
+        else if( flags & InputReal )
+        {
+            val1 = vmf::Variant( (vmf::vmf_real) 36.6 );
+            val2 = vmf::Variant( (vmf::vmf_real)307.1 );
+            val3 = vmf::Variant( (vmf::vmf_real)-3.14 );
+            bad = vmf::Variant( (vmf::vmf_integer)77 );
+            if( flags & OutputSame )
+                outputType = vmf::Variant::type_real; // depends on input type, fixed
+        }
+        else /*if( flags & InputAny )*/
+        {
+            val1 = vmf::Variant( (vmf::vmf_integer) 352 );
+            val2 = vmf::Variant( (vmf::vmf_real)   13.7 );
+            val3 = vmf::Variant( (vmf::vmf_string)"any" );
+            bad = vmf::Variant(); // op accepts any type, so there's no bad
+            // output depends on input type of individual value, must be checked individually
+        }
+
+        // try to remove anything on empty state
+        if( flags & CanRemove )
+        {
+            EXPECT_THROW( status = op->handle( vmf::StatAction::Remove, val1 ), vmf::NotImplementedException );
+        }
+
+        // must always support Add
+        ASSERT_NE( flags & CanAdd, 0 );
+
+        // Add first value
+        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val1 ));
+        ASSERT_EQ( status, true );
+
+        EXPECT_NO_THROW( res = op->value() );
+        if( outputType == vmf::Variant::type_unknown )
+            ASSERT_EQ( res.getType(), val1.getType() );
+        else
+            ASSERT_EQ( res.getType(), outputType );
+
+        // Add second value
+        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val2 ));
+        ASSERT_EQ( status, true );
+
+        EXPECT_NO_THROW( res = op->value() );
+        if( outputType == vmf::Variant::type_unknown )
+            ASSERT_EQ( res.getType(), val2.getType() );
+        else
+            ASSERT_EQ( res.getType(), outputType );
+
+        // Add third value
+        EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val3 ));
+        ASSERT_EQ( status, true );
+
+        EXPECT_NO_THROW( res = op->value() );
+        if( outputType == vmf::Variant::type_unknown )
+            ASSERT_EQ( res.getType(), val3.getType() );
+        else
+            ASSERT_EQ( res.getType(), outputType );
+
+        // try to handle bad input
+        if( bad.getType() == vmf::Variant::type_unknown )
+        {
+            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, bad ));
+            ASSERT_EQ( status, true );
+        }
+        else
+        {
+            EXPECT_THROW( status = op->handle( vmf::StatAction::Add, bad ), vmf::TypeCastException );
+        }
+
+        // try to remove anything on non-empty state
+        if( flags & CanRemove )
+        {
+            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Remove, val1 ));
+            ASSERT_EQ( status, true );
+        }
+
+        delete op;
+    }
+
+    void testUserOperation()
+    {
+        std::string name,str;
+        vmf::StatOpBase* op = nullptr;
+
+        str = "AnyUnknownStringYouWant";
+        EXPECT_THROW( op = vmf::StatOpFactory::create( str ), vmf::NotFoundException );
+        ASSERT_EQ( op, nullptr );
+
+        str = "YetAnotherUnknownString";
+        EXPECT_THROW( op = vmf::StatOpFactory::create( str ), vmf::NotFoundException );
+        ASSERT_EQ( op, nullptr );
+
+        EXPECT_NO_THROW( op = UserOp::createInstance() );
+        ASSERT_NE( op, nullptr );
+        EXPECT_NO_THROW( name = op->name() );
+        ASSERT_EQ( name, UserOp::userOpName );
+        delete op; op = nullptr;
+
+        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( nullptr ), vmf::NullPointerException );
+        EXPECT_NO_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance ));
+        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance2 ), vmf::IncorrectParamException );
+
+        ASSERT_EQ( op, nullptr );
+        EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
+        ASSERT_NE( op, nullptr );
+        EXPECT_NO_THROW( str = op->name() );
+        ASSERT_EQ( str, name );
+        delete op; op = nullptr;
+    }
+
+    class UserOp: public vmf::StatOpBase
+    {
+    public:
+        UserOp()
+            {}
+        virtual ~UserOp()
+            {}
+
+    public:
+        virtual std::string name() const
+            { return userOpName; }
+        virtual void reset()
+            { m_value = vmf::Variant(); }
+        virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& fieldValue )
+            {
+                switch( action )
+                {
+                case vmf::StatAction::Add:
+                    m_value = fieldValue;
+                    break;
+                case vmf::StatAction::Remove:
+                    return false;
+                }
+                return true;
+            }
+        virtual vmf::Variant value() const
+            { return m_value; }
+
+    private:
+        vmf::Variant m_value;
+
+    public:
+        static const std::string userOpName;
+        static vmf::StatOpBase* createInstance()
+            { return new UserOp(); }
+        static vmf::StatOpBase* createInstance2()
+            { return new UserOp(); }
+    };
+};
+
+/*static*/ const std::string TestStatOperations::UserOp::userOpName = "***TestStatOperations::UserOp::userOpName***";
+
+TEST_F( TestStatOperations, BuiltinMin )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ),
+                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd );
+}
+
+TEST_F( TestStatOperations, BuiltinMax )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ),
+                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd );
+}
+
+TEST_F( TestStatOperations, BuiltinAverage )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ),
+                 InputInt | InputReal | OutputReal | ResetEmpty | CanAdd | CanRemove );
+}
+
+TEST_F( TestStatOperations, BuiltinCount )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ),
+                 InputAny | OutputInt | ResetInt | CanAdd | CanRemove );
+}
+
+TEST_F( TestStatOperations, BuiltinSum )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ),
+                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd | CanRemove );
+}
+
+TEST_F( TestStatOperations, BuiltinLast )
+{
+    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ),
+                 InputAny | OutputSame | ResetEmpty | CanAdd );
+}
+
+TEST_F( TestStatOperations, UserOperation )
+{
+    testUserOperation();
 }
 
 class TestStatistics : public ::testing::TestWithParam< vmf::StatUpdateMode::Type >

@@ -35,10 +35,10 @@ std::string StatUpdateMode::toString( StatUpdateMode::Type val )
 {
     switch( val )
     {
-    CASE_VAL2STR( StatUpdateMode::Disabled );
-    CASE_VAL2STR( StatUpdateMode::Manual   );
-    CASE_VAL2STR( StatUpdateMode::OnAdd    );
-    CASE_VAL2STR( StatUpdateMode::OnTimer  );
+    CASE_VAL2STR( vmf::StatUpdateMode::Disabled );
+    CASE_VAL2STR( vmf::StatUpdateMode::Manual   );
+    CASE_VAL2STR( vmf::StatUpdateMode::OnAdd    );
+    CASE_VAL2STR( vmf::StatUpdateMode::OnTimer  );
     }
     VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + to_string( (int)val ));
 }
@@ -47,10 +47,10 @@ std::string StatUpdateMode::toString( StatUpdateMode::Type val )
 #define IF_STR2VAL( _x )  if( str == #_x ) return _x
 StatUpdateMode::Type StatUpdateMode::fromString( const std::string& str )
 {
-    IF_STR2VAL( StatUpdateMode::Disabled );
-    IF_STR2VAL( StatUpdateMode::Manual   );
-    IF_STR2VAL( StatUpdateMode::OnAdd    );
-    IF_STR2VAL( StatUpdateMode::OnTimer  );
+    IF_STR2VAL( vmf::StatUpdateMode::Disabled );
+    IF_STR2VAL( vmf::StatUpdateMode::Manual   );
+    IF_STR2VAL( vmf::StatUpdateMode::OnAdd    );
+    IF_STR2VAL( vmf::StatUpdateMode::OnTimer  );
     VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum string: " + str );
 }
 #undef IF_STR2VAL
