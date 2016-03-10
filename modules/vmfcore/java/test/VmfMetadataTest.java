@@ -167,6 +167,9 @@ public class VmfMetadataTest
         Metadata tmp = md2.getFirstReference("person");
         assertTrue(tmp.equals(md2));
         
+        tmp = md2.getFirstReference("new");
+        assertNull(tmp);
+
         MetadataSet set = md2.getReferencesByMetadata ("person");
         assertEquals (3, set.getSize());
         

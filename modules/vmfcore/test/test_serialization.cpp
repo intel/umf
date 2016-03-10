@@ -44,7 +44,7 @@ protected:
         spSchemaPeople = std::make_shared<MetadataSchema>(n_schemaPeople);
         vFieldsPeople.push_back(FieldDesc("name", Variant::type_string));
         vFieldsPeople.push_back(FieldDesc("address", Variant::type_string, true));
-        vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("friend", true));
+        vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("friend"));
         vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("colleague"));
         spDescPeople = std::make_shared<MetadataDesc>("person", vFieldsPeople, vRefDescsPeople);
         spSchemaPeople->add(spDescPeople);

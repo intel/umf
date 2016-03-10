@@ -201,13 +201,13 @@ TEST_F(TestNamedReferences, AddReferences)
     mdSet = md[0]->getReferencesByMetadata("PERSON");
     EXPECT_EQ(5u, mdSet.size());
 
-    md[0]->addReference(md[2], "SPOUSE");
+    EXPECT_THROW(md[0]->addReference(md[2], "SPOUSE"), vmf::IncorrectParamException);
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(4u, mdSet.size());
+    EXPECT_EQ(5u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("CAR");
-    EXPECT_EQ(2u, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.save();
     newStream.load();
