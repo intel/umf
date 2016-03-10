@@ -856,22 +856,6 @@ void MetadataStream::notifyStat(StatAction::Type action, std::shared_ptr< Metada
     }
 }
 
-void MetadataStream::addStat(const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode)
-{
-    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
-    {
-        return s.getName() == name;
-    });
-
-    if (it != m_stats.end())
-    {
-        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
-    }
-
-    m_stats.emplace_back(name, fields, updateMode);
-    m_stats.back().setStream(this);
-}
-
 void MetadataStream::addStat(const Stat& stat)
 {
     const std::string& name = stat.getName();

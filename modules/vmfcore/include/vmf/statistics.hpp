@@ -1,5 +1,5 @@
 /*.
- * Copyright 2015 Intel(r) Corporation
+ * Copyright 2016 Intel(r) Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public:
 public:
     virtual std::string name() const = 0;
     virtual void reset() = 0;
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue ) = 0;
+    virtual void handle( const Variant& fieldValue ) = 0;
     virtual Variant value() const = 0;
 };
 
@@ -76,6 +76,7 @@ public:
 
 public:
     static StatOpBase* create( const std::string& name );
+    static bool isRegistered( const std::string& name );
     static void registerUserOp( InstanceCreator createInstance );
 
     struct BuiltinOp { enum Type { Min, Max, Average, Count, Sum, Last }; };
@@ -84,7 +85,9 @@ public:
 private:
     typedef std::pair< std::string, InstanceCreator > UserOpItem;
     typedef std::map< std::string, InstanceCreator > UserOpMap;
+    static std::mutex& getLock();
     static UserOpMap& getClassMap();
+    static std::string getUserOpName( InstanceCreator createInstance );
 };
 
 class VMF_EXPORT StatField
@@ -111,11 +114,6 @@ public:
     FieldDesc getFieldDesc() const;
     std::string getOpName() const;
 
-    StatState::Type getState() const { return m_state; }
-
-    void update( bool doRescan = false );
-    StatState::Type handle( std::shared_ptr< Metadata > metadata );
-
     Variant getValue() const { return m_op->value(); }
 
 private:
@@ -123,13 +121,14 @@ private:
     MetadataStream* getStream() const;
 
     bool isActive() const { return m_isActive; }
-    void updateState( bool didUpdate );
+
+    void handle( std::shared_ptr< Metadata > metadata );
+    void reset();
 
     class StatFieldDesc;
     std::unique_ptr< StatFieldDesc > m_desc;
 
     StatOpBase* m_op;
-    StatState::Type m_state;
     bool m_isActive;
 };
 

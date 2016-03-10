@@ -344,7 +344,6 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
-    void addStat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
     void addStat( const Stat& stat );
     void addStat( Stat&& stat );
     Stat& getStat( const std::string& name ) const;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Intel(r) Corporation
+ * Copyright 2016 Intel(r) Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,6 @@
 #include "vmf/statistics.hpp"
 #include "vmf/metadata.hpp"
 #include "vmf/metadatastream.hpp"
-//#include <cstring>
-//#include <string>
-//#include <memory>
-//#include <sstream>
-//#include <cmath>
-//#include <limits>
-//#include <iomanip>
 
 namespace vmf
 {
@@ -73,48 +66,27 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = Variant();
         }
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue )
+    virtual void handle( const Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                if( m_value.isEmpty() )
-                    m_value = fieldValue;
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
-                else
-                    switch( m_value.getType() )
-                    {
-                    case Variant::type_integer:
-                        if( fieldValue.get_integer() < m_value.get_integer() )
-                            m_value = fieldValue;
-                        break;
-                    case Variant::type_real:
-                        if( fieldValue.get_real() < m_value.get_real() )
-                            m_value = fieldValue;
-                        break;
-                    default:
-                        VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                    }
-                break;
-            case StatAction::Remove:
-                if( m_value.isEmpty() )
-                    VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            if( m_value.isEmpty() )
+                m_value = fieldValue;
+            else if( m_value.getType() != fieldValue.getType() )
+                VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            else
                 switch( m_value.getType() )
                 {
                 case Variant::type_integer:
-                    return false;
+                    if( fieldValue.get_integer() < m_value.get_integer() )
+                        m_value = fieldValue;
+                    break;
                 case Variant::type_real:
-                    return false;
+                    if( fieldValue.get_real() < m_value.get_real() )
+                        m_value = fieldValue;
+                    break;
                 default:
                     VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
                 }
-            break;
-            }
-            return true;
         }
     virtual Variant value() const
         {
@@ -147,48 +119,27 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = Variant();
         }
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue )
+    virtual void handle( const Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                if( m_value.isEmpty() )
-                    m_value = fieldValue;
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
-                else
-                    switch( m_value.getType() )
-                    {
-                    case Variant::type_integer:
-                        if( fieldValue.get_integer() > m_value.get_integer() )
-                            m_value = fieldValue;
-                        break;
-                    case Variant::type_real:
-                        if( fieldValue.get_real() > m_value.get_real() )
-                            m_value = fieldValue;
-                        break;
-                    default:
-                        VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                    }
-                break;
-            case StatAction::Remove:
-                if( m_value.isEmpty() )
-                    VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            if( m_value.isEmpty() )
+                m_value = fieldValue;
+            else if( m_value.getType() != fieldValue.getType() )
+                VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            else
                 switch( m_value.getType() )
                 {
                 case Variant::type_integer:
-                    return false;
+                    if( fieldValue.get_integer() > m_value.get_integer() )
+                        m_value = fieldValue;
+                    break;
                 case Variant::type_real:
-                    return false;
+                    if( fieldValue.get_real() > m_value.get_real() )
+                        m_value = fieldValue;
+                    break;
                 default:
                     VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
                 }
-                break;
-            }
-            return true;
         }
     virtual Variant value() const
         {
@@ -222,48 +173,25 @@ public:
             m_count = 0;
             m_value = Variant();
         }
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue )
+    virtual void handle( const Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                if( m_value.isEmpty() )
-                    { m_count = 1; m_value = fieldValue; }
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
-                else
-                    switch( m_value.getType() )
-                    {
-                    case Variant::type_integer:
-                        ++m_count; m_value = Variant( m_value.get_integer() + fieldValue.get_integer() );
-                        break;
-                    case Variant::type_real:
-                        ++m_count; m_value = Variant( m_value.get_real() + fieldValue.get_real() );
-                        break;
-                    default:
-                        VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                    }
-                break;
-            case StatAction::Remove:
-                if( m_value.isEmpty() )
-                    VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            if( m_value.isEmpty() )
+                { m_count = 1; m_value = fieldValue; }
+            else if( m_value.getType() != fieldValue.getType() )
+                VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            else
                 switch( m_value.getType() )
                 {
                 case Variant::type_integer:
-                    --m_count; m_value = Variant( m_value.get_integer() - fieldValue.get_integer() );
+                    ++m_count; m_value = Variant( m_value.get_integer() + fieldValue.get_integer() );
                     break;
                 case Variant::type_real:
-                    --m_count; m_value = Variant( m_value.get_real() - fieldValue.get_real() );
+                    ++m_count; m_value = Variant( m_value.get_real() + fieldValue.get_real() );
                     break;
                 default:
                     VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
                 }
-                break;
-            }
-            return true;
         }
     virtual Variant value() const
         {
@@ -308,21 +236,10 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_count = 0;
         }
-    virtual bool handle( StatAction::Type action, const Variant& /*fieldValue*/ )
+    virtual void handle( const Variant& /*fieldValue*/ )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                ++m_count;
-                break;
-            case StatAction::Remove:
-                if( !(m_count > 0) )
-                    VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                --m_count;
-                break;
-            }
-            return true;
+            ++m_count;
         }
     virtual Variant value() const
         {
@@ -355,48 +272,25 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = Variant();
         }
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue )
+    virtual void handle( const Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                if( m_value.isEmpty() )
-                    { m_value = fieldValue; }
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
-                else
-                    switch( m_value.getType() )
-                    {
-                    case Variant::type_integer:
-                        m_value = Variant( m_value.get_integer() + fieldValue.get_integer() );
-                        break;
-                    case Variant::type_real:
-                        m_value = Variant( m_value.get_real() + fieldValue.get_real() );
-                        break;
-                    default:
-                        VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                    }
-                break;
-            case StatAction::Remove:
-                if( m_value.isEmpty() )
-                    VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-                else if( m_value.getType() != fieldValue.getType() )
-                    VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            if( m_value.isEmpty() )
+                { m_value = fieldValue; }
+            else if( m_value.getType() != fieldValue.getType() )
+                VMF_EXCEPTION( vmf::TypeCastException, "Type mismatch" );
+            else
                 switch( m_value.getType() )
                 {
                 case Variant::type_integer:
-                    m_value = Variant( m_value.get_integer() - fieldValue.get_integer() );
+                    m_value = Variant( m_value.get_integer() + fieldValue.get_integer() );
                     break;
                 case Variant::type_real:
-                    m_value = Variant( m_value.get_real() - fieldValue.get_real() );
+                    m_value = Variant( m_value.get_real() + fieldValue.get_real() );
                     break;
                 default:
                     VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
                 }
-                break;
-            }
-            return true;
         }
     virtual Variant value() const
         {
@@ -429,18 +323,10 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = Variant();
         }
-    virtual bool handle( StatAction::Type action, const Variant& fieldValue )
+    virtual void handle( const Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            switch( action )
-            {
-            case StatAction::Add:
-                m_value = fieldValue;
-                break;
-            case StatAction::Remove:
-                return false;
-            }
-            return true;
+            m_value = fieldValue;
         }
     virtual Variant value() const
         {
@@ -461,7 +347,8 @@ public:
 
 StatOpBase* StatOpFactory::create( const std::string& name )
 {
-    // TODO: use lock for thread-safe access to UserOpMap instance
+    std::unique_lock< std::mutex > lock( getLock() );
+
     const UserOpMap& ops = getClassMap();
 
     auto it = ops.find( name );
@@ -479,7 +366,37 @@ StatOpBase* StatOpFactory::create( const std::string& name )
     return op;
 }
 
+bool StatOpFactory::isRegistered( const std::string& name )
+{
+    std::unique_lock< std::mutex > lock( getLock() );
+
+    const UserOpMap& ops = getClassMap();
+
+    auto it = ops.find( name );
+    return bool( it != ops.end() );
+}
+
 void StatOpFactory::registerUserOp( InstanceCreator createInstance )
+{
+    std::string userOpName = getUserOpName( createInstance );
+
+    std::unique_lock< std::mutex > lock( getLock() );
+
+    UserOpMap& ops = getClassMap();
+
+    auto it = ops.find( userOpName );
+    if( it != ops.end() )
+    {
+        // Note that op can't be registered twice even with the same creator func. Use isRegistered() to check
+        VMF_EXCEPTION( vmf::IncorrectParamException, "User operation is registered twice: '" + userOpName + "'" );
+    }
+    else
+    {
+        ops.insert( UserOpItem( userOpName, createInstance ));
+    }
+}
+
+std::string StatOpFactory::getUserOpName( InstanceCreator createInstance )
 {
     if( createInstance == nullptr )
     {
@@ -487,27 +404,13 @@ void StatOpFactory::registerUserOp( InstanceCreator createInstance )
     }
 
     std::unique_ptr< StatOpBase > userOp( createInstance() );
-    std::string userOpName = userOp->name();
 
-    // TODO: use lock for thread-safe access to UserOpMap instance
-    UserOpMap& ops = getClassMap();
+    if( userOp == nullptr )
+    {
+        VMF_EXCEPTION( vmf::NullPointerException, "User operation isn't created by its createInstance() call" );
+    }
 
-    auto it = ops.find( userOpName );
-    if( it != ops.end() )
-    {
-        if( it->second != createInstance )
-        {
-            VMF_EXCEPTION( vmf::IncorrectParamException, "User operation is registered twice: '" + userOpName + "'" );
-        }
-        else
-        {
-            // Registered twice with the same createInstance() function; it's not an error
-        }
-    }
-    else
-    {
-        ops.insert( UserOpItem( userOpName, createInstance ));
-    }
+    return userOp->name();
 }
 
 #define ALL_BUILTIN_OPS( _op ) \
@@ -518,10 +421,18 @@ void StatOpFactory::registerUserOp( InstanceCreator createInstance )
         _op( Sum );     \
         _op( Last );
 
+std::mutex& StatOpFactory::getLock()
+{
+    // Singletone model based on initialization of function-local static object
+    // Object initialized once on first time we have entered the function
+    static std::mutex lock;
+    return lock;
+}
+
 #define OP_REGISTER( _x ) ops.insert( UserOpItem( builtinName( BuiltinOp::_x ), StatOp ## _x ::createInstance ))
 StatOpFactory::UserOpMap& StatOpFactory::getClassMap()
 {
-    // Singletone model based on initialisation of function-local static object
+    // Singletone model based on initialization of function-local static object
     // Object initialized once on first time we have entered the function
     static UserOpMap ops;
 
@@ -670,7 +581,6 @@ StatField::StatField(
         const std::string& opName )
     : m_desc( new StatFieldDesc( name, schemaName, metadataName, fieldName, opName ))
     , m_op( StatOpFactory::create( opName ))
-    , m_state( StatState::UpToDate )
     , m_isActive( false )
 {
 }
@@ -678,7 +588,6 @@ StatField::StatField(
 StatField::StatField( const StatField& other )
     : m_desc( new StatFieldDesc( *other.m_desc ))
     , m_op( (other.m_op != nullptr) ? StatOpFactory::create( other.m_op->name() ) : nullptr )
-    , m_state( other.m_state )
     , m_isActive( other.m_isActive )
 {
 }
@@ -686,7 +595,6 @@ StatField::StatField( const StatField& other )
 StatField::StatField( StatField&& other )
     : m_desc( std::move( other.m_desc ))
     , m_op( nullptr )
-    , m_state( std::move( other.m_state ))
     , m_isActive( std::move( other.m_isActive ))
 {
     std::swap( m_op, other.m_op );
@@ -695,7 +603,6 @@ StatField::StatField( StatField&& other )
 StatField::StatField()
     : m_desc()
     , m_op( nullptr )
-    , m_state( StatState::UpToDate )
     , m_isActive( false )
 {
 }
@@ -711,10 +618,9 @@ StatField& StatField::operator=( const StatField& other )
 
     m_desc.reset( new StatFieldDesc( *other.m_desc ));
 
-    delete m_op;
+    delete m_op; m_op = nullptr;
     m_op = (other.m_op != nullptr) ? StatOpFactory::create( other.m_op->name() ) : nullptr;
 
-    m_state = other.m_state;
     m_isActive = other.m_isActive;
 
     setStream( other.getStream() );
@@ -728,11 +634,8 @@ StatField& StatField::operator=( StatField&& other )
 
     m_desc = std::move( other.m_desc );
 
-    delete m_op;
-    m_op = nullptr;
     std::swap( m_op, other.m_op );
 
-    m_state = other.m_state;
     m_isActive = other.m_isActive;
 
     setStream( other.getStream() );
@@ -740,41 +643,26 @@ StatField& StatField::operator=( StatField&& other )
     return *this;
 }
 
-StatState::Type StatField::handle( std::shared_ptr< Metadata > metadata )
+void StatField::handle( std::shared_ptr< Metadata > metadata )
 {
     const std::shared_ptr< MetadataDesc > metadataDesc = metadata->getDesc();
-    if( metadataDesc && (this->getMetadataDesc() == metadataDesc ))
+    if( metadataDesc &&
+        (metadataDesc->getSchemaName() == this->getSchemaName()) &&
+        (metadataDesc->getMetadataName() == this->getMetadataName()) )
     {
         const std::string& fieldName = this->getFieldName();
         Metadata::iterator it = metadata->findField( fieldName );
         if( it != metadata->end() )
         {
-            updateState( m_op->handle( StatAction::Add, *it ));
+            m_op->handle( *it );
         }
     }
-    return getState();
 }
 
-void StatField::update( bool doRescan )
+void StatField::reset()
 {
-    if( isActive() && (doRescan || (getState() != StatState::UpToDate)) )
-    {
+    if( isActive() )
         m_op->reset();
-        MetadataSet metadataSet = getStream()->getAll();
-        for( auto metadata : metadataSet )
-        {
-            handle( metadata );
-        }
-        m_state = StatState::UpToDate;
-    }
-}
-
-void StatField::updateState( bool didUpdate )
-{
-    if( !didUpdate )
-    {
-        m_state = StatState::NeedRescan;
-    }
 }
 
 void StatField::setStream( MetadataStream* pMetadataStream )
@@ -1187,9 +1075,16 @@ void Stat::handle( const std::shared_ptr< Metadata > metadata )
 
 void Stat::rescan()
 {
-    for( auto& statField : m_fields )
+    if( isActive() && (getState() != StatState::UpToDate) )
     {
-        statField.update( true );
+        for( auto& statField : m_fields )
+            statField.reset();
+        MetadataSet metadataSet = getStream()->getAll();
+        for( auto metadata : metadataSet )
+        {
+            handle( metadata );
+        }
+        resetState();
     }
 }
 

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2015 Intel(r) Corporation
+ * Copyright 2016 Intel(r) Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,6 @@ void copyFile(const string& srcName, const char *dstName)
         dst << src.rdbuf();
     else
         VMF_EXCEPTION(vmf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
-    //src.close();
-    //dst.close();
 }
 
 class StrCatOp: public vmf::StatOpBase
@@ -64,22 +62,14 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = "";
         }
-    virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& fieldValue )
+    virtual void handle( const vmf::Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
             if( fieldValue.getType() != vmf::Variant::type_string )
                 VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
-            switch( action )
-            {
-            case vmf::StatAction::Add:
-                if( !m_value.empty() )
-                    m_value += " | ";
-                m_value += fieldValue.get_string();
-                break;
-            case vmf::StatAction::Remove:
-                return false;
-            }
-            return true;
+            if( !m_value.empty() )
+                m_value += " | ";
+            m_value += fieldValue.get_string();
         }
     virtual vmf::Variant value() const
         {
@@ -149,8 +139,6 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
 
 int sample(int argc, char *argv[])
 {
-    vmf::initialize();
-
     string appPath = argv[0];
 #ifdef WIN32
     char delim = '\\';
@@ -196,20 +184,17 @@ int sample(int argc, char *argv[])
         exit(1);
     }
 
-    // Create a GPS metadata field descriptions
-    vector<vmf::FieldDesc> fieldDesc;
-
-    fieldDesc.push_back(vmf::FieldDesc(GPS_COORD_FIELD)); // GPS coordinate as string
-    fieldDesc.push_back(vmf::FieldDesc(GPS_TIME_FIELD)); // Associated time as string
-    
-    // Create GPS metadata description
-    std::shared_ptr<vmf::MetadataDesc> gpsDesc = std::make_shared<vmf::MetadataDesc>(GPS_DESC, fieldDesc);
-
     // Create GPS metadata schema
     std::shared_ptr<vmf::MetadataSchema> gpsSchema = std::make_shared<vmf::MetadataSchema>(GPS_SCHEMA_NAME);
 
     // Add description to the schema
-    gpsSchema->add(gpsDesc);
+    VMF_METADATA_BEGIN( GPS_DESC );
+        VMF_FIELD_STR( GPS_COORD_FIELD );
+        VMF_FIELD_STR( GPS_TIME_FIELD );
+    VMF_METADATA_END( gpsSchema );
+
+    // Get GPS metadata description
+    std::shared_ptr<vmf::MetadataDesc> gpsDesc = gpsSchema->findMetadataDesc( GPS_DESC );
 
     string t = "21.02.2013 18:35";
     cout << "Add metadata schema '" << GPS_SCHEMA_NAME << "'" << endl;
@@ -227,10 +212,7 @@ int sample(int argc, char *argv[])
     fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
-    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Disabled );
-//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Manual );
-//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::OnAdd );
-//    mdStream.addStat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::OnTimer );
+    mdStream.addStat( vmf::Stat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Disabled ));
 
     mdStream.getStat(GPS_STAT_NAME).setUpdateTimeout( 50 );
     mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::OnTimer );
@@ -331,9 +313,6 @@ int sample(int argc, char *argv[])
 
     // Close metadata stream
     loadStream.close();
-
-    // Uninitialize VMF library to free allocated resources
-    vmf::terminate();
 
     return 0;
 }

@@ -215,18 +215,8 @@ protected:
         ResetMask  = 0x0f00, // reset mask
         ResetInt   = 0x0100, //   reset to integer 0
         ResetReal  = 0x0200, //   reset to real 0
-        ResetEmpty = 0x0400, //   reset to empty value (type_unknown)
-        CanMask    = 0xf000, // can mask
-        CanAdd     = 0x1000, //   can add value
-        CanRemove  = 0x2000  //   can remove value
+        ResetEmpty = 0x0400  //   reset to empty value (type_unknown)
     };
-
-    // Min      i:i r:r A:t R:f
-    // Max
-    // Average  i:r r:r A:t R:t
-    // Count    any:i   A:t R:t
-    // Sum      i:i r:r A:t R:t
-    // Last     any:id  A:t R:f
 
     void testBuiltin( const std::string& name, unsigned flags )
     {
@@ -234,6 +224,11 @@ protected:
         std::string str;
         vmf::Variant val1,val2,val3,bad,res;
         vmf::StatOpBase* op = nullptr;
+
+        // test if operation is registered
+        status = false;
+        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        ASSERT_EQ( status, true );
 
         // created op by fabric call
         EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
@@ -297,18 +292,8 @@ protected:
                 // output depends on input type of individual value, must be checked individually
             }
 
-            // try to remove anything on empty state
-            if( flags & CanRemove )
-            {
-                EXPECT_THROW( status = op->handle( vmf::StatAction::Remove, val1 ), vmf::NotImplementedException );
-            }
-
-            // must always support Add
-            ASSERT_NE( flags & CanAdd, 0 );
-
             // Add first value
-            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val1 ));
-            ASSERT_EQ( status, true );
+            EXPECT_NO_THROW( op->handle( val1 ));
 
             EXPECT_NO_THROW( res = op->value() );
             if( outputType == vmf::Variant::type_unknown )
@@ -317,8 +302,7 @@ protected:
                 ASSERT_EQ( res.getType(), outputType );
 
             // Add second value
-            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val2 ));
-            ASSERT_EQ( status, true );
+            EXPECT_NO_THROW( op->handle( val2 ));
 
             EXPECT_NO_THROW( res = op->value() );
             if( outputType == vmf::Variant::type_unknown )
@@ -327,8 +311,7 @@ protected:
                 ASSERT_EQ( res.getType(), outputType );
 
             // Add third value
-            EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, val3 ));
-            ASSERT_EQ( status, true );
+            EXPECT_NO_THROW( op->handle( val3 ));
 
             EXPECT_NO_THROW( res = op->value() );
             if( outputType == vmf::Variant::type_unknown )
@@ -338,21 +321,9 @@ protected:
 
             // try to handle bad input
             if( bad.getType() == vmf::Variant::type_unknown )
-            {
-                EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Add, bad ));
-                ASSERT_EQ( status, true );
-            }
+                EXPECT_NO_THROW( op->handle( bad ));
             else
-            {
-                EXPECT_THROW( status = op->handle( vmf::StatAction::Add, bad ), vmf::TypeCastException );
-            }
-
-            // try to remove anything on non-empty state
-            if( flags & CanRemove )
-            {
-                EXPECT_NO_THROW( status = op->handle( vmf::StatAction::Remove, val1 ));
-                ASSERT_EQ( status, true );
-            }
+                EXPECT_THROW( op->handle( bad ), vmf::TypeCastException );
 
             if( flags & InputInt )
                 flags &= ~InputInt;
@@ -368,6 +339,7 @@ protected:
 
     void testStatOpFactory()
     {
+        bool status;
         std::string name,str;
         vmf::StatOpBase* op = nullptr;
 
@@ -385,9 +357,18 @@ protected:
         ASSERT_EQ( name, UserOp::userOpName );
         delete op; op = nullptr;
 
+        status = true;
+        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        ASSERT_EQ( status, false );
+
         EXPECT_THROW( vmf::StatOpFactory::registerUserOp( nullptr ), vmf::NullPointerException );
         EXPECT_NO_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance ));
+        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance ), vmf::IncorrectParamException );
         EXPECT_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance2 ), vmf::IncorrectParamException );
+
+        status = false;
+        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        ASSERT_EQ( status, true );
 
         ASSERT_EQ( op, nullptr );
         EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
@@ -400,40 +381,19 @@ protected:
     class UserOp: public vmf::StatOpBase
     {
     public:
-        UserOp()
-            {}
-        virtual ~UserOp()
-            {}
-
+        UserOp() {}
+        virtual ~UserOp() {}
     public:
-        virtual std::string name() const
-            { return userOpName; }
-        virtual void reset()
-            { m_value = vmf::Variant(); }
-        virtual bool handle( vmf::StatAction::Type action, const vmf::Variant& fieldValue )
-            {
-                switch( action )
-                {
-                case vmf::StatAction::Add:
-                    m_value = fieldValue;
-                    break;
-                case vmf::StatAction::Remove:
-                    return false;
-                }
-                return true;
-            }
-        virtual vmf::Variant value() const
-            { return m_value; }
-
+        virtual std::string name() const { return userOpName; }
+        virtual void reset() { m_value = vmf::Variant(); }
+        virtual void handle( const vmf::Variant& /*fieldValue*/ ) {}
+        virtual vmf::Variant value() const { return m_value; }
     private:
         vmf::Variant m_value;
-
     public:
+        static vmf::StatOpBase* createInstance() { return new UserOp(); }
+        static vmf::StatOpBase* createInstance2() { return new UserOp(); }
         static const std::string userOpName;
-        static vmf::StatOpBase* createInstance()
-            { return new UserOp(); }
-        static vmf::StatOpBase* createInstance2()
-            { return new UserOp(); }
     };
 };
 
@@ -442,37 +402,37 @@ protected:
 TEST_F( TestStatOperations, BuiltinMin )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ),
-                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd );
+                 InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinMax )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ),
-                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd );
+                 InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinAverage )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ),
-                 InputInt | InputReal | OutputReal | ResetEmpty | CanAdd | CanRemove );
+                 InputInt | InputReal | OutputReal | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinCount )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ),
-                 InputAny | OutputInt | ResetInt | CanAdd | CanRemove );
+                 InputAny | OutputInt | ResetInt );
 }
 
 TEST_F( TestStatOperations, BuiltinSum )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ),
-                 InputInt | InputReal | OutputSame | ResetEmpty | CanAdd | CanRemove );
+                 InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinLast )
 {
     testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ),
-                 InputAny | OutputSame | ResetEmpty | CanAdd );
+                 InputAny | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, StatOpFactory )
@@ -485,8 +445,6 @@ class TestStatistics : public ::testing::TestWithParam< vmf::StatUpdateMode::Typ
 protected:
     void SetUp()
     {
-        vmf::initialize();
-
         fnWorkingPath = getWorkingPath();
         fnInputName   = "BlueSquare.avi";
 
@@ -504,11 +462,6 @@ protected:
         scPersonAgeMax        = "PersonAgeMax";
         scPersonGrowthAverage = "PersonGrowthAverage";
         scPersonSalarySum     = "PersonSalarySum";
-    }
-
-    void TearDown()
-    {
-        vmf::terminate();
     }
 
     std::string getWorkingPath() const
@@ -539,16 +492,24 @@ protected:
 
     void configureSchema( vmf::MetadataStream& stream )
     {
-        scFieldDesc.emplace_back( mcPersonName, vmf::Variant::type_string );
-        scFieldDesc.emplace_back( mcAgeName, vmf::Variant::type_integer );
-        scFieldDesc.emplace_back( mcGrowthName, vmf::Variant::type_integer );
-        scFieldDesc.emplace_back( mcSalaryName, vmf::Variant::type_integer );
-
-        scMetadataDesc = std::make_shared< vmf::MetadataDesc >( mcDescName, scFieldDesc );
         scMetadataSchema = std::make_shared< vmf::MetadataSchema >( mcSchemaName );
 
-        scMetadataSchema->add( scMetadataDesc );
+        VMF_METADATA_BEGIN( mcDescName );
+            VMF_FIELD_STR( mcPersonName );
+            VMF_FIELD_INT( mcAgeName );
+            VMF_FIELD_INT( mcGrowthName );
+            VMF_FIELD_INT( mcSalaryName );
+        VMF_METADATA_END( scMetadataSchema );
+
         stream.addSchema( scMetadataSchema );
+
+        scMetadataDesc = scMetadataSchema->findMetadataDesc( mcDescName );
+
+        vmf::FieldDesc field;
+        scMetadataDesc->getFieldDesc( field, mcPersonName ); scFieldDesc.push_back( field );
+        scMetadataDesc->getFieldDesc( field, mcAgeName    ); scFieldDesc.push_back( field );
+        scMetadataDesc->getFieldDesc( field, mcGrowthName ); scFieldDesc.push_back( field );
+        scMetadataDesc->getFieldDesc( field, mcSalaryName ); scFieldDesc.push_back( field );
     }
 
     void configureStatistics( vmf::MetadataStream& stream )
@@ -560,7 +521,7 @@ protected:
         fields.emplace_back( scPersonAgeMax, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
         fields.emplace_back( scPersonGrowthAverage, mcSchemaName, mcDescName, mcGrowthName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
         fields.emplace_back( scPersonSalarySum, mcSchemaName, mcDescName, mcSalaryName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ));
-        stream.addStat( scStatName, fields, vmf::StatUpdateMode::Disabled );
+        stream.addStat( vmf::Stat( scStatName, fields, vmf::StatUpdateMode::Disabled ));
     }
 
     void initStatistics()
