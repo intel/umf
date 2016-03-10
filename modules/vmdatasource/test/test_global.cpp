@@ -32,7 +32,7 @@ class TestGlobal : public ::testing::Test
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        //vmf::initialize();
         copyFile(VIDEO_FILE, TEST_FILE);
 
         fields.push_back(vmf::FieldDesc("name", vmf::Variant::type_string));
@@ -45,7 +45,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     vmf::MetadataStream stream;

@@ -135,7 +135,7 @@ void XMPDataSource::loadXMPstructs()
     //or pass them further
     try
     {
-        std::map<MetaString, std::shared_ptr<MetadataSchema> > cSchemas;
+        std::map<vmf_string, std::shared_ptr<MetadataSchema> > cSchemas;
         cSchemaSource->load(cSchemas);
         auto it = cSchemas.find(compressionSchemaName);
         if(it != cSchemas.end())
@@ -260,7 +260,7 @@ void XMPDataSource::saveXMPstructs()
 }
 
 
-void XMPDataSource::openFile(const MetaString& fileName, MetadataStream::OpenMode mode)
+void XMPDataSource::openFile(const vmf_string& fileName, MetadataStream::OpenMode mode)
 {
     try
     {
@@ -322,7 +322,7 @@ void XMPDataSource::closeFile()
 }
 
 
-void XMPDataSource::loadSchema(const MetaString& schemaName, MetadataStream& stream)
+void XMPDataSource::loadSchema(const vmf_string& schemaName, MetadataStream& stream)
 {
     metadataSourceCheck();
     try
@@ -341,7 +341,7 @@ void XMPDataSource::loadSchema(const MetaString& schemaName, MetadataStream& str
 
 
 
-void XMPDataSource::loadProperty(const MetaString &schemaName, const MetaString &propertyName, MetadataStream &stream)
+void XMPDataSource::loadProperty(const vmf_string &schemaName, const vmf_string &propertyName, MetadataStream &stream)
 {
     metadataSourceCheck();
     try
@@ -359,7 +359,7 @@ void XMPDataSource::loadProperty(const MetaString &schemaName, const MetaString 
 }
 
 
-void XMPDataSource::saveSchema(const MetaString& schemaName, const MetadataStream& stream)
+void XMPDataSource::saveSchema(const vmf_string& schemaName, const MetadataStream& stream)
 {
     metadataSourceCheck();
     try
@@ -438,7 +438,7 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     }
 }
 
-void XMPDataSource::load(std::map<MetaString, std::shared_ptr<MetadataSchema> >& schemas)
+void XMPDataSource::load(std::map<vmf_string, std::shared_ptr<MetadataSchema> >& schemas)
 {
     schemaSourceCheck();
     try
@@ -515,7 +515,7 @@ void XMPDataSource::schemaSourceCheck()
     }
 }
 
-void XMPDataSource::removeSchema(const MetaString &schemaName)
+void XMPDataSource::removeSchema(const vmf_string &schemaName)
 {
     /* TODO:
      * Existing implementation requires metadata re-reading here,
@@ -533,7 +533,7 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
     {
         loadXMPstructs();
 
-        MetaString checksum;
+        vmf_string checksum;
         xmpFile.ComputeChecksum(&checksum, &XMPPacketSize, &XMPPacketOffset);
         return checksum;
     }
@@ -559,7 +559,7 @@ std::string XMPDataSource::loadChecksum()
     return checksum;
 }
 
-void XMPDataSource::saveChecksum(const MetaString& checksum)
+void XMPDataSource::saveChecksum(const vmf_string& checksum)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
 }
@@ -569,20 +569,20 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
     xmp->DeleteProperty(VMF_NS, VMF_INTERNAL);
     if (!segments.empty())
     {
-        MetaString pathToInternalData;
+        vmf_string pathToInternalData;
         xmp->AppendArrayItem(VMF_NS, VMF_INTERNAL, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
         SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
         xmp->SetStructField(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, nullptr, kXMP_PropValueIsArray);
 
         std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& segment)
         {
-            MetaString pathToSegmentsArray;
+            vmf_string pathToSegmentsArray;
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
             xmp->AppendArrayItem(VMF_NS, pathToSegmentsArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-            MetaString pathToSegment;
+            vmf_string pathToSegment;
             SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToSegmentsArray.c_str(), kXMP_ArrayLastItem, &pathToSegment);
 
-            MetaString tmpPath;
+            vmf_string tmpPath;
 
             if (segment->getTitle().empty() || segment->getFPS() <= 0 || segment->getTime() < 0)
                 VMF_EXCEPTION(DataStorageException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
@@ -618,17 +618,17 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
 
 void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
-    MetaString pathToInternalData;
+    vmf_string pathToInternalData;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
 
-    MetaString pathToSegmentsArray;
+    vmf_string pathToSegmentsArray;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
 
     SXMPIterator segmentsIter(*xmp, VMF_NS, pathToSegmentsArray.c_str(), kXMP_IterJustChildren);
-    MetaString pathToSegment;
+    vmf_string pathToSegment;
     while (segmentsIter.Next(nullptr, &pathToSegment))
     {
-	MetaString tmpPath, segmentTitle;
+	vmf_string tmpPath, segmentTitle;
 	double fps;
 	long long timestamp, duration;
 	XMP_Int32 width, height;

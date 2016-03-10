@@ -62,7 +62,7 @@ public:
     }
 
 private:
-    MetaString m_name;
+    vmf_string m_name;
 };
 
 }

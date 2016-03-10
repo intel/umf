@@ -29,25 +29,25 @@ public:
 
     void save(const std::shared_ptr<vmf::MetadataSchema>& schema);
 
-    void load(std::map< vmf::MetaString, std::shared_ptr<vmf::MetadataSchema> >& schemas);
+    void load(std::map< vmf::vmf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
 
     virtual void clear();
 
-    virtual void remove(const MetaString &schemaName);
+    virtual void remove(const vmf_string &schemaName);
 
     virtual ~XMPSchemaSource();
 
 protected:
 
-    std::shared_ptr<vmf::MetadataSchema> loadMetadataSchemaByPath(const vmf::MetaString& pathToSchema);
+    std::shared_ptr<vmf::MetadataSchema> loadMetadataSchemaByPath(const vmf::vmf_string& pathToSchema);
 
-    void saveDescription(const MetadataDesc& desc, const MetaString& pathToDescriptions);
+    void saveDescription(const MetadataDesc& desc, const vmf_string& pathToDescriptions);
 
-    void saveField(const FieldDesc& desc, const MetaString& pathToFields);
+    void saveField(const FieldDesc& desc, const vmf_string& pathToFields);
 
-    void saveReference(const std::shared_ptr<ReferenceDesc> ref, const MetaString& pathToRefs);
+    void saveReference(const std::shared_ptr<ReferenceDesc> ref, const vmf_string& pathToRefs);
 
-    std::shared_ptr<MetadataDesc> loadDescription(const MetaString& pathToDesc);
+    std::shared_ptr<MetadataDesc> loadDescription(const vmf_string& pathToDesc);
 
 private:
     XMPSchemaSource();

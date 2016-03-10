@@ -64,8 +64,6 @@ int main(int argc, char** argv)
         in.read(originalFileBuffer.get(), originalFileSize);
         in.close();
 
-        vmf::initialize();
-
         vmf::MetadataStream stream;
         if (!stream.open(dstFileName, vmf::MetadataStream::Update))
             throw vmf::Exception("Can't open file by VMF stream");
@@ -136,8 +134,6 @@ int main(int argc, char** argv)
         string modifiedFileChecksum = stream.computeChecksum(xmpPacketSize, xmpPacketOffset);
 
         stream.close();
-
-        vmf::terminate();
 
         in.open(dstFileName, ios::binary);
         if (!in)
