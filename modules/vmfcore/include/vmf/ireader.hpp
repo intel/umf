@@ -49,7 +49,7 @@ public:
     * String may be comressed, in that case use ICompressor field to decompress it.
     */
     virtual bool parseAll(const std::string& text, IdType& nextId, std::string& filepath,
-                          std::string& checksum,
+                          std::string& checksum, std::string& hint,
                           std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                           std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                           std::vector<std::shared_ptr<MetadataInternal>>& metadata) = 0;

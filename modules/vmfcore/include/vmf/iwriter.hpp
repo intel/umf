@@ -61,7 +61,9 @@ public:
                                const std::string& checksum,
                                const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                               const MetadataSet& set ) = 0;
+                               const MetadataSet& set,
+                               bool useEncryption,
+                               const std::string& hint) = 0;
 
     /*!
     * \brief Export a video segment to a string representation

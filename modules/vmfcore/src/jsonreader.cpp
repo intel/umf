@@ -27,12 +27,18 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(JSONNode& schemaNode)
     std::shared_ptr<vmf::MetadataSchema> spSchema;
     auto schemaNameIter = schemaNode.find(ATTR_NAME);
     auto schemaAuthorIter = schemaNode.find(ATTR_SCHEMA_AUTHOR);
+    auto schemaEncryptedIter = schemaNode.find(ATTR_ENCRYPTED_BOOL);
     if(schemaNameIter != schemaNode.end())
     {
+        std::string schemaName = schemaNameIter->as_string();
+        std::string schemaAuthor;
+        bool schemaUseEncryption = false;
         if(schemaAuthorIter != schemaNode.end())
-            spSchema = std::make_shared<vmf::MetadataSchema>(schemaNameIter->as_string(), schemaAuthorIter->as_string());
-        else
-            spSchema = std::make_shared<vmf::MetadataSchema>(schemaNameIter->as_string());
+            schemaAuthor = schemaAuthorIter->as_string();
+        if(schemaEncryptedIter != schemaNode.end())
+            schemaUseEncryption = (schemaEncryptedIter->as_string() == "true");
+
+        spSchema = std::make_shared<vmf::MetadataSchema>(schemaName, schemaAuthor, schemaUseEncryption);
     }
     else
         VMF_EXCEPTION(IncorrectParamException, "Schema has no name");
@@ -44,9 +50,16 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(JSONNode& schemaNode)
     std::shared_ptr<vmf::MetadataDesc> spDesc;
     for(auto descNode = descsArrayIter->begin(); descNode != descsArrayIter->end(); descNode++)
     {
+        std::string descName;
         auto descNameIter = descNode->find(ATTR_NAME);
-        if(descNameIter == descNode->end())
+        if(descNameIter != descNode->end())
+            descName = descNameIter->as_string();
+        else
             VMF_EXCEPTION(IncorrectParamException, "Description has no name");
+        bool descUseEncryption = false;
+        auto descEncryptedIter = descNode->find(ATTR_ENCRYPTED_BOOL);
+        if(descEncryptedIter != descNode->end())
+            descUseEncryption = (descEncryptedIter->as_string() == "true");
 
         auto fieldsArrayIter = descNode->find(TAG_FIELDS_ARRAY);
         if(fieldsArrayIter == descNode->end())
@@ -71,7 +84,12 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(JSONNode& schemaNode)
                 else
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
             }
-            vFields.push_back(FieldDesc(fieldNameIter->as_string(), field_type, field_optional));
+            bool field_use_encryption = false;
+            auto fieldUseEncryptionIter = fieldNode->find(ATTR_ENCRYPTED_BOOL);
+            if(fieldUseEncryptionIter != fieldNode->end())
+                field_use_encryption = fieldUseEncryptionIter->as_string() == "true";
+            vFields.push_back(FieldDesc(fieldNameIter->as_string(), field_type, field_optional,
+                                        field_use_encryption));
         }
 
         auto refsArrayIter = descNode->find(TAG_METADATA_REFERENCES_ARRAY);
@@ -112,7 +130,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(JSONNode& schemaNode)
             vReferences.emplace_back(std::make_shared<ReferenceDesc>(refNameIter->as_string(), isUnique, isCustom));
         }
 
-        spDesc = std::make_shared<vmf::MetadataDesc>(descNameIter->as_string(), vFields, vReferences);
+        spDesc = std::make_shared<vmf::MetadataDesc>(descName, vFields, vReferences, descUseEncryption);
         spSchema->add(spDesc);
     }
 
@@ -126,6 +144,16 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
     auto idIter = metadataNode.find(ATTR_ID);
     if(schemaIter == metadataNode.end() || descIter == metadataNode.end() || idIter == metadataNode.end())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata item has no schema name, description name or id");
+
+    std::string encryptedMetadata;
+    bool metadataUseEncryption = false;
+    auto mdEncryptedBoolIter = metadataNode.find(ATTR_ENCRYPTED_DATA);
+    if(mdEncryptedBoolIter != metadataNode.end())
+        metadataUseEncryption = mdEncryptedBoolIter->as_string() == "true";
+    auto mdEncryptedDataIter = metadataNode.find(ATTR_ENCRYPTED_BOOL);
+        encryptedMetadata = mdEncryptedDataIter->as_string();
+    if(metadataUseEncryption && encryptedMetadata.empty())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
     auto schema = schemas.begin();
     for(; schema != schemas.end(); schema++)
@@ -141,6 +169,8 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
 
     std::shared_ptr<MetadataInternal> spMetadataInternal(new MetadataInternal(spDesc));
     spMetadataInternal->setId(idIter->as_int());
+    spMetadataInternal->setUseEncryption(metadataUseEncryption);
+    spMetadataInternal->setEncryptedData(encryptedMetadata);
 
     auto frameIdxLoIter = metadataNode.find(ATTR_METADATA_FRAME_IDX_LO);
     auto frameIdxHiIter = metadataNode.find(ATTR_METADATA_FRAME_IDX_HI);
@@ -195,11 +225,27 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
         auto fieldValueIter = fieldNode->find(ATTR_VALUE);
         if(fieldNameIter == fieldNode->end() || fieldValueIter == fieldNode->end() )
             VMF_EXCEPTION(vmf::IncorrectParamException, "Missing field name or field value");
+        std::string fieldName = fieldNameIter->as_string();
+        vmf::Variant fieldValueString = fieldValueIter->as_string();
 
-        vmf::Variant field_value;
-        spDesc->getFieldDesc(fieldDesc, fieldNameIter->as_string());
-        field_value.fromString(fieldDesc.type, fieldValueIter->as_string());
-        spMetadataInternal->setFieldValue(fieldNameIter->as_string(), field_value);
+        std::string encryptedFieldData;
+        bool fieldUseEncryption = false;
+        auto fieldEncryptedBoolIter = fieldNode->find(ATTR_ENCRYPTED_BOOL);
+        if(fieldEncryptedBoolIter != fieldNode->end())
+            fieldUseEncryption = fieldEncryptedBoolIter->as_string() == "true";
+        auto fieldEncryptedDataIter = fieldNode->find(ATTR_ENCRYPTED_DATA);
+        if(fieldEncryptedDataIter != fieldNode->end())
+            encryptedFieldData = fieldEncryptedDataIter->as_string();
+        if(fieldUseEncryption && encryptedFieldData.empty())
+            VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
+
+        vmf::Variant fieldValue;
+        spDesc->getFieldDesc(fieldDesc, fieldName);
+        fieldValue.fromString(fieldDesc.type, fieldValueString);
+        FieldValue& fv = *(spMetadataInternal->findField(fieldName));
+
+        fv = FieldValue(fieldName, fieldValue, fieldUseEncryption);
+        fv.setEncryptedData(encryptedFieldData);
     }
 
     auto referencesArrayIter = metadataNode.find(TAG_METADATA_REFERENCES_ARRAY);
@@ -424,9 +470,10 @@ bool JSONReader::parseMetadata(const std::string& text,
 }
 
 bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& filepath, std::string& checksum,
-                                  std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-                                  std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                  std::vector<std::shared_ptr<MetadataInternal>>& metadata)
+                          std::string& hint,
+                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                          std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     if(text.empty())
     {
@@ -467,6 +514,8 @@ bool JSONReader::parseAll(const std::string& text, IdType& nextId, std::string& 
         auto checksumIter = localRootNode.find(ATTR_VMF_CHECKSUM);
         if(checksumIter != localRootNode.end() )
             checksum = checksumIter->as_string();
+        auto hintIter = localRootNode.find(ATTR_VMF_HINT);
+            hint = hintIter->as_string();
 
         if(!parseVideoSegments(text, segments))
             return false;

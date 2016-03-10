@@ -28,6 +28,10 @@ static void add(JSONNode& schemaNode, const std::shared_ptr<MetadataSchema>& spS
 {
     schemaNode.push_back(JSONNode(ATTR_NAME, spSchema->getName()) );
     schemaNode.push_back(JSONNode(ATTR_SCHEMA_AUTHOR, spSchema->getAuthor()) );
+    if(spSchema->getUseEncryption())
+    {
+        schemaNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+    }
 
     JSONNode descsArrayNode(JSON_ARRAY);
     descsArrayNode.set_name(TAG_DESCRIPTIONS_ARRAY);
@@ -36,6 +40,10 @@ static void add(JSONNode& schemaNode, const std::shared_ptr<MetadataSchema>& spS
     {
         JSONNode descNode(JSON_NODE);
         descNode.push_back(JSONNode(ATTR_NAME, (*spDescriptor)->getMetadataName() ) );
+        if(spDescriptor->get()->getUseEncryption())
+        {
+            descNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+        }
 
         JSONNode fieldsArrayNode(JSON_ARRAY);
         fieldsArrayNode.set_name(TAG_FIELDS_ARRAY);
@@ -47,6 +55,8 @@ static void add(JSONNode& schemaNode, const std::shared_ptr<MetadataSchema>& spS
             fieldNode.push_back(JSONNode(ATTR_FIELD_TYPE, vmf::Variant::typeToString(fieldDesc->type) ) );
             if(fieldDesc->optional)
                 fieldNode.push_back(JSONNode(ATTR_FIELD_OPTIONAL, "true") );
+            if(fieldDesc->useEncryption)
+                fieldNode.push_back(JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
 
             fieldsArrayNode.push_back(fieldNode);
         }
@@ -82,6 +92,15 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
     metadataNode.push_back( JSONNode(ATTR_METADATA_SCHEMA, spMetadata->getSchemaName()) );
     metadataNode.push_back( JSONNode(ATTR_METADATA_DESCRIPTION, spMetadata->getName()) );
     metadataNode.push_back( JSONNode(ATTR_ID, spMetadata->getId()) );
+    const std::string& encMetadata = spMetadata->getEncryptedData();
+    if(!encMetadata.empty())
+    {
+        metadataNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encMetadata) );
+    }
+    if(spMetadata->getUseEncryption())
+    {
+        metadataNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+    }
     if (spMetadata->getFrameIndex() != Metadata::UNDEFINED_FRAME_INDEX)
     {
         long long llVal = spMetadata->getFrameIndex();
@@ -121,13 +140,22 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
     for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
     {
         Variant val = spMetadata->getFieldValue(fieldDesc->name);
+        JSONNode metadataFieldNode(JSON_NODE);
+        metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc->name) );
         if (!val.isEmpty())
         {
-            JSONNode metadataFieldNode(JSON_NODE);
-            metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc->name) );
             metadataFieldNode.push_back( JSONNode(ATTR_VALUE, val.toString()) );
-            metadataFieldsArrayNode.push_back(metadataFieldNode);
         }
+        if(spMetadata->findField(fieldDesc->name)->getUseEncryption())
+        {
+            metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+        }
+        const std::string& encData = spMetadata->findField(fieldDesc->name)->getEncryptedData();
+        if(!encData.empty())
+        {
+            metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encData) );
+        }
+        metadataFieldsArrayNode.push_back(metadataFieldNode);
     }
     metadataNode.push_back(metadataFieldsArrayNode);
 
@@ -255,12 +283,15 @@ std::string JSONWriter::store(const MetadataSet& set)
 }
 
 std::string JSONWriter::store(const IdType& nextId,
-    const std::string& filepath,
-    const std::string& checksum,
-    const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    const MetadataSet& set)
+                              const std::string& filepath,
+                              const std::string& checksum,
+                              const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+                              const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+                              const MetadataSet& set, bool useEncryption, const std::string& hint)
 {
+    if(useEncryption)
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Encryption is enabled, you'd better use WriterEncrypted");
+
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
 
@@ -282,6 +313,7 @@ std::string JSONWriter::store(const IdType& nextId,
     vmfRootNode.push_back( JSONNode(ATTR_VMF_NEXTID , nextId) );
     vmfRootNode.push_back( JSONNode(ATTR_VMF_FILEPATH , filepath) );
     vmfRootNode.push_back( JSONNode(ATTR_VMF_CHECKSUM , checksum) );
+    vmfRootNode.push_back( JSONNode(ATTR_VMF_HINT , hint));
 
     if(!segments.empty())
     {

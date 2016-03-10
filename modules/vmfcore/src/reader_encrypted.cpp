@@ -28,7 +28,7 @@ ReaderEncrypted::ReaderEncrypted(std::shared_ptr<IReader> _reader,
 }
 
 bool ReaderEncrypted::parseAll(const std::string& text, IdType& nextId,
-                               std::string& filepath, std::string& checksum,
+                               std::string& filepath, std::string& checksum, std::string& hint,
                                std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata)

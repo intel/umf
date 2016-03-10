@@ -27,13 +27,13 @@ namespace vmf
  */
 
 bool ReaderCompressed::parseAll(const std::string& text, IdType& nextId,
-                                std::string& filepath, std::string& checksum,
+                                std::string& filepath, std::string& checksum, std::string& hint,
                                 std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                 std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                 std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
     std::string decompressed = decompress(text);
-    return reader->parseAll(decompressed, nextId, filepath, checksum, segments, schemas, metadata);
+    return reader->parseAll(decompressed, nextId, filepath, checksum, hint, segments, schemas, metadata);
 }
 
 

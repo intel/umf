@@ -42,7 +42,7 @@ std::string WriterEncrypted::store(const IdType& nextId,
                                    const std::string& checksum,
                                    const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                   const MetadataSet& set)
+                                   const MetadataSet& set, bool useEncryption, const std::string &hint)
 {
     VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
 }

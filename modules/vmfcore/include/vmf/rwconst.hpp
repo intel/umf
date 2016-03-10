@@ -44,6 +44,9 @@
 #define ATTR_VALUE "value"
 #define ATTR_ID "id"
 
+#define ATTR_ENCRYPTED_DATA "encrypted-data"
+#define ATTR_ENCRYPTED_BOOL "is-encrypted"
+
 #define ATTR_SEGMENT_TITLE "title"
 #define ATTR_SEGMENT_FPS "fps"
 #define ATTR_SEGMENT_TIME "time"
@@ -62,6 +65,7 @@
 #define ATTR_VMF_NEXTID "nextId"
 #define ATTR_VMF_FILEPATH "filepath"
 #define ATTR_VMF_CHECKSUM "checksum"
+#define ATTR_VMF_HINT "hint-encryption"
 #define ATTR_METADATA_SCHEMA "schema"
 #define ATTR_METADATA_DESCRIPTION "description"
 #define ATTR_METADATA_FRAME_IDX "frame-index"

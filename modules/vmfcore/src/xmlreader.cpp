@@ -27,23 +27,37 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
     std::shared_ptr<vmf::MetadataSchema> spSchema;
     std::shared_ptr<vmf::MetadataDesc> spDesc;
     std::string schema_name, schema_author;
+    bool schemaUseEncryption = false;
     for(xmlAttrPtr cur_prop = schemaNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
         if(std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
             schema_name = (char*)xmlGetProp(schemaNode, cur_prop->name);
         else if(std::string((char*)cur_prop->name) == std::string(ATTR_SCHEMA_AUTHOR))
             schema_author = (char*)xmlGetProp(schemaNode, cur_prop->name);
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
+        {
+            std::string encBool = (char*)xmlGetProp(schemaNode, cur_prop->name);
+            schemaUseEncryption = encBool == "true";
+        }
     }
-    spSchema = std::make_shared<vmf::MetadataSchema>(schema_name, schema_author);
+    spSchema = std::make_shared<vmf::MetadataSchema>(schema_name, schema_author, schemaUseEncryption);
 
     for(xmlNodePtr descNode = schemaNode->children; descNode; descNode = descNode->next)
     {
         if (descNode->type == XML_ELEMENT_NODE && (char*)descNode->name == std::string(TAG_DESCRIPTION))
         {
             std::string desc_name;
+            bool descUseEncryption = false;
             for(xmlAttrPtr cur_prop = descNode->properties; cur_prop; cur_prop = cur_prop->next)
+            {
                 if(std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
                     desc_name = (char*)xmlGetProp(descNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
+                {
+                    std::string encBool = (char*)xmlGetProp(descNode, cur_prop->name);
+                    descUseEncryption = encBool == "true";
+                }
+            }
 
             std::vector<FieldDesc> vFields;
             std::vector<std::shared_ptr<ReferenceDesc>> vReferences;
@@ -54,6 +68,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                     std::string field_name;
                     vmf::Variant::Type field_type = vmf::Variant::type_unknown;
                     bool field_optional = false;
+                    bool fieldUseEncryption = false;
                     for(xmlAttrPtr cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next) //fill field's attributes
                     {
                         if(std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
@@ -72,8 +87,13 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else
                                 VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
                         }
+                        if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
+                        {
+                            std::string encBool = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                            fieldUseEncryption = encBool == "true";
+                        }
                     }
-                    vFields.push_back(FieldDesc(field_name, field_type, field_optional));
+                    vFields.push_back(FieldDesc(field_name, field_type, field_optional, fieldUseEncryption));
                 }
                 else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
                 {
@@ -108,7 +128,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
 
             }
 
-            spDesc = std::make_shared<vmf::MetadataDesc>(desc_name, vFields, vReferences);
+            spDesc = std::make_shared<vmf::MetadataDesc>(desc_name, vFields, vReferences, descUseEncryption);
             spSchema->add(spDesc);
         }
     }
@@ -126,7 +146,8 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
     std::string schema_name, desc_name;
     long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
         timestamp = vmf::Metadata::UNDEFINED_TIMESTAMP, duration = vmf::Metadata::UNDEFINED_DURATION, id = INVALID_ID;
-
+    std::string encryptedMetadata;
+    bool metadataUseEncryption = false;
     for(xmlAttr* cur_prop = metadataNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
         if(std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_SCHEMA))
@@ -143,7 +164,17 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
             duration = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
         else if(std::string((char*)cur_prop->name) == std::string(ATTR_ID))
             id = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_DATA))
+            encryptedMetadata = (char*)xmlGetProp(metadataNode, cur_prop->name);
+        else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
+        {
+            std::string encBool = (char*)xmlGetProp(metadataNode, cur_prop->name);
+            metadataUseEncryption = encBool == "true";
+        }
     }
+
+    if(metadataUseEncryption && encryptedMetadata.empty())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
     if(id == INVALID_ID)
         VMF_EXCEPTION(vmf::InternalErrorException, "XML element has no id");
@@ -162,6 +193,8 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
 
     std::shared_ptr<MetadataInternal> spMetadataInternal(new MetadataInternal(spDesc));
     spMetadataInternal->setId(id);
+    spMetadataInternal->setUseEncryption(metadataUseEncryption);
+    spMetadataInternal->setEncryptedData(encryptedMetadata);
 
     if(frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
     {
@@ -184,6 +217,8 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
         {
             std::string field_name;
             vmf::Variant field_value;
+            std::string field_encrypted_data;
+            bool field_use_encryption = false;
             for(xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
             {
                 if(std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
@@ -194,8 +229,22 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
                     spDesc->getFieldDesc(fieldDesc, field_name);
                     field_value.fromString(fieldDesc.type, (char*)xmlGetProp(fieldNode, cur_prop->name));
                 }
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
+                {
+                    std::string encBool = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                    field_use_encryption = encBool == "true";
+                }
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_DATA))
+                {
+                    field_encrypted_data = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                }
+                if(field_use_encryption && field_encrypted_data.empty())
+                    VMF_EXCEPTION(vmf::IncorrectParamException,
+                                  "No encrypted data presented while the flag is set on");
             }
-            spMetadataInternal->setFieldValue(field_name, field_value);
+            FieldValue& fv = *(spMetadataInternal->findField(field_name));
+            fv = FieldValue(field_name, field_value, field_use_encryption);
+            fv.setEncryptedData(field_encrypted_data);
         }
         else if(fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
         {
@@ -444,7 +493,7 @@ bool XMLReader::parseMetadata(const std::string& text,
 
 //this version of parseAll always gets uncompressed text
 bool XMLReader::parseAll(const std::string& text, IdType& nextId,
-                         std::string& filepath, std::string& checksum,
+                         std::string& filepath, std::string& checksum, std::string& hint,
                          std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                          std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                          std::vector<std::shared_ptr<MetadataInternal>>& metadata)
@@ -490,6 +539,8 @@ bool XMLReader::parseAll(const std::string& text, IdType& nextId,
                 filepath = (char*)xmlGetProp(root, cur_prop->name);
             else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_CHECKSUM))
                 checksum = (char*)xmlGetProp(root, cur_prop->name);
+            else if(std::string((char*)cur_prop->name) == std::string(ATTR_VMF_HINT))
+                hint = (char*)xmlGetProp(root, cur_prop->name);
         }
         if(!parseVideoSegments(text, segments))
             return false;

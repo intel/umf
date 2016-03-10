@@ -32,6 +32,12 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
     if(xmlNewProp(schemaNode, BAD_CAST ATTR_SCHEMA_AUTHOR , BAD_CAST spSchema->getAuthor().c_str()) == NULL)
         VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (schema author)" );
 
+    if(spSchema->getUseEncryption())
+    {
+        if(xmlNewProp(schemaNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is schema encrypted)" );
+    }
+
     auto vDescs = spSchema->getAll();
     for( auto spDescriptor = vDescs.begin(); spDescriptor != vDescs.end(); spDescriptor++)
     {
@@ -41,6 +47,12 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
 
         if(xmlNewProp(descNode, BAD_CAST ATTR_NAME , BAD_CAST spDescriptor->get()->getMetadataName().c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (description name)" );
+
+        if(spDescriptor->get()->getUseEncryption())
+        {
+            if(xmlNewProp(descNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is description encrypted)" );
+        }
 
         auto vFields = spDescriptor->get()->getFields();
         for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
@@ -58,6 +70,12 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
             if(fieldDesc->optional)
                 if(xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_OPTIONAL , BAD_CAST "true") == NULL)
                     VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (field is optional)" );
+
+            if(fieldDesc->useEncryption)
+            {
+                if(xmlNewProp(fieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+                    VMF_EXCEPTION(vmf::Exception, "Can't crate xmlNode property (is field desc. encrypted)" );
+            }
         }
 
         auto vRefs = (*spDescriptor)->getAllReferenceDescs();
@@ -96,6 +114,18 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
     if (xmlNewProp(metadataNode, BAD_CAST ATTR_ID, BAD_CAST to_string(spMetadata->getId()).c_str()) == NULL)
         VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata id)" );
 
+    if(!spMetadata->getEncryptedData().empty())
+    {
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST spMetadata->getEncryptedData().c_str()) == NULL)
+            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted data)" );
+    }
+
+    if(spMetadata->getUseEncryption())
+    {
+        if (xmlNewProp(metadataNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is encrypted)" );
+    }
+
     if(spMetadata->getFrameIndex() != Metadata::UNDEFINED_FRAME_INDEX)
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_FRAME_IDX, BAD_CAST to_string(spMetadata->getFrameIndex()).c_str()) == NULL)
             VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata frame index)" );
@@ -116,17 +146,31 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
     for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
     {
         Variant val = spMetadata->getFieldValue(fieldDesc->name);
+
+        xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
+        if (metadataFieldNode == NULL)
+            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata field");
+
+        if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
+            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field name)");
+
         if (!val.isEmpty())
         {
-            xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
-            if (metadataFieldNode == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata field");
-
-            if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field name)");
-
             if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_VALUE, BAD_CAST val.toString().c_str()) == NULL)
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field value)");
+        }
+
+        if(spMetadata->findField(fieldDesc->name)->getUseEncryption())
+        {
+            if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is field encrypted)");
+        }
+
+        const std::string& encData = spMetadata->findField(fieldDesc->name)->getEncryptedData();
+        if(!encData.empty())
+        {
+            if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted field data)");
         }
     }
 
@@ -322,8 +366,11 @@ std::string XMLWriter::store(const IdType& nextId,
     const std::string& checksum,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-    const MetadataSet& set)
+    const MetadataSet& set, bool useEncryption, const std::string& hint)
 {
+    if(useEncryption)
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Encryption is enabled, you'd better use WriterEncrypted");
+
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
 
@@ -348,10 +395,12 @@ std::string XMLWriter::store(const IdType& nextId,
 
     if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_NEXTID, BAD_CAST to_string(nextId).c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Next Id");
-    if(xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_FILEPATH , BAD_CAST filepath.c_str()) == NULL)
+    if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_FILEPATH , BAD_CAST filepath.c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Filepath");
-    if(xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_CHECKSUM, BAD_CAST checksum.c_str()) == NULL)
+    if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_CHECKSUM, BAD_CAST checksum.c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Checksum");
+    if (xmlNewProp(vmfRootNode, BAD_CAST ATTR_VMF_HINT, BAD_CAST hint.c_str()) == NULL)
+            VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property. Hint");
 
     xmlNodePtr segmentsArrayNode = NULL;
     if (!segments.empty())

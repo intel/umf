@@ -682,7 +682,7 @@ std::string MetadataStream::serialize(IWriter& writer)
     for(auto spMetadataIter = m_mapSchemas.begin(); spMetadataIter != m_mapSchemas.end(); spMetadataIter++)
         schemas.push_back(spMetadataIter->second);
     return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas,
-                        encryptedStream.m_oMetadataSet);
+                        encryptedStream.m_oMetadataSet, m_useEncryption, m_hintEncryption);
 }
 
 void MetadataStream::deserialize(const std::string& text, IReader& reader)
@@ -691,7 +691,7 @@ void MetadataStream::deserialize(const std::string& text, IReader& reader)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     std::string filePath;
-    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, segments, schemas, metadata);
+    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, m_hintEncryption, segments, schemas, metadata);
     if(m_sFilePath.empty())
         m_sFilePath = filePath;
     std::for_each( segments.begin(), segments.end(), [&]( std::shared_ptr< VideoSegment >& spSegment )
