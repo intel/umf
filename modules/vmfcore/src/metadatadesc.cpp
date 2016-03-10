@@ -37,14 +37,7 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
     , m_vFields( vFields )
     , m_vRefDesc( vRefs )
 {
-    bool unnamedExist = false;
-    for (auto it = m_vRefDesc.begin(); it != m_vRefDesc.end(); it++)
-    {
-        if ((*it)->name.empty())
-            unnamedExist = true;
-    }
-
-    if (!unnamedExist)
+    if (find_if(m_vRefDesc.begin(), m_vRefDesc.end(), [](const std::shared_ptr<ReferenceDesc>& r)->bool { return r->name.empty(); }) == m_vRefDesc.end())
         m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>());
 
     validate();

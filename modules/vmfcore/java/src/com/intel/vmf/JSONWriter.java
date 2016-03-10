@@ -16,7 +16,7 @@ public class JSONWriter implements IWriter
             }
             catch (UnsatisfiedLinkError error2)
             {
-                System.out.println("Native dynamic library is not found");
+                throw new java.lang.LinkageError("Native dynamic library is not found");
             }
         }
     }

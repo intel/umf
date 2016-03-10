@@ -4,25 +4,16 @@ import com.intel.vmf.Variant;
 
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.intel.vmf.Vmf;
 
 public class VmfFieldDescTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected FieldDesc fd1;

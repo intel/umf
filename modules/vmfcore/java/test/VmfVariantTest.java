@@ -1,13 +1,11 @@
 import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
-import com.intel.vmf.Vmf;
 import com.intel.vmf.vmf_vec2d;
 import com.intel.vmf.vmf_vec3d;
 import com.intel.vmf.vmf_vec4d;
 
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -17,16 +15,9 @@ import org.junit.rules.ExpectedException;
 public class VmfVariantTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected Variant var1;

@@ -3,12 +3,10 @@ import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
 import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
-import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -19,16 +17,9 @@ import org.junit.rules.ExpectedException;
 public class VmfMetadataDescTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected MetadataSchema schema = new MetadataSchema ("test_schema", "Anna");
@@ -36,6 +27,8 @@ public class VmfMetadataDescTest
     protected FieldDesc fields1[] = new FieldDesc [3];
     
     protected ReferenceDesc refs[] = new ReferenceDesc [3];
+    
+    protected ReferenceDesc refs1[] = new ReferenceDesc [3];
     
     protected FieldDesc fields2[] = new FieldDesc [4];
     
@@ -60,8 +53,12 @@ public class VmfMetadataDescTest
         refs[1] = new ReferenceDesc ("colleague", false, true);
         refs[2] = new ReferenceDesc ("spouse", true, false);
         
+        refs1[0] = new ReferenceDesc ();
+        refs1[1] = new ReferenceDesc ("owner", true, false);
+        refs1[2] = new ReferenceDesc ("mechanic", false, false);
+        
         mdDesc1 = new MetadataDesc ("person", fields1, refs);
-        mdDesc2 = new MetadataDesc ("car", fields2);
+        mdDesc2 = new MetadataDesc ("car", fields2, refs1);
         mdDesc3 = new MetadataDesc ();
         mdDesc4 = new MetadataDesc ("", Variant.type_string);
     }
@@ -97,12 +94,12 @@ public class VmfMetadataDescTest
         assertEquals(4, rds1.length);
         
         ReferenceDesc rds2[] = mdDesc2.getAllReferenceDescs ();
-        assertEquals(1, rds2.length);
+        assertEquals(3, rds2.length);
         
         mdDesc2.declareCustomReference ("father", true);
         
         rds2 = mdDesc2.getAllReferenceDescs ();
-        assertEquals(2, rds2.length);
+        assertEquals(4, rds2.length);
         
         ReferenceDesc rd1 = mdDesc1.getReferenceDesc ("friend");
         assertEquals(refs[0].getName(), rd1.getName());

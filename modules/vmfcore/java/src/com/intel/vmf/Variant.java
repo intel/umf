@@ -10,9 +10,16 @@ import com.intel.vmf.Vmf;
          {
              System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
          }
-         catch (UnsatisfiedLinkError e)
+         catch (UnsatisfiedLinkError error1)
          {
-             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+             try
+             {
+                 System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+             }
+             catch (UnsatisfiedLinkError error2)
+             {
+                 throw new java.lang.LinkageError("Native dynamic library is not found");
+             }
          }
      }
 
