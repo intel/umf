@@ -170,7 +170,11 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll (JNIEnv *env,
         env->ReleaseLongArrayElements(segAddrs, segmentsArray, 0);
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
 
-        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set));
+        //TODO: fix it later
+        const bool useEncryption = false;
+        const std::string hint = "";
+
+        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set), useEncryption, hint);
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)
