@@ -22,19 +22,22 @@ namespace vmf
 {
 
 WriterEncrypted::WriterEncrypted(std::shared_ptr<IWriter> _writer,
-                                 std::shared_ptr<Encryptor> _encryptor, bool encryptAll)
-{
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
-}
+                                 std::shared_ptr<Encryptor> _encryptor, bool encryptAll) :
+                                 writer(_writer),
+                                 encryptor(_encryptor),
+                                 useEncryption(encryptAll)
+{  }
 
 std::string WriterEncrypted::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
+    std::string text = writer->store(schemas);
+    return encrypt(text);
 }
 
 std::string WriterEncrypted::store(const MetadataSet& set)
 {
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
+    std::string text = writer->store(set);
+    return encrypt(text);
 }
 
 std::string WriterEncrypted::store(const IdType& nextId,
@@ -44,15 +47,26 @@ std::string WriterEncrypted::store(const IdType& nextId,
                                    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                    const MetadataSet& set, bool useEncryption, const std::string &hint)
 {
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
+    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, false, hint);
+    if(useEncryption)
+        return encrypt(text);
+    else
+        return text;
 }
 
 std::string WriterEncrypted::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 {
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
+    std::string text = writer->store(spSegment);
+    return encrypt(text);
 }
 
 std::string WriterEncrypted::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
+{
+    std::string text = writer->store(segments);
+    return encrypt(text);
+}
+
+std::string WriterEncrypted::encrypt(const std::string &input)
 {
     VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
 }

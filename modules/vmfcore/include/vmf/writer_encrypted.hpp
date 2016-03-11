@@ -65,7 +65,16 @@ public:
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
 protected:
+    /*!
+     * \brief Performs encryption of text data
+     * \param input Input string
+     * \return Encrypted string
+     */
+    virtual std::string encrypt(const std::string& input);
 
+    std::shared_ptr<IWriter> writer;
+    std::shared_ptr<Encryptor> encryptor;
+    bool useEncryption;
 };
 
 }
