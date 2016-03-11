@@ -287,11 +287,8 @@ std::string JSONWriter::store(const IdType& nextId,
                               const std::string& checksum,
                               const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                              const MetadataSet& set, bool useEncryption, const std::string& hint)
+                              const MetadataSet& set, const std::string& hint)
 {
-    if(useEncryption)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Encryption is enabled, you'd better use WriterEncrypted");
-
     if(schemas.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Input schemas vector is empty");
 

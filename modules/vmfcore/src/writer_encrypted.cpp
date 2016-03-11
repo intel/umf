@@ -45,13 +45,11 @@ std::string WriterEncrypted::store(const IdType& nextId,
                                    const std::string& checksum,
                                    const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                    const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                   const MetadataSet& set, bool useEncryption, const std::string &hint)
+                                   const MetadataSet& set,
+                                   const std::string &hint)
 {
-    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, false, hint);
-    if(useEncryption)
-        return encrypt(text);
-    else
-        return text;
+    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, hint);
+    return encrypt(text);
 }
 
 std::string WriterEncrypted::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)

@@ -37,11 +37,10 @@ std::string WriterCompressed::store(const IdType& nextId, const std::string& fil
                                     const std::string& checksum,
                                     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-                                    const MetadataSet& set, bool useEncryption, const std::string& hint)
+                                    const MetadataSet& set,
+                                    const std::string& hint)
 {
-    if(useEncryption)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Encryption is enabled, you'd better use WriterEncrypted");
-    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, false, hint);
+    std::string text = writer->store(nextId, filepath, checksum, segments, schemas, set, hint);
     return compress(text);
 }
 
@@ -106,13 +105,12 @@ std::string WriterCompressed::compress(const std::string& input)
         const IdType nextId = 1;
         const std::string filePath = "";
         const std::string checksum = "";
-        const bool useEncryption = false;
         const std::string hint = "";
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
 
         //create writer with no compression enabled
         std::string outputString;
-        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet, useEncryption, hint);
+        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet, hint);
 
         return outputString;
     }

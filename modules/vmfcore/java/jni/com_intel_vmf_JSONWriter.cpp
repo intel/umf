@@ -179,10 +179,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll (JNIEnv *env
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
                 
         //TODO: fix it later
-        const bool useEncryption = false;
         const std::string hint = "";
 
-        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set), useEncryption, hint);
+        std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set), hint);
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)

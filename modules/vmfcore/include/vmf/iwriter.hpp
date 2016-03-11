@@ -62,7 +62,6 @@ public:
                                const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
                                const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                const MetadataSet& set,
-                               bool useEncryption,
                                const std::string& hint) = 0;
 
     /*!

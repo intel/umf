@@ -682,7 +682,7 @@ std::string MetadataStream::serialize(IWriter& writer)
     for(auto spMetadataIter = m_mapSchemas.begin(); spMetadataIter != m_mapSchemas.end(); spMetadataIter++)
         schemas.push_back(spMetadataIter->second);
     return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas,
-                        encryptedStream.m_oMetadataSet, m_useEncryption, m_hintEncryption);
+                        encryptedStream.m_oMetadataSet, m_hintEncryption);
 }
 
 void MetadataStream::deserialize(const std::string& text, IReader& reader)
