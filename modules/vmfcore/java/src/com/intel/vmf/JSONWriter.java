@@ -8,9 +8,16 @@ public class JSONWriter implements IWriter
         {
             System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME);
         }
-        catch (UnsatisfiedLinkError e)
+        catch (UnsatisfiedLinkError error1)
         {
-            System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+            try
+            {
+                System.loadLibrary(Vmf.NATIVE_LIBRARY_NAME + "d");
+            }
+            catch (UnsatisfiedLinkError error2)
+            {
+                throw new java.lang.LinkageError("Native dynamic library is not found");
+            }
         }
     }
 
@@ -71,12 +78,6 @@ public class JSONWriter implements IWriter
     }
 
     @Override
-    public String store (MetadataStream.VideoSegment segment)
-    {
-        return n_storeSegment (nativeObj, segment.nativeObj);
-    }
-
-    @Override
     public String store (MetadataStream.VideoSegment... segments)
     {
         long segNativeAddrs[] = new long [segments.length];
@@ -102,7 +103,6 @@ public class JSONWriter implements IWriter
     private static native String n_storeSchemas (long nativeObj, long schemaNativeAddrs[]);
     private static native String n_storeMetadataSet (long nativeObj, long setAddr);
     private static native String n_storeAll (long nativeObj, long nextId, String filepath, String checksum, long segNativeAddrs[], long schemaNativeAddrs[], long setNativeAddr);
-    private static native String n_storeSegment (long nativeObj, long segNativeAddr);
     private static native String n_storeSegments (long nativeObj, long segNativeAddrs[]);
     private static native void n_delete (long nativeObj);
 }

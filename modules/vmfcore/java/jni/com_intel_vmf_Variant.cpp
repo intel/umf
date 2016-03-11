@@ -42,7 +42,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant (JNIEnv *env, jcla
  * Method:    n_Variant
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J(JNIEnv *env, jclass, jlong otherAddr);
+/*JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J(JNIEnv *env, jclass, jlong otherAddr);
 
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *env, jclass, jlong otherAddr)
@@ -65,7 +65,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Variant_n_1Variant__J (JNIEnv *env, j
     }
 
     return 0;
-}
+}*/
 
 /*
  * Class:     com_intel_vmf_Variant
@@ -966,14 +966,18 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo (JNIEnv *env, jcl
     
     try 
     {
-        std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
-
-        if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
-
         Variant::Type Type = (Variant::Type) type;
-                
-        (*obj)->convertTo (Type);      
+        if ((Type >= Variant::Type::type_unknown) && (Type <= Variant::Type::type_vec4d_vector))
+        {
+            std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
+
+            if ((obj == NULL) || (obj->get() == NULL))
+                VMF_EXCEPTION(NullPointerException, "Field value is null pointer.");
+
+            (*obj)->convertTo(Type);
+        }
+        else
+            VMF_EXCEPTION(OutOfRangeException, "Non-existent type.");
     }
     catch(const std::exception &e)
     {
@@ -1006,6 +1010,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1typeToString (JNIEnv *en
             std::string str = Variant::typeToString (Type);
             return env->NewStringUTF (str.c_str());
         }
+        else
+            VMF_EXCEPTION(OutOfRangeException, "Non-existent type.");
     }
     catch(const std::exception &e)
     {
@@ -1066,7 +1072,12 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isConvertible (JNIEnv *
     {
         Variant::Type src = (Variant::Type) srcType;
         Variant::Type dst = (Variant::Type) dstType;
-        return (jboolean) Variant::isConvertible (src, dst);
+        if ((src >= Variant::Type::type_unknown) && (src <= Variant::Type::type_vec4d_vector) && (dst >= Variant::Type::type_unknown) && (dst <= Variant::Type::type_vec4d_vector))
+        {
+            return (jboolean)Variant::isConvertible(src, dst);
+        }
+        else
+            VMF_EXCEPTION(OutOfRangeException, "Non-existent type.");
     }
     catch(const std::exception &e)
     {

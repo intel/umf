@@ -254,6 +254,8 @@ TEST_F(TestRemovingSchema, RemoveOneSchema)
         newStream.load();
         auto schemaForRemoving = newStream.getSchema(TEST_SCHEMA_NAME);
         newStream.remove(schemaForRemoving);
+        std::shared_ptr<vmf::MetadataSchema> nullPointerSchema = nullptr;
+        ASSERT_THROW(newStream.remove(nullPointerSchema), vmf::NullPointerException);
         newStream.save();
         newStream. close();
     }

@@ -169,6 +169,8 @@ TEST_F(TestNamedReferences, AddReferences)
     auto refs = md[0]->getAllReferences();
     EXPECT_EQ(0u, refs.size());
 
+    EXPECT_THROW(md[0]->addReference(nullptr, "CAR"), NullPointerException);
+
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[1], "SPOUSE");
     md[0]->addReference(md[0]);
@@ -199,19 +201,34 @@ TEST_F(TestNamedReferences, AddReferences)
     mdSet = md[0]->getReferencesByMetadata("PERSON");
     EXPECT_EQ(5u, mdSet.size());
 
-    md[0]->addReference(md[2], "SPOUSE");
+    EXPECT_THROW(md[0]->addReference(md[2], "SPOUSE"), vmf::IncorrectParamException);
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(4u, mdSet.size());
+    EXPECT_EQ(5u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("CAR");
-    EXPECT_EQ(2u, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.save();
     newStream.load();
     refs = md[0]->getAllReferences();
     EXPECT_EQ(6u, refs.size());
 
+    newStream.close();
+}
+
+TEST_F(TestNamedReferences, QueryByReference)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    newStream.load();
+
+    vmf::MetadataSet set = newStream.queryByReference([&](const std::shared_ptr< vmf::Metadata >& spItem, const std::shared_ptr< vmf::Metadata >& spReferenceMd)->bool
+    {
+        return (spItem->getName() == spReferenceMd->getName());
+    });
+
+    ASSERT_EQ(set.size(), 2);
     newStream.close();
 }
 

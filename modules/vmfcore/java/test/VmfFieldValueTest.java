@@ -1,28 +1,23 @@
 import com.intel.vmf.FieldValue;
-import com.intel.vmf.Vmf;
+import com.intel.vmf.Log;
 import com.intel.vmf.Variant;
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class VmfFieldValueTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
-    }
-    
-    protected Variant var;
+    protected Variant variant;
     protected FieldValue fieldValue1;
     protected FieldValue fieldValue2; 
     protected FieldValue fieldValue3; 
@@ -30,12 +25,16 @@ public class VmfFieldValueTest
     @Before
     public void setUp()
     {
-    	var = new Variant();
+    	variant = new Variant();
+    	variant.setTo(25);
+    	
     	fieldValue1 = new FieldValue();
-    	var.setTo(25);
-    	fieldValue2 = new FieldValue("fieldName", var);
-    	fieldValue3 = new FieldValue("fieldName", var);
+    	fieldValue2 = new FieldValue("fieldName", variant);
+    	fieldValue3 = new FieldValue("fieldName", variant);
     }
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     
     @Test
     public void testEquals ()
@@ -43,12 +42,24 @@ public class VmfFieldValueTest
          assertTrue (fieldValue2.equals (fieldValue3));
          assertFalse (fieldValue1.equals (fieldValue2));
          assertFalse (fieldValue1.equals (fieldValue3));
+         
+         variant.setTo("fieldValue");
+         FieldValue fieldValue4 = new FieldValue ("fieldName", variant);
+         fieldValue2.setTo(fieldValue4);
+         
+         thrown.expect(com.intel.vmf.VmfException.class);
+         thrown.expectMessage("vmf::Exception: Can't compare Variant objects with incompatible types");
+         assertFalse (fieldValue2.equals(fieldValue3));
     }
     
     @Test
     public void testGetters ()
     {
          assertEquals(fieldValue2.getName(), fieldValue3.getName()); 
+         
+         assertTrue(fieldValue1.isEmpty());
+         assertFalse(fieldValue2.isEmpty());
+         assertFalse(fieldValue3.isEmpty());
          
          assertEquals("", fieldValue1.getName());
          assertEquals("fieldName", fieldValue2.getName());
@@ -63,21 +74,43 @@ public class VmfFieldValueTest
     }
     
     @Test
-    public void testSetTo ()
+    public void testSetToAndConvertTo ()
     {
          fieldValue1.setTo(fieldValue2);
          assertTrue (fieldValue1.equals (fieldValue2));
+         
+         thrown.expect(com.intel.vmf.VmfException.class);
+         thrown.expectMessage("vmf::Exception: Non-existent type.");
+         fieldValue1.convertTo (14);
+    }
+    
+    @Test
+    public void testConvertIntToString ()
+    {
+        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expectMessage("vmf::Exception: Cannot convert value to the target type!");
+        fieldValue2.convertTo (Variant.type_string);
     }
     
     @Test
     public void testClear ()
     {
-        FieldValue tmp = new FieldValue();
+        FieldValue fv = new FieldValue();
         
         fieldValue2.clear();
         assertEquals("", fieldValue2.getName());
-        assertEquals(tmp.getType(), fieldValue2.getType());
+        assertEquals(fv.getType(), fieldValue2.getType());
         assertEquals(Variant.type_unknown, fieldValue2.getType());
-        assertEquals("unknown", tmp.getTypeName());
+        assertEquals("unknown", fv.getTypeName());
+    }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        fieldValue1 = null;
+        fieldValue2 = null;
+        fieldValue3 = null;
+        variant = null;
+        System.gc();
     }
 }

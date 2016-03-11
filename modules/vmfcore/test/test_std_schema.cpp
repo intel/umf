@@ -32,6 +32,9 @@ TEST(TestStdSchema, GetSchema)
     EXPECT_EQ(stdSchema->getName(), vmf::MetadataSchema::getStdSchemaName());
     EXPECT_EQ(stdSchema->getAuthor(), "Intel Corporation");
 
+    ASSERT_THROW(vmf::MetadataSchema::getStdSchemaName((vmf::MetadataSchema::StdSchemaKind)14), vmf::IncorrectParamException);
+    ASSERT_THROW(vmf::MetadataSchema::getStdSchema((vmf::MetadataSchema::StdSchemaKind)14), vmf::IncorrectParamException);
+
     auto channels = stdSchema->getAll();
     EXPECT_EQ(channels.size(), 23u);
     EXPECT_EQ(channels[0]->getMetadataName(), "person");

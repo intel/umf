@@ -1084,6 +1084,9 @@ TEST_F(TestSaveLoadMetadata, shift)
         stream.add(meta1);
         stream.add(meta2);
 
+        meta1->addReference(meta2);
+        meta2->addReference(meta1);
+
         vmf::MetadataSet set = stream.queryByFrameIndex(6);
         ASSERT_EQ(set.size(), 2u);
 
@@ -1093,6 +1096,13 @@ TEST_F(TestSaveLoadMetadata, shift)
         ASSERT_EQ(meta1->getNumOfFrames(), 2);
         ASSERT_EQ(meta2->getFrameIndex(), 25);
         ASSERT_EQ(meta2->getNumOfFrames(), 2);
+
+        vmf::MetadataSet newSet;
+        auto newMd = std::make_shared<vmf::Metadata>(desc);
+        newSet.push_back(newMd);
+        ASSERT_EQ(1, newSet.shift(3, 2, 2));
+        newMd->setFrameIndex(0, 0);
+        ASSERT_EQ(0, newSet.shift(2, -1, 2));
     }
 }
 
