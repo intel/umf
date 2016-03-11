@@ -6,27 +6,19 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.intel.vmf.Log;
-import com.intel.vmf.Vmf;
 
 
 public class VmfLogTest 
 {
     @BeforeClass
-    public static void init()
+    public static void enableLogging()
     {
-        Vmf.initialize();
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
+        Log.setVerbosityLevel(Log.LOG_INFO);
     }
     
     protected File newFile; 
@@ -34,7 +26,6 @@ public class VmfLogTest
     @Before
     public void setUp () throws IOException
     {
-        Log.setVerbosityLevel(Log.LOG_INFO);
         newFile = new File("myLogFile.txt");
         
         if (newFile.exists())

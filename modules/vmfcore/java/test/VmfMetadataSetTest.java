@@ -7,12 +7,10 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
-import com.intel.vmf.Vmf;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,16 +18,9 @@ import org.junit.Test;
 public class VmfMetadataSetTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected MetadataStream stream;

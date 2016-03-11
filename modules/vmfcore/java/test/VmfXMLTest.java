@@ -6,16 +6,10 @@ import org.junit.rules.ExpectedException;
 
 public class VmfXMLTest 
 {
-	@BeforeClass
-    public static void init()
+    @BeforeClass
+    public static void disableLogging()
     {
-        Vmf.initialize();
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
 	
     protected MetadataStream stream;

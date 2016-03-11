@@ -1,7 +1,5 @@
 import com.intel.vmf.Log;
 import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Vmf;
-
 import static org.junit.Assert.*;
 
 import org.junit.*;
@@ -10,16 +8,9 @@ import org.junit.rules.ExpectedException;
 public class VmfVideoSegmentTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected MetadataStream.VideoSegment vs1;

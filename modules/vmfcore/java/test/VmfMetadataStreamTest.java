@@ -9,7 +9,6 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
-import com.intel.vmf.Vmf;
 import com.intel.vmf.XMLReader;
 import com.intel.vmf.XMLWriter;
 import com.intel.vmf.MetadataSchema;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,16 +31,9 @@ import org.junit.rules.ExpectedException;
 public class VmfMetadataStreamTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
     }
     
     protected final String srcFile = "BlueSquare.avi";
