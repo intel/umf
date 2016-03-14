@@ -46,7 +46,11 @@ public:
      * throw an exception (false) or pass encrypted data as VMF metadata
      */
     ReaderEncrypted(std::shared_ptr<IReader> _reader, std::shared_ptr<Encryptor> _encryptor,
-                    bool _ignoreUnknownEncryptor = false);
+                    bool _ignoreUnknownEncryptor = false) :
+        reader(_reader),
+        encryptor(_encryptor),
+        ignoreUnknownEncryptor(_ignoreUnknownEncryptor)
+    { }
 
     virtual ~ReaderEncrypted() { }
 
@@ -67,8 +71,17 @@ public:
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
-protected:
+    /*!
+     * \brief Performs decryption of previously encrypted data
+     * \param input Input string
+     * \return Decrypted string
+     */
+    virtual std::string decrypt(const std::string& input);
 
+protected:
+    std::shared_ptr<IReader> reader;
+    std::shared_ptr<Encryptor> encryptor;
+    bool ignoreUnknownEncryptor;
 };
 
 } //vmf

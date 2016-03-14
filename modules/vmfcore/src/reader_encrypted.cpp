@@ -20,12 +20,6 @@
 
 namespace vmf
 {
-ReaderEncrypted::ReaderEncrypted(std::shared_ptr<IReader> _reader,
-                                 std::shared_ptr<Encryptor> _encryptor,
-                                 bool _ignoreUnknownEncryptor)
-{
-    VMF_EXCEPTION(NotImplementedException, "ReaderEncrypted is not implemented yet!");
-}
 
 bool ReaderEncrypted::parseAll(const std::string& text, IdType& nextId,
                                std::string& filepath, std::string& checksum, std::string& hint,
@@ -33,27 +27,93 @@ bool ReaderEncrypted::parseAll(const std::string& text, IdType& nextId,
                                std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                std::vector<std::shared_ptr<MetadataInternal>>& metadata)
 {
-    VMF_EXCEPTION(NotImplementedException, "ReaderEncrypted is not implemented yet!");
+    std::string decrypted = decrypt(text);
+    return reader->parseAll(decrypted, nextId, filepath, checksum, hint, segments, schemas, metadata);
 }
 
 
 bool ReaderEncrypted::parseSchemas(const std::string& text,
                                    std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
-    VMF_EXCEPTION(NotImplementedException, "ReaderEncrypted is not implemented yet!");
+    std::string decrypted = decrypt(text);
+    return reader->parseSchemas(decrypted, schemas);
 }
 
 bool ReaderEncrypted::parseMetadata(const std::string& text,
                                     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                                     std::vector<std::shared_ptr<MetadataInternal>>& metadata )
 {
-    VMF_EXCEPTION(NotImplementedException, "ReaderEncrypted is not implemented yet!");
+    std::string decrypted = decrypt(text);
+    return reader->parseMetadata(decrypted, schemas, metadata);
 }
 
 bool ReaderEncrypted::parseVideoSegments(const std::string& text,
                                          std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments)
 {
-    VMF_EXCEPTION(NotImplementedException, "ReaderEncrypted is not implemented yet!");
+    std::string decrypted = decrypt(text);
+    return reader->parseVideoSegments(decrypted, segments);
+}
+
+std::string ReaderEncrypted::decrypt(const std::string& input)
+{
+    //parse it as usual serialized VMF XML, search for specific schemas
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    if(!reader->parseSchemas(input, schemas))
+    {
+        VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
+    }
+
+    if(schemas.size() == 1 && schemas[0]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
+    {
+        std::vector<std::shared_ptr<MetadataInternal>> metadata;
+        if(!reader->parseMetadata(input, schemas, metadata))
+        {
+            VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
+        }
+
+        std::shared_ptr<Metadata> eMetadata = metadata[0];
+        vmf_string hint = eMetadata->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
+        vmf_string encoded = eMetadata->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
+        if(!encryptor)
+        {
+            if(!ignoreUnknownEncryptor)
+            {
+                VMF_EXCEPTION(IncorrectParamException, "No decryptor provided for encrypted data");
+            }
+            else
+            {
+                return input;
+            }
+        }
+        else
+        {
+            try
+            {
+                std::string decrypted;
+                // Encrypted binary data should be represented in base64
+                // because of '\0' symbols
+                vmf_rawbuffer encrypted = Variant::base64decode(encoded);
+                encryptor->decrypt(encrypted, decrypted);
+                return decrypted;
+            }
+            catch(IncorrectParamException& ee)
+            {
+                if(ignoreUnknownEncryptor)
+                {
+                    return input;
+                }
+                else
+                {
+                    VMF_EXCEPTION(IncorrectParamException, "Failed to decrypt data, the hint is \"" +
+                                  hint + "\": " + ee.what());
+                }
+            }
+        }
+    }
+    else
+    {
+        return input;
+    }
 }
 
 }
