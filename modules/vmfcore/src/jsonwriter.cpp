@@ -139,30 +139,31 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
     auto vFields = spMetadata->getDesc()->getFields();
     for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
     {
-        Variant val = spMetadata->getFieldValue(fieldDesc->name);
-        JSONNode metadataFieldNode(JSON_NODE);
-        metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc->name) );
-        if (!val.isEmpty())
-        {
-            metadataFieldNode.push_back( JSONNode(ATTR_VALUE, val.toString()) );
-        }
-
         auto fieldIt = spMetadata->findField(fieldDesc->name);
         if(fieldIt != spMetadata->end())
         {
-            if(fieldIt->getUseEncryption())
-            {
-                metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
-            }
-
+            Variant val = spMetadata->getFieldValue(fieldDesc->name);
             const std::string& encData = fieldIt->getEncryptedData();
-            if(!encData.empty())
+            if(!val.isEmpty() || !encData.empty())
             {
-                metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encData) );
+                JSONNode metadataFieldNode(JSON_NODE);
+                metadataFieldNode.push_back( JSONNode(ATTR_NAME, fieldDesc->name) );
+                if (!val.isEmpty())
+                {
+                    metadataFieldNode.push_back( JSONNode(ATTR_VALUE, val.toString()) );
+                }
+                if(fieldIt->getUseEncryption())
+                {
+                    metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+                }
+                if(!encData.empty())
+                {
+                    metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encData) );
+                }
+                metadataFieldsArrayNode.push_back(metadataFieldNode);
             }
         }
 
-        metadataFieldsArrayNode.push_back(metadataFieldNode);
     }
     metadataNode.push_back(metadataFieldsArrayNode);
 

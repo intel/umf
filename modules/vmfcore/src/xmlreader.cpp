@@ -216,18 +216,18 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
         if(fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
         {
             std::string field_name;
-            vmf::Variant field_value;
+            std::string field_value_str;
             std::string field_encrypted_data;
             bool field_use_encryption = false;
             for(xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
             {
                 if(std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+                {
                     field_name = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                }
                 else if(std::string((char*)cur_prop->name) == std::string(ATTR_VALUE))
                 {
-                    FieldDesc fieldDesc;
-                    spDesc->getFieldDesc(fieldDesc, field_name);
-                    field_value.fromString(fieldDesc.type, (char*)xmlGetProp(fieldNode, cur_prop->name));
+                    field_value_str = (char*)xmlGetProp(fieldNode, cur_prop->name);
                 }
                 else if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
                 {
@@ -238,10 +238,14 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
                 {
                     field_encrypted_data = (char*)xmlGetProp(fieldNode, cur_prop->name);
                 }
-                if(field_use_encryption && field_encrypted_data.empty())
-                    VMF_EXCEPTION(vmf::IncorrectParamException,
-                                  "No encrypted data presented while the flag is set on");
             }
+            if(field_use_encryption && field_encrypted_data.empty())
+                VMF_EXCEPTION(vmf::IncorrectParamException,
+                              "No encrypted data presented while the flag is set on");
+            vmf::Variant field_value;
+            FieldDesc fieldDesc;
+            spDesc->getFieldDesc(fieldDesc, field_name);
+            field_value.fromString(fieldDesc.type, field_value_str);
             spMetadataInternal->setFieldValue(field_name, field_value);
             if(!field_encrypted_data.empty())
             {

@@ -145,35 +145,34 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
     auto vFields = spMetadata->getDesc()->getFields();
     for( auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
     {
-        Variant val = spMetadata->getFieldValue(fieldDesc->name);
-
-        xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
-        if (metadataFieldNode == NULL)
-            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata field");
-
-        if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
-            VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field name)");
-
-        if (!val.isEmpty())
-        {
-            if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_VALUE, BAD_CAST val.toString().c_str()) == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field value)");
-        }
-
         auto fieldIt = spMetadata->findField(fieldDesc->name);
         if(fieldIt != spMetadata->end())
         {
-            if(fieldIt->getUseEncryption())
-            {
-                if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is field encrypted)");
-            }
-
+            Variant val = spMetadata->getFieldValue(fieldDesc->name);
             const std::string& encData = fieldIt->getEncryptedData();
-            if(!encData.empty())
+
+            if(!val.isEmpty() || !encData.empty())
             {
-                if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
-                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted field data)");
+                xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
+                if (metadataFieldNode == NULL)
+                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for metadata field");
+                if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
+                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field name)");
+                if (!val.isEmpty())
+                {
+                    if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_VALUE, BAD_CAST val.toString().c_str()) == NULL)
+                        VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field value)");
+                }
+                if(fieldIt->getUseEncryption())
+                {
+                    if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+                        VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is field encrypted)");
+                }
+                if(!encData.empty())
+                {
+                    if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
+                        VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted field data)");
+                }
             }
         }
     }
