@@ -207,7 +207,7 @@ protected:
     void makeReaderWriter(SerializerType type, vmf_string compressorId, CryptAlgo algo,
                           bool encryptAll = true, bool ignoreUnknownEncryptor = false)
     {
-        std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(algo);
+        encryptor = getEncryptor(algo);
 
         std::shared_ptr<IWriter> formatWriter, cWriter;
         std::shared_ptr<IReader> formatReader, cReader;
@@ -232,6 +232,7 @@ protected:
 
     std::unique_ptr<IWriter> writer;
     std::unique_ptr<IReader> reader;
+    std::shared_ptr<vmf::Encryptor> encryptor;
     std::shared_ptr< MetadataSchema > spSchemaPeople, spSchemaFrames;
     std::shared_ptr< MetadataDesc > spDescPeople, spDescFrames;
     std::vector< FieldDesc > vFieldsPeople, vFieldsFrames;
@@ -460,16 +461,28 @@ TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
 TEST_P(TestSerialization, EncryptOneField)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+    CryptAlgo algo = std::get<2>(param);
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
-    toBeEncrypted->findField("name")->setUseEncryption(true);
+
+    if(algo != CryptAlgo::NONE)
+    {
+        toBeEncrypted->findField("name")->setUseEncryption(true);
+        stream.setEncryptor(encryptor);
+    }
 
     std::string result = stream.serialize(*writer);
 
     MetadataStream testStream;
+
+    if(algo != CryptAlgo::NONE)
+    {
+        testStream.setEncryptor(encryptor);
+    }
+
     testStream.deserialize(result, *reader);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
@@ -480,16 +493,27 @@ TEST_P(TestSerialization, EncryptOneField)
 TEST_P(TestSerialization, EncryptOneRecord)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+    CryptAlgo algo = std::get<2>(param);
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
-    toBeEncrypted->setUseEncryption(true);
+    if(algo != CryptAlgo::NONE)
+    {
+        stream.setEncryptor(encryptor);
+        toBeEncrypted->setUseEncryption(true);
+    }
 
     std::string result = stream.serialize(*writer);
 
     MetadataStream testStream;
+
+    if(algo != CryptAlgo::NONE)
+    {
+        testStream.setEncryptor(encryptor);
+    }
+
     testStream.deserialize(result, *reader);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
@@ -500,12 +524,18 @@ TEST_P(TestSerialization, EncryptOneRecord)
 TEST_P(TestSerialization, EncryptFieldDesc)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+    CryptAlgo algo = std::get<2>(param);
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
     FieldDesc& field = metadesc->getFieldDesc("name");
-    field.useEncryption = true;
+    if(algo != CryptAlgo::NONE)
+    {
+        stream.setEncryptor(encryptor);
+        field.useEncryption = true;
+    }
+
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
@@ -513,12 +543,21 @@ TEST_P(TestSerialization, EncryptFieldDesc)
     std::string result = stream.serialize(*writer);
 
     MetadataStream testStream;
+
+    if(algo != CryptAlgo::NONE)
+    {
+        testStream.setEncryptor(encryptor);
+    }
+
     testStream.deserialize(result, *reader);
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
     field = metadesc->getFieldDesc("name");
-    ASSERT_TRUE(field.useEncryption);
+    if(algo != CryptAlgo::NONE)
+    {
+        ASSERT_TRUE(field.useEncryption);
+    }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     compareMetadata(toBeEncrypted, encrypted);
@@ -528,11 +567,16 @@ TEST_P(TestSerialization, EncryptFieldDesc)
 TEST_P(TestSerialization, EncryptMetaDesc)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+    CryptAlgo algo = std::get<2>(param);
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
-    metadesc->setUseEncryption(true);
+    if(algo != CryptAlgo::NONE)
+    {
+        stream.setEncryptor(encryptor);
+        metadesc->setUseEncryption(true);
+    }
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -541,11 +585,20 @@ TEST_P(TestSerialization, EncryptMetaDesc)
     std::string result = stream.serialize(*writer);
 
     MetadataStream testStream;
+
+    if(algo != CryptAlgo::NONE)
+    {
+        testStream.setEncryptor(encryptor);
+    }
+
     testStream.deserialize(result, *reader);
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
-    ASSERT_TRUE(metadesc->getUseEncryption());
+    if(algo != CryptAlgo::NONE)
+    {
+        ASSERT_TRUE(metadesc->getUseEncryption());
+    }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     compareMetadata(toBeEncrypted, encrypted);
@@ -555,10 +608,15 @@ TEST_P(TestSerialization, EncryptMetaDesc)
 TEST_P(TestSerialization, EncryptSchema)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param), false);
+    CryptAlgo algo = std::get<2>(param);
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
-    schema->setUseEncryption(true);
+    if(algo != CryptAlgo::NONE)
+    {
+        stream.setEncryptor(encryptor);
+        schema->setUseEncryption(true);
+    }
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -567,10 +625,19 @@ TEST_P(TestSerialization, EncryptSchema)
     std::string result = stream.serialize(*writer);
 
     MetadataStream testStream;
+
+    if(algo != CryptAlgo::NONE)
+    {
+        testStream.setEncryptor(encryptor);
+    }
+
     testStream.deserialize(result, *reader);
 
     schema = testStream.getSchema(n_schemaPeople);
-    ASSERT_TRUE(schema->getUseEncryption());
+    if(algo != CryptAlgo::NONE)
+    {
+        ASSERT_TRUE(schema->getUseEncryption());
+    }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     compareMetadata(toBeEncrypted, encrypted);
