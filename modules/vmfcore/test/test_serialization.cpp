@@ -438,18 +438,22 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
 {
     auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    CryptAlgo algo = std::get<2>(param);
+    if(algo != CryptAlgo::NONE)
+    {
+        makeReaderWriter(std::get<0>(param), std::get<1>(param), algo);
 
-    std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(spSchemaPeople);
-    schemas.push_back(spSchemaFrames);
-    std::string result = stream.serialize(*writer);
+        std::vector<std::shared_ptr<MetadataSchema>> schemas;
+        schemas.push_back(spSchemaPeople);
+        schemas.push_back(spSchemaFrames);
+        std::string result = stream.serialize(*writer);
 
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), CryptAlgo::NONE, true, true);
-    //TODO: schema name
-    reader->parseSchemas(result, schemas);
-    ASSERT_EQ(schemas.size(), 1);
-    ASSERT_EQ("com.intel.vmf.encrypted-metadata", schemas[0]->getName());
+        makeReaderWriter(std::get<0>(param), std::get<1>(param), CryptAlgo::NONE, true, true);
+
+        reader->parseSchemas(result, schemas);
+        ASSERT_EQ(schemas.size(), 1);
+        ASSERT_EQ("com.intel.vmf.encrypted-metadata", schemas[0]->getName());
+    }
 }
 
 
