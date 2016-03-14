@@ -398,7 +398,28 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
     vmf::Compressor::registerNew(fake);
 
-    makeReaderWriter(std::get<0>(param), compressorId, std::get<2>(param));
+    SerializerType type = std::get<0>(param);
+    CryptAlgo algo      = std::get<2>(param);
+    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(algo);
+
+    std::shared_ptr<IWriter> formatWriter, cWriter;
+    std::shared_ptr<IReader> formatReader, cReader;
+    if (type == TypeXML)
+    {
+        formatWriter = std::make_shared<XMLWriter>();
+        formatReader = std::make_shared<XMLReader>();
+    }
+    else if (type == TypeJson)
+    {
+        formatWriter = std::make_shared<JSONWriter>();
+        formatReader = std::make_shared<JSONReader>();
+    }
+    cWriter = std::make_shared<WriterCompressed>(formatWriter, compressorId);
+    cReader = std::make_shared<ReaderCompressed>(formatReader, true);
+    bool encryptAll = true;
+    bool ignoreUnknownEncryptor = false;
+    writer.reset(new WriterEncrypted(cWriter, encryptor, encryptAll));
+    reader.reset(new ReaderEncrypted(cReader, encryptor, ignoreUnknownEncryptor));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
