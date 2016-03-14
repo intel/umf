@@ -147,10 +147,10 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
 
     std::string encryptedMetadata;
     bool metadataUseEncryption = false;
-    auto mdEncryptedBoolIter = metadataNode.find(ATTR_ENCRYPTED_DATA);
+    auto mdEncryptedBoolIter = metadataNode.find(ATTR_ENCRYPTED_BOOL);
     if(mdEncryptedBoolIter != metadataNode.end())
         metadataUseEncryption = mdEncryptedBoolIter->as_string() == "true";
-    auto mdEncryptedDataIter = metadataNode.find(ATTR_ENCRYPTED_BOOL);
+    auto mdEncryptedDataIter = metadataNode.find(ATTR_ENCRYPTED_DATA);
     if(mdEncryptedDataIter != metadataNode.end())
         encryptedMetadata = mdEncryptedDataIter->as_string();
     if(metadataUseEncryption && encryptedMetadata.empty())
