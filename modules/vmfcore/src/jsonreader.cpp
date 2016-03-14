@@ -224,10 +224,12 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
         FieldDesc fieldDesc;
         auto fieldNameIter = fieldNode->find(ATTR_NAME);
         auto fieldValueIter = fieldNode->find(ATTR_VALUE);
-        if(fieldNameIter == fieldNode->end() || fieldValueIter == fieldNode->end() )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Missing field name or field value");
+        if(fieldNameIter == fieldNode->end())
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Missing field name");
         std::string fieldName = fieldNameIter->as_string();
-        vmf::Variant fieldValueString = fieldValueIter->as_string();
+        std::string fieldValueString;
+        if(fieldValueIter != fieldNode->end())
+            fieldValueString = fieldValueIter->as_string();
 
         std::string encryptedFieldData;
         bool fieldUseEncryption = false;
@@ -240,6 +242,8 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
         if(fieldUseEncryption && encryptedFieldData.empty())
             VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
+        if(fieldValueString.empty() && encryptedFieldData.empty())
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Missing field value or encrypted data");
         vmf::Variant fieldValue;
         spDesc->getFieldDesc(fieldDesc, fieldName);
         fieldValue.fromString(fieldDesc.type, fieldValueString);
