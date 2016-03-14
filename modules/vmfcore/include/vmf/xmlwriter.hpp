@@ -56,13 +56,7 @@ public:
                               const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
                               const MetadataSet& set,
                               const std::string& hint);
-    virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
-
-private:
-    // hiding API that may be removed soon
-    virtual std::string store(const std::shared_ptr<MetadataSchema>& spSchema);
-    virtual std::string store(const std::shared_ptr<Metadata>& spMetadata);
 };
 
 }//vmf

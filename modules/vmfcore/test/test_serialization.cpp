@@ -87,7 +87,7 @@ protected:
         spSchemaPeople = std::make_shared<MetadataSchema>(n_schemaPeople);
         vFieldsPeople.push_back(FieldDesc("name", Variant::type_string));
         vFieldsPeople.push_back(FieldDesc("address", Variant::type_string, true));
-        vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("friend", true));
+        vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("friend"));
         vRefDescsPeople.emplace_back(std::make_shared<ReferenceDesc>("colleague"));
         spDescPeople = std::make_shared<MetadataDesc>("person", vFieldsPeople, vRefDescsPeople);
         spSchemaPeople->add(spDescPeople);
@@ -115,6 +115,9 @@ protected:
                 person->addReference(md, (i%4? "friend" : ""));
             }
         }
+
+        segments.push_back(std::make_shared<MetadataStream::VideoSegment>("segment1", 30, 0, 1000, 800, 600));
+        segments.push_back(std::make_shared<MetadataStream::VideoSegment>("segment2", 25, 5000, 1000));
     }
 
     void compareSchemas(const std::shared_ptr<MetadataSchema>& goldSchema, const std::shared_ptr<MetadataSchema>& testSchema, bool compareRefs = true)
@@ -227,6 +230,19 @@ protected:
         reader.reset(new ReaderEncrypted(cReader, encryptor, ignoreUnknownEncryptor));
     }
 
+    void compareSegments(const std::shared_ptr<MetadataStream::VideoSegment>& idealSegment, const std::shared_ptr<MetadataStream::VideoSegment>& s)
+    {
+        ASSERT_EQ(idealSegment->getTitle(), s->getTitle());
+        ASSERT_EQ(idealSegment->getFPS(), s->getFPS());
+        ASSERT_EQ(idealSegment->getTime(), s->getTime());
+        ASSERT_EQ(idealSegment->getDuration(), s->getDuration());
+        long w1, h1, w2, h2;
+        idealSegment->getResolution(w1, h1);
+        s->getResolution(w2, h2);
+        ASSERT_EQ(w1, w2);
+        ASSERT_EQ(h1, h2);
+    }
+
     MetadataStream stream;
     MetadataSet set;
 
@@ -237,22 +253,71 @@ protected:
     std::shared_ptr< MetadataDesc > spDescPeople, spDescFrames;
     std::vector< FieldDesc > vFieldsPeople, vFieldsFrames;
     std::vector<std::shared_ptr<ReferenceDesc>> vRefDescsPeople, vRefDescsFrames;
+    std::vector< std::shared_ptr<MetadataStream::VideoSegment>> segments;
 
     vmf_string n_schemaPeople, n_schemaFrames;
 };
 
-/*
-TEST_P(TestSerialization, Parse_schema)
+TEST_P(TestSerialization, StoreAll)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
-
-    std::string result = writer->store(spSchemaPeople);
+    SerializerType type = std::get<0>(GetParam());
+    
+    if (type == TypeXML)
+    {
+        writer.reset(new XMLWriter());
+        reader.reset(new XMLReader());
+    }
+    else if (type == TypeJson)
+    {
+        writer.reset(new JSONWriter());
+        reader.reset(new JSONReader());
+    }
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    reader->parseSchemas(result, schemas);
-    ASSERT_EQ(1u, schemas.size());
-    compareSchemas(spSchemaPeople, schemas[0]);
+
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+
+    std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
+    segments.push_back(nullSegment);
+
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+
+    segments.pop_back();
+    
+    std::shared_ptr<Metadata> nullElement = nullptr;
+    set.push_back(nullElement);
+
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+
+    set.pop_back();
+
+    std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
+    schemas.push_back(spSchemaNull);
+
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+
+    set.clear();
+
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+
+    auto spNewDesc = std::make_shared<vmf::MetadataDesc>("new", vFieldsPeople, vRefDescsFrames);
+    schemas.pop_back();
+    std::string check = "";
+    std::shared_ptr<Metadata> md1(new Metadata(spNewDesc));
+    std::shared_ptr<Metadata> md2(new Metadata(spNewDesc));
+    set.push_back(md1);
+    set.push_back(md2);
+
+    ASSERT_THROW(writer->store(1, "", check, segments, schemas, set), vmf::IncorrectParamException);
+
+    segments.clear();
+    schemas.clear();
+    std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
+    IdType nextId = 1;
+    std::string path = "";
+    
+    ASSERT_FALSE(reader->parseAll("", nextId, path, check, segments, schemas, mdInt));
 }
 */
 
@@ -272,6 +337,13 @@ TEST_P(TestSerialization, Parse_schemasArray)
     {
         compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
     });
+
+    schemas.clear();
+    std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
+    schemas.emplace_back(spSchemaNull);
+    schemas.push_back(spSchemaPeople);
+    schemas.push_back(spSchemaFrames);
+    ASSERT_THROW(writer->store(schemas), vmf::IncorrectParamException);
 }
 
 TEST_P(TestSerialization, Parse_schemasAll)
@@ -290,31 +362,22 @@ TEST_P(TestSerialization, Parse_schemasAll)
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
-
-/*
-TEST_P(TestSerialization, Parse_metadata)
-{
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
-
-    auto item = stream.getAll()[0];
-    std::string result = writer->store(item);
-
-    std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(spSchemaFrames);
-    schemas.push_back(spSchemaPeople);
-    std::vector<std::shared_ptr<MetadataInternal>> md;
-    reader->parseMetadata(result, schemas, md);
-    ASSERT_EQ(1u, md.size());
-    compareMetadata(item, md[0], false);
-    ASSERT_EQ(item->getAllReferences().size(), md[0]->vRefs.size());
-}
 */
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    if (type == TypeXML)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
+    }
+    else if (type == TypeJson)
+    {
+        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
+        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
+    }
 
     std::string result = writer->store(set);
 
@@ -336,6 +399,10 @@ TEST_P(TestSerialization, Parse_metadataArray)
     {
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
     });
+
+    std::shared_ptr<Metadata> nullElement = nullptr;
+    set.push_back(nullElement);
+    ASSERT_THROW(writer->store(set), vmf::IncorrectParamException);
 }
 
 TEST_P(TestSerialization, Parse_metadataAll)
@@ -387,8 +454,31 @@ TEST_P(TestSerialization, Parse_All)
     {
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
     });
+
+    std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
+    IdType nextId = 1;
+    std::string path = "";
+    std::string check = "";
+
+    ASSERT_THROW(reader->parseAll("", nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
 }
 
+TEST_P(TestSerialization, Parse_segmentArray)
+{
+    auto param = GetParam();
+    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+
+    std::string result = writer->store(segments);
+
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
+    reader->parseVideoSegments(result, loadedSegments);
+
+    ASSERT_EQ(segments.size(), loadedSegments.size());
+    for (size_t i = 0; i < segments.size(); i++)
+    {
+        compareSegments(segments[i], loadedSegments[i]);
+    }
+}
 
 TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {

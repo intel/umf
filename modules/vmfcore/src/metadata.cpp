@@ -357,18 +357,8 @@ void Metadata::addReference(const std::shared_ptr<Metadata>& md, const std::stri
         {
             m_vReferences.emplace_back(Reference(spRefDesc, md));
         }
-        else if (itemsExist == 1)
-        {
-            std::for_each(m_vReferences.begin(), m_vReferences.end(), [&](Reference& item)
-            {
-                auto desc = item.getReferenceDescription();
-                
-                if ((desc != NULL) && (desc->name == refName))
-                    item.setReferenceMetadata(md);
-            });
-        }
         else
-            VMF_EXCEPTION(IncorrectParamException, "More than one UNIQUE reference already exist.");
+            VMF_EXCEPTION(IncorrectParamException, "Unique reference with this name already exists");
     }
     else
     {

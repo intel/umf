@@ -64,11 +64,11 @@ script:
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; adb push bin/unit-tests-ds /data/local/tmp/; fi
   - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds" | tee "unit-tests-ds.log"; LAST_LINE_DS=`tail -1 "unit-tests-ds.log"`; if [[ $LAST_LINE_DS == *"FAILED"* ]]; then $(exit 1); fi; fi
 after_success:
-  - cd $TRAVIS_BUILD_DIR/../build
+  - cd $TRAVIS_BUILD_DIR/../build && pwd
 # coverage
-  - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root .. --build-root .; fi
-  - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root .. --build-root . > /dev/null; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8 > /dev/null; fi
 notifications:
   email: false
-  webhooks: https://coveralls.io/webhook?repo_token=kXDrxzQdBiK3aEgUSlsbL3IVMP0Mvr4oH
+  webhooks: https://coveralls.io/webhook?repo_token=Ps8FqtEiCuzF419zxLpqfqPjeQ5phoqk5
 

@@ -64,10 +64,6 @@ public:
                                const MetadataSet& set,
                                const std::string& hint) = 0;
 
-    /*!
-    * \brief Export a video segment to a string representation
-    */
-    virtual std::string store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment) = 0;
 
     /*!
     * \brief Export a video segments vector to a string representation.

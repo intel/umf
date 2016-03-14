@@ -190,44 +190,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeAll (JNIEnv *env,
 
 /*
  * Class:     com_intel_vmf_XMLWriter
- * Method:    n_storeSegment
- * Signature: (JJ)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment(JNIEnv *env, jclass, jlong self, jlong segAddr);
-
-
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_XMLWriter_n_1storeSegment (JNIEnv *env, jclass, jlong self, jlong segAddr)
-{
-    static const char method_name[] = "XMLWriter::n_1storeSegment";
-
-    try
-    {
-        std::shared_ptr<XMLWriter>* obj = (std::shared_ptr<XMLWriter>*) self;
-        std::shared_ptr<MetadataStream::VideoSegment>* segment = (std::shared_ptr<MetadataStream::VideoSegment>*) segAddr;
-
-        if ((obj == NULL) || (obj->get() == NULL))
-            return 0;
-
-        if ((segment == NULL) || (segment->get() == NULL))
-            return 0;
-
-        std::string str = (*obj)->store(*segment);
-        return env->NewStringUTF(str.c_str());
-    }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
-    return 0;
-}
-
-/*
- * Class:     com_intel_vmf_XMLWriter
  * Method:    n_storeSegments
  * Signature: (J[J)Ljava/lang/String;
  */

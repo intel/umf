@@ -224,7 +224,8 @@ bool MetadataStream::reopen(OpenMode eMode)
 bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
-        throw std::runtime_error("The previous file has not been closed!");
+        VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
+
     try
     {
         std::shared_ptr<IDataSource> oldDataSource = dataSource;

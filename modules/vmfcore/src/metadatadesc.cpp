@@ -48,7 +48,9 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
     , m_vRefDesc( vRefs )
     , m_useEncryption(useEncryption)
 {
-    m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
+    if (find_if(m_vRefDesc.begin(), m_vRefDesc.end(), [](const std::shared_ptr<ReferenceDesc>& r)->bool { return r->name.empty(); }) == m_vRefDesc.end())
+        m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>());
+
     validate();
 }
 
@@ -92,9 +94,13 @@ void MetadataDesc::validate()
     }
 
     // Check single value case
-    if( vFieldNames.empty() && vFieldNames.size() > 1 )
+    if (vFieldNames.size() > 1)
     {
-        VMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!" );
+        for (auto it = vFieldNames.begin(); it != vFieldNames.end(); it++)
+        {
+            if (it->empty())
+                VMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!");
+        }
     }
 }
 
