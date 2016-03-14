@@ -486,6 +486,7 @@ TEST_P(TestSerialization, EncryptOneField)
     testStream.deserialize(result, *reader);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    ASSERT_TRUE((bool)encrypted);
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -517,6 +518,7 @@ TEST_P(TestSerialization, EncryptOneRecord)
     testStream.deserialize(result, *reader);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    ASSERT_TRUE((bool)encrypted);
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -560,6 +562,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
     }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    ASSERT_TRUE((bool)encrypted);
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -601,6 +604,7 @@ TEST_P(TestSerialization, EncryptMetaDesc)
     }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    ASSERT_TRUE((bool)encrypted);
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -640,6 +644,7 @@ TEST_P(TestSerialization, EncryptSchema)
     }
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
+    ASSERT_TRUE((bool)encrypted);
     compareMetadata(toBeEncrypted, encrypted);
 }
 
