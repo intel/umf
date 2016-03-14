@@ -947,6 +947,8 @@ void MetadataStream::decrypt()
                 }
             }
         }
+        //validate resulting metadata
+        meta->validate();
     }
 }
 
