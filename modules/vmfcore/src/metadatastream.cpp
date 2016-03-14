@@ -895,12 +895,16 @@ void MetadataStream::decrypt()
                     std::string& sVal  = vStrings[i*2+1];
                     fvStrings[sName] = sVal;
                 }
-                for(std::string fvName : meta->getFieldNames())
+                for(FieldDesc fd : meta->getDesc()->getFields())
                 {
-                    FieldValue& fv = *meta->findField(fvName);
-                    std::string& sVal = fvStrings[fvName];
-                    Variant v; v.fromString(fv.getType(), sVal);
-                    fv = FieldValue(fvName, v, fv.getUseEncryption());
+                    std::string fvName = fd.name;
+                    if(fvStrings.find(fvName) != fvStrings.end())
+                    {
+                        std::string& sVal = fvStrings[fvName];
+                        Variant v; v.fromString(fd.type, sVal);
+                        meta->setFieldValue(fvName, v);
+                        //forget about previous useEncryption status of the field
+                    }
                 }
                 meta->setEncryptedData("");
             }
