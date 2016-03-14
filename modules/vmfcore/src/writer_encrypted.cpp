@@ -21,13 +21,6 @@
 namespace vmf
 {
 
-WriterEncrypted::WriterEncrypted(std::shared_ptr<IWriter> _writer,
-                                 std::shared_ptr<Encryptor> _encryptor, bool encryptAll) :
-                                 writer(_writer),
-                                 encryptor(_encryptor),
-                                 useEncryption(encryptAll)
-{  }
-
 std::string WriterEncrypted::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     std::string text = writer->store(schemas);
@@ -64,9 +57,66 @@ std::string WriterEncrypted::store(const std::vector<std::shared_ptr<MetadataStr
     return encrypt(text);
 }
 
+
+class MetadataAccessor: public Metadata
+{
+public:
+    MetadataAccessor( const std::shared_ptr< MetadataDesc >& spDescription )
+      : Metadata(spDescription) { }
+    MetadataAccessor( const Metadata& oMetadata )
+      : Metadata(oMetadata) { }
+    using Metadata::setId;
+    virtual ~MetadataAccessor() {}
+};
+
+
 std::string WriterEncrypted::encrypt(const std::string &input)
 {
-    VMF_EXCEPTION(NotImplementedException, "WriterEncrypted is not implemented yet!");
+    if(encryptor)
+    {
+        vmf_rawbuffer encryptedBuf;
+        encryptor->encrypt(input, encryptedBuf);
+        //Encrypted binary data should be represented in base64
+        //because of \0 symbols
+        std::string encrypted = Variant::base64encode(encryptedBuf);
+
+        //Store encrypted data in a format of current implementation
+        std::shared_ptr<vmf::MetadataSchema> eSchema;
+        eSchema = std::make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
+        VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
+            VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
+            VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
+        VMF_METADATA_END(eSchema);
+
+        std::shared_ptr<vmf::Metadata> eMetadata;
+        eMetadata = std::make_shared<vmf::Metadata>(eSchema->findMetadataDesc(ENCRYPTED_DATA_DESC_NAME));
+        eMetadata->push_back(FieldValue(ENCRYPTION_HINT_PROP_NAME, encryptor->getHint()));
+        eMetadata->push_back(FieldValue(ENCRYPTED_DATA_PROP_NAME, encrypted));
+
+        MetadataAccessor metadataAccessor(*eMetadata);
+        metadataAccessor.setId(0);
+        eMetadata = std::make_shared<vmf::Metadata>(metadataAccessor);
+
+        MetadataSet eSet;
+        eSet.push_back(eMetadata);
+        std::vector< std::shared_ptr<MetadataSchema> > eSchemas;
+        eSchemas.push_back(eSchema);
+
+        const IdType nextId = 1;
+        const std::string filePath = "";
+        const std::string checksum = "";
+        const std::string hint = "";
+        std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
+
+        std::string outputString;
+        outputString = writer->store(nextId, filePath, checksum, segments, eSchemas, eSet, hint);
+
+        return outputString;
+    }
+    else
+    {
+        return input;
+    }
 }
-  
+
 }

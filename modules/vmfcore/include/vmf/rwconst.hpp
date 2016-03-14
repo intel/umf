@@ -86,4 +86,9 @@
 #define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
 #define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
 
+#define ENCRYPTION_HINT_PROP_NAME "hint"
+#define ENCRYPTED_DATA_PROP_NAME "data"
+#define ENCRYPTED_DATA_DESC_NAME "encrypted-metadata"
+#define ENCRYPTED_DATA_SCHEMA_NAME "com.intel.vmf.encrypted-metadata"
+
 #endif /* __VMF_RWCONST_H__ */

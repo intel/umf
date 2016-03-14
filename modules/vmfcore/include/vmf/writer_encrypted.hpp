@@ -42,7 +42,11 @@ public:
      * should be encrypted at file saving or serialization
      */
     WriterEncrypted(std::shared_ptr<IWriter> _writer, std::shared_ptr<Encryptor> _encryptor,
-                    bool encryptAll = false);
+                    bool encryptAll = false) :
+                    writer(_writer),
+                    encryptor(_encryptor),
+                    useEncryption(encryptAll)
+    { }
 
     /*!
      * \brief Class destructor
