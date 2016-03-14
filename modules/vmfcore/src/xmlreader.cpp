@@ -242,9 +242,12 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
                     VMF_EXCEPTION(vmf::IncorrectParamException,
                                   "No encrypted data presented while the flag is set on");
             }
-            FieldValue& fv = *(spMetadataInternal->findField(field_name));
-            fv = FieldValue(field_name, field_value, field_use_encryption);
-            fv.setEncryptedData(field_encrypted_data);
+            spMetadataInternal->setFieldValue(field_name, field_value);
+            if(!field_encrypted_data.empty())
+            {
+                spMetadataInternal->findField(field_name)->setEncryptedData(field_encrypted_data);
+            }
+
         }
         else if(fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
         {

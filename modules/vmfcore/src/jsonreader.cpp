@@ -151,6 +151,7 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
     if(mdEncryptedBoolIter != metadataNode.end())
         metadataUseEncryption = mdEncryptedBoolIter->as_string() == "true";
     auto mdEncryptedDataIter = metadataNode.find(ATTR_ENCRYPTED_BOOL);
+    if(mdEncryptedDataIter != metadataNode.end())
         encryptedMetadata = mdEncryptedDataIter->as_string();
     if(metadataUseEncryption && encryptedMetadata.empty())
         VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
@@ -242,10 +243,11 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
         vmf::Variant fieldValue;
         spDesc->getFieldDesc(fieldDesc, fieldName);
         fieldValue.fromString(fieldDesc.type, fieldValueString);
-        FieldValue& fv = *(spMetadataInternal->findField(fieldName));
-
-        fv = FieldValue(fieldName, fieldValue, fieldUseEncryption);
-        fv.setEncryptedData(encryptedFieldData);
+        spMetadataInternal->setFieldValue(fieldName, fieldValue);
+        if(!encryptedFieldData.empty())
+        {
+            spMetadataInternal->findField(fieldName)->setEncryptedData(encryptedFieldData);
+        }
     }
 
     auto referencesArrayIter = metadataNode.find(TAG_METADATA_REFERENCES_ARRAY);

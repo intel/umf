@@ -160,17 +160,21 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
                 VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (metadata field value)");
         }
 
-        if(spMetadata->findField(fieldDesc->name)->getUseEncryption())
+        auto fieldIt = spMetadata->findField(fieldDesc->name);
+        if(fieldIt != spMetadata->end())
         {
-            if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is field encrypted)");
-        }
+            if(fieldIt->getUseEncryption())
+            {
+                if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
+                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (is field encrypted)");
+            }
 
-        const std::string& encData = spMetadata->findField(fieldDesc->name)->getEncryptedData();
-        if(!encData.empty())
-        {
-            if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted field data)");
+            const std::string& encData = fieldIt->getEncryptedData();
+            if(!encData.empty())
+            {
+                if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
+                    VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode property (encrypted field data)");
+            }
         }
     }
 

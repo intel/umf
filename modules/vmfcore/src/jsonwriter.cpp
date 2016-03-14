@@ -146,15 +146,22 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
         {
             metadataFieldNode.push_back( JSONNode(ATTR_VALUE, val.toString()) );
         }
-        if(spMetadata->findField(fieldDesc->name)->getUseEncryption())
+
+        auto fieldIt = spMetadata->findField(fieldDesc->name);
+        if(fieldIt != spMetadata->end())
         {
-            metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+            if(fieldIt->getUseEncryption())
+            {
+                metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_BOOL, "true") );
+            }
+
+            const std::string& encData = fieldIt->getEncryptedData();
+            if(!encData.empty())
+            {
+                metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encData) );
+            }
         }
-        const std::string& encData = spMetadata->findField(fieldDesc->name)->getEncryptedData();
-        if(!encData.empty())
-        {
-            metadataFieldNode.push_back( JSONNode(ATTR_ENCRYPTED_DATA, encData) );
-        }
+
         metadataFieldsArrayNode.push_back(metadataFieldNode);
     }
     metadataNode.push_back(metadataFieldsArrayNode);
