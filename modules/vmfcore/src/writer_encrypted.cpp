@@ -45,12 +45,6 @@ std::string WriterEncrypted::store(const IdType& nextId,
     return encrypt(text);
 }
 
-std::string WriterEncrypted::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
-{
-    std::string text = writer->store(spSegment);
-    return encrypt(text);
-}
-
 std::string WriterEncrypted::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
     std::string text = writer->store(segments);

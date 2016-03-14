@@ -258,6 +258,7 @@ protected:
     vmf_string n_schemaPeople, n_schemaFrames;
 };
 
+
 TEST_P(TestSerialization, StoreAll)
 {
     SerializerType type = std::get<0>(GetParam());
@@ -281,25 +282,25 @@ TEST_P(TestSerialization, StoreAll)
     std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
     segments.push_back(nullSegment);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
 
     segments.pop_back();
     
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
 
     set.pop_back();
 
     std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
     schemas.push_back(spSchemaNull);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
 
     set.clear();
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set), vmf::IncorrectParamException);
+    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
 
     auto spNewDesc = std::make_shared<vmf::MetadataDesc>("new", vFieldsPeople, vRefDescsFrames);
     schemas.pop_back();
@@ -309,7 +310,7 @@ TEST_P(TestSerialization, StoreAll)
     set.push_back(md1);
     set.push_back(md2);
 
-    ASSERT_THROW(writer->store(1, "", check, segments, schemas, set), vmf::IncorrectParamException);
+    ASSERT_THROW(writer->store(1, "", check, segments, schemas, set, ""), vmf::IncorrectParamException);
 
     segments.clear();
     schemas.clear();
@@ -317,9 +318,10 @@ TEST_P(TestSerialization, StoreAll)
     IdType nextId = 1;
     std::string path = "";
     
-    ASSERT_FALSE(reader->parseAll("", nextId, path, check, segments, schemas, mdInt));
+    std::string hint;
+    ASSERT_FALSE(reader->parseAll("", nextId, path, check, hint, segments, schemas, mdInt));
 }
-*/
+
 
 TEST_P(TestSerialization, Parse_schemasArray)
 {
@@ -362,7 +364,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
-*/
+
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
@@ -460,7 +462,8 @@ TEST_P(TestSerialization, Parse_All)
     std::string path = "";
     std::string check = "";
 
-    ASSERT_THROW(reader->parseAll("", nextId, path, check, segments, schemas, mdInt), vmf::InternalErrorException);
+    std::string hint;
+    ASSERT_THROW(reader->parseAll("", nextId, path, check, hint, segments, schemas, mdInt), vmf::InternalErrorException);
 }
 
 TEST_P(TestSerialization, Parse_segmentArray)
