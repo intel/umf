@@ -759,13 +759,15 @@ void MetadataStream::encrypt()
 {
     //check everything we want to encrypt
     //[schemaName][descName][fieldName], descName and fieldName can be ""
-    std::map<std::string, std::map<std::string, std::map<std::string, bool> > > toEncrypt;
+    //toEncrypt[tuple(schemaname, descName, fieldName)], descName and fieldName can be ""
+    typedef std::tuple<std::string, std::string, std::string> SubsetKey;
+    std::map<SubsetKey, bool> toEncrypt;
     for(auto itSchema : m_mapSchemas)
     {
         std::string schemaName = itSchema.second->getName();
         if(itSchema.second->getUseEncryption())
         {
-            toEncrypt[schemaName][""][""] = true;
+            toEncrypt[SubsetKey(schemaName, "", "")] = true;
         }
         else
         {
@@ -774,7 +776,7 @@ void MetadataStream::encrypt()
                 std::string descName = itDesc->getMetadataName();
                 if(itDesc->getUseEncryption())
                 {
-                    toEncrypt[schemaName][descName][""] = true;
+                    toEncrypt[SubsetKey(schemaName, descName, "")] = true;
                 }
                 else
                 {
@@ -782,7 +784,7 @@ void MetadataStream::encrypt()
                     {
                         if(fd.useEncryption)
                         {
-                            toEncrypt[schemaName][descName][fd.name] = true;
+                            toEncrypt[SubsetKey(schemaName, descName, fd.name)] = true;
                         }
                     }
                 }
@@ -795,8 +797,9 @@ void MetadataStream::encrypt()
     {
         //clone those SPs to MD records which need to be encrypted
         meta = std::make_shared<Metadata>(*meta);
-        if(meta->getUseEncryption() || toEncrypt[meta->getSchemaName()].count("") > 0 ||
-           toEncrypt[meta->getSchemaName()][meta->getName()].count("") > 0)
+        if(meta->getUseEncryption() ||
+           toEncrypt[SubsetKey(meta->getSchemaName(), "", "")] ||
+           toEncrypt[SubsetKey(meta->getSchemaName(), meta->getName(), "")])
         {
             //serialize and kill fields
             std::vector<std::string> fvStrings;
@@ -826,7 +829,7 @@ void MetadataStream::encrypt()
             {
                 FieldValue& fv = *meta->findField(fvName);
                 if(fv.getUseEncryption() ||
-                   toEncrypt[meta->getSchemaName()][meta->getName()][fv.getName()])
+                   toEncrypt[SubsetKey(meta->getSchemaName(), meta->getName(), fv.getName())])
                 {
                     vmf_rawbuffer encryptedBuf;
                     if(m_encryptor)
