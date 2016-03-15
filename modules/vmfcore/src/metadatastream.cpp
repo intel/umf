@@ -758,7 +758,6 @@ void MetadataStream::setEncryptor(std::shared_ptr<Encryptor> encryptor)
 void MetadataStream::encrypt()
 {
     //check everything we want to encrypt
-    //[schemaName][descName][fieldName], descName and fieldName can be ""
     //toEncrypt[tuple(schemaname, descName, fieldName)], descName and fieldName can be ""
     typedef std::tuple<std::string, std::string, std::string> SubsetKey;
     std::map<SubsetKey, bool> toEncrypt;
