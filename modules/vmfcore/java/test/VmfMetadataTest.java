@@ -229,7 +229,7 @@ public class VmfMetadataTest
     public void testValidateTrown()
     {
         thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: The metadata contains no value");
+        thrown.expectMessage("vmf::Exception: The metadata contains neither value nor encrypted data");
         md1.validate();
     }
     
