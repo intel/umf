@@ -103,7 +103,7 @@ std::string WriterEncrypted::encrypt(const std::string &input)
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
 
         std::string outputString;
-        outputString = writer->store(nextId, filePath, checksum, segments, eSchemas, eSet, hint);
+        outputString = getBackendWriter()->store(nextId, filePath, checksum, segments, eSchemas, eSet, hint);
 
         return outputString;
     }

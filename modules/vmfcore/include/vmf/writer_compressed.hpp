@@ -65,6 +65,11 @@ public:
                               const std::string& hint);
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
+    virtual std::shared_ptr<IWriter> getBackendWriter()
+    {
+        return writer ? writer->getBackendWriter() : nullptr;
+    }
+
 protected:
     /*!
      * \brief Performs compression of text data

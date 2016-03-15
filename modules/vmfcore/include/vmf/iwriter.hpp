@@ -69,6 +69,13 @@ public:
     * \brief Export a video segments vector to a string representation.
     */
     virtual std::string store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments) = 0;
+
+    /*!
+     * \brief For implementations that work as wrappers for underlying writer: return this writer.
+     * For the rest implementations return pointer to themselves.
+     * \return Shared pointer to implementation
+     */
+    virtual std::shared_ptr<IWriter> getBackendWriter() = 0;
 };
 
 }//vmf

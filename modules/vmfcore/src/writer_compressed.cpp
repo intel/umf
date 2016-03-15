@@ -104,7 +104,7 @@ std::string WriterCompressed::compress(const std::string& input)
 
         //create writer with no compression enabled
         std::string outputString;
-        outputString = writer->store(nextId, filePath, checksum, segments, cSchemas, cSet, hint);
+        outputString = getBackendWriter()->store(nextId, filePath, checksum, segments, cSchemas, cSet, hint);
 
         return outputString;
     }

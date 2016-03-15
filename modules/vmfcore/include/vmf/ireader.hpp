@@ -72,6 +72,13 @@ public:
     */
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments) = 0;
+
+    /*!
+     * \brief For implementations that work as wrappers for underlying reader: return this reader.
+     * For the rest ones return pointer to themselves.
+     * \return Shared pointer to implementation
+     */
+    virtual std::shared_ptr<IReader> getBackendReader() = 0;
 };
 
 }//vmf

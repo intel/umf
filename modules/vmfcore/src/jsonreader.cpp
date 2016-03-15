@@ -321,6 +321,12 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(J
 JSONReader::JSONReader() : IReader() { }
 JSONReader::~JSONReader(){ }
 
+
+std::shared_ptr<IReader> JSONReader::getBackendReader()
+{
+    return std::make_shared<JSONReader>();
+}
+
 bool JSONReader::parseSchemas(const std::string& text,
                                       std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {

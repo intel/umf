@@ -312,6 +312,11 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
 XMLReader::XMLReader() : IReader() { }
 XMLReader::~XMLReader(){}
 
+std::shared_ptr<IReader> XMLReader::getBackendReader()
+{
+    return std::make_shared<XMLReader>();
+}
+
 
 //this version of parseSchemas always gets uncompressed text as input
 bool XMLReader::parseSchemas(const std::string& text, std::vector<std::shared_ptr<MetadataSchema>>& schemas)

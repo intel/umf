@@ -228,6 +228,11 @@ static void add(xmlNodePtr segmentsNode, const std::shared_ptr<MetadataStream::V
 XMLWriter::XMLWriter() : IWriter() { }
 XMLWriter::~XMLWriter() {}
 
+std::shared_ptr<IWriter> XMLWriter::getBackendWriter()
+{
+    return std::make_shared<XMLWriter>();
+}
+
 std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(schemas.empty())

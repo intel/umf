@@ -69,6 +69,8 @@ public:
 
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
+
+    virtual std::shared_ptr<IReader> getBackendReader();
 };
 
 }//vmf

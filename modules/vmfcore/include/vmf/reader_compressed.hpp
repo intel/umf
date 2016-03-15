@@ -67,6 +67,11 @@ public:
     virtual bool parseVideoSegments(const std::string& text,
                                     std::vector<std::shared_ptr<MetadataStream::VideoSegment> >& segments);
 
+    virtual std::shared_ptr<IReader> getBackendReader()
+    {
+        return reader ? reader->getBackendReader() : nullptr;
+    }
+
     /*!
      * \brief Performs decompression of previously compressed data
      * \param input Input string

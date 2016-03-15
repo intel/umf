@@ -58,7 +58,7 @@ std::string ReaderEncrypted::decrypt(const std::string& input)
 {
     //parse it as usual serialized VMF XML, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    if(!reader->parseSchemas(input, schemas))
+    if(!getBackendReader()->parseSchemas(input, schemas))
     {
         VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
     }
@@ -66,7 +66,7 @@ std::string ReaderEncrypted::decrypt(const std::string& input)
     if(schemas.size() == 1 && schemas[0]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
     {
         std::vector<std::shared_ptr<MetadataInternal>> metadata;
-        if(!reader->parseMetadata(input, schemas, metadata))
+        if(!getBackendReader()->parseMetadata(input, schemas, metadata))
         {
             VMF_EXCEPTION(vmf::InternalErrorException, "Failed to parse schemas in input data");
         }

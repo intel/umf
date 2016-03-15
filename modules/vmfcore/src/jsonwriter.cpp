@@ -208,6 +208,11 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
 JSONWriter::JSONWriter() : IWriter() { }
 JSONWriter::~JSONWriter() { }
 
+std::shared_ptr<IWriter> JSONWriter::getBackendWriter()
+{
+    return std::make_shared<JSONWriter>();
+}
+
 std::string JSONWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(schemas.empty())
