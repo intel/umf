@@ -851,7 +851,7 @@ void MetadataStream::encrypt()
 
 void MetadataStream::decrypt()
 {
-    bool ignoreBad = (m_eMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
+    bool ignoreBad = (bool)(m_eMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
 
     //just try to decrypt everything
     //but do not change useEncryption field

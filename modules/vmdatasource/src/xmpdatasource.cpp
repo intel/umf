@@ -164,7 +164,7 @@ void XMPDataSource::loadXMPstructs()
             std::shared_ptr<Metadata> eItem = eSet[0];
             vmf_string hint      = eItem->getFieldValue(encryptionHintPropName);
             vmf_string encodedB64 = eItem->getFieldValue(encryptedDataPropName);
-            bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
+            bool ignoreBad = (bool)(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor);
             if(!encryptor)
             {
                 if(!ignoreBad)
@@ -219,7 +219,7 @@ void XMPDataSource::loadXMPstructs()
             std::shared_ptr<Metadata> cItem = cSet[0];
             vmf_string algo    = cItem->getFieldValue(compressionAlgoPropName);
             vmf_string encoded = cItem->getFieldValue(compressedDataPropName);
-            bool ignoreBad = openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor;
+            bool ignoreBad = (bool)(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor);
             try
             {
                 std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
