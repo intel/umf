@@ -9,8 +9,8 @@ import com.intel.vmf.FieldValue;
 import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Variant;
-import com.intel.vmf.XMLReader;
-import com.intel.vmf.XMLWriter;
+//import com.intel.vmf.XMLReader;
+//import com.intel.vmf.XMLWriter;
 import com.intel.vmf.MetadataSchema;
 
 import static org.junit.Assert.*;
@@ -250,7 +250,7 @@ public class VmfMetadataStreamTest
         mdSet6 = stream.queryByReference ("person", emptyNameFv);
         assertEquals(0, mdSet6.getSize());
         
-        XMLWriter writer = new XMLWriter ();
+        /*XMLWriter writer = new XMLWriter ();
         String serialized = stream.serialize (writer);
         assertFalse (serialized.isEmpty());
         
@@ -258,7 +258,7 @@ public class VmfMetadataStreamTest
         MetadataStream newStream = new MetadataStream();
         assertEquals(0, newStream.getAllSchemaNames().length);
         newStream.deserialize(serialized, reader);
-        assertEquals(1, newStream.getAllSchemaNames().length);
+        assertEquals(1, newStream.getAllSchemaNames().length);*/
         
         stream.remove (mdSet4);
         mdSet4 = stream.queryByName("person");

@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 
     cout << "Loading metadata..." << endl;
     cout << "Opening file name '" << FILE_NAME << "'" << endl;
-    
+
     // Open new metadata stream to load and print saved metadata
     MetadataStream loadStream;
     if (!loadStream.open(FILE_NAME, MetadataStream::ReadOnly))

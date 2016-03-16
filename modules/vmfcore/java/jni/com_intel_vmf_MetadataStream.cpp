@@ -791,7 +791,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1serialize (JNIEnv
         if ((writer == NULL) || (*writer == NULL) || (writer->get() == NULL))
             return 0;
 
-        jstring str = env->NewStringUTF(((*obj)->serialize((**writer))).c_str());
+        jstring str = env->NewStringUTF(""/*((*obj)->serialize((**writer))).c_str()*/);
         return str;
     }
     catch (const std::exception &e)
@@ -833,7 +833,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1deserialize (JNIEnv 
         std::string sText(tmp);
         env->ReleaseStringUTFChars(text, tmp);
 
-        (*obj)->deserialize(sText, (**reader));
+        //(*obj)->deserialize(sText, (**reader));
     }
     catch (const std::exception &e)
     {

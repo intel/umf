@@ -26,11 +26,8 @@
 #define __VMF_H__
 
 #include "vmf/metadatastream.hpp"
-#include "vmf/xmlreader.hpp"
-#include "vmf/xmlwriter.hpp"
-#include "vmf/jsonreader.hpp"
-#include "vmf/jsonwriter.hpp"
-#include "vmf/reader_compressed.hpp"
-#include "vmf/writer_compressed.hpp"
+#include "vmf/format_xml.hpp"
+#include "vmf/format_json.hpp"
+#include "vmf/format_compressed.hpp"
 
 #endif /* __VMF_H__ */

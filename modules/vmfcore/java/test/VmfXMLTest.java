@@ -32,8 +32,8 @@ public class VmfXMLTest
     
     protected MetadataStream.VideoSegment videoSegs[];
     
-    protected XMLReader reader;
-    protected XMLWriter writer;
+    //protected XMLReader reader;
+    //protected XMLWriter writer;
     
     protected MetadataSet mdSet;
     
@@ -129,13 +129,14 @@ public class VmfXMLTest
         videoSegs[1] = videoSeg2;
         videoSegs[2] = videoSeg3;
         
-    	reader = new XMLReader();
-        writer = new XMLWriter();
+    	//reader = new XMLReader();
+        //writer = new XMLWriter();
     }
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    
+
+    /*    
     @Test
     public void testXMLReaderAndWriter()
     {
@@ -258,4 +259,5 @@ public class VmfXMLTest
         
         System.gc();
     }
+    */
 }
