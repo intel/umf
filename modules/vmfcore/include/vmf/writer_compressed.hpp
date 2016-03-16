@@ -40,6 +40,7 @@ class VMF_EXPORT WriterCompressed : public IWriter
 public:
     /*!
      * \brief Constructor taking compressor and writer to be used at data writing
+     * \note To use both compression and encryption pass this class to WriterEncrypted as _writer
      * \param _writer Shared pointer to instance of IWriter
      * \param _compressorId ID of compression algorithm
      */

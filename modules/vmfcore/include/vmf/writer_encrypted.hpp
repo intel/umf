@@ -35,6 +35,7 @@ class VMF_EXPORT WriterEncrypted : public IWriter
 public:
     /*!
      * \brief Constructor taking encryptor and writer to be used at data writing
+     * \note To use both compression and encryption pass the WriterCompressed as _writer
      * \param _writer Shared pointer to instance of IWriter
      * \param _encryptor Shared pointer to istance of Encryptor
      * \param encryptAll Specifies whether all data should be encrypted

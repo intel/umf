@@ -1604,7 +1604,6 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
 
         ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update |
                                            vmf::MetadataStream::IgnoreUnknownEncryptor));
-        //TODO schema name, field name
         std::vector<std::string> schemaNames = stream.getAllSchemaNames();
         ASSERT_EQ(schemaNames.size(), 1);
         ASSERT_EQ(schemaNames[0], "com.intel.vmf.encrypted-metadata");
