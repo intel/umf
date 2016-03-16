@@ -1,14 +1,12 @@
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Log;
 import com.intel.vmf.ReferenceDesc;
 import com.intel.vmf.Reference;
 import com.intel.vmf.Variant;
-import com.intel.vmf.Vmf;
-
 import static org.junit.Assert.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,15 +14,9 @@ import org.junit.Test;
 public class VmfReferenceTest 
 {
     @BeforeClass
-    public static void init()
+    public static void disableLogging()
     {
-        Vmf.initialize();
-    }
-    
-    @AfterClass
-    public static void terminate()
-    {
-        Vmf.terminate();
+        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
     
     protected final FieldDesc fds1[] = new FieldDesc [3];
@@ -116,5 +108,20 @@ public class VmfReferenceTest
         assertEquals(md2.getFieldNames().length, ref2.getReferenceMetadata().getFieldNames().length);
         assertEquals(md2.getFrameIndex(), ref2.getReferenceMetadata().getFrameIndex());
         assertEquals(md2.getNumOfFrames(), ref2.getReferenceMetadata().getNumOfFrames());
+    }
+    
+    @Test
+    public void testDeleteByGC()
+    {
+        ref1 = null;
+        ref2 = null;
+        
+        md1 = null;
+        md2 = null;
+        
+        mdDesc1 = null;
+        mdDesc2 = null;
+        
+        System.gc();
     }
 }

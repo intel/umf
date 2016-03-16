@@ -15,7 +15,5 @@ interface IWriter
                   MetadataSchema[] schemas,
                   MetadataSet set);
 
-    String store (MetadataStream.VideoSegment segment);	
-
     String store (MetadataStream.VideoSegment... segments);	
 }

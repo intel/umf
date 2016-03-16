@@ -44,12 +44,6 @@ std::string WriterCompressed::store(const IdType& nextId, const std::string& fil
     return compress(text);
 }
 
-std::string WriterCompressed::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
-{
-    std::string text = writer->store(spSegment);
-    return compress(text);
-}
-
 std::string WriterCompressed::store(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
     std::string text = writer->store(segments);

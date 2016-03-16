@@ -127,10 +127,10 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeMetadataSet (JNI
  * Method:    n_storeAll
  * Signature: (JJLjava/lang/String;Ljava/lang/String;[J[JJ)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr, jlongArray statsAddrs);
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr);
 
 
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr, jlongArray statsAddrs)
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env, jclass, jlong self, jlong nextId, jstring path, jstring checksum, jlongArray segAddrs, jlongArray schemaAddrs, jlong setAddr)
 {
     static const char method_name[] = "JSONWriter::n_1storeAll";
 
@@ -160,11 +160,9 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env,
 
         jlong* segmentsArray = env->GetLongArrayElements (segAddrs, 0);
         jlong* schemasArray  = env->GetLongArrayElements (schemaAddrs, 0);
-        jlong* statsArray    = env->GetLongArrayElements (statsAddrs, 0);
 
         jsize lenSegments = env->GetArrayLength (segAddrs);
         jsize lenSchemas  = env->GetArrayLength (schemaAddrs);
-        jsize lenStats    = env->GetArrayLength(statsAddrs);
 
         for (int i = 0; i < lenSegments; i++)
         {
@@ -178,56 +176,12 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeAll(JNIEnv *env,
             vecSchemas.push_back(*pSpSchema);
         }
 
-        for (int j = 0; j < lenStats; j++)
-        {
-            Stat* pStat = (Stat*) statsArray[j];
-            vecStats.push_back(*pStat);
-        }
 
         env->ReleaseLongArrayElements(segAddrs, segmentsArray, 0);
         env->ReleaseLongArrayElements(schemaAddrs, schemasArray, 0);
-        env->ReleaseLongArrayElements(statsAddrs, schemasArray, 0);
                 
         std::string str = (*obj)->store((IdType&)nextId, sPath, sChecksum, vecSegments, vecSchemas, (**set), vecStats);
         return env->NewStringUTF(str.c_str());
-    }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
-    return 0;
-}
-
-/*
- * Class:     com_intel_vmf_JSONWriter
- * Method:    n_storeSegment
- * Signature: (JJ)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment(JNIEnv *env, jclass, jlong self, jlong segAddr);
-
-
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_JSONWriter_n_1storeSegment (JNIEnv *env, jclass, jlong self, jlong segAddr)
-{
-    static const char method_name[] = "JSONWriter::n_1storeSegment";
-
-    try
-    {
-        std::shared_ptr<JSONWriter>* obj = (std::shared_ptr<JSONWriter>*) self;
-        std::shared_ptr<MetadataStream::VideoSegment>* segment = (std::shared_ptr<MetadataStream::VideoSegment>*) segAddr;
-
-        if ((obj == NULL) || (obj->get() == NULL))
-            return 0;
-
-        if ((segment == NULL) || (*segment == NULL) || (segment->get() == NULL))
-            return 0;
-
-        std::string str = (*obj)->store(*segment);
-        return env->NewStringUTF (str.c_str());
     }
     catch (const std::exception &e)
     {

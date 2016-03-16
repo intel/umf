@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternal 
  * Method:    n_MetadataInternalCopy
  * Signature: (J)J
  */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy(JNIEnv *env, jclass, jlong otherAddr);
+/*JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy(JNIEnv *env, jclass, jlong otherAddr);
 
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalCopy (JNIEnv *env, jclass, jlong otherAddr)
@@ -74,7 +74,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalC
     }
 
     return 0;
-}
+}*/
 
 /*
  * Class:     com_intel_vmf_MetadataInternal
@@ -92,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataInternal_n_1MetadataInternalB
     {
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
 
-        if ((md == NULL) || (*md == NULL) || (md->get() == NULL))
+        if ((md == NULL) || (md->get() == NULL))
             return 0;
 
         return (jlong) new std::shared_ptr <MetadataInternal>(new MetadataInternal((**md)));
@@ -125,7 +125,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *en
     {
         std::shared_ptr<MetadataInternal>* obj = (std::shared_ptr<MetadataInternal>*) self;
 
-        if ((obj == NULL) || (*obj == NULL) || (obj->get() == NULL))
+        if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION (NullPointerException, "Metadata internal is null pointer.");
 
         delete obj;

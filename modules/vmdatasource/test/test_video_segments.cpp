@@ -119,31 +119,12 @@ TEST_F(TestVideoSegments, SaveLoad)
         auto loadedSegments = stream.getAllVideoSegments();
         ASSERT_EQ(1u, loadedSegments.size());
         compareSegments(segment1, loadedSegments[0]);
+
+        std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
+        ASSERT_THROW(stream.addVideoSegment(nullSegment), vmf::NullPointerException);
+
         stream.close();
     }
-}
-
-TEST_P(TestVideoSegments, ParseSegment)
-{
-    SerializerType type = GetParam();
-    if(type == TypeXML)
-    {
-	writer.reset(new XMLWriter());
-	reader.reset(new XMLReader());
-    }
-    else if(type == TypeJson)
-    {
-	writer.reset(new JSONWriter());
-	reader.reset(new JSONReader());
-    }
-
-    std::string result = writer->store(segments[0]);
-
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    reader->parseVideoSegments(result, loadedSegments);
-
-    ASSERT_EQ(1u, loadedSegments.size());
-    compareSegments(segments[0], loadedSegments[0]);
 }
 
 TEST_P(TestVideoSegments, ParseSegmentsArray)
@@ -168,6 +149,10 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
     ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
 	compareSegments(segments[i], loadedSegments[i]);
+
+    std::shared_ptr<MetadataStream::VideoSegment> nullSegment = nullptr;
+    segments.emplace_back(nullSegment);
+    ASSERT_THROW(writer->store(segments), vmf::IncorrectParamException);
 }
 
 TEST_P(TestVideoSegments, ParseSegmentsAll)

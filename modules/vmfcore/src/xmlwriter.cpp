@@ -230,68 +230,6 @@ static void add(xmlNodePtr statNode, const Stat& stat)
     }
 }
 
-std::string XMLWriter::store(const std::shared_ptr<MetadataSchema>& spSchema)
-{
-    if( spSchema == nullptr )
-        VMF_EXCEPTION(vmf::Exception, "Schema pointer is null");
-
-    xmlDocPtr doc = xmlNewDoc(NULL);
-    xmlNodePtr schemaNode = xmlNewNode(NULL, BAD_CAST TAG_SCHEMA);
-    if(schemaNode == NULL)
-        VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for schema" );
-
-    if(xmlDocSetRootElement(doc, schemaNode) != 0)
-        VMF_EXCEPTION(vmf::Exception, "Can't set root element to the document" );
-
-    add(schemaNode, spSchema);
-
-    xmlChar *buf;
-    int size;
-    xmlDocDumpMemory(doc, &buf, &size);
-    if (buf == NULL)
-        VMF_EXCEPTION(Exception, "Can't save xmlDoc into the buffer");
-
-    std::string outputString = (char *)buf;
-
-    xmlFree(buf);
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
-
-    return outputString;
-}
-
-std::string XMLWriter::store(const std::shared_ptr<Metadata>& spMetadata)
-{
-    if( spMetadata == nullptr )
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
-
-    xmlDocPtr doc = xmlNewDoc(NULL);
-    xmlNodePtr metadataNode = xmlNewNode(NULL, BAD_CAST TAG_METADATA);
-    if(metadataNode == NULL)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for metadata" );
-
-    if(xmlDocSetRootElement(doc, metadataNode) != 0)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
-
-    add(metadataNode, spMetadata);
-
-    xmlChar *buf;
-    int size;
-    xmlDocDumpMemory(doc, &buf, &size);
-    if (buf == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into the buffer");
-
-    std::string outputString = (char *)buf;
-
-    xmlFree(buf);
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
-
-    return outputString;
-}
-
 std::string XMLWriter::store(const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
 {
     if(schemas.empty())
@@ -379,9 +317,15 @@ std::string XMLWriter::store(const IdType& nextId,
 
     for(auto spMetadata : set)
     {
+        if (spMetadata == nullptr)
+            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
+
         bool NoSchemaForMetadata = true;
         for(auto spSchema : schemas)
         {
+            if (spSchema == nullptr)
+                VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
             if(spMetadata->getSchemaName() == spSchema->getName())
                 NoSchemaForMetadata = false;
         }
@@ -437,16 +381,15 @@ std::string XMLWriter::store(const IdType& nextId,
 
     for(auto spSchema : schemas)
     {
-        if( spSchema == nullptr )
+        if (spSchema == nullptr)
             VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
         xmlNodePtr schemaNode = xmlNewChild(schemasArrayNode, NULL, BAD_CAST TAG_SCHEMA, NULL);
         add(schemaNode, spSchema);
     }
 
     for(auto spMetadata : set)
     {
-        if( spMetadata == nullptr )
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
         xmlNodePtr metadataNode = xmlNewChild(metadataArrayNode, NULL, BAD_CAST TAG_METADATA, NULL);
         add(metadataNode, spMetadata);
     }
@@ -462,38 +405,6 @@ std::string XMLWriter::store(const IdType& nextId,
     xmlDocDumpMemory(doc, &buf, &size);
     if (buf == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't save xmlDoc into the buffer");
-
-    std::string outputString = (char *)buf;
-
-    xmlFree(buf);
-    xmlFreeDoc(doc);
-    xmlCleanupParser();
-    xmlMemoryDump();
-
-    return outputString;
-}
-
-std::string XMLWriter::store(const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
-{
-    if (spSegment == nullptr)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Video segment pointer is null");
-
-    xmlDocPtr doc = xmlNewDoc(NULL);
-
-    xmlNodePtr segmentNode = xmlNewNode(NULL, BAD_CAST TAG_VIDEO_SEGMENT);
-    if (segmentNode == NULL)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode for video segments");
-
-    if (xmlDocSetRootElement(doc, segmentNode) != 0)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't set root element to the document");
-
-    add(segmentNode, spSegment);
-
-    xmlChar *buf;
-    int size;
-    xmlDocDumpMemory(doc, &buf, &size);
-    if (buf == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into the buffer");
 
     std::string outputString = (char *)buf;
 
