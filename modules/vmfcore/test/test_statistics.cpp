@@ -786,7 +786,7 @@ TEST_P( TestStatistics, ExportImportJSON )
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
                         ::testing::Values(
                             vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
-                            ,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
+                            //,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
                             ));
 
 //        std::cout << "nameCount     = " << nameCount.get_integer() << std::endl;
