@@ -81,21 +81,19 @@ endif()
 #============================================================================
 # Compile targets
 #============================================================================
-add_library(cryptopp-object OBJECT ${cryptopp_SOURCES})
+add_library(cryptopp STATIC ${cryptopp_SOURCES})
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	# Enables -fPIC on all 64-bit platforms
-	set_target_properties(cryptopp-object PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+       # Enables -fPIC on all 64-bit platforms
+       set_target_properties(cryptopp PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 endif()
 
-add_library(cryptopp-static STATIC $<TARGET_OBJECTS:cryptopp-object>)
-
-target_include_directories(cryptopp-static PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/cryptopp>)
+target_include_directories(cryptopp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/cryptopp>)
 
 if(NOT MSVC)
 	set(COMPAT_VERSION ${cryptopp_VERSION_MAJOR}.${cryptopp_VERSION_MINOR})
 
-	set_target_properties(cryptopp-static
+	set_target_properties(cryptopp
 			PROPERTIES
 			OUTPUT_NAME cryptopp)
 endif()
@@ -104,8 +102,8 @@ endif()
 # Third-party libraries
 #============================================================================
 if(WIN32)
-	target_link_libraries(cryptopp-static ws2_32)
+	target_link_libraries(cryptopp ws2_32)
 endif()
 
 find_package(Threads)
-target_link_libraries(cryptopp-static ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(cryptopp ${CMAKE_THREAD_LIBS_INIT})

@@ -140,7 +140,7 @@ elseif(UNIX)
     target_link_libraries(${VMF_LIBRARY_NAME} dl)
 endif()
 
-target_link_libraries(${VMF_LIBRARY_NAME} cryptopp-static)
+target_link_libraries(${VMF_LIBRARY_NAME} cryptopp)
 
 set_target_properties(${VMF_LIBRARY_NAME} PROPERTIES FOLDER "vmf library")
 
