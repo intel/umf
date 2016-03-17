@@ -197,6 +197,7 @@ endif()
 add_subdirectory(${VMF_3PTY_DIR}/xmp)
 add_subdirectory(${VMF_3PTY_DIR}/libxml2)
 add_subdirectory(${VMF_3PTY_DIR}/libjson)
+add_subdirectory(${VMF_3PTY_DIR}/cryptopp)
 add_subdirectory(modules)
 
 if(BUILD_SAMPLES)
