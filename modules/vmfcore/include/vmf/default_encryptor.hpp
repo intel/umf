@@ -34,53 +34,28 @@ class VMF_EXPORT DefaultEncryptor : public Encryptor
 {
 public:
     DefaultEncryptor(const vmf_string& _passphrase) : passphrase(_passphrase)
-    {
-        //VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
-        //IncorrectParamException in case of incorrect encryption parameters
-    }
+    { }
 
     /*!
      * \brief Encrypt data
      * \param [in] input input text data
      * \param [out] output where to put binary encrypted data
      */
-    virtual void encrypt(const vmf_string& input, vmf_rawbuffer& output)
-    {
-        //VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
-        //IncorrectParamException in case of incorrect encryption parameters
-        output = vmf_rawbuffer(input.size());
-        size_t plen = passphrase.size();
-        for(size_t i = 0; i < input.size(); i++)
-        {
-            output[i] = input[i] ^ passphrase[i%plen];
-        }
-    }
+    virtual void encrypt(const vmf_string& input, vmf_rawbuffer& output);
 
     /*!
      * \brief Decrypt data
      * \param [in] input binary encrypted input data
      * \param [out] output where to put decrypted text data
      */
-    virtual void decrypt(const vmf_rawbuffer& input, vmf_string& output)
-    {
-        //VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
-        //IncorrectParamException in case of incorrect encryption parameters (like key, etc.)
-        output = vmf_string(input.size(), '\0');
-        size_t plen = passphrase.size();
-        for(size_t i = 0; i < input.size(); i++)
-        {
-            output[i] = input[i] ^ passphrase[i%plen];
-        }
-
-    }
+    virtual void decrypt(const vmf_rawbuffer& input, vmf_string& output);
 
     /*!
      * \brief Gets the hint for the algorithm (for example, the name of the algorithm)
      */
     virtual vmf_string getHint()
     {
-        return "out = in xor passphrase[i/passlength]";
-       // VMF_EXCEPTION(NotImplementedException, "Default encryption is to be implemented");
+        return "Password-Based decryptor using TripleDES and HMAC/SHA-1";
     }
 
     /*!

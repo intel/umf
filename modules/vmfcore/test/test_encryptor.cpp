@@ -96,7 +96,7 @@ protected:
 };
 
 
-TEST_P(TestEncryptor, LossesOnCompression)
+TEST_P(TestEncryptor, LossesOnEncryption)
 {
     std::shared_ptr<Encryptor> encryptor = getEncryptor(GetParam());
     int nChars = 0;
