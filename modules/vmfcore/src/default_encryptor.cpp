@@ -1,5 +1,6 @@
 #include "vmf/default_encryptor.hpp"
 
+#include "dll.h"
 #include "filters.h"
 #include "default.h"
 
