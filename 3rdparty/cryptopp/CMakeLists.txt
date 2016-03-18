@@ -58,7 +58,7 @@ file(GLOB cryptopp_HEADERS *.h)
 file(GLOB cryptopp_SOURCES_TEST bench.cpp bench2.cpp test.cpp validat1.cpp validat2.cpp validat3.cpp adhoc.cpp datatest.cpp regtest.cpp fipsalgt.cpp dlltest.cpp fipstest.cpp)
 
 # Library sources
-file(GLOB cryptopp_SOURCES *.cpp x64dll.asm x64masm.asm)
+file(GLOB cryptopp_SOURCES *.cpp)
 list(REMOVE_ITEM cryptopp_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/cryptlib.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/cpu.cpp
@@ -77,6 +77,15 @@ set(cryptopp_SOURCES
 if(MINGW)
 	list(APPEND cryptopp_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/winpipes.cpp)
 endif()
+
+if(WIN32 AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
+   enable_language(ASM_MASM)
+   if(CMAKE_ASM_MASM_COMPILER_WORKS)
+         set(cryptopp_SOURCES ${cryptopp_SOURCES} x64dll.asm x64masm.asm)
+   else()
+         message(WARNING "MASM compiler required for cryptopp win64 compilation wasn't found or doesn't work")
+   endif(CMAKE_ASM_MASM_COMPILER_WORKS)
+endif(WIN32 AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
 
 #============================================================================
 # Compile targets
