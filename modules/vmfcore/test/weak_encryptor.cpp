@@ -26,7 +26,7 @@ void WeakEncryptor::decrypt(const vmf_rawbuffer &input, vmf_string &output)
         output.reserve(input.size()-1);
         if((input[0] ^ key) != magic)
         {
-            throw IncorrectParamException("Incorrect decryption key!");
+            VMF_EXCEPTION(IncorrectParamException, "Incorrect decryption key!");
         }
         for(size_t i = 1; i < input.size(); i++)
         {
