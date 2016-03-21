@@ -30,6 +30,11 @@
 namespace vmf
 {
 
+/*!
+ * \class WriterEncrypted
+ * \brief The class performs serialization of the stream with encryption
+ * based on provided instance of IWriter and Encryptor interfaces
+ */
 class VMF_EXPORT WriterEncrypted : public IWriter
 {
 public:

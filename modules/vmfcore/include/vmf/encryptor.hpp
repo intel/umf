@@ -28,6 +28,10 @@ namespace vmf
  * \brief %Encryptor header files
  */
 
+/*!
+ * \class Encryptor
+ * \brief Interface for all encryption algorithms
+ */
 class VMF_EXPORT Encryptor
 {
 public:
