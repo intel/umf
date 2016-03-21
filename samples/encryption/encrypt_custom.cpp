@@ -44,7 +44,7 @@ int encrypt_custom(const string& videoFile, EncryptionScope scope)
         exit(1);
     }
 
-    std::shared_ptr<Encryptor> encryptor = std::make_shared<MyEncryptor>();
+    std::shared_ptr<Encryptor> encryptor = std::make_shared<MyEncryptor>("thereisnospoon");
 
     cout << "Generating metadata..." << endl;
     generateEncryptedMetadata(mdStream, scope);

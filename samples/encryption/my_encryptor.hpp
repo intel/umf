@@ -21,22 +21,25 @@
 #include "vmf/vmf.hpp"
 
 //User-created encryption algorithm should implement Encryptor interface
-
 class MyEncryptor : public vmf::Encryptor
 {
 public:
-    MyEncryptor();
+
+    MyEncryptor(std::string _passphrase) : passphrase(_passphrase){ }
+
+    virtual ~MyEncryptor() { }
+
+    virtual vmf::vmf_string getHint()
+    {
+        return "Simple PRNG-based XOR encryption";
+    }
 
     virtual void encrypt(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output);
 
     virtual void decrypt(const vmf::vmf_rawbuffer& input, vmf::vmf_string& output);
 
-    virtual vmf::vmf_string getHint()
-    {
-        return "some human-understandable information about that encryption algorithm";
-    }
-
-    virtual ~MyEncryptor() { }
+private:
+    std::string passphrase;
 };
 
 
