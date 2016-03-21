@@ -33,7 +33,7 @@ namespace vmf
 /*!
  * \class ReaderEncrypted
  * \brief The class performs deserialization of encrypted stream
- * based on provided instance of IReader and
+ * based on provided instance of IReader and Encryptor
  */
 class VMF_EXPORT ReaderEncrypted : public IReader
 {

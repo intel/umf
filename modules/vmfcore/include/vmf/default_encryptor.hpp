@@ -28,7 +28,11 @@ namespace vmf
  * \brief %DefaultEncryptor header files
  */
 
-//TODO: rename it and impementent it
+/*!
+ * \class DefaultEncryptor
+ * \brief The class representing default algorithms of encryption and decryption
+ * (currently this is TripleDES with HMAC/SHA-1)
+ */
 
 class VMF_EXPORT DefaultEncryptor : public Encryptor
 {
