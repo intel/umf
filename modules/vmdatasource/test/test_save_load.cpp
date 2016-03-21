@@ -1406,26 +1406,13 @@ protected:
         vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
         //vmf::terminate();
     }
-
-    std::shared_ptr<vmf::Encryptor> getEncryptor(vmf::CryptAlgo algo)
-    {
-        switch(algo)
-        {
-            case vmf::CryptAlgo::DEFAULT:
-                return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
-            case vmf::CryptAlgo::WEAK:
-                return std::make_shared<vmf::WeakEncryptor>(42);
-            default:
-                return nullptr;
-        }
-    }
 };
 
 
 TEST_P(TestSaveLoadCompressionEncryption, Checksum)
 {
     std::string name = std::get<0>(GetParam());
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
 
     std::string checksum1, checksum2;
     {
@@ -1475,7 +1462,7 @@ TEST_P(TestSaveLoadCompressionEncryption, Checksum)
 TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
 {
     std::string name = std::get<0>(GetParam());
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
 
     if(name == "com.intel.vmf.compressor.test.bloating")
     {
@@ -1525,7 +1512,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
 TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
 {
     std::string name = std::get<0>(GetParam());
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(std::get<1>(GetParam()));
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
 
     std::string checksum1, checksum2;
     {
@@ -1604,19 +1591,6 @@ protected:
         vmf::terminate();
     }
 
-    std::shared_ptr<vmf::Encryptor> getEncryptor(vmf::CryptAlgo algo)
-    {
-        switch(algo)
-        {
-            case vmf::CryptAlgo::DEFAULT:
-                return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
-            case vmf::CryptAlgo::WEAK:
-                return std::make_shared<vmf::WeakEncryptor>(42);
-            default:
-                return nullptr;
-        }
-    }
-
     vmf::vmf_string  TEST_SCHEMA_NAME;
     vmf::vmf_string  TEST_DESC_NAME;
     vmf::vmf_string  TEST_FIELD_NAME;
@@ -1630,7 +1604,7 @@ protected:
 
 TEST_P(TestSaveLoadEncryptionSubsets, OneField)
 {
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
 
     {
         vmf::MetadataStream stream;
@@ -1691,7 +1665,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
 
 TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
 {
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
 
     {
         vmf::MetadataStream stream;
@@ -1751,7 +1725,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
 
 TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
 {
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
 
     {
         vmf::MetadataStream stream;
@@ -1819,7 +1793,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
 
 TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
 {
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
 
     {
         vmf::MetadataStream stream;
@@ -1886,7 +1860,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
 
 TEST_P(TestSaveLoadEncryptionSubsets, Schema)
 {
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
 
     {
         vmf::MetadataStream stream;

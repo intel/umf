@@ -16,7 +16,6 @@
  */
 #include "test_precomp.hpp"
 #include "fstream"
-#include "weak_encryptor.hpp"
 
 using namespace vmf;
 
@@ -149,19 +148,6 @@ protected:
                 ASSERT_EQ(goldRefs[i].getReferenceMetadata().lock()->getId(), testRefs[i].getReferenceMetadata().lock()->getId());
                 ASSERT_EQ(goldRefs[i].getReferenceDescription()->name, testRefs[i].getReferenceDescription()->name);
             }
-        }
-    }
-
-    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
-    {
-        switch(algo)
-        {
-            case CryptAlgo::DEFAULT:
-                return std::make_shared<DefaultEncryptor>("thereisnospoon");
-            case CryptAlgo::WEAK:
-                return std::make_shared<WeakEncryptor>(42);
-            default:
-                return nullptr;
         }
     }
 

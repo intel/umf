@@ -16,7 +16,6 @@
  */
 
 #include "test_precomp.hpp"
-#include "weak_encryptor.hpp"
 
 using namespace vmf;
 
@@ -31,21 +30,6 @@ protected:
     void TearDown()
     {
         vmf::terminate();
-    }
-
-    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong = false)
-    {
-        std::string wrongKey = "goodbyemranderson";
-        std::string rightKey = "thereisnospoon";
-        switch(algo)
-        {
-            case CryptAlgo::DEFAULT:
-                return std::make_shared<DefaultEncryptor>(wrong ? wrongKey : rightKey);
-            case CryptAlgo::WEAK:
-                return std::make_shared<WeakEncryptor>(wrong ? 13 : 42);
-            default:
-                return nullptr;
-        }
     }
 
     std::string generateData(int nChars)
