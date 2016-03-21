@@ -1387,51 +1387,9 @@ public:
     }
 };
 
-enum CryptAlgo
-{
-    DEFAULT, BAD, NONE
-};
-
-//Some testing class for encryption
-class BadEncryptor : public vmf::Encryptor
-{
-public:
-    BadEncryptor(char _key) : key(_key) { }
-
-    virtual void encrypt(const vmf::vmf_string &input, vmf::vmf_rawbuffer &output)
-    {
-        output.clear();
-        output.reserve(input.length());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual void decrypt(const vmf::vmf_rawbuffer &input, vmf::vmf_string &output)
-    {
-        output.clear();
-        output.reserve(input.size());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual vmf::vmf_string getHint()
-    {
-        return vmf::vmf_string("bad encryptor for tests");
-    }
-
-    virtual ~BadEncryptor() { }
-
-private:
-    char key;
-};
-
 
 class TestSaveLoadCompressionEncryption : public ::testing::TestWithParam< std::tuple<std::string,
-                                                                                      CryptAlgo> >
+                                                                                      vmf::CryptAlgo> >
 {
 protected:
     void SetUp()
@@ -1449,14 +1407,14 @@ protected:
         //vmf::terminate();
     }
 
-    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    std::shared_ptr<vmf::Encryptor> getEncryptor(vmf::CryptAlgo algo)
     {
         switch(algo)
         {
-            case CryptAlgo::DEFAULT:
+            case vmf::CryptAlgo::DEFAULT:
                 return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
-            case CryptAlgo::BAD:
-                return std::make_shared<BadEncryptor>(42);
+            case vmf::CryptAlgo::WEAK:
+                return std::make_shared<vmf::WeakEncryptor>(42);
             default:
                 return nullptr;
         }
@@ -1620,11 +1578,11 @@ INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompressionEncryption,
                             ::testing::Values("com.intel.vmf.compressor.zlib",
                                               "unregistered",
                                               "com.intel.vmf.compressor.test.bloating"),
-                            ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::BAD, CryptAlgo::NONE)
+                            ::testing::Values(vmf::CryptAlgo::DEFAULT, vmf::CryptAlgo::WEAK, vmf::CryptAlgo::NONE)
                             ));
 
 
-class TestSaveLoadEncryptionSubsets : public ::testing::TestWithParam<CryptAlgo>
+class TestSaveLoadEncryptionSubsets : public ::testing::TestWithParam<vmf::CryptAlgo>
 {
 protected:
     void SetUp()
@@ -1646,14 +1604,14 @@ protected:
         vmf::terminate();
     }
 
-    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    std::shared_ptr<vmf::Encryptor> getEncryptor(vmf::CryptAlgo algo)
     {
         switch(algo)
         {
-            case CryptAlgo::DEFAULT:
+            case vmf::CryptAlgo::DEFAULT:
                 return std::make_shared<vmf::DefaultEncryptor>("thereisnospoon");
-            case CryptAlgo::BAD:
-                return std::make_shared<BadEncryptor>(42);
+            case vmf::CryptAlgo::WEAK:
+                return std::make_shared<vmf::WeakEncryptor>(42);
             default:
                 return nullptr;
         }
@@ -1992,6 +1950,6 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
 
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadEncryptionSubsets,
-                        ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::BAD, CryptAlgo::NONE));
+                        ::testing::Values(vmf::CryptAlgo::DEFAULT, vmf::CryptAlgo::WEAK, vmf::CryptAlgo::NONE));
 
 

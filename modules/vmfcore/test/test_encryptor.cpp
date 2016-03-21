@@ -16,50 +16,9 @@
  */
 
 #include "test_precomp.hpp"
+#include "weak_encryptor.hpp"
 
 using namespace vmf;
-
-enum CryptAlgo
-{
-    DEFAULT, BAD, NONE
-};
-
-//Some testing class for encryption
-class BadEncryptor : public vmf::Encryptor
-{
-public:
-    BadEncryptor(char _key) : key(_key) { }
-
-    virtual void encrypt(const vmf_string &input, vmf_rawbuffer &output)
-    {
-        output.clear();
-        output.reserve(input.length());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual void decrypt(const vmf_rawbuffer &input, vmf_string &output)
-    {
-        output.clear();
-        output.reserve(input.size());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual vmf_string getHint()
-    {
-        return vmf_string("bad encryptor for tests");
-    }
-
-    virtual ~BadEncryptor() { }
-
-private:
-    char key;
-};
 
 class TestEncryptor : public ::testing::TestWithParam<CryptAlgo>
 {
@@ -74,14 +33,16 @@ protected:
         vmf::terminate();
     }
 
-    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo)
+    std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong = false)
     {
+        std::string wrongKey = "goodbyemranderson";
+        std::string rightKey = "thereisnospoon";
         switch(algo)
         {
             case CryptAlgo::DEFAULT:
-                return std::make_shared<DefaultEncryptor>("thereisnospoon");
-            case CryptAlgo::BAD:
-                return std::make_shared<BadEncryptor>(42);
+                return std::make_shared<DefaultEncryptor>(wrong ? wrongKey : rightKey);
+            case CryptAlgo::WEAK:
+                return std::make_shared<WeakEncryptor>(wrong ? 13 : 42);
             default:
                 return nullptr;
         }
@@ -125,5 +86,25 @@ TEST_P(TestEncryptor, DecryptEmpty)
 }
 
 
+TEST_P(TestEncryptor, DecryptWrongPassword)
+{
+    std::shared_ptr<Encryptor> rightEncryptor = getEncryptor(GetParam(), false);
+    std::shared_ptr<Encryptor> wrongEncryptor = getEncryptor(GetParam(), true);
+    //decryption of empty input should always produce empty output, don't check it
+    int nChars = 1;
+    do
+    {
+        std::string data = generateData(nChars);
+        vmf_rawbuffer encrypted;
+        rightEncryptor->encrypt(data, encrypted);
+        std::string wrongResult;
+        ASSERT_THROW(wrongEncryptor->decrypt(encrypted, wrongResult), IncorrectParamException);
+        ASSERT_NE(data, wrongResult);
+        nChars *= 2;
+    }
+    while(nChars < (1 << 20));
+}
+
+
 INSTANTIATE_TEST_CASE_P(UnitTest, TestEncryptor,
-                        ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::BAD));
+                        ::testing::Values(CryptAlgo::DEFAULT, CryptAlgo::WEAK));

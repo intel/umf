@@ -16,6 +16,7 @@
  */
 #include "test_precomp.hpp"
 #include "fstream"
+#include "weak_encryptor.hpp"
 
 using namespace vmf;
 
@@ -24,49 +25,6 @@ enum SerializerType
     TypeXML = 0,
     TypeJson = 1
 };
-
-enum CryptAlgo
-{
-    DEFAULT, BAD, NONE
-};
-
-//Some testing class for encryption
-class BadEncryptor : public vmf::Encryptor
-{
-public:
-    BadEncryptor(char _key) : key(_key) { }
-
-    virtual void encrypt(const vmf_string &input, vmf_rawbuffer &output)
-    {
-        output.clear();
-        output.reserve(input.length());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual void decrypt(const vmf_rawbuffer &input, vmf_string &output)
-    {
-        output.clear();
-        output.reserve(input.size());
-        for(char c : input)
-        {
-            output.push_back(c ^ key);
-        }
-    }
-
-    virtual vmf_string getHint()
-    {
-        return vmf_string("bad encryptor for tests");
-    }
-
-    virtual ~BadEncryptor() { }
-
-private:
-    char key;
-};
-
 
 class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string, CryptAlgo> >
 {
@@ -200,8 +158,8 @@ protected:
         {
             case CryptAlgo::DEFAULT:
                 return std::make_shared<DefaultEncryptor>("thereisnospoon");
-            case CryptAlgo::BAD:
-                return std::make_shared<BadEncryptor>(42);
+            case CryptAlgo::WEAK:
+                return std::make_shared<WeakEncryptor>(42);
             default:
                 return nullptr;
         }
@@ -747,5 +705,5 @@ INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
                                            ::testing::Values("com.intel.vmf.compressor.zlib", ""),
                                            ::testing::Values(CryptAlgo::DEFAULT,
-                                                             CryptAlgo::BAD,
+                                                             CryptAlgo::WEAK,
                                                              CryptAlgo::NONE)));
