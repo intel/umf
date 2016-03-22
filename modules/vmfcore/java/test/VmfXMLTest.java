@@ -136,6 +136,11 @@ public class VmfXMLTest
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Test
+    public void testXML_DUMMY()
+    {
+        String text = "";
+    }
     /*    
     @Test
     public void testXMLReaderAndWriter()

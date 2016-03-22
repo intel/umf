@@ -148,6 +148,11 @@ public class VmfJSONTest
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Test
+    public void testJSON_DUMMY()
+    {
+        String text = "";
+    }
     /*
     
     @Test
