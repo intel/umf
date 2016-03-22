@@ -291,6 +291,8 @@ void XMPMetadataSource::loadMetadata(const vmf_string& pathToCurrentMetadata, co
     metadataAccessor->setFrameIndex(frameIndex, numOfFrames);
     metadataAccessor->setTimestamp(timestamp, duration);
     metadataAccessor->setId(id);
+    //since we've already checked the flag isEncrypted and encrypted data presence
+    //that's why we set them the following way
     if(encryptedData.length() > 0)
     {
         metadataAccessor->setUseEncryption(isEncrypted);
