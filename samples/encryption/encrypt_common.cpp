@@ -141,7 +141,7 @@ void readAndDumpEncryptedMetadata(const vmf_string& videoFile, std::shared_ptr<E
         cout << "* (" << sNum << ") [schema]: " << sName;
         if(schemaEncrypted)
         {
-            cout << ", encrypted " << schemaEncrypted;
+            cout << ", encrypted";
         }
         cout << endl;
 
@@ -160,10 +160,7 @@ void readAndDumpEncryptedMetadata(const vmf_string& videoFile, std::shared_ptr<E
             MetadataSet mdSet = loadStream.queryByName(setName);
             cout << "\t* (" << sNum << "." << setNum << ") [set]: ";
             cout << setName << "(" << mdSet.size() << " items)";
-            if(metadescEncrypted)
-            {
-                cout << ", encrypted";
-            }
+
 
             if(mdSet.empty()) continue;
             vector<string> fields(mdSet[0]->getFieldNames());
@@ -178,7 +175,12 @@ void readAndDumpEncryptedMetadata(const vmf_string& videoFile, std::shared_ptr<E
                 }
                 separator = ", ";
             }
-            cout << "}" << endl;
+            cout << "}";
+            if(metadescEncrypted)
+            {
+                cout << ", encrypted";
+            }
+            cout << endl;
             int itemNum = 0;
             for(const std::shared_ptr<Metadata>& item : mdSet)
             {

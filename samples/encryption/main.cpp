@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
         encrypt_builtin(videoFile, scope);
 
-        cout << endl << endl;
+        cout << endl;
 
         // cleanup existing metadata
         if (mds.open(videoFile, MetadataStream::Update |
@@ -100,6 +100,8 @@ int main(int argc, char** argv)
         }
 
         encrypt_custom(videoFile, scope);
+
+        cout << endl << endl;
     }
 
     vmf::terminate();
