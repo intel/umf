@@ -138,7 +138,7 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::array<int, 5>
-        expected{ 1, 1, 2, 0, 3 },
+        expected{ { 1, 1, 2, 0, 3 } },
         actual = format->parse(result, metadata, schemas, loadedSegments, attribs);
 
     ASSERT_EQ(2u, loadedSegments.size());
@@ -162,7 +162,7 @@ TEST_P(TestVideoSegments, ParseSegmentsAll)
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::array<int, 5>
-        expected{1, 1, 2, 0, 3},
+        expected{ { 1, 1, 2, 0, 3 } },
         actual = format->parse(result, metadata, schemas, loadedSegments, attribs);
 
     ASSERT_EQ(2u, loadedSegments.size());

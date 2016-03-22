@@ -254,7 +254,7 @@ TEST_P(TestSerialization, Parse_schemasArray)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{0, 2, 0, 0, 0},
+        expected{ { 0, 2, 0, 0, 0 } },
         actual = format->parse(result, metadata, schemas, segments, attribs);
     ASSERT_EQ(expected, actual);
     for(const auto& spSchema : schemas)
@@ -277,7 +277,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ 11, 2, 0, 0, 3 },
+        expected{ { 11, 2, 0, 0, 3 } },
         actual = format->parse(result, metadata, schemas, segments, attribs);
     ASSERT_EQ(expected, actual);
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
@@ -300,7 +300,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ (int)set.size(), 0, 0, 0, 0 },
+        expected{ { (int)set.size(), 0, 0, 0, 0 } },
         actual = format->parse(result, md, schemas, segments, attribs);
     ASSERT_EQ(expected, actual);
 
@@ -334,7 +334,7 @@ TEST_P(TestSerialization, Parse_metadataAll)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ (int)set.size(), (int)schemas.size(), 0, 0, 3 },
+        expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
         actual = format->parse(result, md, schemas, segments, attribs);
     ASSERT_EQ(expected, actual);
 
@@ -386,7 +386,7 @@ TEST_P(TestSerialization, Parse_segmentArray)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ 0, 0, (int)segments.size(), 0, 0 },
+        expected{ { 0, 0, (int)segments.size(), 0, 0 } },
         actual = format->parse(result, md, schemas, loadedSegments, attribs);
     ASSERT_EQ(expected, actual);
 
@@ -420,7 +420,7 @@ TEST_P(TestSerialization, DISABLED_CheckIgnoreUnknownCompressor)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ 1, 1, 0, 0, 0 },
+        expected{ { 1, 1, 0, 0, 0 } },
         actual = format->parse(result, md, schemas1, segments, attribs);
     ASSERT_EQ(expected, actual);
 

@@ -56,7 +56,8 @@ void demoLoadSchemaFromFile(const string& schemaFilePath, const string& schemaNa
 		ss << inputFile.rdbuf();
 
 		// Parse schema content and load it into stream
-		stream.deserialize(ss.str(), FormatXML());
+        FormatXML xml;
+		stream.deserialize(ss.str(), xml);
 
 		// Get a pointer to the schema
 		shared_ptr<MetadataSchema> spSchema = stream.getSchema(schemaName);
