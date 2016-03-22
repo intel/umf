@@ -914,42 +914,57 @@ void MetadataStream::decrypt()
         }
         else
         {
-            for(std::string fvName : meta->getFieldNames())
+            if(meta->getUseEncryption())
             {
-                FieldValue& fv = *meta->findField(fvName);
-                const std::string& encryptedData = fv.getEncryptedData();
-                if(encryptedData.length() > 0)
+                VMF_EXCEPTION(IncorrectParamException, "No encrypted metadata presented while the flag is on");
+            }
+            else
+            {
+                for(std::string fvName : meta->getFieldNames())
                 {
-                    if(!m_encryptor)
+                    FieldValue& fv = *meta->findField(fvName);
+                    const std::string& encryptedData = fv.getEncryptedData();
+                    if(encryptedData.length() > 0)
                     {
-                        if(!ignoreBad)
+                        if(!m_encryptor)
                         {
-                            VMF_EXCEPTION(IncorrectParamException,
-                                          "No decryption algorithm provided for encrypted data");
+                            if(!ignoreBad)
+                            {
+                                VMF_EXCEPTION(IncorrectParamException,
+                                              "No decryption algorithm provided for encrypted data");
+                            }
+                        }
+                        else
+                        {
+                            vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
+                            std::string decrypted;
+                            try
+                            {
+                                m_encryptor->decrypt(encBuf, decrypted);
+                            }
+                            catch(Exception& ee)
+                            {
+                                //if we've failed with decryption (whatever the reason was)
+                                //and we're allowed to ignore that
+                                if(!ignoreBad)
+                                {
+                                    std::string message = "Decryption failed: " + std::string(ee.what()) +
+                                                          ", hint: " + m_encryptor->getHint();
+                                    VMF_EXCEPTION(IncorrectParamException, message);
+                                }
+                            }
+                            Variant v; v.fromString(fv.getType(), decrypted);
+                            fv = FieldValue(fvName, v, fv.getUseEncryption());
+                            fv.setEncryptedData("");
                         }
                     }
                     else
                     {
-                        vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
-                        std::string decrypted;
-                        try
+                        if(fv.getUseEncryption())
                         {
-                            m_encryptor->decrypt(encBuf, decrypted);
+                            VMF_EXCEPTION(IncorrectParamException,
+                                          "No encrypted field data provided while the flag is on");
                         }
-                        catch(Exception& ee)
-                        {
-                            //if we've failed with decryption (whatever the reason was)
-                            //and we're allowed to ignore that
-                            if(!ignoreBad)
-                            {
-                                std::string message = "Decryption failed: " + std::string(ee.what()) +
-                                                      ", hint: " + m_encryptor->getHint();
-                                VMF_EXCEPTION(IncorrectParamException, message);
-                            }
-                        }
-                        Variant v; v.fromString(fv.getType(), decrypted);
-                        fv = FieldValue(fvName, v, fv.getUseEncryption());
-                        fv.setEncryptedData("");
                     }
                 }
             }
