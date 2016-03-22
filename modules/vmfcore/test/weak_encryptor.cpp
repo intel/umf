@@ -4,7 +4,7 @@
 namespace vmf
 {
 
-const char WeakEncryptor::magic = 169;
+const char WeakEncryptor::magic = 109;
 
 void WeakEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
 {
