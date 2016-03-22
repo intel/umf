@@ -58,7 +58,7 @@ public:
         const std::vector<std::shared_ptr<MetadataSchema>>& schemas = {},
         const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments = {},
         //const std::vector<Stat>& stats = {},
-        const AttribMap& attribs = {} // nextId, checksum, etc
+        const AttribMap& attribs = AttribMap() // nextId, checksum, etc
         ) = 0;
 
     /*!
