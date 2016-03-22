@@ -524,6 +524,7 @@ TEST_P(TestSerialization, EncryptOneField)
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
+    ASSERT_EQ(encrypted->findField("name")->getUseEncryption(), (algo != CryptAlgo::NONE));
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -556,6 +557,7 @@ TEST_P(TestSerialization, EncryptOneRecord)
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
+    ASSERT_EQ(encrypted->getUseEncryption(), (algo != CryptAlgo::NONE));
     compareMetadata(toBeEncrypted, encrypted);
 }
 
@@ -593,10 +595,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
     field = metadesc->getFieldDesc("name");
-    if(algo != CryptAlgo::NONE)
-    {
-        ASSERT_TRUE(field.useEncryption);
-    }
+    ASSERT_EQ(field.useEncryption, (algo != CryptAlgo::NONE));
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
@@ -635,10 +634,7 @@ TEST_P(TestSerialization, EncryptMetaDesc)
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
-    if(algo != CryptAlgo::NONE)
-    {
-        ASSERT_TRUE(metadesc->getUseEncryption());
-    }
+    ASSERT_EQ(metadesc->getUseEncryption(), (algo != CryptAlgo::NONE));
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
@@ -675,10 +671,8 @@ TEST_P(TestSerialization, EncryptSchema)
     testStream.deserialize(result, *reader);
 
     schema = testStream.getSchema(n_schemaPeople);
-    if(algo != CryptAlgo::NONE)
-    {
-        ASSERT_TRUE(schema->getUseEncryption());
-    }
+
+    ASSERT_EQ(schema->getUseEncryption(), (algo != CryptAlgo::NONE));
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);

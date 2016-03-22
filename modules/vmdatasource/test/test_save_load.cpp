@@ -1657,6 +1657,9 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
+
+        ASSERT_EQ(mSet[0]->findField(TEST_FIELD_ADDRESS)->getUseEncryption(), (bool)encryptor);
+
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
@@ -1717,6 +1720,9 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
+
+        ASSERT_EQ(mSet[0]->getUseEncryption(), (bool)encryptor);
+
         vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
