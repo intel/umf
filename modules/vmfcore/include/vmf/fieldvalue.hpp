@@ -61,6 +61,7 @@ public:
     {
         m_name = other.m_name;
         m_useEncryption = other.m_useEncryption;
+        m_encryptedData = other.m_encryptedData;
         Variant::operator = ( other );
 
         return *this;

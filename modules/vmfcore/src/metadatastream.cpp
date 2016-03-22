@@ -841,9 +841,9 @@ void MetadataStream::encrypt()
                                       "No encryptor provided while encryption is needed");
                     }
                     std::string encoded = Variant::base64encode(encryptedBuf);
-                    fv.setEncryptedData(encoded);
-                    //kill the field
+                    //kill the value
                     fv = FieldValue(fvName, Variant(), fv.getUseEncryption());
+                    fv.setEncryptedData(encoded);
                 }
             }
         }
