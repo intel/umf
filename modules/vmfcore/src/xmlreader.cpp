@@ -249,7 +249,9 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
             spMetadataInternal->setFieldValue(field_name, field_value);
             if(!field_encrypted_data.empty())
             {
-                spMetadataInternal->findField(field_name)->setEncryptedData(field_encrypted_data);
+                FieldValue& fv = *(spMetadataInternal->findField(field_name));
+                fv.setEncryptedData(field_encrypted_data);
+                fv.setUseEncryption(field_use_encryption);
             }
 
         }

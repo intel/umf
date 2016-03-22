@@ -250,7 +250,9 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(JSONNode& metadat
         spMetadataInternal->setFieldValue(fieldName, fieldValue);
         if(!encryptedFieldData.empty())
         {
-            spMetadataInternal->findField(fieldName)->setEncryptedData(encryptedFieldData);
+            FieldValue& fv = *(spMetadataInternal->findField(fieldName));
+            fv.setEncryptedData(encryptedFieldData);
+            fv.setUseEncryption(fieldUseEncryption);
         }
     }
 
