@@ -212,7 +212,7 @@ public class VmfMetadataTest
     @Test
     public void testEqualsTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Cannot compare metadata that has not been added to any stream!");
         md1.equals(md2);
     }
@@ -220,7 +220,7 @@ public class VmfMetadataTest
     @Test
     public void testLessThanTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Cannot compare metadata that has not been added to any stream!");
         md1.lessThan(md2);
     }
@@ -228,7 +228,7 @@ public class VmfMetadataTest
     @Test
     public void testValidateTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: The metadata contains no value");
         md1.validate();
     }
@@ -262,7 +262,7 @@ public class VmfMetadataTest
     @Test
     public void testSetFrameIndexTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Can't set metadata frame index. Invalid frame index value");
         md1.setFrameIndex(-2);
     }
@@ -270,7 +270,7 @@ public class VmfMetadataTest
     @Test
     public void testSetNumOfFramesTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Can't set metadata number of frames. Invalid number of frames value");
         md1.setFrameIndex(1, -1);
     }
@@ -278,7 +278,7 @@ public class VmfMetadataTest
     @Test
     public void testSetTimestampTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Can't set metadata timestamp. Invalid timestamp value");
         md1.setTimestamp(-2);
     }
@@ -286,7 +286,7 @@ public class VmfMetadataTest
     @Test
     public void testSetDurationTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Can't set metadata duration. Invalid duration value");
         md1.setTimestamp(1, -1);
     }
@@ -294,7 +294,7 @@ public class VmfMetadataTest
     @Test
     public void testGetFieldValueTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Metadata field not found in metadata description");
         md1.getFieldValue("my");
     }
@@ -302,7 +302,7 @@ public class VmfMetadataTest
     @Test
     public void testGetReferencesByMetadataTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: MetadataName is empty!");
         md1.getReferencesByMetadata("");
     }
@@ -310,7 +310,7 @@ public class VmfMetadataTest
     @Test
     public void testAddReferencesTrown()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Metadata has to be added into stream before being referenced!");
         md1.addReference(md1);
     }
@@ -319,7 +319,7 @@ public class VmfMetadataTest
     public void testSetFieldValueTrown()
     {
         Variant var1 = new Variant ("Den");
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Metadata field not found in metadata description");
         md1.setFieldValue("empty", var1);
     }

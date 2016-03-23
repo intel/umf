@@ -19,7 +19,7 @@ void throwJavaException (JNIEnv *env, const std::exception *e, const char *metho
         if (dynamic_cast<const Exception*>(e))
         {
             exception_type = "vmf::Exception";
-            je = env->FindClass("com/intel/vmf/VmfException");
+            je = env->FindClass("com/intel/vmf/Exception");
         }
 
         what = exception_type + ": " + e->what();

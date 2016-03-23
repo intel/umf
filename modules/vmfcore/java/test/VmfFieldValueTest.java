@@ -47,7 +47,7 @@ public class VmfFieldValueTest
          FieldValue fieldValue4 = new FieldValue ("fieldName", variant);
          fieldValue2.setTo(fieldValue4);
          
-         thrown.expect(com.intel.vmf.VmfException.class);
+         thrown.expect(com.intel.vmf.Exception.class);
          thrown.expectMessage("vmf::Exception: Can't compare Variant objects with incompatible types");
          assertFalse (fieldValue2.equals(fieldValue3));
     }
@@ -79,7 +79,7 @@ public class VmfFieldValueTest
          fieldValue1.setTo(fieldValue2);
          assertTrue (fieldValue1.equals (fieldValue2));
          
-         thrown.expect(com.intel.vmf.VmfException.class);
+         thrown.expect(com.intel.vmf.Exception.class);
          thrown.expectMessage("vmf::Exception: Non-existent type.");
          fieldValue1.convertTo (14);
     }
@@ -87,7 +87,7 @@ public class VmfFieldValueTest
     @Test
     public void testConvertIntToString ()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Cannot convert value to the target type!");
         fieldValue2.convertTo (Variant.type_string);
     }

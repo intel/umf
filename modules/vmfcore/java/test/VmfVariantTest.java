@@ -195,7 +195,7 @@ public class VmfVariantTest
     @Test
     public void testDecodeThrow ()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid base64 string: more than 2 trailing '=' symbols");
         Variant.base64Decode("trampampampam===");
     }
@@ -208,7 +208,7 @@ public class VmfVariantTest
         vec4dArray[1] = new vmf_vec4d();
         var1.setTo(vec4dArray);
         
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid array item separator");
         var1.fromString(Variant.type_vec4d_vector, "0 0 0 0 : 0 0 0 0");
     }
@@ -218,7 +218,7 @@ public class VmfVariantTest
     {
         long longValue = 555555;
         var1.setTo(longValue);
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Non-existent type.");
         var1.convertTo (14);
     }
@@ -228,7 +228,7 @@ public class VmfVariantTest
     {
         long longValue = 555555;
         var1.setTo(longValue);
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Cannot convert value to the target type!");
         var1.convertTo (Variant.type_string);
     }
