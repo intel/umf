@@ -138,7 +138,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     {
         counter = format->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
     }
-    catch(IncorrectParamException& ie)
+    catch(IncorrectParamException&)
     {
         //failed to find cSchema in input: it's uncompressed or broken
         return input;
