@@ -17,6 +17,7 @@
 #include "xmpdatasource.hpp"
 
 #include "vmf/metadatastream.hpp"
+#include "vmf/format_const.hpp"
 
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
@@ -84,18 +85,14 @@ void XMPDataSource::terminate()
     }
 }
 
-static const string compressionSchemaName   = "com.intel.vmf.compressed-metadata";
-static const string compressedDescName      = "compressed-metadata";
-static const string compressedDataPropName  = "data";
-static const string compressionAlgoPropName = "algo";
 
 XMPDataSource::XMPDataSource()
   : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr)
 {
-    schemaCompression = make_shared<vmf::MetadataSchema>(compressionSchemaName);
-    VMF_METADATA_BEGIN(compressedDescName);
-        VMF_FIELD_STR(compressionAlgoPropName);
-        VMF_FIELD_STR(compressedDataPropName);
+    schemaCompression = make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
+    VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
+        VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
+        VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaCompression);
 }
 
@@ -137,16 +134,16 @@ void XMPDataSource::loadXMPstructs()
     {
         std::map<vmf_string, std::shared_ptr<MetadataSchema> > cSchemas;
         cSchemaSource->load(cSchemas);
-        auto it = cSchemas.find(compressionSchemaName);
+        auto it = cSchemas.find(COMPRESSED_DATA_SCHEMA_NAME);
         if(it != cSchemas.end())
         {
             MetadataStream cStream;
             cStream.addSchema(it->second);
-            cMetaSource->loadSchema(compressionSchemaName, cStream);
-            MetadataSet cSet = cStream.queryBySchema(compressionSchemaName);
+            cMetaSource->loadSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
+            MetadataSet cSet = cStream.queryBySchema(COMPRESSED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> cItem = cSet[0];
-            vmf_string algo    = cItem->getFieldValue(compressionAlgoPropName);
-            vmf_string encoded = cItem->getFieldValue(compressedDataPropName);
+            vmf_string algo    = cItem->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
+            vmf_string encoded = cItem->getFieldValue(COMPRESSED_DATA_PROP_NAME);
             try
             {
                 std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
@@ -215,9 +212,9 @@ void XMPDataSource::saveXMPstructs()
         MetadataStream cStream;
         cStream.addSchema(schemaCompression);
         shared_ptr<Metadata> cMetadata;
-        cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(compressedDescName));
-        cMetadata->push_back(FieldValue(compressionAlgoPropName, compressor->getId()));
-        cMetadata->push_back(FieldValue(compressedDataPropName,  encoded));
+        cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(COMPRESSED_DATA_DESC_NAME));
+        cMetadata->push_back(FieldValue(COMPRESSION_ALGO_PROP_NAME, compressor->getId()));
+        cMetadata->push_back(FieldValue(COMPRESSED_DATA_PROP_NAME,  encoded));
         cStream.add(cMetadata);
 
         std::shared_ptr<XMPMetadataSource> cMetaSource;
@@ -231,7 +228,7 @@ void XMPDataSource::saveXMPstructs()
 
         try
         {
-            cMetaSource->saveSchema(compressionSchemaName, cStream);
+            cMetaSource->saveSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
             cSchemaSource->save(schemaCompression);
         }
         catch(const XMP_Error& e)

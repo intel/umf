@@ -16,6 +16,7 @@
  */
 #include "test_precomp.hpp"
 #include <fstream>
+#include "vmf/format_const.hpp"
 
 enum SerializerType
 {
@@ -425,7 +426,7 @@ TEST_P(TestSerialization, DISABLED_CheckIgnoreUnknownCompressor)
     ASSERT_EQ(expected, actual);
 
     ASSERT_EQ(1u, schemas1.size());
-    ASSERT_EQ("com.intel.vmf.compressed-metadata", schemas1[0]->getName());
+    ASSERT_EQ(COMPRESSED_DATA_SCHEMA_NAME, schemas1[0]->getName());
 }
 
 
