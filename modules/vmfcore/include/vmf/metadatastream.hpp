@@ -67,11 +67,27 @@ public:
     };
     typedef int OpenMode;
 
+    /*!
+     * \class VideoSegment
+     * \brief The class representing a video segment
+     */
     class VMF_EXPORT VideoSegment
     {
     public:
+        /*!
+         * \brief Default constructor
+         */
         VideoSegment();
 
+        /*!
+         * \brief Constructor with all fields
+         * \param title
+         * \param fps
+         * \param timeStart
+         * \param duration
+         * \param width
+         * \param height
+         */
         VideoSegment( const std::string& title, double fps, long long timeStart,
                       long long duration = 0, long width = 0, long height = 0 );
 

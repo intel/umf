@@ -47,6 +47,7 @@ class XMPMetadataSource;
 class XMPSchemaSource;
 
 /*!
+ * \class XMPDataSource
  * \brief Class implements IDataSource interface with usage of XMP
  */
 class VMF_EXPORT XMPDataSource: public IDataSource {
