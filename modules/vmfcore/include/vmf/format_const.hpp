@@ -16,7 +16,7 @@
  */
 
 /*!
-* \file rwconst.hpp
+* \file format_const.hpp
 * \brief Constants definitions for %IReader and %IWriter interface implementations
 * \details The file contains constants declarations that are required for %IReader and %IWriter interface implementations (e.g. %XMLReader)
 */
