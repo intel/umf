@@ -398,7 +398,7 @@ TEST_P(TestSerialization, Parse_segmentArray)
     }
 }
 
-TEST_P(TestSerialization, DISABLED_CheckIgnoreUnknownCompressor)
+TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {
     SerializerType type = std::get<0>(GetParam());
 
@@ -407,7 +407,15 @@ TEST_P(TestSerialization, DISABLED_CheckIgnoreUnknownCompressor)
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
     vmf::Compressor::registerNew(fake);
 
-    initFormat(type, compressorId);
+    std::shared_ptr<Format> f;
+    switch (type)
+    {
+        case TypeXML:  f = std::make_shared<FormatXML>();  break;
+        case TypeJson: f = std::make_shared<FormatJSON>(); break;
+        default: VMF_EXCEPTION(IncorrectParamException,
+                               "Wrong serialization format type value: " + to_string(type));
+    }
+    format.reset( new FormatCompressed(f, compressorId, true) );
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -421,7 +429,7 @@ TEST_P(TestSerialization, DISABLED_CheckIgnoreUnknownCompressor)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     std::array<int, 5>
-        expected{ { 1, 1, 0, 0, 0 } },
+        expected{ { 1, 1, 0, 0, 1 } },
         actual = format->parse(result, md, schemas1, segments, attribs);
     ASSERT_EQ(expected, actual);
 

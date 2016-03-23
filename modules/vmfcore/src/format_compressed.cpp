@@ -104,11 +104,9 @@ std::string FormatCompressed::compress(const std::string& input)
         cSchemas.push_back(cSchema);
 
         const IdType nextId = 1;
-        const std::string filePath = "";
-        const std::string checksum = "";
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
         //std::vector<Stat> stats;
-        AttribMap attribs{ {"nextId", to_string(nextId)}, {"filepath", filePath}, {"checksum", checksum}, };
+        AttribMap attribs{ {"nextId", to_string(nextId)}, };
 
         //create writer with no compression enabled
         std::string outputString;
