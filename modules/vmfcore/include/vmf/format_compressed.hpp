@@ -37,7 +37,9 @@ public:
     /*!
     * \brief Default class constructor
     */
-    FormatCompressed(std::shared_ptr<Format> format, const std::string& compressorId);
+    FormatCompressed(std::shared_ptr<Format> format,
+                     const std::string& compressorId,
+                     bool _ignoreUnknownCompressor = false);
 
     /*!
     * \brief Class destructor
@@ -83,7 +85,9 @@ protected:
     virtual std::string decompress(const std::string& input);
 
     std::shared_ptr<Format> format;
+    std::shared_ptr<vmf::MetadataSchema> cSchema;
     std::string compressorId;
+    bool ignoreUnknownCompressor;
 };
 
 }//vmf
