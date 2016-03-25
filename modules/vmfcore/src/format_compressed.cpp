@@ -50,7 +50,7 @@ std::string FormatCompressed::store(
 }
 
 
-std::array<int, 5> FormatCompressed::parse(
+Format::ParseCounters FormatCompressed::parse(
     const std::string& text,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
@@ -132,7 +132,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     AttribMap attribs;
 
     //any exceptions thrown inside will be passed further
-    std::array<int, 5> counter;
+    Format::ParseCounters counter;
     //TODO: remove try/catch wrapping when Format::parse() would be able to work w/o schemas presented
     try
     {
@@ -144,7 +144,7 @@ std::string FormatCompressed::decompress(const std::string& input)
         return input;
     }
 
-    if(counter[1] == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
+    if(counter.schemas == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
         std::shared_ptr<Metadata> cMetadata = metadata[0];
         vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);

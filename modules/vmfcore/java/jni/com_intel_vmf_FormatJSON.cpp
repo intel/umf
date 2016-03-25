@@ -187,12 +187,11 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
         //std::vector<Stat> stats;
         Format::AttribMap attribs;
-        std::array<int, 5> counters = (*obj)->parse(textStr, metadata, schemas, segments, attribs);
+        Format::ParseCounters counters = (*obj)->parse(textStr, metadata, schemas, segments, attribs);
 
         env->ReleaseStringUTFChars(text, textStr);
 
-        //TODO: fill the output objects addresses aray
-        jsize addressesArraySize = std::accumulate(counters.begin(), counters.end(), 3);
+        jsize addressesArraySize = 3 + std::accumulate(std::begin(counters.cnt), std::end(counters.cnt), 3);
 
         jlongArray objs  = env->NewLongArray(addressesArraySize);
         jlong* objsAddrs = env->GetLongArrayElements(objs, 0);
@@ -200,19 +199,19 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
         {
             int cnt = 0;
             //metadata
-            for (int i = 0; i < counters[0]; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataInternal>(metadata[i]);
-            objsAddrs[counters[0] + cnt] = 0;
-            cnt += counters[0] + 1;
+            for (int i = 0; i < counters.metadata; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataInternal>(metadata[i]);
+            objsAddrs[counters.metadata + cnt] = 0;
+            cnt += counters.metadata + 1;
             //schemas
-            for (int i = 0; i < counters[1]; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataSchema>(schemas[i]);
-            objsAddrs[counters[1] + cnt] = 0;
-            cnt += counters[1] + 1;
+            for (int i = 0; i < counters.schemas; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataSchema>(schemas[i]);
+            objsAddrs[counters.schemas + cnt] = 0;
+            cnt += counters.schemas + 1;
             //segments
-            for (int i = 0; i < counters[2]; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataStream::VideoSegment>(segments[i]);
-            objsAddrs[counters[2] + cnt] = 0;
-            cnt += counters[2] + 1;
+            for (int i = 0; i < counters.segments; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataStream::VideoSegment>(segments[i]);
+            objsAddrs[counters.segments + cnt] = 0;
+            cnt += counters.segments + 1;
             //stats
-            //for (int i = 0; i < counters[3]; i++) objsAddrs[i + cnt] = (jlong) new Stat(stats[i]);
+            //for (int i = 0; i < counters.stats; i++) objsAddrs[i + cnt] = (jlong) new Stat(stats[i]);
             env->ReleaseLongArrayElements(objs, objsAddrs, 0);
         }
 

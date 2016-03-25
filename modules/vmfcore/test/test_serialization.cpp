@@ -18,6 +18,8 @@
 #include <fstream>
 #include "vmf/format_const.hpp"
 
+#define TO_VECTOR(x) std::vector<int>(std::begin(x), std::end(x))
+
 enum SerializerType
 {
     TypeXML = 0,
@@ -254,10 +256,10 @@ TEST_P(TestSerialization, Parse_schemasArray)
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { 0, 2, 0, 0, 0 } },
         actual = format->parse(result, metadata, schemas, segments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     for(const auto& spSchema : schemas)
     {
         compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
@@ -277,10 +279,10 @@ TEST_P(TestSerialization, Parse_schemasAll)
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { 11, 2, 0, 0, 3 } },
         actual = format->parse(result, metadata, schemas, segments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
@@ -300,10 +302,10 @@ TEST_P(TestSerialization, Parse_metadataArray)
     std::vector<std::shared_ptr<MetadataInternal>> md;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { (int)set.size(), 0, 0, 0, 0 } },
         actual = format->parse(result, md, schemas, segments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
     testStream.addSchema(spSchemaFrames);
@@ -334,10 +336,10 @@ TEST_P(TestSerialization, Parse_metadataAll)
     std::vector<std::shared_ptr<MetadataInternal>> md;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
         actual = format->parse(result, md, schemas, segments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
     testStream.addSchema(spSchemaFrames);
@@ -386,10 +388,10 @@ TEST_P(TestSerialization, Parse_segmentArray)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { 0, 0, (int)segments.size(), 0, 0 } },
         actual = format->parse(result, md, schemas, loadedSegments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     ASSERT_EQ(segments.size(), loadedSegments.size());
     for (size_t i = 0; i < segments.size(); i++)
@@ -428,10 +430,10 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     std::vector<std::shared_ptr<MetadataSchema>> schemas1;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
-    std::array<int, 5>
+    Format::ParseCounters
         expected{ { 1, 1, 0, 0, 1 } },
         actual = format->parse(result, md, schemas1, segments, attribs);
-    ASSERT_EQ(expected, actual);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     ASSERT_EQ(1u, schemas1.size());
     ASSERT_EQ(COMPRESSED_DATA_SCHEMA_NAME, schemas1[0]->getName());

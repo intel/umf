@@ -61,10 +61,14 @@ public:
         const AttribMap& attribs = AttribMap() // nextId, checksum, etc
         ) = 0;
 
+    typedef union {
+            struct { int metadata, schemas, segments, stats, attribs; };
+            int cnt[5];
+        } ParseCounters;
     /*!
     * \brief Deserialize input string to stream metadata and related stuff. Used in particular for "stream.deserialize(text)" implementation.
     */
-    virtual std::array<int, 5> parse(
+    virtual ParseCounters parse(
         const std::string& text,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,

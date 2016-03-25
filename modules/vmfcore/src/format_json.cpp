@@ -524,7 +524,7 @@ static Stat parseStatFromNode(const JSONNode& statNode)
 }
 */
 
-std::array<int, 5> FormatJSON::parse(
+Format::ParseCounters FormatJSON::parse(
     const std::string& text,
     std::vector<std::shared_ptr<MetadataInternal>>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
@@ -533,7 +533,7 @@ std::array<int, 5> FormatJSON::parse(
     AttribMap& attribs // nextId, checksum, etc
     )
 {
-    std::array<int, 5> counter = {};
+    Format::ParseCounters counter = {};
     if (text.empty()) VMF_EXCEPTION(IncorrectParamException, "Empty input JSON string");
 
     JSONNode root;
@@ -554,27 +554,27 @@ std::array<int, 5> FormatJSON::parse(
         if (node.name() == TAG_ATTRIBS_ARRAY)
         {
             for (const auto& at : node)
-                attribs[at.name()] = at.as_string(), counter[4]++;
+                attribs[at.name()] = at.as_string(), counter.attribs++;
         }
         else if (node.name() == TAG_STATS_ARRAY)
         {
             for (const auto& st : node)
-                ;//stats.push_back(parseStatFromNode(st)), counter[3]++;
+                ;//stats.push_back(parseStatFromNode(st)), counter.stats++;
         }
         else if (node.name() == TAG_VIDEO_SEGMENTS_ARRAY)
         {
             for (const auto& seg : node)
-                segments.push_back(parseVideoSegmentFromNode(seg)), counter[2]++;
+                segments.push_back(parseVideoSegmentFromNode(seg)), counter.segments++;
         }
         else if (node.name() == TAG_SCHEMAS_ARRAY)
         {
             for (const auto& sc : node)
-                schemas.push_back(parseSchemaFromNode(sc)), counter[1]++;
+                schemas.push_back(parseSchemaFromNode(sc)), counter.schemas++;
         }
         else if (node.name() == TAG_METADATA_ARRAY)
         {
             for (const auto& m : node)
-                metadata.push_back(parseMetadataFromNode(m, schemas)), counter[0]++;
+                metadata.push_back(parseMetadataFromNode(m, schemas)), counter.metadata++;
         }
         else VMF_LOG_ERROR("Unexpected JSON element: " + node.name());
     }

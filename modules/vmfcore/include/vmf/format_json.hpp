@@ -58,7 +58,7 @@ public:
     /*!
     * \brief Deserialize input string to stream metadata and related stuff from JSON string.
     */
-    virtual std::array<int, 5> parse(
+    virtual ParseCounters parse(
         const std::string& text,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,

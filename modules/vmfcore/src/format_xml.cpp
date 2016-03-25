@@ -526,7 +526,7 @@ std::string FormatXML::store(
         return spSegment;
     }
 
-    std::array<int, 5> FormatXML::parse(
+    Format::ParseCounters FormatXML::parse(
         const std::string& text,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
@@ -535,7 +535,7 @@ std::string FormatXML::store(
         AttribMap& attribs // nextId, checksum, etc
         )
     {
-        std::array<int, 5> cnt = {};
+        Format::ParseCounters cnt = {};
 
         if (text.empty())
             VMF_EXCEPTION(IncorrectParamException, "Empty input XML string");
@@ -557,7 +557,7 @@ std::string FormatXML::store(
             for (xmlAttr* cur_prop = root->properties; cur_prop; cur_prop = cur_prop->next)
             {
                 attribs[(char*)cur_prop->name] = (char*)xmlGetProp(root, cur_prop->name);
-                cnt[4]++;
+                cnt.attribs++;
             }
 
             for (xmlNodePtr node = root->children; node; node = node->next)
@@ -573,7 +573,7 @@ std::string FormatXML::store(
                             {
                                 Stat stat = parseStatFromNode(st);
                                 stats.push_back(stat);
-                                cnt[3]++;
+                                cnt.stats++;
                             }
                             catch (Exception& e)
                             {
@@ -593,7 +593,7 @@ std::string FormatXML::store(
                             {
                                 std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(seg);
                                 segments.push_back(spSegment);
-                                cnt[2]++;
+                                cnt.segments++;
                             }
                             catch (Exception& e)
                             {
@@ -612,7 +612,7 @@ std::string FormatXML::store(
                             {
                                 std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(sc);
                                 schemas.push_back(spSchema);
-                                cnt[1]++;
+                                cnt.schemas++;
                             }
                             catch (Exception& e)
                             {
@@ -631,7 +631,7 @@ std::string FormatXML::store(
                             {
                                 std::shared_ptr<MetadataInternal> spMdi = parseMetadataFromNode(md, schemas);
                                 metadata.push_back(spMdi);
-                                cnt[0]++;
+                                cnt.metadata++;
                             }
                             catch (Exception& e)
                             {

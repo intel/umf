@@ -60,7 +60,7 @@ public:
     /*!
     * \brief Deserialize input XML string to metadata and related stuff.
     */
-    virtual std::array<int, 5> parse(
+    virtual ParseCounters parse(
         const std::string& text,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
