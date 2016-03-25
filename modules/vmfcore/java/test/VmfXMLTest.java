@@ -167,7 +167,14 @@ public class VmfXMLTest
         attribs.put("filepath", "path.txt");
         String all = xml.store(mdSet, schemas, videoSegs, attribs);
         assertFalse(all.isEmpty());
-    }
+
+        data = xml.parse(all);
+        assertEquals (mdSet.getSize(), data.metadata.length);
+        assertEquals (schemas.length,  data.schemas.length);
+        assertEquals (videoSegs.length, data.segments.length);
+        assertEquals (2, data.attrib.size());
+        assertEquals ("100", data.attrib.get("nextId"));
+}
     
     @Test
     public void testXMLParseSchemaThrown()

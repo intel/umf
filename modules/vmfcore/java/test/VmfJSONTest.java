@@ -1,20 +1,11 @@
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.MetadataInternal;
-import com.intel.vmf.MetadataSchema;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Variant;
-//import com.intel.vmf.JSONReader;
-//import com.intel.vmf.JSONWriter;
-import com.intel.vmf.Log;
+import java.util.HashMap;
+
+import com.intel.vmf.*;
 
 import static org.junit.Assert.*;
+
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-
 
 public class VmfJSONTest 
 {
@@ -23,11 +14,11 @@ public class VmfJSONTest
     {
         Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
     }
-    
+	
     protected MetadataStream stream;
     protected final MetadataSchema schema1 = new MetadataSchema ("people");
     protected final MetadataSchema schema2 = new MetadataSchema ("transport");
-    
+
     protected MetadataSchema schemas[];
     
     protected FieldDesc fields1[] = new FieldDesc [3];
@@ -44,8 +35,7 @@ public class VmfJSONTest
     
     protected MetadataStream.VideoSegment videoSegs[];
     
-    //protected JSONReader reader;
-    //protected JSONWriter writer;
+    protected FormatJSON json;
     
     protected MetadataSet mdSet;
     
@@ -59,9 +49,9 @@ public class VmfJSONTest
     	stream = new MetadataStream ();
     	
     	videoSegs = new MetadataStream.VideoSegment[3];
-    	schemas = new MetadataSchema[2];
-    	schemas[0] = schema1;
-    	schemas[1] = schema2;
+        schemas = new MetadataSchema[2];
+        schemas[0] = schema1;
+        schemas[1] = schema2;
     	
     	fields1[0] = new FieldDesc ("name", Variant.type_string, false);
         fields1[1] = new FieldDesc ("last name", Variant.type_string, false);
@@ -141,125 +131,67 @@ public class VmfJSONTest
         videoSegs[1] = videoSeg2;
         videoSegs[2] = videoSeg3;
         
-    	//reader = new JSONReader();
-        //writer = new JSONWriter();
+    	json = new FormatJSON();
     }
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testJSON_DUMMY()
-    {
-        String text = "";
-    }
-    /*
-    
-    @Test
     public void testJSONReaderAndWriter()
     {
-        String schemasStr = writer.store(schema1, schema2);
+    	String schemasStr = json.store(null, schemas, null, null);
         assertFalse(schemasStr.isEmpty());
         
-        MetadataSchema mdSchemas[] = reader.parseSchemas(schemasStr);
-        assertEquals (2, mdSchemas.length);
+        Format.Data data = json.parse(schemasStr);
+        assertNotNull(data.schemas);
+        assertEquals (schemas.length, data.schemas.length);
         
-        String str = writer.store(mdSet);
+        String str = json.store(mdSet, schemas, null, null);
         assertFalse(str.isEmpty());
         
-        MetadataInternal mdInt[] = reader.parseMetadata(str, schema1, schema2);
-        assertEquals (mdSet.getSize(), mdInt.length);
+        data = json.parse(str);
+        assertNotNull(data.metadata);
+        assertEquals (mdSet.getSize(), data.metadata.length);
+        assertEquals (schemas.length,  data.schemas.length);
+        assertNull (data.segments);
         
-        String segments = writer.store(videoSeg1, videoSeg2, videoSeg3);
+        String segments = json.store(null, null, videoSegs, null);
         assertFalse(segments.isEmpty());
         
-        MetadataStream.VideoSegment videoSegs1[] = reader.parseVideoSegments(segments);
-        assertEquals (3, videoSegs1.length);
+        data = json.parse(segments);
+        assertNotNull(data.segments);
+        assertEquals (videoSegs.length, data.segments.length);
         
-        String all = writer.store(1, "path.txt", "trampampam", videoSegs, schemas, mdSet);
+        HashMap<String, String> attribs = new HashMap<String, String>();
+        attribs.put("nextId", "100");
+        attribs.put("filepath", "path.txt");
+        String all = json.store(mdSet, schemas, videoSegs, attribs);
         assertFalse(all.isEmpty());
+
+        data = json.parse(all);
+        assertEquals (mdSet.getSize(), data.metadata.length);
+        assertEquals (schemas.length,  data.schemas.length);
+        assertEquals (videoSegs.length, data.segments.length);
+        assertEquals (2, data.attrib.size());
+        assertEquals ("100", data.attrib.get("nextId"));
     }
     
     @Test
-    public void testJSONParseSchemaThrow()
+    public void testJSONParseSchemaThrown()
     {
         String text = "";
         
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Schemas can not be parsed.");
-        reader.parseSchemas(text);
+        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expectMessage("vmf::Exception: Empty input JSON string");
+        json.parse(text);
     }
 
-    @Test
-    public void testJSONParseMetadataThrow()
-    {
-        String text = "";
-        
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Metadata can not be parsed.");
-        reader.parseMetadata(text);
-    }
-    
-    @Test
-    public void testJSONParseSegmentsThrow()
-    {
-        String text = "";
-        
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Segments can not be parsed.");
-        reader.parseVideoSegments(text);
-    }
-    
-    @Test
-    public void testJSONStoreSchemaThrow()
-    {
-        MetadataSchema emptySchemas[] = new MetadataSchema[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input schemas vector is empty");
-        writer.store(emptySchemas);
-    }
-    
-    @Test
-    public void testJSONStoreSetThrow()
-    {
-        MetadataSet set = new MetadataSet();
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input MetadataSet is empty");
-        writer.store(set);
-    }
-    
-    @Test
-    public void testJSONStoreSegmentThrow()
-    {
-        MetadataStream.VideoSegment segment = new MetadataStream.VideoSegment();
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
-        writer.store(segment);
-    }
-
-    @Test
-    public void testJSONStoreAllThrow()
-    {
-        MetadataSchema emptySchemas[] = new MetadataSchema[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input schemas vector is empty");
-        writer.store(1, "path.txt", "trampampam", videoSegs, emptySchemas, mdSet);
-    }
-    
-    @Test
-    public void testJSONStoreSegmentsThrow()
-    {
-        MetadataStream.VideoSegment segments[] = new MetadataStream.VideoSegment[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input video segments vector is empty");
-        writer.store(segments);
-    }
-    
+   
     @Test
     public void testJSONDeleteByGC()
     {
-        reader = null;
-        writer = null;
+        json = null;
         
         videoSeg1 = null;
         videoSeg2 = null;
@@ -277,5 +209,4 @@ public class VmfJSONTest
         
         System.gc();
     }
-    */
 }

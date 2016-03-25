@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.intel.vmf.MetadataStream.VideoSegment;
 
-public class FormatXML implements Format {
+public class FormatJSON implements Format {
     static
     {
         try
@@ -27,7 +27,7 @@ public class FormatXML implements Format {
 
     public final long nativeObj;
 
-    protected FormatXML (long addr)
+    protected FormatJSON (long addr)
     {
         if (addr == 0)
             throw new java.lang.IllegalArgumentException("Native object address is NULL");
@@ -35,8 +35,8 @@ public class FormatXML implements Format {
         nativeObj = addr;
     }
     
-	public FormatXML() {
-		this( n_FormatXML() );
+	public FormatJSON() {
+		this( n_FormatJSON() );
 	}
 
 	@Override
@@ -93,35 +93,35 @@ public class FormatXML implements Format {
 		long[] objects = n_parse(nativeObj, text, attribNames, attribVals);
 
 		// get item numbers finding zeros
-		int posEndMd=0, posEndSch=0, posEndSeg=0, posEndSt=0, cntAtt=0;
-		for(posEndMd=0; posEndMd<objects.length; posEndMd++)
-			if(objects[posEndMd] == 0) break;
-		for(posEndSch=posEndMd+1; posEndSch<objects.length; posEndSch++)
-			if(objects[posEndSch] == 0) break;
-		for(posEndSeg=posEndSch+1; posEndSeg<objects.length; posEndSeg++)
-			if(objects[posEndSeg] == 0) break;
-		posEndSt = objects.length;
+		int cntMd=0, cntSch=0, cntSeg=0, cntSt=0, cntAtt=0;
+		for(cntMd=0; cntMd<objects.length; cntMd++)
+			if(objects[cntMd] == 0) break;
+		for(cntSch=cntMd+1; cntSch<objects.length; cntSch++)
+			if(objects[cntSch] == 0) break;
+		for(cntSeg=cntSch+1; cntSeg<objects.length; cntSeg++)
+			if(objects[cntSeg] == 0) break;
+		cntSt = objects.length;
 		for(cntAtt=0; cntAtt<attribNames.length; cntAtt++)
 			if(attribNames[cntAtt] == null) break;
 		
 		// reconstruct objects
 		int i;
-		if(posEndMd>0) {
-			data.metadata = new MetadataInternal[posEndMd];
-			for(i=0; i<posEndMd; i++)
+		if(cntMd>0) {
+			data.metadata = new MetadataInternal[cntMd];
+			for(i=0; i<cntMd; i++)
 				data.metadata[i] = new MetadataInternal(objects[i]);
 		}
-		if(posEndSch-posEndMd>1) {
-			data.schemas = new MetadataSchema[posEndSch-posEndMd-1];
-			for(i=posEndMd+1; i<posEndSch; i++)
-				data.schemas[i-posEndMd-1] = new MetadataSchema(objects[i]);
+		if(cntSch-cntMd>1) {
+			data.schemas = new MetadataSchema[cntSch-cntMd-1];
+			for(i=cntMd+1; i<cntSch; i++)
+				data.schemas[i-cntMd-1] = new MetadataSchema(objects[i]);
 		}
-		if(posEndSeg-posEndSch>1) {
-			data.segments = new MetadataStream.VideoSegment[posEndSeg-posEndSch-1];
-			for(i=posEndSch+1; i<posEndSeg; i++)
-				data.segments[i-posEndSch-1] = new MetadataStream.VideoSegment(objects[i]);
+		if(cntSeg-cntSch>1) {
+			data.segments = new MetadataStream.VideoSegment[cntSeg-cntSch-1];
+			for(i=cntSch+1; i<cntSeg; i++)
+				data.segments[i-cntSch-1] = new MetadataStream.VideoSegment(objects[i]);
 		}
-		if(posEndSt-posEndSeg>1) {
+		if(cntSt-cntSeg>1) {
 			/*
 			data.stats = new Stat[cntSt-cntSeg-1];
 			for(i=cntSeg+1; i<cntSt; i++)
@@ -146,7 +146,7 @@ public class FormatXML implements Format {
         super.finalize();
     }
 
-	private native static long n_FormatXML();
+	private native static long n_FormatJSON();
 	private native static String n_store(long nativeObj, long set, long[] schemas, long[] segments, long[] stats, String[] attribNames, String[] attribVals);
 	private native static long[] n_parse(long nativeObj, String text, String[] attribNames, String[] attribVals);
 	private native static void n_delete (long nativeObj);
