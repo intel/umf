@@ -40,7 +40,8 @@ TEST_F(TestVariant, Compare)
     ASSERT_TRUE(var3 == var1);
     ASSERT_TRUE(var2 == var1);
     ASSERT_TRUE(var1 == var2);
-    ASSERT_THROW(var4 == var5, vmf::IncorrectParamException);
+    bool tmp;
+    ASSERT_THROW(tmp = var4 == var5, vmf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, CreateUnknown)

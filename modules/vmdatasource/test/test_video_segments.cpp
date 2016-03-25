@@ -86,8 +86,7 @@ protected:
 
     MetadataStream stream;
 
-    std::unique_ptr<IWriter> writer;
-    std::unique_ptr<IReader> reader;
+    std::unique_ptr<Format> format;
     std::shared_ptr< MetadataSchema > spSchema;
     std::shared_ptr< MetadataDesc > spDesc;
     std::vector< FieldDesc > vFields;
@@ -130,21 +129,17 @@ TEST_F(TestVideoSegments, SaveLoad)
 TEST_P(TestVideoSegments, ParseSegmentsArray)
 {
     SerializerType type = GetParam();
-    if(type == TypeXML)
-    {
-	writer.reset(new XMLWriter());
-	reader.reset(new XMLReader());
-    }
-    else if(type == TypeJson)
-    {
-	writer.reset(new JSONWriter());
-	reader.reset(new JSONReader());
-    }
+    format.reset(type == TypeXML ? (Format*) new FormatXML() : (Format*) new FormatJSON());
 
-    std::string result = writer->store(segments);
+    std::string result = format->store({}, {}, segments);
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    reader->parseVideoSegments(result, loadedSegments);
+    Format::AttribMap attribs;
+    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    Format::ParseCounters
+        expected{ { 1, 1, 2, 0, 3 } },
+        actual = format->parse(result, metadata, schemas, loadedSegments, attribs);
 
     ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
@@ -152,27 +147,23 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
 
     std::shared_ptr<MetadataStream::VideoSegment> nullSegment = nullptr;
     segments.emplace_back(nullSegment);
-    ASSERT_THROW(writer->store(segments), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store({}, {}, segments), vmf::NullPointerException);
 }
 
 TEST_P(TestVideoSegments, ParseSegmentsAll)
 {
     SerializerType type = GetParam();
-    if(type == TypeXML)
-    {
-	writer.reset(new XMLWriter());
-	reader.reset(new XMLReader());
-    }
-    else if(type == TypeJson)
-    {
-	writer.reset(new JSONWriter());
-	reader.reset(new JSONReader());
-    }
+    format.reset(type == TypeXML ? (Format*) new FormatXML() : (Format*) new FormatJSON());
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    reader->parseVideoSegments(result, loadedSegments);
+    Format::AttribMap attribs;
+    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    Format::ParseCounters
+        expected{ { 1, 1, 2, 0, 3 } },
+        actual = format->parse(result, metadata, schemas, loadedSegments, attribs);
 
     ASSERT_EQ(2u, loadedSegments.size());
     for(unsigned int i = 0; i < loadedSegments.size(); i++)
@@ -182,21 +173,12 @@ TEST_P(TestVideoSegments, ParseSegmentsAll)
 TEST_P(TestVideoSegments, ParseAll)
 {
     SerializerType type = GetParam();
-    if(type == TypeXML)
-    {
-	writer.reset(new XMLWriter());
-	reader.reset(new XMLReader());
-    }
-    else if(type == TypeJson)
-    {
-	writer.reset(new JSONWriter());
-	reader.reset(new JSONReader());
-    }
+    format.reset(type == TypeXML ? (Format*) new FormatXML() : (Format*) new FormatJSON());
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
    auto loadedSegments = testStream.getAllVideoSegments();
 

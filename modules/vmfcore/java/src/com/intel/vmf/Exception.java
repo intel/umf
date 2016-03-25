@@ -1,9 +1,9 @@
 package com.intel.vmf;
 
 @SuppressWarnings("serial")
-public class VmfException extends RuntimeException
+public class Exception extends RuntimeException
 {
-    public VmfException (String msg)
+    public Exception (String msg)
     {
         super(msg);
     }

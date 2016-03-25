@@ -15,8 +15,7 @@
  *
  */
 #include "vmf/metadatastream.hpp"
-#include "vmf/ireader.hpp"
-#include "vmf/iwriter.hpp"
+#include "vmf/format.hpp"
 #include "datasource.hpp"
 #include "object_factory.hpp"
 #include <algorithm>
@@ -405,7 +404,7 @@ void MetadataStream::remove()
     m_mapSchemas.clear();
 }
 
-void MetadataStream::addSchema( std::shared_ptr< MetadataSchema >& spSchema )
+void MetadataStream::addSchema( const std::shared_ptr< MetadataSchema >& spSchema )
 {
     if( spSchema == nullptr )
     {
@@ -628,35 +627,29 @@ MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName,
     return m_oMetadataSet.queryByReference( sReferenceName, vFields );
 }
 
-std::string MetadataStream::serialize(IWriter& writer)
+std::string MetadataStream::serialize(Format& format)
 {
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    for(auto spMetadataIter = m_mapSchemas.begin(); spMetadataIter != m_mapSchemas.end(); spMetadataIter++)
-        schemas.push_back(spMetadataIter->second);
-    return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas, m_oMetadataSet);
+    for (const auto& spSchema : m_mapSchemas)
+        schemas.push_back(spSchema.second);
+
+    Format::AttribMap attribs{ { "nextId", to_string(nextId) }, { "filepath", m_sFilePath }, { "checksum", m_sChecksumMedia }, };
+    return format.store(m_oMetadataSet, schemas, videoSegments, attribs);
 }
 
-void MetadataStream::deserialize(const std::string& text, IReader& reader)
+void MetadataStream::deserialize(const std::string& text, Format& format)
 {
     std::vector<std::shared_ptr<VideoSegment>> segments;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
-    std::string filePath;
-    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, segments, schemas, metadata);
-    if(m_sFilePath.empty())
-        m_sFilePath = filePath;
-    std::for_each( segments.begin(), segments.end(), [&]( std::shared_ptr< VideoSegment >& spSegment )
-    {
-	addVideoSegment(spSegment);
-    });
-    std::for_each( schemas.begin(), schemas.end(), [&]( std::shared_ptr< MetadataSchema >& spSchema )
-    {
-        addSchema(spSchema);
-    });
-    std::for_each( metadata.begin(), metadata.end(), [&]( std::shared_ptr< MetadataInternal >& spMetadata )
-    {
-        add(spMetadata);
-    });
+    Format::AttribMap attribs;
+    format.parse(text, metadata, schemas, segments, attribs);
+    if(m_sFilePath.empty()) m_sFilePath = attribs["filepath"];
+    nextId = from_string<IdType>(attribs["nextId"]);
+    m_sChecksumMedia = attribs["checksum"];
+    for (const auto& spSegment : segments) addVideoSegment(spSegment);
+    for (const auto& spSchema : schemas) addSchema(spSchema);
+    for (auto& spMetadata : metadata) add(spMetadata);
 }
 
 std::string MetadataStream::computeChecksum()
