@@ -27,13 +27,14 @@
 #pragma warning(disable: 4251)
 #endif
 
-#include "global.hpp"
-#include "metadatainternal.hpp"
-#include "metadataset.hpp"
-#include "metadataschema.hpp"
-#include "compressor.hpp"
-#include "encryptor.hpp"
-#include "iquery.hpp"
+#include "vmf/global.hpp"
+#include "vmf/metadatainternal.hpp"
+#include "vmf/metadataset.hpp"
+#include "vmf/metadataschema.hpp"
+#include "vmf/compressor.hpp"
+#include "vmf/encryptor.hpp"
+#include "vmf/iquery.hpp"
+
 #include <map>
 #include <memory>
 #include <vector>
@@ -45,6 +46,7 @@ namespace vmf
 class IDataSource;
 class IReader;
 class IWriter;
+class Format;
 
 /*!
 * \class MetadataStream
@@ -234,7 +236,7 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
 
     /*!
     * \brief Get metadata schema by its name
@@ -301,12 +303,12 @@ public:
     /*
     * \brief serialized stream in std::string in selected format
     */
-    std::string serialize(IWriter& formater);
+    std::string serialize(Format& format);
 
     /*
     * \brief deserialized stream from std::string in selected format
     */
-    void deserialize(const std::string& text, IReader& formater);
+    void deserialize(const std::string& text, Format& format);
 
     /*!
     * \brief Compute MD5 digest of media part of the opened file

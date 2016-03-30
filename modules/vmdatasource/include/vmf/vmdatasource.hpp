@@ -15,7 +15,7 @@ limitations under the License.*/
 #ifndef __VMF_DATASOURCE_HPP__
 #define __VMF_DATASOURCE_HPP__
 
-#include <config.hpp>
+#include "config.hpp"
 
 namespace vmf {
 /*!

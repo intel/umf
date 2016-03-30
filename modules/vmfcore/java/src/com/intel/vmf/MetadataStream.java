@@ -295,7 +295,7 @@ public class MetadataStream implements IQuery
         n_clear (nativeObj);
     }
     
-    public String serialize (IWriter formater)
+    /*public String serialize (IWriter formater)
     {
         return n_serialize (nativeObj, formater.getNativeAddr());
     }
@@ -303,7 +303,7 @@ public class MetadataStream implements IQuery
     public void deserialize (String text, IReader formater)
     {
         n_deserialize (nativeObj, text, formater.getNativeAddr());
-    }
+    }*/
     
     public String computeChecksum ()
     {

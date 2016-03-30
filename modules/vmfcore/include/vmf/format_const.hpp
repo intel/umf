@@ -16,7 +16,7 @@
  */
 
 /*!
-* \file rwconst.hpp
+* \file format_const.hpp
 * \brief Constants definitions for %IReader and %IWriter interface implementations
 * \details The file contains constants declarations that are required for %IReader and %IWriter interface implementations (e.g. %XMLReader)
 */
@@ -27,6 +27,9 @@
 #define __VMF_RWCONST_H__
 
 #define TAG_VMF "vmf"
+#define TAG_ATTRIBS_ARRAY "attribs"
+#define TAG_STATS_ARRAY "stat-objects"
+#define TAG_STAT_OBJ "stat"
 #define TAG_VIDEO_SEGMENTS_ARRAY "video-segments"
 #define TAG_VIDEO_SEGMENT "segment"
 #define TAG_SCHEMAS_ARRAY "schemas-array"

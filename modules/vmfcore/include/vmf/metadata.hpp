@@ -19,6 +19,7 @@
 * \brief %Metadata class header file
 */
 
+#pragma once
 #ifndef __VMF_METADATA_H__
 #define __VMF_METADATA_H__
 
@@ -33,9 +34,9 @@
 #include <map>
 #include <stdexcept>
 #include <limits>
-#include "fieldvalue.hpp"
-#include "metadatadesc.hpp"
-#include "metadatareference.hpp"
+#include "vmf/fieldvalue.hpp"
+#include "vmf/metadatadesc.hpp"
+#include "vmf/metadatareference.hpp"
 
 namespace vmf
 {

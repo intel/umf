@@ -17,6 +17,7 @@
 #include "xmpdatasource.hpp"
 
 #include "vmf/metadatastream.hpp"
+#include "vmf/format_const.hpp"
 
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
@@ -85,22 +86,14 @@ void XMPDataSource::terminate()
     }
 }
 
-static const string compressionSchemaName   = "com.intel.vmf.compressed-metadata";
-static const string compressedDescName      = "compressed-metadata";
-static const string compressedDataPropName  = "data";
-static const string compressionAlgoPropName = "algo";
-static const string encryptionSchemaName    = "com.intel.vmf.encrypted-metadata";
-static const string encryptedDescName       = "encrypted-metadata";
-static const string encryptedDataPropName   = "data";
-static const string encryptionHintPropName  = "hint";
 
 XMPDataSource::XMPDataSource()
   : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr), encryptor(nullptr)
 {
-    schemaCompression = make_shared<vmf::MetadataSchema>(compressionSchemaName);
-    VMF_METADATA_BEGIN(compressedDescName);
-        VMF_FIELD_STR(compressionAlgoPropName);
-        VMF_FIELD_STR(compressedDataPropName);
+    schemaCompression = make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
+    VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
+        VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
+        VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaCompression);
 
     schemaEncryption = make_shared<vmf::MetadataSchema>(encryptionSchemaName);

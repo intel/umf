@@ -15,15 +15,18 @@
  *
  */
 #include "test_precomp.hpp"
-#include "fstream"
+#include <fstream>
+#include "vmf/format_const.hpp"
 
-using namespace vmf;
+#define TO_VECTOR(x) std::vector<int>(std::begin(x), std::end(x))
 
 enum SerializerType
 {
     TypeXML = 0,
     TypeJson = 1
 };
+
+using namespace vmf;
 
 class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string, CryptAlgo> >
 {
@@ -75,6 +78,22 @@ protected:
 
         segments.push_back(std::make_shared<MetadataStream::VideoSegment>("segment1", 30, 0, 1000, 800, 600));
         segments.push_back(std::make_shared<MetadataStream::VideoSegment>("segment2", 25, 5000, 1000));
+    }
+
+    void initFormat(SerializerType type, const std::string& compressorId, CryptAlgo algo,
+                    bool encryptAll = true, bool ignoreUnknownEncryptor = false)
+    {
+        encryptor = getEncryptor(algo);
+
+        std::shared_ptr<Format> f, cf;
+        switch (type)
+        {
+            case TypeXML:  f = std::make_shared<FormatXML>();  break;
+            case TypeJson: f = std::make_shared<FormatJSON>(); break;
+            default: VMF_EXCEPTION(IncorrectParamException, "Wrong serialization format type value: " + to_string(type));
+        }
+        cf.reset(new FormatCompressed(f, compressorID));
+        format.reset(new FormatEncrypted(f, encryptor, encryptAll, ignoreUnknownEncryptor));
     }
 
     void compareSchemas(const std::shared_ptr<MetadataSchema>& goldSchema, const std::shared_ptr<MetadataSchema>& testSchema, bool compareRefs = true)
@@ -151,29 +170,6 @@ protected:
         }
     }
 
-    void makeReaderWriter(SerializerType type, vmf_string compressorId, CryptAlgo algo,
-                          bool encryptAll = true, bool ignoreUnknownEncryptor = false)
-    {
-        encryptor = getEncryptor(algo);
-
-        std::shared_ptr<IWriter> formatWriter, cWriter;
-        std::shared_ptr<IReader> formatReader, cReader;
-        if (type == TypeXML)
-        {
-            formatWriter = std::make_shared<XMLWriter>();
-            formatReader = std::make_shared<XMLReader>();
-        }
-        else if (type == TypeJson)
-        {
-            formatWriter = std::make_shared<JSONWriter>();
-            formatReader = std::make_shared<JSONReader>();
-        }
-        cWriter = std::make_shared<WriterCompressed>(formatWriter, compressorId);
-        cReader = std::make_shared<ReaderCompressed>(formatReader);
-        writer.reset(new WriterEncrypted(cWriter, encryptor, encryptAll));
-        reader.reset(new ReaderEncrypted(cReader, encryptor, ignoreUnknownEncryptor));
-    }
-
     void compareSegments(const std::shared_ptr<MetadataStream::VideoSegment>& idealSegment, const std::shared_ptr<MetadataStream::VideoSegment>& s)
     {
         ASSERT_EQ(idealSegment->getTitle(), s->getTitle());
@@ -190,8 +186,7 @@ protected:
     MetadataStream stream;
     MetadataSet set;
 
-    std::unique_ptr<IWriter> writer;
-    std::unique_ptr<IReader> reader;
+    std::unique_ptr<Format> format;
     std::shared_ptr<vmf::Encryptor> encryptor;
     std::shared_ptr< MetadataSchema > spSchemaPeople, spSchemaFrames;
     std::shared_ptr< MetadataDesc > spDescPeople, spDescFrames;
@@ -202,21 +197,10 @@ protected:
     vmf_string n_schemaPeople, n_schemaFrames;
 };
 
-
 TEST_P(TestSerialization, StoreAll)
 {
     SerializerType type = std::get<0>(GetParam());
-    
-    if (type == TypeXML)
-    {
-        writer.reset(new XMLWriter());
-        reader.reset(new XMLReader());
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new JSONWriter());
-        reader.reset(new JSONReader());
-    }
+    initFormat(type);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
 
@@ -226,25 +210,25 @@ TEST_P(TestSerialization, StoreAll)
     std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
     segments.push_back(nullSegment);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
 
     segments.pop_back();
     
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
 
     set.pop_back();
 
     std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
     schemas.push_back(spSchemaNull);
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
 
     set.clear();
 
-    ASSERT_THROW(writer->store(1, "", stream.getChecksum(), segments, schemas, set, ""), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
 
     auto spNewDesc = std::make_shared<vmf::MetadataDesc>("new", vFieldsPeople, vRefDescsFrames);
     schemas.pop_back();
@@ -254,57 +238,59 @@ TEST_P(TestSerialization, StoreAll)
     set.push_back(md1);
     set.push_back(md2);
 
-    ASSERT_THROW(writer->store(1, "", check, segments, schemas, set, ""), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
 
     segments.clear();
     schemas.clear();
     std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
-    IdType nextId = 1;
-    std::string path = "";
-    
-    std::string hint;
-    ASSERT_FALSE(reader->parseAll("", nextId, path, check, hint, segments, schemas, mdInt));
-}
+    Format::AttribMap attribs;
 
+    ASSERT_THROW(format->parse("", mdInt, schemas, segments, attribs), vmf::IncorrectParamException);
+}
 
 TEST_P(TestSerialization, Parse_schemasArray)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    initFormat(type, compressorId);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
-    std::string result = writer->store(schemas);
-
-    reader->parseSchemas(result, schemas);
-    ASSERT_EQ(2u, schemas.size());
-    std::for_each(schemas.begin(), schemas.end(), [&] (const std::shared_ptr<MetadataSchema>& spSchema)
-    {
-        compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
-    });
+    std::string result = format->store({}, schemas);
 
     schemas.clear();
-    std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
-    schemas.emplace_back(spSchemaNull);
-    schemas.push_back(spSchemaPeople);
-    schemas.push_back(spSchemaFrames);
-    ASSERT_THROW(writer->store(schemas), vmf::IncorrectParamException);
+
+    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { 0, 2, 0, 0, 0 } },
+        actual = format->parse(result, metadata, schemas, segments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
+    for(const auto& spSchema : schemas)
+    {
+        compareSchemas(stream.getSchema(spSchema->getName()), spSchema);
+    }
 }
 
 TEST_P(TestSerialization, Parse_schemasAll)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
-
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    initFormat(type, compressorId);
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
-    reader->parseSchemas(result, schemas);
-
-    ASSERT_EQ(2u, schemas.size());
+    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { 11, 2, 0, 0, 3 } },
+        actual = format->parse(result, metadata, schemas, segments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
 }
@@ -314,111 +300,107 @@ TEST_P(TestSerialization, Parse_metadataArray)
 {
     SerializerType type = std::get<0>(GetParam());
     vmf_string compressorId = std::get<1>(GetParam());
-    if (type == TypeXML)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<XMLWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<XMLReader>()));
-    }
-    else if (type == TypeJson)
-    {
-        writer.reset(new WriterCompressed(std::make_shared<JSONWriter>(), compressorId));
-        reader.reset(new ReaderCompressed(std::make_shared<JSONReader>()));
-    }
+    initFormat(type, compressorId);
 
-    std::string result = writer->store(set);
+    std::string result = format->store(set);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaFrames);
     schemas.push_back(spSchemaPeople);
+    
     std::vector<std::shared_ptr<MetadataInternal>> md;
-    reader->parseMetadata(result, schemas, md);
-    ASSERT_EQ(set.size(), md.size());
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { (int)set.size(), 0, 0, 0, 0 } },
+        actual = format->parse(result, md, schemas, segments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
     testStream.addSchema(spSchemaFrames);
     testStream.addSchema(spSchemaPeople);
-    for(auto item = md.begin(); item != md.end(); item++)
-        testStream.add(*item);
+    for(auto& item : md)
+        testStream.add(item);
 
     ASSERT_EQ(set.size(), testStream.getAll().size());
-    std::for_each(set.begin(), set.end(), [&] (const std::shared_ptr<Metadata>& spItem)
-    {
+    for (const auto& spItem : set)
         compareMetadata(spItem, testStream.getById(spItem->getId()) );
-    });
 
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
-    ASSERT_THROW(writer->store(set), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set), vmf::NullPointerException);
 }
 
 TEST_P(TestSerialization, Parse_metadataAll)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    initFormat(type, compressorId);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     std::vector<std::shared_ptr<MetadataInternal>> md;
-    reader->parseMetadata(result, schemas, md);
-    ASSERT_EQ(set.size(), md.size());
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
+        actual = format->parse(result, md, schemas, segments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
     testStream.addSchema(spSchemaFrames);
     testStream.addSchema(spSchemaPeople);
-    for(auto item = md.begin(); item != md.end(); item++)
-        testStream.add(*item);
+    for(auto& item : md)
+        testStream.add(item);
 
     ASSERT_EQ(set.size(), testStream.getAll().size());
-    std::for_each(set.begin(), set.end(), [&] (const std::shared_ptr<Metadata>& spItem)
-    {
-        compareMetadata(spItem, testStream.getById(spItem->getId()) );
-    });
+    for (const auto& spItem : set)
+        compareMetadata(spItem, testStream.getById(spItem->getId()));
 }
 
 TEST_P(TestSerialization, Parse_All)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    SerializerType type     = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    initFormat(type, compressorId);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     ASSERT_EQ(2u, testStream.getAllSchemaNames().size());
     compareSchemas(spSchemaPeople, testStream.getSchema(n_schemaPeople));
     compareSchemas(spSchemaFrames, testStream.getSchema(n_schemaFrames));
 
     ASSERT_EQ(set.size(), testStream.getAll().size());
-    std::for_each(set.begin(), set.end(), [&] (const std::shared_ptr<Metadata>& spItem)
-    {
-        compareMetadata(spItem, testStream.getById(spItem->getId()) );
-    });
-
-    std::vector<std::shared_ptr<vmf::MetadataInternal>> mdInt;
-    IdType nextId = 1;
-    std::string path = "";
-    std::string check = "";
-
-    std::string hint;
-    ASSERT_THROW(reader->parseAll("", nextId, path, check, hint, segments, schemas, mdInt), vmf::InternalErrorException);
+    for (const auto& spItem : set)
+        compareMetadata(spItem, testStream.getById(spItem->getId()));
 }
 
 TEST_P(TestSerialization, Parse_segmentArray)
 {
-    auto param = GetParam();
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), std::get<2>(param));
+    SerializerType type = std::get<0>(GetParam());
+    vmf_string compressorId = std::get<1>(GetParam());
+    initFormat(type, compressorId);
 
-    std::string result = writer->store(segments);
+    std::string result = format->store({}, {}, segments);
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    reader->parseVideoSegments(result, loadedSegments);
+    std::vector<std::shared_ptr<MetadataInternal>> md;
+    std::vector<std::shared_ptr<MetadataSchema>> schemas;
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { 0, 0, (int)segments.size(), 0, 0 } },
+        actual = format->parse(result, md, schemas, loadedSegments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     ASSERT_EQ(segments.size(), loadedSegments.size());
     for (size_t i = 0; i < segments.size(); i++)
@@ -440,36 +422,37 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     CryptAlgo algo      = std::get<2>(param);
     std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(algo);
 
-    std::shared_ptr<IWriter> formatWriter, cWriter;
-    std::shared_ptr<IReader> formatReader, cReader;
-    if (type == TypeXML)
+    std::shared_ptr<Format> f, cf;
+    switch (type)
     {
-        formatWriter = std::make_shared<XMLWriter>();
-        formatReader = std::make_shared<XMLReader>();
+        case TypeXML:  f = std::make_shared<FormatXML>();  break;
+        case TypeJson: f = std::make_shared<FormatJSON>(); break;
+        default: VMF_EXCEPTION(IncorrectParamException,
+                               "Wrong serialization format type value: " + to_string(type));
     }
-    else if (type == TypeJson)
-    {
-        formatWriter = std::make_shared<JSONWriter>();
-        formatReader = std::make_shared<JSONReader>();
-    }
-    cWriter = std::make_shared<WriterCompressed>(formatWriter, compressorId);
-    cReader = std::make_shared<ReaderCompressed>(formatReader, true);
+    cf.reset(new FormatCompressed(f, compressorID, true));
     bool encryptAll = true;
     bool ignoreUnknownEncryptor = false;
-    writer.reset(new WriterEncrypted(cWriter, encryptor, encryptAll));
-    reader.reset(new ReaderEncrypted(cReader, encryptor, ignoreUnknownEncryptor));
+    format.reset(new FormatEncrypted(f, encryptor, encryptAll, ignoreUnknownEncryptor));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     vmf::Compressor::unregister(compressorId);
 
-    reader->parseSchemas(result, schemas);
+    std::vector<std::shared_ptr<MetadataInternal>> md;
+    std::vector<std::shared_ptr<MetadataSchema>> schemas1;
+    //std::vector<Stat> stats;
+    Format::AttribMap attribs;
+    Format::ParseCounters
+        expected{ { 1, 1, 0, 0, 1 } },
+        actual = format->parse(result, md, schemas1, segments, attribs);
+    ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
-    ASSERT_EQ(1u, schemas.size());
-    ASSERT_EQ("com.intel.vmf.compressed-metadata", schemas[0]->getName());
+    ASSERT_EQ(1u, schemas1.size());
+    ASSERT_EQ(COMPRESSED_DATA_SCHEMA_NAME, schemas1[0]->getName());
 }
 
 
