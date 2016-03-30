@@ -27,13 +27,11 @@ protected:
         vFields.emplace_back( vmf::FieldDesc( "email", vmf::Variant::type_string ));
         spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( "people", vFields ));
         spJessica = std::shared_ptr< vmf::Metadata >(new vmf::Metadata(spDesc));
-        spHumanInternal = std::shared_ptr< vmf::MetadataInternal >(new vmf::MetadataInternal(spDesc));
     }
 
     std::vector< vmf::FieldDesc > vFields;
     std::shared_ptr< vmf::MetadataDesc > spDesc;
     std::shared_ptr< vmf::Metadata > spJessica;
-    std::shared_ptr< vmf::MetadataInternal > spHumanInternal;
 };
 
 TEST_F(TestMetadata, CreateFromDesc)
@@ -49,21 +47,6 @@ TEST_F(TestMetadata, CreateFromDesc)
     ASSERT_EQ(spJessica->getSchemaName(), vmf::vmf_string());
     ASSERT_EQ(spJessica->getId(), vmf::INVALID_ID);
 
-    vmf::MetadataInternal newMdInt(*spHumanInternal);
-    ASSERT_EQ(newMdInt.getName(), "people");
-    ASSERT_EQ(newMdInt.getSchemaName(), vmf::vmf_string());
-    ASSERT_EQ(newMdInt.getId(), vmf::INVALID_ID);
-
-    std::shared_ptr<vmf::MetadataInternal> spMdInt = std::make_shared<vmf::MetadataInternal>(*spHumanInternal);
-    spMdInt->setFieldValue("name", "Jessica");
-    spMdInt->setFieldValue("age", (vmf::vmf_integer) 12);
-    spMdInt->setFieldValue("sex", "F");
-    spMdInt->setFieldValue("email", "jessica@kidsmail.com");
-    std::shared_ptr<vmf::MetadataSchema> schema = std::make_shared<vmf::MetadataSchema>("test");
-    schema->add(spDesc);
-    stream.addSchema(schema);
-    stream.add(spMdInt);
-    ASSERT_THROW(stream.add(spMdInt), vmf::IncorrectParamException);
     std::shared_ptr<vmf::MetadataSchema> nullSchema = nullptr;
     ASSERT_THROW(stream.addSchema(nullSchema), vmf::NullPointerException);
 }

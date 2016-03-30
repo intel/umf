@@ -253,54 +253,6 @@ IdType MetadataStream::add( std::shared_ptr< Metadata >& spMetadata )
     return id;
 }
 
-IdType MetadataStream::add( std::shared_ptr< MetadataInternal >& spMetadataInternal)
-{
-    if( !this->getSchema(spMetadataInternal->getDesc()->getSchemaName()) )
-        VMF_EXCEPTION(vmf::NotFoundException, "Metadata schema is not in the stream");
-
-    IdType id = spMetadataInternal->getId();
-    if(id != INVALID_ID)
-    {
-        if(this->getById(id) == nullptr)
-        {
-            if(nextId < id)
-                nextId = id + 1;
-        }
-        else
-            VMF_EXCEPTION(IncorrectParamException, "Metadata with such id is already in the stream");
-    }
-    else
-    {
-        id = nextId++;
-        spMetadataInternal->setId(id);
-    }
-    internalAdd(spMetadataInternal);
-    addedIds.push_back(id);
-
-    if(!spMetadataInternal->vRefs.empty())
-    {
-        auto spItem = getById(id);
-        for(auto ref = spMetadataInternal->vRefs.begin(); ref != spMetadataInternal->vRefs.end(); ref++)
-        {
-            auto referencedItem = getById(ref->first);
-            if(referencedItem != nullptr)
-                spItem->addReference(referencedItem, ref->second);
-            else
-                m_pendingReferences[ref->first].push_back(std::make_pair(id, ref->second));
-        }
-    }
-    auto pendingReferences = m_pendingReferences[id];
-    if(!pendingReferences.empty())
-    {
-        for(auto pendingId = pendingReferences.begin(); pendingId != pendingReferences.end(); pendingId++)
-            getById(pendingId->first)->addReference(spMetadataInternal, pendingId->second);
-        m_pendingReferences[id].clear();
-        m_pendingReferences.erase(id);
-    }
-
-    return id;
-}
-
 IdType MetadataStream::add(MetadataInternal2& mdi)
 {
     auto schema = getSchema(mdi.schemaName);

@@ -183,16 +183,7 @@ public:
 
     /*!
     * \brief Add new metadata item
-    * \param spMetadataInternal [in] pointer to metadataInternal object
-    * \return identifier of added metadata object
-    * \throw ValidateException if metadata is not valid to selected scheme or description
-    * \throw IncorrectParamException if metadata with such id is already exists
-    */
-    IdType add( std::shared_ptr< MetadataInternal >& spMetadataInternal);
-
-    /*!
-    * \brief Add new metadata item
-    * \param mdi [in] reference to a MetadataInternal object
+    * \param mdi [in] reference to a MetadataInternal2 object
     * \return ID of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     * \throw IncorrectParamException if metadata with such id is already exists
