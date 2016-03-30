@@ -234,7 +234,7 @@ TEST_P(TestSerialization, StoreAll)
 
     segments.clear();
     schemas.clear();
-    std::vector<vmf::MetadataInternal2> mdInt;
+    std::vector<vmf::MetadataInternal> mdInt;
     Format::AttribMap attribs;
 
     ASSERT_THROW(format->parse("", mdInt, schemas, segments, attribs), vmf::IncorrectParamException);
@@ -253,7 +253,7 @@ TEST_P(TestSerialization, Parse_schemasArray)
 
     schemas.clear();
 
-    std::vector<MetadataInternal2> metadata;
+    std::vector<MetadataInternal> metadata;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
@@ -276,7 +276,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
     schemas.push_back(spSchemaFrames);
     std::string result = stream.serialize(*format);
 
-    std::vector<MetadataInternal2> metadata;
+    std::vector<MetadataInternal> metadata;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
@@ -299,7 +299,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
     schemas.push_back(spSchemaFrames);
     schemas.push_back(spSchemaPeople);
     
-    std::vector<MetadataInternal2> md;
+    std::vector<MetadataInternal> md;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
@@ -333,7 +333,7 @@ TEST_P(TestSerialization, Parse_metadataAll)
     schemas.push_back(spSchemaFrames);
     std::string result = stream.serialize(*format);
 
-    std::vector<MetadataInternal2> md;
+    std::vector<MetadataInternal> md;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
@@ -384,7 +384,7 @@ TEST_P(TestSerialization, Parse_segmentArray)
     std::string result = format->store({}, {}, segments);
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
-    std::vector<MetadataInternal2> md;
+    std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
@@ -426,7 +426,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 
     vmf::Compressor::unregister(compressorId);
 
-    std::vector<MetadataInternal2> md;
+    std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas1;
     //std::vector<Stat> stats;
     Format::AttribMap attribs;

@@ -253,7 +253,7 @@ IdType MetadataStream::add( std::shared_ptr< Metadata >& spMetadata )
     return id;
 }
 
-IdType MetadataStream::add(MetadataInternal2& mdi)
+IdType MetadataStream::add(MetadataInternal& mdi)
 {
     auto schema = getSchema(mdi.schemaName);
     if (!schema) VMF_EXCEPTION(vmf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
@@ -643,7 +643,7 @@ void MetadataStream::deserialize(const std::string& text, Format& format)
 {
     std::vector<std::shared_ptr<VideoSegment>> segments;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    std::vector<MetadataInternal2> metadata;
+    std::vector<MetadataInternal> metadata;
     Format::AttribMap attribs;
     format.parse(text, metadata, schemas, segments, attribs);
     if(m_sFilePath.empty()) m_sFilePath = attribs["filepath"];

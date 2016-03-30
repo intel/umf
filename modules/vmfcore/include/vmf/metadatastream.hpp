@@ -183,12 +183,12 @@ public:
 
     /*!
     * \brief Add new metadata item
-    * \param mdi [in] reference to a MetadataInternal2 object
+    * \param mdi [in] reference to a MetadataInternal object
     * \return ID of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     * \throw IncorrectParamException if metadata with such id is already exists
     */
-    IdType add(MetadataInternal2& mdi);
+    IdType add(MetadataInternal& mdi);
 
     /*!
     * \brief Remove metadata by their id

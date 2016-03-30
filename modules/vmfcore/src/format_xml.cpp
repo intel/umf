@@ -395,7 +395,7 @@ std::string FormatXML::store(
 #define ATOLL(x) atoll(x)
 #endif
 
-    static MetadataInternal2 parseMetadataFromNode(xmlNodePtr metadataNode)
+    static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
     {
         std::string schema_name, desc_name;
         long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
@@ -419,7 +419,7 @@ std::string FormatXML::store(
                 id = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
         }
 
-        MetadataInternal2 mdi(desc_name, schema_name);
+        MetadataInternal mdi(desc_name, schema_name);
         mdi.id = id;
 
         if (frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
@@ -506,7 +506,7 @@ std::string FormatXML::store(
 
     Format::ParseCounters FormatXML::parse(
         const std::string& text,
-        std::vector<MetadataInternal2>& metadata,
+        std::vector<MetadataInternal>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         //std::vector<Stat>& stats,

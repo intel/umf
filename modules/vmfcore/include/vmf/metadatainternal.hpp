@@ -33,20 +33,20 @@
 namespace vmf
 {
 /*!
-* struct MetadataInternal2
-* \brief %MetadataInternal2 is an intermediate stage of %Metadata used for incremental Metadata items deserialization (streaming case).
+* struct MetadataInternal
+* \brief %MetadataInternal is an intermediate stage of %Metadata used for incremental Metadata items deserialization (streaming case).
 * Unlike the %Metadata it keeps justparsed non-validated data and is transformed to %Metadata at adding to MetadataStream time.
 * Please don't use %MetadataInternal unless you develop custom %Format implementation.
 */
-struct VMF_EXPORT MetadataInternal2
+struct VMF_EXPORT MetadataInternal
 {
-    MetadataInternal2(const std::string& descName, const std::string& schemaName) :
+    MetadataInternal(const std::string& descName, const std::string& schemaName) :
         id(-1), descName(descName), schemaName(schemaName),
         frameIndex(Metadata::UNDEFINED_FRAME_INDEX), frameNum(Metadata::UNDEFINED_FRAMES_NUMBER),
         timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION)
     {}
 
-    MetadataInternal2(MetadataInternal2&& mdi) :
+    MetadataInternal(MetadataInternal&& mdi) :
         id(std::move(mdi.id)), descName(std::move(mdi.descName)), schemaName(std::move(mdi.schemaName)),
         frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
         timestamp(mdi.timestamp), duration(mdi.duration),

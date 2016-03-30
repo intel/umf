@@ -409,7 +409,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1addInternal (JNIEnv
     try
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-        MetadataInternal2* mdInt = (MetadataInternal2*) mdIntAddr;
+        MetadataInternal* mdInt = (MetadataInternal*) mdIntAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");

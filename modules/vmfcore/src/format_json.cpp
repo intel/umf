@@ -372,7 +372,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
     return spSchema;
 }
 
-static MetadataInternal2 parseMetadataFromNode(const JSONNode& metadataNode)
+static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
 {
     auto schemaIter = metadataNode.find(ATTR_METADATA_SCHEMA);
     auto descIter   = metadataNode.find(ATTR_METADATA_DESCRIPTION);
@@ -380,7 +380,7 @@ static MetadataInternal2 parseMetadataFromNode(const JSONNode& metadataNode)
     if (schemaIter == metadataNode.end() || descIter == metadataNode.end())
         VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata item has no schema name or description name");
 
-    MetadataInternal2 mdi(descIter->as_string(), schemaIter->as_string());
+    MetadataInternal mdi(descIter->as_string(), schemaIter->as_string());
     if (idIter != metadataNode.end())
         mdi.id = idIter->as_int();
     else
@@ -522,7 +522,7 @@ static Stat parseStatFromNode(const JSONNode& statNode)
 
 Format::ParseCounters FormatJSON::parse(
     const std::string& text,
-    std::vector<MetadataInternal2>& metadata,
+    std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     //std::vector<Stat>& stats,

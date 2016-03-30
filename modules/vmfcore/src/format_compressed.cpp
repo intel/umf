@@ -52,7 +52,7 @@ std::string FormatCompressed::store(
 
 Format::ParseCounters FormatCompressed::parse(
     const std::string& text,
-    std::vector<MetadataInternal2>& metadata,
+    std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     //std::vector<Stat>& stats,
@@ -126,7 +126,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     //parse it as usual serialized VMF XML, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(cSchema);
-    std::vector<MetadataInternal2> metadata;
+    std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
     AttribMap attribs;

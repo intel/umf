@@ -70,7 +70,7 @@ public:
     */
     virtual ParseCounters parse(
         const std::string& text,
-        std::vector<MetadataInternal2>& metadata,
+        std::vector<MetadataInternal>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         //std::vector<Stat>& stats,
