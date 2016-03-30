@@ -76,6 +76,32 @@ public:
     std::vector<std::pair<IdType, std::string>> vRefs;
 };
 
+struct VMF_EXPORT MetadataInternal2
+{
+    MetadataInternal2(const std::string& descName, const std::string& schemaName) :
+        id(-1), descName(descName), schemaName(schemaName),
+        frameIndex(Metadata::UNDEFINED_FRAME_INDEX), frameNum(Metadata::UNDEFINED_FRAMES_NUMBER),
+        timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION)
+    {}
+
+    MetadataInternal2(MetadataInternal2&& mdi) :
+        id(std::move(mdi.id)), descName(std::move(mdi.descName)), schemaName(std::move(mdi.schemaName)),
+        frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
+        timestamp(mdi.timestamp), duration(mdi.duration),
+        fields(std::move(mdi.fields)), refs(std::move(mdi.refs))
+    {}
+
+    IdType      id;
+    std::string descName;
+    std::string schemaName;
+    long long   frameIndex;
+    long long   frameNum;
+    long long   timestamp;
+    long long   duration;
+    std::map<std::string, std::string> fields;
+    std::vector<std::pair<IdType, std::string>> refs;
+};
+
 }//vmf
 
 #ifdef _MSC_VER

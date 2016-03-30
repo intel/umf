@@ -324,11 +324,4 @@ public class VmfMetadataTest
         md1.setFieldValue("empty", var1);
     }
     
-    @SuppressWarnings("unused")
-    @Test
-    public void testCreateMdIntermal()
-    {
-        MetadataInternal mdInt1 = new MetadataInternal(mdDesc);
-        MetadataInternal mdInt2 = new MetadataInternal(md1);
-    }
 }

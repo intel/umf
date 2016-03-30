@@ -395,7 +395,7 @@ std::string FormatXML::store(
 #define ATOLL(x) atoll(x)
 #endif
 
-    static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metadataNode, const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+    static MetadataInternal2 parseMetadataFromNode(xmlNodePtr metadataNode)
     {
         std::string schema_name, desc_name;
         long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
@@ -419,57 +419,35 @@ std::string FormatXML::store(
                 id = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
         }
 
-        if (id == INVALID_ID)
-            VMF_EXCEPTION(vmf::InternalErrorException, "XML element has no id");
-
-        auto schema = schemas.begin();
-        for (; schema != schemas.end(); schema++)
-            if ((*schema)->getName() == schema_name)
-                break;
-
-        if (schema == schemas.end())
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Unknown metadata item schema");
-
-        std::shared_ptr<MetadataDesc> spDesc;
-        if ((spDesc = (*schema)->findMetadataDesc(desc_name)) == nullptr)
-            VMF_EXCEPTION(vmf::IncorrectParamException, "Unknown metadata item description");
-
-        std::shared_ptr<MetadataInternal> spMetadataInternal(new MetadataInternal(spDesc));
-        spMetadataInternal->setId(id);
+        MetadataInternal2 mdi(desc_name, schema_name);
+        mdi.id = id;
 
         if (frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
         {
+            mdi.frameIndex = frameIndex;
             if (nFrames != vmf::Metadata::UNDEFINED_FRAMES_NUMBER)
-                spMetadataInternal->setFrameIndex(frameIndex, nFrames);
-            else
-                spMetadataInternal->setFrameIndex(frameIndex);
+                mdi.frameNum = nFrames;
         }
         if (timestamp != vmf::Metadata::UNDEFINED_TIMESTAMP)
         {
+            mdi.timestamp = timestamp;
             if (duration != vmf::Metadata::UNDEFINED_DURATION)
-                spMetadataInternal->setTimestamp(timestamp, duration);
-            else
-                spMetadataInternal->setTimestamp(timestamp);
+                mdi.duration = duration;
         }
 
         for (xmlNode *fieldNode = metadataNode->children; fieldNode; fieldNode = fieldNode->next)
         {
             if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
             {
-                std::string field_name;
-                vmf::Variant field_value;
+                std::string fieldName, fieldValue;
                 for (xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
                 {
                     if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                        field_name = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                        fieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
                     else if (std::string((char*)cur_prop->name) == std::string(ATTR_VALUE))
-                    {
-                        FieldDesc fieldDesc;
-                        spDesc->getFieldDesc(fieldDesc, field_name);
-                        field_value.fromString(fieldDesc.type, (char*)xmlGetProp(fieldNode, cur_prop->name));
-                    }
+                        fieldValue = (char*)xmlGetProp(fieldNode, cur_prop->name);
                 }
-                spMetadataInternal->setFieldValue(field_name, field_value);
+                mdi.fields[fieldName] = fieldValue;
             }
             else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
             {
@@ -482,10 +460,10 @@ std::string FormatXML::store(
                     else if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
                         refName = (char*)xmlGetProp(fieldNode, cur_prop->name);
                 }
-                spMetadataInternal->vRefs.push_back(std::make_pair(IdType(refId), refName));
+                mdi.refs.push_back(std::make_pair(IdType(refId), refName));
             }
         }
-        return spMetadataInternal;
+        return mdi;
     }
 
     static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNodePtr segmentNode)
@@ -528,7 +506,7 @@ std::string FormatXML::store(
 
     Format::ParseCounters FormatXML::parse(
         const std::string& text,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+        std::vector<MetadataInternal2>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         //std::vector<Stat>& stats,
@@ -629,8 +607,7 @@ std::string FormatXML::store(
                         {
                             try
                             {
-                                std::shared_ptr<MetadataInternal> spMdi = parseMetadataFromNode(md, schemas);
-                                metadata.push_back(spMdi);
+                                metadata.push_back( parseMetadataFromNode(md) );
                                 cnt.metadata++;
                             }
                             catch (Exception& e)

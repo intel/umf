@@ -135,7 +135,7 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     Format::AttribMap attribs;
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<MetadataInternal2> metadata;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     Format::ParseCounters
         expected{ { 1, 1, 2, 0, 3 } },
@@ -159,7 +159,7 @@ TEST_P(TestVideoSegments, ParseSegmentsAll)
 
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     Format::AttribMap attribs;
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<MetadataInternal2> metadata;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     Format::ParseCounters
         expected{ { 1, 1, 2, 0, 3 } },

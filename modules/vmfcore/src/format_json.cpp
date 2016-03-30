@@ -91,7 +91,8 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
 {
     metadataNode.push_back(JSONNode(ATTR_METADATA_SCHEMA, spMetadata->getSchemaName()));
     metadataNode.push_back(JSONNode(ATTR_METADATA_DESCRIPTION, spMetadata->getName()));
-    metadataNode.push_back(JSONNode(ATTR_ID, spMetadata->getId()));
+    metadataNode.push_back(JSONNode(ATTR_ID_HI, (unsigned long)(spMetadata->getId()>>32)));
+    metadataNode.push_back(JSONNode(ATTR_ID_LO, (unsigned long)spMetadata->getId()));
     if (spMetadata->getFrameIndex() != Metadata::UNDEFINED_FRAME_INDEX)
     {
         long long llVal = spMetadata->getFrameIndex();
@@ -371,35 +372,36 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
     return spSchema;
 }
 
-static std::shared_ptr<MetadataInternal> parseMetadataFromNode(const JSONNode& metadataNode, const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+static MetadataInternal2 parseMetadataFromNode(const JSONNode& metadataNode)
 {
     auto schemaIter = metadataNode.find(ATTR_METADATA_SCHEMA);
-    auto descIter = metadataNode.find(ATTR_METADATA_DESCRIPTION);
-    auto idIter = metadataNode.find(ATTR_ID);
-    if (schemaIter == metadataNode.end() || descIter == metadataNode.end() || idIter == metadataNode.end())
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata item has no schema name, description name or id");
+    auto descIter   = metadataNode.find(ATTR_METADATA_DESCRIPTION);
+    auto idIter     = metadataNode.find(ATTR_ID);
+    if (schemaIter == metadataNode.end() || descIter == metadataNode.end())
+        VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata item has no schema name or description name");
 
-    auto schema = schemas.begin();
-    for (; schema != schemas.end(); schema++)
-        if ((*schema)->getName() == schemaIter->as_string())
-            break;
-
-    if (schema == schemas.end())
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Unknown schema for metadata item");
-
-    std::shared_ptr<MetadataDesc> spDesc;
-    if ((spDesc = (*schema)->findMetadataDesc(descIter->as_string())) == nullptr)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Unknown description for metadata item");
-
-    std::shared_ptr<MetadataInternal> spMetadataInternal(new MetadataInternal(spDesc));
-    spMetadataInternal->setId(idIter->as_int());
+    MetadataInternal2 mdi(descIter->as_string(), schemaIter->as_string());
+    if (idIter != metadataNode.end())
+        mdi.id = idIter->as_int();
+    else
+    {
+        auto idLoIter = metadataNode.find(ATTR_ID_LO);
+        auto idHiIter = metadataNode.find(ATTR_ID_HI);
+        if (idLoIter != metadataNode.end() && idHiIter != metadataNode.end())
+        {
+            unsigned long lo = idLoIter->as_int();
+            unsigned long hi = idHiIter->as_int();
+            long long id = ((long long)hi << 32) | lo;
+            mdi.id = id;
+        }
+    }
 
     auto frameIdxLoIter = metadataNode.find(ATTR_METADATA_FRAME_IDX_LO);
     auto frameIdxHiIter = metadataNode.find(ATTR_METADATA_FRAME_IDX_HI);
-    auto nFramesLoIter = metadataNode.find(ATTR_METADATA_NFRAMES_LO);
-    auto nFramesHiIter = metadataNode.find(ATTR_METADATA_NFRAMES_HI);
-    auto timeLoIter = metadataNode.find(ATTR_METADATA_TIMESTAMP_LO);
-    auto timeHiIter = metadataNode.find(ATTR_METADATA_TIMESTAMP_HI);
+    auto nFramesLoIter  = metadataNode.find(ATTR_METADATA_NFRAMES_LO);
+    auto nFramesHiIter  = metadataNode.find(ATTR_METADATA_NFRAMES_HI);
+    auto timeLoIter     = metadataNode.find(ATTR_METADATA_TIMESTAMP_LO);
+    auto timeHiIter     = metadataNode.find(ATTR_METADATA_TIMESTAMP_HI);
     auto durationLoIter = metadataNode.find(ATTR_METADATA_DURATION_LO);
     auto durationHiIter = metadataNode.find(ATTR_METADATA_DURATION_HI);
 
@@ -408,32 +410,30 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(const JSONNode& m
         unsigned long lo = frameIdxLoIter->as_int();
         unsigned long hi = frameIdxHiIter->as_int();
         long long frmIdx = ((long long)hi << 32) | lo;
+        mdi.frameIndex = frmIdx;
 
         if (nFramesLoIter != metadataNode.end() && nFramesHiIter != metadataNode.end())
         {
             unsigned long lo = nFramesLoIter->as_int();
             unsigned long hi = nFramesHiIter->as_int();
             long long numFrm = ((long long)hi << 32) | lo;
-            spMetadataInternal->setFrameIndex(frmIdx, numFrm);
+            mdi.frameNum = numFrm;
         }
-        else
-            spMetadataInternal->setFrameIndex(frmIdx);
     }
     if (timeLoIter != metadataNode.end() && timeHiIter != metadataNode.end())
     {
         unsigned long lo = timeLoIter->as_int();
         unsigned long hi = timeHiIter->as_int();
         long long time = ((long long)hi << 32) | lo;
+        mdi.timestamp = time;
 
         if (durationLoIter != metadataNode.end() && durationHiIter != metadataNode.end())
         {
             unsigned long lo = durationLoIter->as_int();
             unsigned long hi = durationHiIter->as_int();
             long long dur = ((long long)hi << 32) | lo;
-            spMetadataInternal->setTimestamp(time, dur);
+            mdi.duration = dur;
         }
-        else
-            spMetadataInternal->setTimestamp(time);
     }
 
     auto metadataFieldsArrayIter = metadataNode.find(TAG_FIELDS_ARRAY);
@@ -447,11 +447,7 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(const JSONNode& m
         auto fieldValueIter = fieldNode->find(ATTR_VALUE);
         if (fieldNameIter == fieldNode->end() || fieldValueIter == fieldNode->end())
             VMF_EXCEPTION(vmf::IncorrectParamException, "Missing field name or field value");
-
-        vmf::Variant field_value;
-        spDesc->getFieldDesc(fieldDesc, fieldNameIter->as_string());
-        field_value.fromString(fieldDesc.type, fieldValueIter->as_string());
-        spMetadataInternal->setFieldValue(fieldNameIter->as_string(), field_value);
+        mdi.fields[fieldNameIter->as_string()] = fieldValueIter->as_string();
     }
 
     auto referencesArrayIter = metadataNode.find(TAG_METADATA_REFERENCES_ARRAY);
@@ -465,11 +461,11 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(const JSONNode& m
             auto referenceNameIter = referenceNode->find(ATTR_NAME);
             if (referenceNameIter == referenceNode->end()) VMF_EXCEPTION(vmf::IncorrectParamException, "Missing reference 'name'");
 
-            spMetadataInternal->vRefs.push_back(std::make_pair(IdType(referenceIdIter->as_int()), referenceNameIter->as_string()));
+            mdi.refs.push_back(std::make_pair(IdType(referenceIdIter->as_int()), referenceNameIter->as_string()));
         }
     }
 
-    return spMetadataInternal;
+    return mdi;
 }
 
 static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(const JSONNode& segmentNode)
@@ -526,7 +522,7 @@ static Stat parseStatFromNode(const JSONNode& statNode)
 
 Format::ParseCounters FormatJSON::parse(
     const std::string& text,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+    std::vector<MetadataInternal2>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     //std::vector<Stat>& stats,
@@ -574,7 +570,7 @@ Format::ParseCounters FormatJSON::parse(
         else if (node.name() == TAG_METADATA_ARRAY)
         {
             for (const auto& m : node)
-                metadata.push_back(parseMetadataFromNode(m, schemas)), counter.metadata++;
+                metadata.push_back(parseMetadataFromNode(m)), counter.metadata++;
         }
         else VMF_LOG_ERROR("Unexpected JSON element: " + node.name());
     }

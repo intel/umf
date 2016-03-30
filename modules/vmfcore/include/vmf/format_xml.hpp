@@ -52,7 +52,7 @@ public:
         const std::vector<std::shared_ptr<MetadataSchema>>& schemas = {},
         const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments = {},
         //const std::vector<Stat>& stats = {},
-		const AttribMap& attribs = AttribMap() // nextId, checksum, etc
+        const AttribMap& attribs = AttribMap() // nextId, checksum, etc
         );
 
     /*!
@@ -60,7 +60,7 @@ public:
     */
     virtual ParseCounters parse(
         const std::string& text,
-        std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+        std::vector<MetadataInternal2>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
         //std::vector<Stat>& stats,

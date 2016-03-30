@@ -182,7 +182,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
         if (!textStr)
             VMF_EXCEPTION(InternalErrorException, "Error accessing input text");
 
-        std::vector<std::shared_ptr<MetadataInternal>> metadata;
+        std::vector<MetadataInternal2> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
         //std::vector<Stat> stats;
@@ -200,7 +200,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
         {
             int cnt = 0;
             //metadata
-            for (int i = 0; i < counters.metadata; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<MetadataInternal>(metadata[i]);
+            for (int i = 0; i < counters.metadata; i++) objsAddrs[i + cnt] = (jlong) new MetadataInternal2(metadata[i]);
             objsAddrs[counters.metadata + cnt] = 0;
             cnt += counters.metadata + 1;
             //schemas

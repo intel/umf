@@ -52,7 +52,7 @@ std::string FormatCompressed::store(
 
 Format::ParseCounters FormatCompressed::parse(
     const std::string& text,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+    std::vector<MetadataInternal2>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     //std::vector<Stat>& stats,
@@ -126,34 +126,25 @@ std::string FormatCompressed::decompress(const std::string& input)
     //parse it as usual serialized VMF XML, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(cSchema);
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<MetadataInternal2> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
     AttribMap attribs;
 
     //any exceptions thrown inside will be passed further
     Format::ParseCounters counter;
-    //TODO: remove try/catch wrapping when Format::parse() would be able to work w/o schemas presented
-    try
-    {
-        counter = format->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
-    }
-    catch(IncorrectParamException&)
-    {
-        //failed to find cSchema in input: it's uncompressed or broken
-        return input;
-    }
+    counter = format->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
 
     if(counter.schemas == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
-        std::shared_ptr<Metadata> cMetadata = metadata[0];
-        vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
-        vmf_string encoded = cMetadata->getFieldValue(COMPRESSED_DATA_PROP_NAME);
+        auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
+             dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
+             mapEnd   = metadata[0].fields.end();
+        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second;
+        vmf_string data = dataIter == mapEnd ? "" : dataIter->second;
 
         if(algo.empty())
-        {
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");
-        }
 
         try
         {
@@ -161,7 +152,7 @@ std::string FormatCompressed::decompress(const std::string& input)
             std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
             // Compressed binary data should be represented in base64
             // because of '\0' symbols
-            vmf_rawbuffer compressed = Variant::base64decode(encoded);
+            vmf_rawbuffer compressed = Variant::base64decode(data);
             decompressor->decompress(compressed, decompressed);
             return decompressed;
         }
