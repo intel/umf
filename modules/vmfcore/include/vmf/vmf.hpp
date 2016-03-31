@@ -30,7 +30,6 @@
 #include "vmf/format_json.hpp"
 #include "vmf/format_compressed.hpp"
 #include "vmf/default_encryptor.hpp"
-#include "vmf/reader_encrypted.hpp"
-#include "vmf/writer_encrypted.hpp"
+#include "vmf/format_encrypted.hpp"
 
 #endif /* __VMF_H__ */
