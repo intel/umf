@@ -82,6 +82,11 @@ public:
         AttribMap& attribs // nextId, checksum, etc
         );
 
+    virtual std::shared_ptr<Format> getBackendFormat()
+    {
+        return format ? format->getBackendFormat() : nullptr;
+    }
+
 protected:
     /*!
     * \brief Performs compression of text data

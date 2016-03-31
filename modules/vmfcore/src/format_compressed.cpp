@@ -110,7 +110,7 @@ std::string FormatCompressed::compress(const std::string& input)
 
         //create writer with no compression enabled
         std::string outputString;
-        outputString = format->store(cSet, cSchemas, segments, /*stats,*/ attribs);
+        outputString = getBackendFormat()->store(cSet, cSchemas, segments, /*stats,*/ attribs);
 
         return outputString;
     }
@@ -136,7 +136,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     //TODO: remove try/catch wrapping when Format::parse() would be able to work w/o schemas presented
     try
     {
-        counter = format->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
+        counter = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
     }
     catch(IncorrectParamException&)
     {

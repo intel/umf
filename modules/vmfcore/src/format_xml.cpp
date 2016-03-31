@@ -28,6 +28,11 @@ FormatXML::FormatXML()
 FormatXML::~FormatXML()
 {}
 
+std::shared_ptr<Format> FormatXML::getBackendFormat()
+{
+    return std::make_shared<FormatXML>();
+}
+
 /*
 ** store() support
 */

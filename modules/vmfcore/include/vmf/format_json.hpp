@@ -66,6 +66,8 @@ public:
         //std::vector<Stat>& stats,
         AttribMap& attribs // nextId, checksum, etc
         );
+
+    virtual std::shared_ptr<Format> getBackendFormat();
 };
 
 }//vmf

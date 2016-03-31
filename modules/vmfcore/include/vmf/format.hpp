@@ -76,6 +76,13 @@ public:
         //std::vector<Stat>& stats,
         AttribMap& attribs // nextId, checksum, etc
         ) = 0;
+
+    /*!
+     * \brief For implementations that work as wrappers for underlying format: return this implementation.
+     * For the rest ones return pointer to themselves.
+     * \return Shared pointer to implementation
+     */
+    virtual std::shared_ptr<Format> getBackendFormat() = 0;
 };
 
 }//vmf

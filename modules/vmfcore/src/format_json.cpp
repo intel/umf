@@ -30,6 +30,11 @@ FormatJSON::FormatJSON()
 FormatJSON::~FormatJSON()
 {}
 
+std::shared_ptr<Format> FormatJSON::getBackendFormat()
+{
+    return std::make_shared<FormatJSON>();
+}
+
 /*
 ** store() support
 */
