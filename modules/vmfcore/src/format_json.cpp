@@ -555,7 +555,7 @@ Format::ParseCounters FormatJSON::parse(
         else if (node.name() == TAG_STATS_ARRAY)
         {
             for (const auto& st : node)
-                ;//stats.push_back(parseStatFromNode(st)), counter.stats++;
+                st;//stats.push_back(parseStatFromNode(st)), counter.stats++;
         }
         else if (node.name() == TAG_VIDEO_SEGMENTS_ARRAY)
         {

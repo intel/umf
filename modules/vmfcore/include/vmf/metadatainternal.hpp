@@ -46,6 +46,13 @@ struct VMF_EXPORT MetadataInternal
         timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION)
     {}
 
+    MetadataInternal(const MetadataInternal& mdi) :
+        id(mdi.id), descName(mdi.descName), schemaName(mdi.schemaName),
+        frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
+        timestamp(mdi.timestamp), duration(mdi.duration),
+        fields(mdi.fields), refs(mdi.refs)
+    {}
+
     MetadataInternal(MetadataInternal&& mdi) :
         id(std::move(mdi.id)), descName(std::move(mdi.descName)), schemaName(std::move(mdi.schemaName)),
         frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
