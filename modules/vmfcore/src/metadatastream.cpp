@@ -682,7 +682,10 @@ std::string MetadataStream::serialize(Format& format)
     for (const auto& spSchema : m_mapSchemas)
         schemas.push_back(spSchema.second);
 
-    Format::AttribMap attribs{ { "nextId", to_string(nextId) }, { "filepath", m_sFilePath }, { "checksum", m_sChecksumMedia }, { "hint", m_hintEncryption }};
+    Format::AttribMap attribs{ { "nextId", to_string(nextId) },
+                               { "filepath", m_sFilePath },
+                               { "checksum", m_sChecksumMedia },
+                               { "hint", m_hintEncryption }, };
     return format.store(m_oMetadataSet, schemas, videoSegments, attribs);
 }
 
