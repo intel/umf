@@ -17,7 +17,7 @@
 
 /*!
 * \file format_compressed.hpp
-* \brief %FormatCompressed abstract class header file
+* \brief Serialization and deserialization based on instances of Compressor and Format classes
 */
 
 #ifndef VMF_FORMAT_COMPRESSED_H
@@ -28,15 +28,22 @@
 namespace vmf
 {
 /*!
-* class FormatCompressed
-* \brief FormatCompressed abstract class is a %Format interface extension for %Compressor use
+* \class FormatCompressed
+* \brief FormatCompressed class is a %Format interface extension for %Compressor use
 */
 class VMF_EXPORT FormatCompressed : public Format
 {
 public:
     /*!
-    * \brief Default class constructor
-    */
+     * \brief Constructor taking compressor ID and format to be used at data reading/writing
+     * \note This class can be used for reading w/o specifying the compressor ID
+     * \note To use both compression and encryption
+     * pass this class to FormatEncrypted constructor as the format argument
+     * \param format Shared pointer to instance of Format class
+     * \param compressorId ID of compression algorithm
+     * \param _ignoreUnknownCompressor Flag specifying what to do with unknown compressor:
+     * throw an exception (false) or pass compressed data as VMF metadata
+     */
     FormatCompressed(std::shared_ptr<Format> format,
                      const std::string& compressorId,
                      bool _ignoreUnknownCompressor = false);
@@ -47,8 +54,8 @@ public:
     virtual ~FormatCompressed();
 
     /*!
-    * \brief Sserialize input metadata and related stuff to XML string.
-    */
+     * \brief Serialize input metadata and related stuff to string
+     */
     virtual std::string store(
         const MetadataSet& set,
         const std::vector<std::shared_ptr<MetadataSchema>>& schemas = {},
@@ -58,8 +65,14 @@ public:
         );
 
     /*!
-    * \brief Deserialize input XML string to metadata and related stuff.
-    */
+     * \brief Deserialize input string to metadata and related stuff
+     * \param text input string
+     * \param metadata Metadata records
+     * \param schemas Schemas of the metadata
+     * \param segments Video segments
+     * \param attribs Attributes like nextId, checksum, etc.
+     * \return Numbers of items read by categories
+     */
     virtual ParseCounters parse(
         const std::string& text,
         std::vector<std::shared_ptr<MetadataInternal>>& metadata,
