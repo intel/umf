@@ -49,7 +49,7 @@ public:
     FormatEncrypted(std::shared_ptr<Format> format,
                     std::shared_ptr<Encryptor> _encryptor,
                     bool encryptAll = false,
-                    bool ignoreUnknownEncryptor = false);
+                    bool _ignoreUnknownEncryptor = false);
 
     /*!
      * \brief Default destructor
@@ -102,6 +102,7 @@ protected:
 
     std::shared_ptr<Format> format;
     std::shared_ptr<Encryptor> encryptor;
+    std::shared_ptr<vmf::MetadataSchema> eSchema;
     bool useEncryption;
     bool ignoreUnknownEncryptor;
 };

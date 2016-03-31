@@ -108,7 +108,7 @@ std::string FormatCompressed::compress(const std::string& input)
         //std::vector<Stat> stats;
         AttribMap attribs{ {"nextId", to_string(nextId)}, };
 
-        //create writer with no compression enabled
+        //create writer with no wrapping (like compression or encryption) enabled
         std::string outputString;
         outputString = getBackendFormat()->store(cSet, cSchemas, segments, /*stats,*/ attribs);
 
@@ -123,7 +123,7 @@ std::string FormatCompressed::compress(const std::string& input)
 
 std::string FormatCompressed::decompress(const std::string& input)
 {
-    //parse it as usual serialized VMF XML, search for specific schemas
+    //parse it as usual serialized VMF data, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(cSchema);
     std::vector<std::shared_ptr<MetadataInternal>> metadata;
