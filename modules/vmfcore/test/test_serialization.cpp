@@ -442,7 +442,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
         default: VMF_EXCEPTION(IncorrectParamException,
                                "Wrong serialization format type value: " + to_string(type));
     }
-    cf.reset(new FormatCompressed(f, compressorID, true));
+    cf.reset(new FormatCompressed(f, compressorId, true));
     bool encryptAll = true;
     bool ignoreUnknownEncryptor = true;
     format.reset(new FormatEncrypted(cf, encryptor, encryptAll, ignoreUnknownEncryptor));
@@ -517,7 +517,7 @@ TEST_P(TestSerialization, EncryptOneField)
         stream.setEncryptor(encryptor);
     }
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
 
@@ -526,7 +526,7 @@ TEST_P(TestSerialization, EncryptOneField)
         testStream.setEncryptor(encryptor);
     }
 
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
@@ -551,7 +551,7 @@ TEST_P(TestSerialization, EncryptOneRecord)
         toBeEncrypted->setUseEncryption(true);
     }
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
 
@@ -560,7 +560,7 @@ TEST_P(TestSerialization, EncryptOneRecord)
         testStream.setEncryptor(encryptor);
     }
 
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     std::shared_ptr<Metadata> encrypted = testStream.getById(toBeEncrypted->getId());
     ASSERT_TRUE((bool)encrypted);
@@ -589,7 +589,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
 
@@ -598,7 +598,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
         testStream.setEncryptor(encryptor);
     }
 
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
@@ -630,7 +630,7 @@ TEST_P(TestSerialization, EncryptMetaDesc)
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
 
@@ -639,7 +639,7 @@ TEST_P(TestSerialization, EncryptMetaDesc)
         testStream.setEncryptor(encryptor);
     }
 
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     schema = testStream.getSchema(n_schemaPeople);
     metadesc = schema->findMetadataDesc("person");
@@ -669,7 +669,7 @@ TEST_P(TestSerialization, EncryptSchema)
     ASSERT_EQ(toEncSet.size(), 1);
     std::shared_ptr<Metadata> toBeEncrypted  = toEncSet[0];
 
-    std::string result = stream.serialize(*writer);
+    std::string result = stream.serialize(*format);
 
     MetadataStream testStream;
 
@@ -678,7 +678,7 @@ TEST_P(TestSerialization, EncryptSchema)
         testStream.setEncryptor(encryptor);
     }
 
-    testStream.deserialize(result, *reader);
+    testStream.deserialize(result, *format);
 
     schema = testStream.getSchema(n_schemaPeople);
 
