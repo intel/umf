@@ -220,14 +220,14 @@ TEST_P(TestSerialization, StoreAll)
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
 
     set.pop_back();
 
     std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
     schemas.push_back(spSchemaNull);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
+    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
 
     set.clear();
 
@@ -295,7 +295,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
-        expected{ { 11, 2, 0, 0, 3 } },
+        expected{ { 11, 2, 0, 0, 4 } },
         actual = format->parse(result, metadata, schemas, segments, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
@@ -356,7 +356,7 @@ TEST_P(TestSerialization, Parse_metadataAll)
     //std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
-        expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
+        expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 4 } },
         actual = format->parse(result, md, schemas, segments, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
