@@ -276,6 +276,27 @@ std::string FormatJSON::store(
     // schemas
     if (!schemas.empty())
     {
+        //check if all the metadata records have corresponding schemas
+        //shouldn't be checked when schemas are empty
+        //for cases when user passes metadata records only
+        for(const std::shared_ptr<Metadata>& spMetadata : set)
+        {
+            if (spMetadata == nullptr)
+                VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
+
+            bool noSchemaForMetadata = true;
+            for(const std::shared_ptr<MetadataSchema>& spSchema : schemas)
+            {
+                if (spSchema == nullptr)
+                    VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+
+                if(spMetadata->getSchemaName() == spSchema->getName())
+                    noSchemaForMetadata = false;
+            }
+            if(noSchemaForMetadata)
+                VMF_EXCEPTION(vmf::IncorrectParamException, "MetadataSet item references unknown schema");
+        }
+
         JSONNode schemasArrayNode(JSON_ARRAY);
         schemasArrayNode.set_name(TAG_SCHEMAS_ARRAY);
         for (const auto& spSchema : schemas)
