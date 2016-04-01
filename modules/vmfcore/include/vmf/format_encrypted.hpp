@@ -42,9 +42,11 @@ public:
      * \brief Constructor taking encryptor and format to be used at data reading and writing
      * \note To use both compression and encryption pass the FormatCompressed as format
      * \param format Shared pointer to instance of Format
-     * \param _encryptor
-     * \param encryptAll
-     * \param ignoreUnknownEncryptor
+     * \param _encryptor Shared pointer to instance of Encryptor class
+     * \param encryptAll Specifies whether all data should be encrypted
+     * or just selected items
+     * \param _ignoreUnknownEncryptor Flag specifying what to do with unknown encryptor:
+     * throw an exception (false) or pass encrypted data as VMF metadata
      */
     FormatEncrypted(std::shared_ptr<Format> format,
                     std::shared_ptr<Encryptor> _encryptor,
