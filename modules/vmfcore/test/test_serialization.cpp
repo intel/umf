@@ -92,8 +92,8 @@ protected:
             case TypeJson: f = std::make_shared<FormatJSON>(); break;
             default: VMF_EXCEPTION(IncorrectParamException, "Wrong serialization format type value: " + to_string(type));
         }
-        cf.reset(new FormatCompressed(f, compressorID));
-        format.reset(new FormatEncrypted(f, encryptor, encryptAll, ignoreUnknownEncryptor));
+        cf.reset(new FormatCompressed(f, compressorId));
+        format.reset(new FormatEncrypted(cf, encryptor, encryptAll, ignoreUnknownEncryptor));
     }
 
     void compareSchemas(const std::shared_ptr<MetadataSchema>& goldSchema, const std::shared_ptr<MetadataSchema>& testSchema, bool compareRefs = true)
@@ -197,10 +197,13 @@ protected:
     vmf_string n_schemaPeople, n_schemaFrames;
 };
 
+
 TEST_P(TestSerialization, StoreAll)
 {
-    SerializerType type = std::get<0>(GetParam());
-    initFormat(type);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
 
@@ -248,11 +251,13 @@ TEST_P(TestSerialization, StoreAll)
     ASSERT_THROW(format->parse("", mdInt, schemas, segments, attribs), vmf::IncorrectParamException);
 }
 
+
 TEST_P(TestSerialization, Parse_schemasArray)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -274,11 +279,13 @@ TEST_P(TestSerialization, Parse_schemasArray)
     }
 }
 
+
 TEST_P(TestSerialization, Parse_schemasAll)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
@@ -298,9 +305,10 @@ TEST_P(TestSerialization, Parse_schemasAll)
 
 TEST_P(TestSerialization, Parse_metadataArray)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::string result = format->store(set);
 
@@ -331,11 +339,13 @@ TEST_P(TestSerialization, Parse_metadataArray)
     ASSERT_THROW(format->store(set), vmf::NullPointerException);
 }
 
+
 TEST_P(TestSerialization, Parse_metadataAll)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -363,9 +373,10 @@ TEST_P(TestSerialization, Parse_metadataAll)
 
 TEST_P(TestSerialization, Parse_All)
 {
-    SerializerType type     = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -386,9 +397,10 @@ TEST_P(TestSerialization, Parse_All)
 
 TEST_P(TestSerialization, Parse_segmentArray)
 {
-    SerializerType type = std::get<0>(GetParam());
-    vmf_string compressorId = std::get<1>(GetParam());
-    initFormat(type, compressorId);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      crypto       = std::get<2>(GetParam());
+    initFormat(type, compressorId, crypto);
 
     std::string result = format->store({}, {}, segments);
 
@@ -432,8 +444,8 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     }
     cf.reset(new FormatCompressed(f, compressorID, true));
     bool encryptAll = true;
-    bool ignoreUnknownEncryptor = false;
-    format.reset(new FormatEncrypted(f, encryptor, encryptAll, ignoreUnknownEncryptor));
+    bool ignoreUnknownEncryptor = true;
+    format.reset(new FormatEncrypted(cf, encryptor, encryptAll, ignoreUnknownEncryptor));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -458,31 +470,42 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 
 TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+
     if(algo != CryptAlgo::NONE)
     {
-        makeReaderWriter(std::get<0>(param), std::get<1>(param), algo);
+        initFormat(type, compressorId, algo);
 
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
         schemas.push_back(spSchemaPeople);
         schemas.push_back(spSchemaFrames);
-        std::string result = stream.serialize(*writer);
+        std::string result = stream.serialize(*format);
 
-        makeReaderWriter(std::get<0>(param), std::get<1>(param), CryptAlgo::NONE, true, true);
+        initFormat(type, compressorId, CryptAlgo::NONE, true, true);
 
-        reader->parseSchemas(result, schemas);
-        ASSERT_EQ(schemas.size(), 1);
-        ASSERT_EQ("com.intel.vmf.encrypted-metadata", schemas[0]->getName());
+        std::vector<std::shared_ptr<MetadataInternal>> md;
+        std::vector<std::shared_ptr<MetadataSchema>> schemas1;
+        //std::vector<Stat> stats;
+        Format::AttribMap attribs;
+        Format::ParseCounters
+            expected{ { 1, 1, 0, 0, 1 } },
+            actual = format->parse(result, md, schemas1, segments, attribs);
+        ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
+
+        ASSERT_EQ(1u, schemas1.size());
+        ASSERT_EQ(ENCRYPTED_DATA_SCHEMA_NAME, schemas1[0]->getName());
     }
 }
 
 
 TEST_P(TestSerialization, EncryptOneField)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+    initFormat(type, compressorId, algo, false);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -514,9 +537,10 @@ TEST_P(TestSerialization, EncryptOneField)
 
 TEST_P(TestSerialization, EncryptOneRecord)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+    initFormat(type, compressorId, algo, false);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -547,9 +571,10 @@ TEST_P(TestSerialization, EncryptOneRecord)
 
 TEST_P(TestSerialization, EncryptFieldDesc)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+    initFormat(type, compressorId, algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
@@ -588,9 +613,10 @@ TEST_P(TestSerialization, EncryptFieldDesc)
 
 TEST_P(TestSerialization, EncryptMetaDesc)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+    initFormat(type, compressorId, algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
@@ -627,9 +653,10 @@ TEST_P(TestSerialization, EncryptMetaDesc)
 
 TEST_P(TestSerialization, EncryptSchema)
 {
-    auto param = GetParam();
-    CryptAlgo algo = std::get<2>(param);
-    makeReaderWriter(std::get<0>(param), std::get<1>(param), algo, false);
+    SerializerType type         = std::get<0>(GetParam());
+    std::string    compressorId = std::get<1>(GetParam());
+    CryptAlgo      algo         = std::get<2>(GetParam());
+    initFormat(type, compressorId, algo, false);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     if(algo != CryptAlgo::NONE)
