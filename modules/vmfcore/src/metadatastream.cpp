@@ -686,7 +686,7 @@ std::string MetadataStream::serialize(Format& format)
                                { "filepath", m_sFilePath },
                                { "checksum", m_sChecksumMedia },
                                { "hint", m_hintEncryption }, };
-    return format.store(m_oMetadataSet, schemas, videoSegments, attribs);
+    return format.store(encryptedStream.m_oMetadataSet, schemas, videoSegments, attribs);
 }
 
 void MetadataStream::deserialize(const std::string& text, Format& format)
