@@ -127,7 +127,8 @@ std::string FormatEncrypted::decrypt(const std::string &input)
         return input;
     }
 
-    if(counters.schemas == 1 && schemas[0]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
+    //since we push back eSchema to schemas schemas[0] will always be eSchema
+    if(counters.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
     {
         std::shared_ptr<Metadata> eMetadata = metadata[0];
         vmf_string hint = eMetadata->getFieldValue(ENCRYPTION_HINT_PROP_NAME);

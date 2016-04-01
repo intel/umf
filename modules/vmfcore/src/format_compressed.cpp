@@ -144,7 +144,8 @@ std::string FormatCompressed::decompress(const std::string& input)
         return input;
     }
 
-    if(counter.schemas == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
+    //since we push back cSchema to schemas schemas[0] will always be cSchema
+    if(counter.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
         std::shared_ptr<Metadata> cMetadata = metadata[0];
         vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
