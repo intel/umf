@@ -87,6 +87,11 @@ public:
             AttribMap &attribs
             );
 
+    virtual std::shared_ptr<Format> getBackendFormat()
+    {
+        return format ? format->getBackendFormat() : nullptr;
+    }
+
 protected:
     /*!
      * \brief Performs encryption of text data
