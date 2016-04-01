@@ -96,10 +96,10 @@ XMPDataSource::XMPDataSource()
         VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaCompression);
 
-    schemaEncryption = make_shared<vmf::MetadataSchema>(encryptionSchemaName);
-    VMF_METADATA_BEGIN(encryptedDescName);
-        VMF_FIELD_STR(encryptionHintPropName);
-        VMF_FIELD_STR(encryptedDataPropName);
+    schemaEncryption = make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
+    VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
+        VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
+        VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaEncryption);
 }
 
@@ -147,16 +147,16 @@ void XMPDataSource::loadXMPstructs()
         //or pass them further
         std::map<vmf_string, std::shared_ptr<MetadataSchema> > eSchemas;
         tmpSchemaSource->load(eSchemas);
-        auto itEncryption = eSchemas.find(encryptionSchemaName);
+        auto itEncryption = eSchemas.find(ENCRYPTED_DATA_SCHEMA_NAME);
         if(itEncryption != eSchemas.end())
         {
             MetadataStream eStream;
             eStream.addSchema(itEncryption->second);
-            tmpMetaSource->loadSchema(encryptionSchemaName, eStream);
-            MetadataSet eSet = eStream.queryBySchema(encryptionSchemaName);
+            tmpMetaSource->loadSchema(ENCRYPTED_DATA_SCHEMA_NAME, eStream);
+            MetadataSet eSet = eStream.queryBySchema(ENCRYPTED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> eItem = eSet[0];
-            vmf_string hint      = eItem->getFieldValue(encryptionHintPropName);
-            vmf_string encodedB64 = eItem->getFieldValue(encryptedDataPropName);
+            vmf_string hint      = eItem->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
+            vmf_string encodedB64 = eItem->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
             bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor) != 0;
             if(!encryptor)
             {
@@ -202,16 +202,16 @@ void XMPDataSource::loadXMPstructs()
         //or pass them further
         std::map<vmf_string, std::shared_ptr<MetadataSchema> > cSchemas;
         tmpSchemaSource->load(cSchemas);
-        auto itCompression = cSchemas.find(compressionSchemaName);
+        auto itCompression = cSchemas.find(COMPRESSED_DATA_SCHEMA_NAME);
         if(itCompression != cSchemas.end())
         {
             MetadataStream cStream;
             cStream.addSchema(itCompression->second);
-            tmpMetaSource->loadSchema(compressionSchemaName, cStream);
-            MetadataSet cSet = cStream.queryBySchema(compressionSchemaName);
+            tmpMetaSource->loadSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
+            MetadataSet cSet = cStream.queryBySchema(COMPRESSED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> cItem = cSet[0];
-            vmf_string algo    = cItem->getFieldValue(compressionAlgoPropName);
-            vmf_string encoded = cItem->getFieldValue(compressedDataPropName);
+            vmf_string algo    = cItem->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
+            vmf_string encoded = cItem->getFieldValue(COMPRESSED_DATA_PROP_NAME);
             bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor) != 0;
             try
             {
@@ -286,9 +286,9 @@ void XMPDataSource::saveXMPstructs()
         MetadataStream cStream;
         cStream.addSchema(schemaCompression);
         shared_ptr<Metadata> cMetadata;
-        cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(compressedDescName));
-        cMetadata->push_back(FieldValue(compressionAlgoPropName, compressor->getId()));
-        cMetadata->push_back(FieldValue(compressedDataPropName,  encoded));
+        cMetadata = make_shared<Metadata>(schemaCompression->findMetadataDesc(COMPRESSED_DATA_DESC_NAME));
+        cMetadata->push_back(FieldValue(COMPRESSION_ALGO_PROP_NAME, compressor->getId()));
+        cMetadata->push_back(FieldValue(COMPRESSED_DATA_PROP_NAME,  encoded));
         cStream.add(cMetadata);
 
         tmpXMP = make_shared<SXMPMeta>();
@@ -333,9 +333,9 @@ void XMPDataSource::saveXMPstructs()
         MetadataStream eStream;
         eStream.addSchema(schemaEncryption);
         shared_ptr<Metadata> eMetadata;
-        eMetadata = make_shared<Metadata>(schemaEncryption->findMetadataDesc(encryptedDescName));
-        eMetadata->push_back(FieldValue(encryptionHintPropName, encryptor->getHint()));
-        eMetadata->push_back(FieldValue(encryptedDataPropName, encoded));
+        eMetadata = make_shared<Metadata>(schemaEncryption->findMetadataDesc(ENCRYPTED_DATA_DESC_NAME));
+        eMetadata->push_back(FieldValue(ENCRYPTION_HINT_PROP_NAME, encryptor->getHint()));
+        eMetadata->push_back(FieldValue(ENCRYPTED_DATA_PROP_NAME, encoded));
         eStream.add(eMetadata);
 
         tmpXMP = make_shared<SXMPMeta>();
