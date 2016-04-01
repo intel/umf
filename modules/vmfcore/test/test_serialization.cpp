@@ -80,8 +80,7 @@ protected:
         segments.push_back(std::make_shared<MetadataStream::VideoSegment>("segment2", 25, 5000, 1000));
     }
 
-    void initFormat(SerializerType type, const std::string& compressorId, CryptAlgo algo,
-                    bool encryptAll = true, bool ignoreUnknownEncryptor = false)
+    void initFormat(SerializerType type, const std::string& compressorId, CryptAlgo algo, bool ignoreUnknownEncryptor = false)
     {
         encryptor = getEncryptor(algo);
 
@@ -93,7 +92,7 @@ protected:
             default: VMF_EXCEPTION(IncorrectParamException, "Wrong serialization format type value: " + to_string(type));
         }
         cf.reset(new FormatCompressed(f, compressorId));
-        format.reset(new FormatEncrypted(cf, encryptor, encryptAll, ignoreUnknownEncryptor));
+        format.reset(new FormatEncrypted(cf, encryptor, ignoreUnknownEncryptor));
     }
 
     void compareSchemas(const std::shared_ptr<MetadataSchema>& goldSchema, const std::shared_ptr<MetadataSchema>& testSchema, bool compareRefs = true)
@@ -443,9 +442,8 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
                                "Wrong serialization format type value: " + to_string(type));
     }
     cf.reset(new FormatCompressed(f, compressorId, true));
-    bool encryptAll = true;
     bool ignoreUnknownEncryptor = true;
-    format.reset(new FormatEncrypted(cf, encryptor, encryptAll, ignoreUnknownEncryptor));
+    format.reset(new FormatEncrypted(cf, encryptor, ignoreUnknownEncryptor));
 
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(spSchemaPeople);
@@ -483,7 +481,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
         schemas.push_back(spSchemaFrames);
         std::string result = stream.serialize(*format);
 
-        initFormat(type, compressorId, CryptAlgo::NONE, true, true);
+        initFormat(type, compressorId, CryptAlgo::NONE, true);
 
         std::vector<std::shared_ptr<MetadataInternal>> md;
         std::vector<std::shared_ptr<MetadataSchema>> schemas1;
@@ -505,7 +503,7 @@ TEST_P(TestSerialization, EncryptOneField)
     SerializerType type         = std::get<0>(GetParam());
     std::string    compressorId = std::get<1>(GetParam());
     CryptAlgo      algo         = std::get<2>(GetParam());
-    initFormat(type, compressorId, algo, false);
+    initFormat(type, compressorId, algo);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -540,7 +538,7 @@ TEST_P(TestSerialization, EncryptOneRecord)
     SerializerType type         = std::get<0>(GetParam());
     std::string    compressorId = std::get<1>(GetParam());
     CryptAlgo      algo         = std::get<2>(GetParam());
-    initFormat(type, compressorId, algo, false);
+    initFormat(type, compressorId, algo);
 
     MetadataSet toEncSet = stream.queryBySchema(n_schemaPeople);
     ASSERT_EQ(toEncSet.size(), 1);
@@ -574,7 +572,7 @@ TEST_P(TestSerialization, EncryptFieldDesc)
     SerializerType type         = std::get<0>(GetParam());
     std::string    compressorId = std::get<1>(GetParam());
     CryptAlgo      algo         = std::get<2>(GetParam());
-    initFormat(type, compressorId, algo, false);
+    initFormat(type, compressorId, algo);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
@@ -616,7 +614,7 @@ TEST_P(TestSerialization, EncryptMetaDesc)
     SerializerType type         = std::get<0>(GetParam());
     std::string    compressorId = std::get<1>(GetParam());
     CryptAlgo      algo         = std::get<2>(GetParam());
-    initFormat(type, compressorId, algo, false);
+    initFormat(type, compressorId, algo);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     std::shared_ptr< MetadataDesc > metadesc = schema->findMetadataDesc("person");
@@ -656,7 +654,7 @@ TEST_P(TestSerialization, EncryptSchema)
     SerializerType type         = std::get<0>(GetParam());
     std::string    compressorId = std::get<1>(GetParam());
     CryptAlgo      algo         = std::get<2>(GetParam());
-    initFormat(type, compressorId, algo, false);
+    initFormat(type, compressorId, algo);
 
     std::shared_ptr< MetadataSchema > schema = stream.getSchema(n_schemaPeople);
     if(algo != CryptAlgo::NONE)

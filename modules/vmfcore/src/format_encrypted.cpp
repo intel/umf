@@ -6,11 +6,9 @@ namespace vmf
 
 FormatEncrypted::FormatEncrypted(std::shared_ptr<Format> format,
                                  std::shared_ptr<Encryptor> _encryptor,
-                                 bool encryptAll,
                                  bool _ignoreUnknownEncryptor)
     : format(format),
       encryptor(_encryptor),
-      useEncryption(encryptAll),
       ignoreUnknownEncryptor(_ignoreUnknownEncryptor)
 {
     eSchema = std::make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);

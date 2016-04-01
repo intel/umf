@@ -43,14 +43,11 @@ public:
      * \note To use both compression and encryption pass the FormatCompressed as format
      * \param format Shared pointer to instance of Format
      * \param _encryptor Shared pointer to instance of Encryptor class
-     * \param encryptAll Specifies whether all data should be encrypted
-     * or just selected items
      * \param _ignoreUnknownEncryptor Flag specifying what to do with unknown encryptor:
      * throw an exception (false) or pass encrypted data as VMF metadata
      */
     FormatEncrypted(std::shared_ptr<Format> format,
                     std::shared_ptr<Encryptor> _encryptor,
-                    bool encryptAll = false,
                     bool _ignoreUnknownEncryptor = false);
 
     /*!
@@ -110,7 +107,6 @@ protected:
     std::shared_ptr<Format> format;
     std::shared_ptr<Encryptor> encryptor;
     std::shared_ptr<vmf::MetadataSchema> eSchema;
-    bool useEncryption;
     bool ignoreUnknownEncryptor;
 };
 
