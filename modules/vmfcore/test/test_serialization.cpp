@@ -483,7 +483,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownEncryptor)
 
         initFormat(type, compressorId, CryptAlgo::NONE, true);
 
-        std::vector<std::shared_ptr<MetadataInternal>> md;
+        std::vector<MetadataInternal> md;
         std::vector<std::shared_ptr<MetadataSchema>> schemas1;
         //std::vector<Stat> stats;
         Format::AttribMap attribs;

@@ -35,7 +35,7 @@ std::string FormatEncrypted::store(const MetadataSet &set,
 
 
 Format::ParseCounters FormatEncrypted::parse(const std::string &text,
-    std::vector<std::shared_ptr<MetadataInternal> > &metadata,
+    std::vector<MetadataInternal> &metadata,
     std::vector<std::shared_ptr<MetadataSchema> > &schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment> > &segments,
     //std::vector<Stat>& stats,
@@ -107,7 +107,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
     //parse it as usual serialized VMF data, search for specific  schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(eSchema);
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
     AttribMap attribs;
@@ -128,9 +128,14 @@ std::string FormatEncrypted::decrypt(const std::string &input)
     //since we push back eSchema to schemas schemas[0] will always be eSchema
     if(counters.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
     {
-        std::shared_ptr<Metadata> eMetadata = metadata[0];
-        vmf_string hint = eMetadata->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
-        vmf_string encoded = eMetadata->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
+        MetadataInternal& eMetadata = metadata[0];
+        vmf_string hint, data;
+        auto hintIt = eMetadata.fields.find(ENCRYPTION_HINT_PROP_NAME);
+        auto dataIt = eMetadata.fields.find(ENCRYPTED_DATA_PROP_NAME);
+        if(hintIt != eMetadata.fields.end())
+            hint = hintIt->second.value;
+        if(dataIt != eMetadata.fields.end())
+            data = dataIt->second.value;
 
         if(!encryptor)
         {
@@ -150,7 +155,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
                 std::string decrypted;
                 // Encrypted binary data should be represented in base64
                 // because of '\0' symbols
-                vmf_rawbuffer encrypted = Variant::base64decode(encoded);
+                vmf_rawbuffer encrypted = Variant::base64decode(data);
                 encryptor->decrypt(encrypted, decrypted);
                 return decrypted;
             }

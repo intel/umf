@@ -318,9 +318,11 @@ IdType MetadataStream::add(MetadataInternal& mdi)
     {
         if (desc->getFieldDesc(fd, f.first))
         {
-            val.fromString(fd.type, f.second);
+            val.fromString(fd.type, f.second.value);
             spMd->setFieldValue(f.first, val);
-            TODO_add_encryption_attrs;
+            auto fieldIt = spMd->findField(f.first);
+            fieldIt->setUseEncryption(f.second.useEncryption);
+            fieldIt->setEncryptedData(f.second.encryptedData);
         }
         else
             VMF_EXCEPTION(IncorrectParamException, "Unknown Metadat field name: " + f.first);
@@ -346,7 +348,8 @@ IdType MetadataStream::add(MetadataInternal& mdi)
 
     m_pendingReferences.erase(mdi.id);
 
-    spMd->TODO_add_encryption_stuff;
+    spMd->setUseEncryption(mdi.useEncryption);
+    spMd->setEncryptedData(mdi.encryptedData);
 
     return mdi.id;
 }

@@ -52,7 +52,7 @@ std::string FormatCompressed::store(
 
 Format::ParseCounters FormatCompressed::parse(
     const std::string& text,
-    std::vector<std::shared_ptr<MetadataInternal>>& metadata,
+    std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
     //std::vector<Stat>& stats,
@@ -126,7 +126,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     //parse it as usual serialized VMF data, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     schemas.push_back(cSchema);
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
+    std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
     AttribMap attribs;
@@ -141,8 +141,8 @@ std::string FormatCompressed::decompress(const std::string& input)
         auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
              dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
              mapEnd   = metadata[0].fields.end();
-        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second;
-        vmf_string data = dataIter == mapEnd ? "" : dataIter->second;
+        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second.value;
+        vmf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
 
         if(algo.empty())
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");

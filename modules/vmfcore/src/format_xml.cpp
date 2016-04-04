@@ -488,7 +488,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
     #define ATOLL(x) atoll(x)
 #endif
 
-static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metadataNode, const std::vector<std::shared_ptr<MetadataSchema>>& schemas)
+static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
 {
     std::string schema_name, desc_name;
     long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
@@ -537,10 +537,9 @@ static std::shared_ptr<MetadataInternal> parseMetadataFromNode(xmlNodePtr metada
     }
     if (timestamp != vmf::Metadata::UNDEFINED_TIMESTAMP)
     {
+        mdi.timestamp = timestamp;
         if (duration != vmf::Metadata::UNDEFINED_DURATION)
-            spMetadataInternal->setTimestamp(timestamp, duration);
-        else
-            spMetadataInternal->setTimestamp(timestamp);
+            mdi.duration = duration;
     }
 
     for (xmlNode *fieldNode = metadataNode->children; fieldNode; fieldNode = fieldNode->next)
