@@ -106,7 +106,6 @@ std::string FormatEncrypted::decrypt(const std::string &input)
 {
     //parse it as usual serialized VMF data, search for specific  schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(eSchema);
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
@@ -114,19 +113,9 @@ std::string FormatEncrypted::decrypt(const std::string &input)
 
     //any exceptions thrown inside will be passed further
     Format::ParseCounters counters;
-    //TODO: remove try/catch wrapping when Format::parse() would be able to work w/o schemas provided
-    try
-    {
-        counters = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
-    }
-    catch(IncorrectParamException&)
-    {
-        //failed to find eSchema in input: it's uncompressed or broken
-        return input;
-    }
+    counters = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
 
-    //since we push back eSchema to schemas schemas[0] will always be eSchema
-    if(counters.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
+    if(counters.schemas == 1 && schemas.size() == 1 && schemas[0]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
     {
         MetadataInternal& eMetadata = metadata[0];
         vmf_string hint, data;

@@ -125,7 +125,6 @@ std::string FormatCompressed::decompress(const std::string& input)
 {
     //parse it as usual serialized VMF data, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(cSchema);
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     //std::vector<Stat> stats;
@@ -135,8 +134,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     Format::ParseCounters counter;
     counter = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
 
-    //since we push back cSchema to schemas schemas[0] will always be cSchema
-    if(counter.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
+    if(counter.schemas == 1 && schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
         auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
              dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
