@@ -33,7 +33,7 @@ public:
 	FieldValue(const FieldValue& other) : m_name(other.m_name), Variant(other)
     {}
 
-	FieldValue(FieldValue&& other) : m_name(std::move(other.m_name)), Variant(other)
+	FieldValue(FieldValue&& other) : m_name(std::move(other.m_name)), Variant(std::forward<Variant>(other))
 	{}
 
 	virtual ~FieldValue(void)
@@ -60,7 +60,7 @@ public:
 	{
 		if (this != &other)
 		{
-			Variant::operator=(other);
+			Variant::operator=(std::forward<Variant>(other));
 			m_name = std::move(other.m_name);
 		}
 		return *this;
