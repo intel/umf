@@ -31,28 +31,7 @@ public class MetadataInternal
         nativeObj = addr;
     }
     
-    public MetadataInternal (MetadataDesc mdDesc)
-    {
-        this (n_MetadataInternal (mdDesc.nativeObj));
-    }
-    
-    /*
-     * public MetadataInternal (MetadataInternal other)
-     * {
-     *  nativeObj = n_MetadataInternalCopy (other.nativeObj);
-     * }
-    */
-    
-    public MetadataInternal (Metadata md)
-    {
-        this (n_MetadataInternalByMD (md.nativeObj));
-    }
-    
-    public void clear ()
-    {
-        throw new java.lang.UnsupportedOperationException("Not Yet Implemented");
-    }
-    
+   
     @Override
     protected void finalize () throws Throwable 
     {
@@ -62,8 +41,5 @@ public class MetadataInternal
         super.finalize();
     }
     
-    private native static long n_MetadataInternal (long mdDescAddr);
-    //private native static long n_MetadataInternalCopy (long otherAddr);
-    private native static long n_MetadataInternalByMD (long mdAddr);
     private native static void n_delete (long nativeObj);
 }

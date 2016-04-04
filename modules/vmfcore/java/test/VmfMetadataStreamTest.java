@@ -274,9 +274,6 @@ public class VmfMetadataStreamTest
         
         assertEquals(1, stream.getAll().getSize());
         
-        MetadataInternal mdInt = new MetadataInternal(md3);
-        stream.add(mdInt);
-        
         stream.remove(schema);
         mdSet1 = stream.queryBySchema("test_schema");
         assertEquals(0, mdSet1.getSize());
@@ -473,18 +470,6 @@ public class VmfMetadataStreamTest
         stream.reopen(MetadataStream.ReadWrite);
     }
     
-    @Test
-    public void testMdIntAddThrow()
-    {
-        stream.open(dstFile, MetadataStream.ReadWrite);
-        MetadataDesc desc = new MetadataDesc ("people", fields);
-        
-        MetadataInternal mdInt = new MetadataInternal(desc);
-         
-        thrown.expect(com.intel.vmf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Metadata schema is not in the stream");
-        stream.add(mdInt);
-    }
     
     @Test
     public void testAddSchemaThrow()

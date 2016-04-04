@@ -46,6 +46,8 @@
 #define ATTR_NAME "name"
 #define ATTR_VALUE "value"
 #define ATTR_ID "id"
+#define ATTR_ID_HI "id-hi"
+#define ATTR_ID_LO "id-lo"
 
 #define ATTR_ENCRYPTED_DATA "encrypted-data"
 #define ATTR_ENCRYPTED_BOOL "is-encrypted"

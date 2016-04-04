@@ -133,28 +133,19 @@ std::string FormatCompressed::decompress(const std::string& input)
 
     //any exceptions thrown inside will be passed further
     Format::ParseCounters counter;
-    //TODO: remove try/catch wrapping when Format::parse() would be able to work w/o schemas presented
-    try
-    {
-        counter = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
-    }
-    catch(IncorrectParamException&)
-    {
-        //failed to find cSchema in input: it's uncompressed or broken
-        return input;
-    }
+    counter = getBackendFormat()->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
 
     //since we push back cSchema to schemas schemas[0] will always be cSchema
     if(counter.schemas == 1 && schemas.size() == 2 && schemas[1]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
-        std::shared_ptr<Metadata> cMetadata = metadata[0];
-        vmf_string algo = cMetadata->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
-        vmf_string encoded = cMetadata->getFieldValue(COMPRESSED_DATA_PROP_NAME);
+        auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
+             dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
+             mapEnd   = metadata[0].fields.end();
+        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second;
+        vmf_string data = dataIter == mapEnd ? "" : dataIter->second;
 
         if(algo.empty())
-        {
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");
-        }
 
         try
         {
@@ -162,7 +153,7 @@ std::string FormatCompressed::decompress(const std::string& input)
             std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
             // Compressed binary data should be represented in base64
             // because of '\0' symbols
-            vmf_rawbuffer compressed = Variant::base64decode(encoded);
+            vmf_rawbuffer compressed = Variant::base64decode(data);
             decompressor->decompress(compressed, decompressed);
             return decompressed;
         }
