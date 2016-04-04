@@ -51,10 +51,10 @@ Variant::Variant() : data(nullptr), m_type(type_unknown) {}
 
 Variant::Variant(const Variant& other) : data(other.data ? other.data->clone() : nullptr), m_type(other.getType()) {}
 
-Variant::Variant(Variant&& other) : Variant()
+Variant::Variant(Variant&& other)
 {
-    std::swap(data, other.data);
-    std::swap(m_type, other.m_type);
+	data = other.data; other.data = nullptr;
+	m_type = other.m_type; other.m_type = Variant::type_unknown;
 }
 
 Variant::~Variant()
@@ -207,7 +207,7 @@ Variant& Variant::operator = (const Variant& other)
         release();
 
         m_type = other.getType();
-        if(m_type == type_unknown)
+		if (m_type == type_unknown || other.data == nullptr)
             data = nullptr;
         else
             data = other.data->clone();

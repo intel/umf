@@ -344,7 +344,7 @@ namespace vmf
         */
         static vmf_rawbuffer base64decode(const std::string& base64Str);
 
-    private:
+    protected:
         /*!
         * \brief Release internal memory.
         */
