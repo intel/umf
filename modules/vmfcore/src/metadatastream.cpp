@@ -329,6 +329,10 @@ IdType MetadataStream::add(MetadataInternal& mdi)
     }
     spMd->setFrameIndex(mdi.frameIndex, mdi.frameNum);
     spMd->setTimestamp(mdi.timestamp, mdi.duration);
+
+    spMd->setUseEncryption(mdi.useEncryption);
+    spMd->setEncryptedData(mdi.encryptedData);
+
     internalAdd(spMd);
     addedIds.push_back(spMd->getId());
 
@@ -347,9 +351,6 @@ IdType MetadataStream::add(MetadataInternal& mdi)
         getById(pendingId.first)->addReference(spMd, pendingId.second);
 
     m_pendingReferences.erase(mdi.id);
-
-    spMd->setUseEncryption(mdi.useEncryption);
-    spMd->setEncryptedData(mdi.encryptedData);
 
     return mdi.id;
 }
