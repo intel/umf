@@ -264,7 +264,7 @@ std::string FormatXML::store(
     for (const auto& a : attribs)
         if (xmlNewProp(vmfRootNode, BAD_CAST a.first.c_str(), BAD_CAST a.second.c_str()) == NULL)
         {
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property. Next Id");
+            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property. Attribute");
         }
 
     // stats
