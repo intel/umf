@@ -43,10 +43,10 @@ public:
      * \param other An instance to be copied
      */
     FieldValue( const FieldValue& other ) :
+        Variant(other),
         m_name(other.m_name),
         m_useEncryption(other.m_useEncryption),
-        m_encryptedData(other.m_encryptedData),
-        Variant(other)
+        m_encryptedData(other.m_encryptedData)
     {}
 
     /*!
@@ -54,10 +54,10 @@ public:
      * \param other An instance to be moved
      */
     FieldValue(FieldValue&& other) :
+        Variant(std::forward<Variant>(other)),
         m_name(std::move(other.m_name)),
         m_useEncryption(other.m_useEncryption),
-        m_encryptedData(std::move(other.m_encryptedData)),
-        Variant(std::forward<Variant>(other))
+        m_encryptedData(std::move(other.m_encryptedData))
     {}
 
     /*!
@@ -77,7 +77,7 @@ public:
         : vmf::Variant( variant )
         , m_name( name )
         , m_useEncryption(useEncryption)
-        , m_encrytedData("")
+        , m_encryptedData("")
     {}
 
     /*!
