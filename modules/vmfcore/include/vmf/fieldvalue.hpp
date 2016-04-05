@@ -36,24 +36,35 @@ public:
      * \brief Default constructor
      */
     FieldValue() : m_name(""), m_useEncryption(false), m_encryptedData("")
-    {
-    }
+    {}
 
     /*!
      * \brief Copy constructor
      * \param other An instance to be copied
      */
-    FieldValue( const FieldValue& other )
-    {
-        *this = other;
-    }
+    FieldValue( const FieldValue& other ) :
+        m_name(other.m_name),
+        m_useEncryption(other.m_useEncryption),
+        m_encryptedData(other.m_encryptedData),
+        Variant(other)
+    {}
+
+    /*!
+     * \brief Move constructor
+     * \param other An instance to be moved
+     */
+    FieldValue(FieldValue&& other) :
+        m_name(std::move(other.m_name)),
+        m_useEncryption(other.m_useEncryption),
+        m_encryptedData(std::move(other.m_encryptedData)),
+        Variant(std::forward<Variant>(other))
+    {}
 
     /*!
      * \brief Virtual destructor
      */
     virtual ~FieldValue(void)
-    {
-    }
+    {}
 
     /*!
      * \brief Constructor with some members
@@ -66,8 +77,8 @@ public:
         : vmf::Variant( variant )
         , m_name( name )
         , m_useEncryption(useEncryption)
-    {
-    }
+        , m_encrytedData("")
+    {}
 
     /*!
      * \brief Gets the name of the field
@@ -105,11 +116,25 @@ public:
 
     FieldValue& operator = ( const FieldValue& other )
     {
-        m_name = other.m_name;
-        m_useEncryption = other.m_useEncryption;
-        m_encryptedData = other.m_encryptedData;
-        Variant::operator = ( other );
+        if (this != &other)
+        {
+            Variant::operator=(other);
+            m_name = other.m_name;
+            m_useEncryption = other.m_useEncryption;
+            m_encryptedData = other.m_encryptedData;
+        }
+        return *this;
+    }
 
+    FieldValue& operator = (FieldValue&& other)
+    {
+        if (this != &other)
+        {
+            Variant::operator=(std::forward<Variant>(other));
+            m_name = std::move(other.m_name);
+            m_useEncryption = other.m_useEncryption;
+            m_encryptedData = std::move(other.m_encryptedData);
+        }
         return *this;
     }
 
