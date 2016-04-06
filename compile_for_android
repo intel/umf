@@ -3,11 +3,11 @@
 
 TOOLCHAIN_FILE="../cmake/android.toolchain.cmake"
 #PLATFORM="arm-linux-androideabi-4.6"
-PLATFORM="x86-4.6"
+PLATFORM="x86_64-4.9"
 ANDROID_STL="gnustl_shared"
 
 rm -rf build
 mkdir build
 cd build
 cmake -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" -DANDROID_TOOLCHAIN_NAME=${PLATFORM} -DANDROID_STL="${ANDROID_STL}" -DBUILD_SHARED_LIBS=TRUE ..
-make all
+make all -j4
