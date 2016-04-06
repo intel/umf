@@ -156,13 +156,13 @@ private:
      * for this field or not
      */
     bool m_useEncryption;
+
     /*!
      * \brief m_encryptedData While the field value isn't decrypted yet,
      * this field contains the encrypted string representation of the value
      */
     vmf_string m_encryptedData;
 };
-
 }
 
 #endif /* __VMF_FIELD_VALUE_H__ */
