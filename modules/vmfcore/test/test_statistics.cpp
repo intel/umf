@@ -723,6 +723,7 @@ TEST_P( TestStatistics, ExportImportXML )
     vmf::StatUpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
+    vmf::FormatXML format;
 
     vmf::MetadataStream saveStream;
 
@@ -730,15 +731,13 @@ TEST_P( TestStatistics, ExportImportXML )
     configureStatistics( saveStream );
     putMetadata( saveStream, doCompareValues );
 
-    vmf::XMLWriter writer;
-    std::string data = saveStream.serialize( writer );
+    std::string data = saveStream.serialize( format );
 
     saveStream.close();
 
     vmf::MetadataStream loadStream;
 
-    vmf::XMLReader reader;
-    loadStream.deserialize( data, reader );
+    loadStream.deserialize( data, format );
 
     vmf::Stat& stat = loadStream.getStat( scStatName );
     stat.setUpdateTimeout( updateTimeout );
@@ -756,6 +755,7 @@ TEST_P( TestStatistics, ExportImportJSON )
     vmf::StatUpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
+    vmf::FormatJSON format;
 
     vmf::MetadataStream saveStream;
 
@@ -763,14 +763,13 @@ TEST_P( TestStatistics, ExportImportJSON )
     configureStatistics( saveStream );
     putMetadata( saveStream, doCompareValues );
 
-    vmf::JSONWriter writer;
-    std::string data = saveStream.serialize( writer );
+    std::string data = saveStream.serialize( format );
 
     saveStream.close();
 
     vmf::MetadataStream loadStream;
-    vmf::JSONReader reader;
-    loadStream.deserialize( data, reader );
+
+    loadStream.deserialize( data, format );
 
     vmf::Stat& stat = loadStream.getStat( scStatName );
     stat.setUpdateTimeout( updateTimeout );
