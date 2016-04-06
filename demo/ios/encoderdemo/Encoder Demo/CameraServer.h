@@ -14,7 +14,14 @@
 #import "AVFoundation/AVCaptureVideoPreviewLayer.h"
 #import "AVFoundation/AVMediaFormat.h"
 
+@protocol CameraServerDelegate;
+
 @interface CameraServer : NSObject
+{
+    id <CameraServerDelegate> delegate;
+}
+
+@property (readwrite) id <CameraServerDelegate> delegate;
 
 + (CameraServer*) server;
 - (void) startup;
@@ -22,4 +29,9 @@
 - (NSString*) getURL;
 - (AVCaptureVideoPreviewLayer*) getPreviewLayer;
 
+@end
+
+@protocol CameraServerDelegate <NSObject>
+@required
+- (void)setIPAddrLabel:(NSString*) str;
 @end

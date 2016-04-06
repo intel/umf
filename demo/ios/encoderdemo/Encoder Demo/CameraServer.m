@@ -28,6 +28,8 @@ static CameraServer* theServer;
 
 @implementation CameraServer
 
+@synthesize delegate;
+
 + (void) initialize
 {
     // test recommended to avoid duplicate init via subclass

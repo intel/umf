@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CameraServer.h"
 
-@interface EncoderDemoViewController : UIViewController
+@interface EncoderDemoViewController : UIViewController <CameraServerDelegate>
 @property (strong, nonatomic) IBOutlet UIView *cameraView;
 @property (strong, nonatomic) IBOutlet UILabel *serverAddress;
 

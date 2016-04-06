@@ -7,6 +7,8 @@
 //
 
 #import "RTSPClientConnection.h"
+#import "VmfClientConnection.h"
+#import "Location.h"
 #import "RTSPMessage.h"
 #import "NALUnit.h"
 #import "arpa/inet.h"
@@ -277,6 +279,9 @@ static void onRTCP(CFSocketRef s,
                 }
                 else
                 {
+                    if (_server.startVideoStreamTime < 0)
+                        _server.startVideoStreamTime = vmf::getTimestamp();
+                    
                     _state = Playing;
                     _bFirst = YES;
                     response = [msg createResponse:200 text:@"OK"];
