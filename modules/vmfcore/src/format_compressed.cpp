@@ -41,11 +41,11 @@ std::string FormatCompressed::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //const std::vector<Stat>& stats,
+    const std::vector<Stat>& stats,
     const AttribMap& attribs
 )
 {
-    std::string text = format->store(set, schemas, segments, /*stats,*/ attribs);
+    std::string text = format->store(set, schemas, segments, stats, attribs);
     return compress(text);
 }
 
@@ -55,12 +55,12 @@ Format::ParseCounters FormatCompressed::parse(
     std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //std::vector<Stat>& stats,
+    std::vector<Stat>& stats,
     AttribMap& attribs // nextId, checksum, etc
     )
 {
     std::string decompressed = decompress(text);
-    return format->parse(decompressed, metadata, schemas, segments, /*stats,*/ attribs);
+    return format->parse(decompressed, metadata, schemas, segments, stats, attribs);
 }
 
 
@@ -105,12 +105,12 @@ std::string FormatCompressed::compress(const std::string& input)
 
         const IdType nextId = 1;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-        //std::vector<Stat> stats;
+        std::vector<Stat> stats;
         AttribMap attribs{ {"nextId", to_string(nextId)}, };
 
         //create writer with no compression enabled
         std::string outputString;
-        outputString = format->store(cSet, cSchemas, segments, /*stats,*/ attribs);
+        outputString = format->store(cSet, cSchemas, segments, stats, attribs);
 
         return outputString;
     }
@@ -128,12 +128,12 @@ std::string FormatCompressed::decompress(const std::string& input)
     schemas.push_back(cSchema);
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     AttribMap attribs;
 
     //any exceptions thrown inside will be passed further
     Format::ParseCounters counter;
-    counter = format->parse(input, metadata, schemas, segments, /*stats,*/ attribs);
+    counter = format->parse(input, metadata, schemas, segments, stats, attribs);
 
     if(counter.schemas == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {

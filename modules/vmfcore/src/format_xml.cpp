@@ -186,18 +186,63 @@ static void add(xmlNodePtr segNode, const std::shared_ptr<MetadataStream::VideoS
     }
 }
 
-/*
 static void add(xmlNodePtr statNode, const Stat& stat)
 {
-VMF_EXCEPTION(NotImplementedException, "Stat -> XML NYI");
+    if (stat.getName().empty())
+        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat.getName().c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
+
+    std::vector< std::string > fieldNames = stat.getAllFieldNames();
+    if (!fieldNames.empty())
+    {
+        for(auto fieldName : fieldNames)
+        {
+            const StatField& field = stat.getField(fieldName);
+
+            if (field.getName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+            if (field.getFieldName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+            if (field.getOpName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+
+            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            if (metadataDesc == nullptr)
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
+            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+            if (metadataDesc->getMetadataName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+
+            xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
+            if(fieldNode == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for stat object field" );
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST metadataDesc->getSchemaName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST metadataDesc->getMetadataName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
+        }
+    }
 }
-*/
 
 std::string FormatXML::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //const std::vector<Stat>& stats,
+    const std::vector<Stat>& stats,
     const AttribMap& attribs
     )
 {
@@ -216,7 +261,6 @@ std::string FormatXML::store(
         }
 
     // stats
-    /*
     if (!stats.empty())
     {
         xmlNodePtr statsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
@@ -228,7 +272,6 @@ std::string FormatXML::store(
             add(statNode, st);
         }
     }
-    */
 
     // segments
     if (!segments.empty())
@@ -296,98 +339,98 @@ std::string FormatXML::store(
 ** parse() support
 */
 
-    static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode)
+static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode)
+{
+    std::shared_ptr<vmf::MetadataSchema> spSchema;
+    std::shared_ptr<vmf::MetadataDesc> spDesc;
+    std::string schema_name, schema_author;
+    for (xmlAttrPtr cur_prop = schemaNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
-        std::shared_ptr<vmf::MetadataSchema> spSchema;
-        std::shared_ptr<vmf::MetadataDesc> spDesc;
-        std::string schema_name, schema_author;
-        for (xmlAttrPtr cur_prop = schemaNode->properties; cur_prop; cur_prop = cur_prop->next)
-        {
-            if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                schema_name = (char*)xmlGetProp(schemaNode, cur_prop->name);
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SCHEMA_AUTHOR))
-                schema_author = (char*)xmlGetProp(schemaNode, cur_prop->name);
-        }
-        spSchema = std::make_shared<vmf::MetadataSchema>(schema_name, schema_author);
+        if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+            schema_name = (char*)xmlGetProp(schemaNode, cur_prop->name);
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SCHEMA_AUTHOR))
+            schema_author = (char*)xmlGetProp(schemaNode, cur_prop->name);
+    }
+    spSchema = std::make_shared<vmf::MetadataSchema>(schema_name, schema_author);
 
-        for (xmlNodePtr descNode = schemaNode->children; descNode; descNode = descNode->next)
+    for (xmlNodePtr descNode = schemaNode->children; descNode; descNode = descNode->next)
+    {
+        if (descNode->type == XML_ELEMENT_NODE && (char*)descNode->name == std::string(TAG_DESCRIPTION))
         {
-            if (descNode->type == XML_ELEMENT_NODE && (char*)descNode->name == std::string(TAG_DESCRIPTION))
+            std::string desc_name;
+            for (xmlAttrPtr cur_prop = descNode->properties; cur_prop; cur_prop = cur_prop->next)
+                if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+                    desc_name = (char*)xmlGetProp(descNode, cur_prop->name);
+
+            std::vector<FieldDesc> vFields;
+            std::vector<std::shared_ptr<ReferenceDesc>> vReferences;
+            for (xmlNodePtr fieldNode = descNode->children; fieldNode; fieldNode = fieldNode->next)
             {
-                std::string desc_name;
-                for (xmlAttrPtr cur_prop = descNode->properties; cur_prop; cur_prop = cur_prop->next)
-                    if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                        desc_name = (char*)xmlGetProp(descNode, cur_prop->name);
-
-                std::vector<FieldDesc> vFields;
-                std::vector<std::shared_ptr<ReferenceDesc>> vReferences;
-                for (xmlNodePtr fieldNode = descNode->children; fieldNode; fieldNode = fieldNode->next)
+                if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
                 {
-                    if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
+                    std::string field_name;
+                    vmf::Variant::Type field_type = vmf::Variant::type_unknown;
+                    bool field_optional = false;
+                    for (xmlAttrPtr cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next) //fill field's attributes
                     {
-                        std::string field_name;
-                        vmf::Variant::Type field_type = vmf::Variant::type_unknown;
-                        bool field_optional = false;
-                        for (xmlAttrPtr cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next) //fill field's attributes
+                        if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+                            field_name = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                        if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_TYPE))
                         {
-                            if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                                field_name = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                            if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_TYPE))
-                            {
-                                std::string sFieldType = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                                field_type = vmf::Variant::typeFromString(sFieldType);
-                            }
-                            if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_OPTIONAL))
-                            {
-                                if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "true")
-                                    field_optional = true;
-                                else if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "false")
-                                    field_optional = false;
-                                else
-                                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
-                            }
+                            std::string sFieldType = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                            field_type = vmf::Variant::typeFromString(sFieldType);
                         }
-                        vFields.push_back(FieldDesc(field_name, field_type, field_optional));
+                        if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_OPTIONAL))
+                        {
+                            if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "true")
+                                field_optional = true;
+                            else if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "false")
+                                field_optional = false;
+                            else
+                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
+                        }
                     }
-                    else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
+                    vFields.push_back(FieldDesc(field_name, field_type, field_optional));
+                }
+                else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
+                {
+                    std::string reference_name;
+                    bool isUnique = false;
+                    bool isCustom = false;
+                    for (xmlAttrPtr cur_ref = fieldNode->properties; cur_ref; cur_ref = cur_ref->next)
                     {
-                        std::string reference_name;
-                        bool isUnique = false;
-                        bool isCustom = false;
-                        for (xmlAttrPtr cur_ref = fieldNode->properties; cur_ref; cur_ref = cur_ref->next)
+                        if (std::string((char*)cur_ref->name) == std::string(ATTR_NAME))
+                            reference_name = (char*)xmlGetProp(fieldNode, cur_ref->name);
+                        if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_UNIQUE))
                         {
-                            if (std::string((char*)cur_ref->name) == std::string(ATTR_NAME))
-                                reference_name = (char*)xmlGetProp(fieldNode, cur_ref->name);
-                            if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_UNIQUE))
-                            {
-                                if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "true")
-                                    isUnique = true;
-                                else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
-                                    isUnique = false;
-                                else
-                                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
-                            }
-                            if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_CUSTOM))
-                            {
-                                if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "true")
-                                    isCustom = true;
-                                else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
-                                    isCustom = false;
-                                else
-                                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
-                            }
+                            if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "true")
+                                isUnique = true;
+                            else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
+                                isUnique = false;
+                            else
+                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
                         }
-                        vReferences.emplace_back(std::make_shared<ReferenceDesc>(reference_name, isUnique, isCustom));
+                        if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_CUSTOM))
+                        {
+                            if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "true")
+                                isCustom = true;
+                            else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
+                                isCustom = false;
+                            else
+                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
+                        }
                     }
-
+                    vReferences.emplace_back(std::make_shared<ReferenceDesc>(reference_name, isUnique, isCustom));
                 }
 
-                spDesc = std::make_shared<vmf::MetadataDesc>(desc_name, vFields, vReferences);
-                spSchema->add(spDesc);
             }
+
+            spDesc = std::make_shared<vmf::MetadataDesc>(desc_name, vFields, vReferences);
+            spSchema->add(spDesc);
         }
-        return spSchema;
     }
+    return spSchema;
+}
 
 #if defined _MSC_VER && _MSC_VER < 1800
 #define ATOLL(x) _atoi64(x)
@@ -395,245 +438,298 @@ std::string FormatXML::store(
 #define ATOLL(x) atoll(x)
 #endif
 
-    static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
+static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
+{
+    std::string schema_name, desc_name;
+    long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
+        timestamp = vmf::Metadata::UNDEFINED_TIMESTAMP, duration = vmf::Metadata::UNDEFINED_DURATION, id = INVALID_ID;
+
+    for (xmlAttr* cur_prop = metadataNode->properties; cur_prop; cur_prop = cur_prop->next)
     {
-        std::string schema_name, desc_name;
-        long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
-            timestamp = vmf::Metadata::UNDEFINED_TIMESTAMP, duration = vmf::Metadata::UNDEFINED_DURATION, id = INVALID_ID;
-
-        for (xmlAttr* cur_prop = metadataNode->properties; cur_prop; cur_prop = cur_prop->next)
-        {
-            if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_SCHEMA))
-                schema_name = (char*)xmlGetProp(metadataNode, cur_prop->name);
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_DESCRIPTION))
-                desc_name = (char*)xmlGetProp(metadataNode, cur_prop->name);
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_FRAME_IDX))
-                frameIndex = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_NFRAMES))
-                nFrames = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_TIMESTAMP))
-                timestamp = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_DURATION))
-                duration = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_ID))
-                id = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
-        }
-
-        MetadataInternal mdi(desc_name, schema_name);
-        mdi.id = id;
-
-        if (frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
-        {
-            mdi.frameIndex = frameIndex;
-            if (nFrames != vmf::Metadata::UNDEFINED_FRAMES_NUMBER)
-                mdi.frameNum = nFrames;
-        }
-        if (timestamp != vmf::Metadata::UNDEFINED_TIMESTAMP)
-        {
-            mdi.timestamp = timestamp;
-            if (duration != vmf::Metadata::UNDEFINED_DURATION)
-                mdi.duration = duration;
-        }
-
-        for (xmlNode *fieldNode = metadataNode->children; fieldNode; fieldNode = fieldNode->next)
-        {
-            if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
-            {
-                std::string fieldName, fieldValue;
-                for (xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
-                {
-                    if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                        fieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                    else if (std::string((char*)cur_prop->name) == std::string(ATTR_VALUE))
-                        fieldValue = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                }
-                mdi.fields[fieldName] = fieldValue;
-            }
-            else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
-            {
-                std::string refName;
-                long refId = -1;
-                for (xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
-                {
-                    if (std::string((char*)cur_prop->name) == std::string(ATTR_ID))
-                        refId = atol((char*)xmlGetProp(fieldNode, cur_prop->name));
-                    else if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
-                        refName = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                }
-                mdi.refs.push_back(std::make_pair(IdType(refId), refName));
-            }
-        }
-        return mdi;
+        if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_SCHEMA))
+            schema_name = (char*)xmlGetProp(metadataNode, cur_prop->name);
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_DESCRIPTION))
+            desc_name = (char*)xmlGetProp(metadataNode, cur_prop->name);
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_FRAME_IDX))
+            frameIndex = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_NFRAMES))
+            nFrames = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_TIMESTAMP))
+            timestamp = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_METADATA_DURATION))
+            duration = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_ID))
+            id = ATOLL((char*)xmlGetProp(metadataNode, cur_prop->name));
     }
 
-    static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNodePtr segmentNode)
+    MetadataInternal mdi(desc_name, schema_name);
+    mdi.id = id;
+
+    if (frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
     {
-        std::string title;
-        double fps = 0;
-        long long timestamp = -1, duration = 0;
-        long width = 0, height = 0;
-        for (xmlAttr* cur_prop = segmentNode->properties; cur_prop; cur_prop = cur_prop->next)
-        {
-            if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
-                title = (char*)xmlGetProp(segmentNode, cur_prop->name);
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
-                fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
-                timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
-                duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
-                width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-            else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
-                height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
-        }
-
-        if (title.empty())
-            VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid title");
-        if (fps <= 0)
-            VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid fps value");
-        if (timestamp < 0)
-            VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid time value");
-
-        std::shared_ptr<MetadataStream::VideoSegment> spSegment(new MetadataStream::VideoSegment(title, fps, timestamp));
-        if (duration > 0)
-            spSegment->setDuration(duration);
-        if (width > 0 && height > 0)
-            spSegment->setResolution(width, height);
-
-        return spSegment;
+        mdi.frameIndex = frameIndex;
+        if (nFrames != vmf::Metadata::UNDEFINED_FRAMES_NUMBER)
+            mdi.frameNum = nFrames;
+    }
+    if (timestamp != vmf::Metadata::UNDEFINED_TIMESTAMP)
+    {
+        mdi.timestamp = timestamp;
+        if (duration != vmf::Metadata::UNDEFINED_DURATION)
+            mdi.duration = duration;
     }
 
-    Format::ParseCounters FormatXML::parse(
-        const std::string& text,
-        std::vector<MetadataInternal>& metadata,
-        std::vector<std::shared_ptr<MetadataSchema>>& schemas,
-        std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-        //std::vector<Stat>& stats,
-        AttribMap& attribs // nextId, checksum, etc
-        )
+    for (xmlNode *fieldNode = metadataNode->children; fieldNode; fieldNode = fieldNode->next)
     {
-        Format::ParseCounters cnt = {};
-
-        if (text.empty())
-            VMF_EXCEPTION(IncorrectParamException, "Empty input XML string");
-
-        xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
-        if (ctxt == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Failed to allocate XML parser context");
-
-        xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
-        if (doc == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create XML document");
-
-        xmlNodePtr root = xmlDocGetRootElement(doc);
-        if (root == NULL)
-            VMF_EXCEPTION(InternalErrorException, "XML tree has no root element");
-
-        if ((char*)root->name == std::string(TAG_VMF))
+        if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
         {
-            for (xmlAttr* cur_prop = root->properties; cur_prop; cur_prop = cur_prop->next)
+            std::string fieldName, fieldValue;
+            for (xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
             {
-                attribs[(char*)cur_prop->name] = (char*)xmlGetProp(root, cur_prop->name);
-                cnt.attribs++;
+                if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+                    fieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if (std::string((char*)cur_prop->name) == std::string(ATTR_VALUE))
+                    fieldValue = (char*)xmlGetProp(fieldNode, cur_prop->name);
             }
-
-            for (xmlNodePtr node = root->children; node; node = node->next)
-            {
-                if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_STATS_ARRAY))
-                {
-                    /*
-                    for (xmlNodePtr st = node->children; st; st = st->next)
-                    {
-                        if (st->type == XML_ELEMENT_NODE && (char*)st->name == std::string(TAG_STAT_OBJ))
-                        {
-                            try
-                            {
-                                Stat stat = parseStatFromNode(st);
-                                stats.push_back(stat);
-                                cnt.stats++;
-                            }
-                            catch (Exception& e)
-                            {
-                                VMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
-                            }
-                        }
-                    }
-                    */
-                }
-                else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
-                {
-                    for (xmlNodePtr seg = node->children; seg; seg = seg->next)
-                    {
-                        if (seg->type == XML_ELEMENT_NODE && (char*)seg->name == std::string(TAG_VIDEO_SEGMENT))
-                        {
-                            try
-                            {
-                                std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(seg);
-                                segments.push_back(spSegment);
-                                cnt.segments++;
-                            }
-                            catch (Exception& e)
-                            {
-                                VMF_LOG_ERROR("Exception parsing segment: %s", e.what());
-                            }
-                        }
-                    }
-                }
-                else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_SCHEMAS_ARRAY))
-                {
-                    for (xmlNodePtr sc = node->children; sc; sc = sc->next)
-                    {
-                        if (sc->type == XML_ELEMENT_NODE && (char*)sc->name == std::string(TAG_SCHEMA))
-                        {
-                            try
-                            {
-                                std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(sc);
-                                schemas.push_back(spSchema);
-                                cnt.schemas++;
-                            }
-                            catch (Exception& e)
-                            {
-                                VMF_LOG_ERROR("Exception parsing schema: %s", e.what());
-                            }
-                        }
-                    }
-                }
-                else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_METADATA_ARRAY))
-                {
-                    for (xmlNodePtr md = node->children; md; md = md->next)
-                    {
-                        if (md->type == XML_ELEMENT_NODE && (char*)md->name == std::string(TAG_METADATA))
-                        {
-                            try
-                            {
-                                metadata.push_back( parseMetadataFromNode(md) );
-                                cnt.metadata++;
-                            }
-                            catch (Exception& e)
-                            {
-                                VMF_LOG_ERROR("Exception parsing metadata: %s", e.what());
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    VMF_LOG_ERROR("Unknown XML element: %s", (char*)node->name);
-                }
-            }
+            mdi.fields[fieldName] = fieldValue;
         }
-        else
+        else if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_METADATA_REFERENCE))
         {
-            VMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <vmf> tag element");
+            std::string refName;
+            long refId = -1;
+            for (xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
+            {
+                if (std::string((char*)cur_prop->name) == std::string(ATTR_ID))
+                    refId = atol((char*)xmlGetProp(fieldNode, cur_prop->name));
+                else if (std::string((char*)cur_prop->name) == std::string(ATTR_NAME))
+                    refName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+            }
+            mdi.refs.push_back(std::make_pair(IdType(refId), refName));
         }
-
-        xmlFreeDoc(doc);
-        xmlFreeParserCtxt(ctxt);
-        xmlCleanupParser();
-        xmlMemoryDump();
-
-        return cnt;
     }
+    return mdi;
+}
+
+static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(xmlNodePtr segmentNode)
+{
+    std::string title;
+    double fps = 0;
+    long long timestamp = -1, duration = 0;
+    long width = 0, height = 0;
+    for (xmlAttr* cur_prop = segmentNode->properties; cur_prop; cur_prop = cur_prop->next)
+    {
+        if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TITLE))
+            title = (char*)xmlGetProp(segmentNode, cur_prop->name);
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_FPS))
+            fps = atof((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_TIME))
+            timestamp = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_DURATION))
+            duration = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_WIDTH))
+            width = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+        else if (std::string((char*)cur_prop->name) == std::string(ATTR_SEGMENT_HEIGHT))
+            height = atol((char*)xmlGetProp(segmentNode, cur_prop->name));
+    }
+
+    if (title.empty())
+        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid title");
+    if (fps <= 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid fps value");
+    if (timestamp < 0)
+        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid time value");
+
+    std::shared_ptr<MetadataStream::VideoSegment> spSegment(new MetadataStream::VideoSegment(title, fps, timestamp));
+    if (duration > 0)
+        spSegment->setDuration(duration);
+    if (width > 0 && height > 0)
+        spSegment->setResolution(width, height);
+
+    return spSegment;
+}
+
+static Stat parseStatFromNode(xmlNodePtr statNode)
+{
+    std::string statName;
+
+    for(xmlAttr* cur_prop = statNode->properties; cur_prop; cur_prop = cur_prop->next)
+    {
+        if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_NAME))
+            statName = (char*)xmlGetProp(statNode, cur_prop->name);
+    }
+
+    if(statName.empty())
+        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat name");
+
+    const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
+
+    std::vector< StatField > fields;
+
+    for(xmlNode *fieldNode = statNode->children; fieldNode; fieldNode = fieldNode->next)
+    {
+        if(fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_STAT_FIELD))
+        {
+            std::string fieldName, schemaName, metadataName, metadataFieldName, opName;
+
+            for(xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
+            {
+                if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_NAME))
+                    fieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_SCHEMA_NAME))
+                    schemaName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_METADATA_NAME))
+                    metadataName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_FIELD_NAME))
+                    metadataFieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_OP_NAME))
+                    opName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+            }
+
+            if(fieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field name");
+            if(schemaName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata schema name");
+            if(metadataName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata name");
+            if(metadataFieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata field name");
+            if(opName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field operation name");
+
+            fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
+        }
+    }
+
+    return Stat(statName, fields, updateMode);
+}
+
+Format::ParseCounters FormatXML::parse(
+    const std::string& text,
+    std::vector<MetadataInternal>& metadata,
+    std::vector<std::shared_ptr<MetadataSchema>>& schemas,
+    std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
+    std::vector<Stat>& stats,
+    AttribMap& attribs // nextId, checksum, etc
+    )
+{
+    Format::ParseCounters cnt = {};
+
+    if (text.empty())
+        VMF_EXCEPTION(IncorrectParamException, "Empty input XML string");
+
+    xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
+    if (ctxt == NULL)
+        VMF_EXCEPTION(InternalErrorException, "Failed to allocate XML parser context");
+
+    xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
+    if (doc == NULL)
+        VMF_EXCEPTION(InternalErrorException, "Can't create XML document");
+
+    xmlNodePtr root = xmlDocGetRootElement(doc);
+    if (root == NULL)
+        VMF_EXCEPTION(InternalErrorException, "XML tree has no root element");
+
+    if ((char*)root->name == std::string(TAG_VMF))
+    {
+        for (xmlAttr* cur_prop = root->properties; cur_prop; cur_prop = cur_prop->next)
+        {
+            attribs[(char*)cur_prop->name] = (char*)xmlGetProp(root, cur_prop->name);
+            cnt.attribs++;
+        }
+
+        for (xmlNodePtr node = root->children; node; node = node->next)
+        {
+            if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_STATS_ARRAY))
+            {
+                for (xmlNodePtr st = node->children; st; st = st->next)
+                {
+                    if (st->type == XML_ELEMENT_NODE && (char*)st->name == std::string(TAG_STAT_OBJ))
+                    {
+                        try
+                        {
+                            Stat stat = parseStatFromNode(st);
+                            stats.push_back(stat);
+                            cnt.stats++;
+                        }
+                        catch (Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
+                        }
+                    }
+                }
+            }
+            else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
+            {
+                for (xmlNodePtr seg = node->children; seg; seg = seg->next)
+                {
+                    if (seg->type == XML_ELEMENT_NODE && (char*)seg->name == std::string(TAG_VIDEO_SEGMENT))
+                    {
+                        try
+                        {
+                            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(seg);
+                            segments.push_back(spSegment);
+                            cnt.segments++;
+                        }
+                        catch (Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception parsing segment: %s", e.what());
+                        }
+                    }
+                }
+            }
+            else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_SCHEMAS_ARRAY))
+            {
+                for (xmlNodePtr sc = node->children; sc; sc = sc->next)
+                {
+                    if (sc->type == XML_ELEMENT_NODE && (char*)sc->name == std::string(TAG_SCHEMA))
+                    {
+                        try
+                        {
+                            std::shared_ptr<MetadataSchema> spSchema = parseSchemaFromNode(sc);
+                            schemas.push_back(spSchema);
+                            cnt.schemas++;
+                        }
+                        catch (Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception parsing schema: %s", e.what());
+                        }
+                    }
+                }
+            }
+            else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_METADATA_ARRAY))
+            {
+                for (xmlNodePtr md = node->children; md; md = md->next)
+                {
+                    if (md->type == XML_ELEMENT_NODE && (char*)md->name == std::string(TAG_METADATA))
+                    {
+                        try
+                        {
+                            metadata.push_back( parseMetadataFromNode(md) );
+                            cnt.metadata++;
+                        }
+                        catch (Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception parsing metadata: %s", e.what());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                VMF_LOG_ERROR("Unknown XML element: %s", (char*)node->name);
+            }
+        }
+    }
+    else
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <vmf> tag element");
+    }
+
+    xmlFreeDoc(doc);
+    xmlFreeParserCtxt(ctxt);
+    xmlCleanupParser();
+    xmlMemoryDump();
+
+    return cnt;
+}
 
 }//vmf

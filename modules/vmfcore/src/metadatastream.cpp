@@ -645,7 +645,7 @@ std::string MetadataStream::serialize(Format& format)
         schemas.push_back(spSchema.second);
 
     Format::AttribMap attribs{ { "nextId", to_string(nextId) }, { "filepath", m_sFilePath }, { "checksum", m_sChecksumMedia }, };
-    return format.store(m_oMetadataSet, schemas, videoSegments, /*m_stats,*/ attribs);
+    return format.store(m_oMetadataSet, schemas, videoSegments, m_stats, attribs);
 }
 
 void MetadataStream::deserialize(const std::string& text, Format& format)
@@ -654,7 +654,7 @@ void MetadataStream::deserialize(const std::string& text, Format& format)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<MetadataInternal> metadata;
     Format::AttribMap attribs;
-    format.parse(text, metadata, schemas, segments, /*m_stats,*/ attribs);
+    format.parse(text, metadata, schemas, segments, m_stats, attribs);
     if(m_sFilePath.empty()) m_sFilePath = attribs["filepath"];
     nextId = from_string<IdType>(attribs["nextId"]);
     m_sChecksumMedia = attribs["checksum"];

@@ -235,10 +235,10 @@ TEST_P(TestSerialization, StoreAll)
     segments.clear();
     schemas.clear();
     std::vector<vmf::MetadataInternal> mdInt;
-    //std::vector<vmf::Stat> stats;
+    std::vector<vmf::Stat> stats;
     Format::AttribMap attribs;
 
-    ASSERT_THROW(format->parse("", mdInt, schemas, segments, /*stats,*/ attribs), vmf::IncorrectParamException);
+    ASSERT_THROW(format->parse("", mdInt, schemas, segments, stats, attribs), vmf::IncorrectParamException);
 }
 
 TEST_P(TestSerialization, Parse_schemasArray)
@@ -255,11 +255,11 @@ TEST_P(TestSerialization, Parse_schemasArray)
     schemas.clear();
 
     std::vector<MetadataInternal> metadata;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 0, 2, 0, 0, 0 } },
-        actual = format->parse(result, metadata, schemas, segments, /*stats,*/ attribs);
+        actual = format->parse(result, metadata, schemas, segments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     for(const auto& spSchema : schemas)
     {
@@ -278,11 +278,11 @@ TEST_P(TestSerialization, Parse_schemasAll)
     std::string result = stream.serialize(*format);
 
     std::vector<MetadataInternal> metadata;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 11, 2, 0, 0, 3 } },
-        actual = format->parse(result, metadata, schemas, segments, /*stats,*/ attribs);
+        actual = format->parse(result, metadata, schemas, segments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
     compareSchemas(stream.getSchema(schemas[0]->getName()), schemas[0]);
     compareSchemas(stream.getSchema(schemas[1]->getName()), schemas[1]);
@@ -301,11 +301,11 @@ TEST_P(TestSerialization, Parse_metadataArray)
     schemas.push_back(spSchemaPeople);
     
     std::vector<MetadataInternal> md;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { (int)set.size(), 0, 0, 0, 0 } },
-        actual = format->parse(result, md, schemas, segments, /*stats,*/ attribs);
+        actual = format->parse(result, md, schemas, segments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
@@ -335,11 +335,11 @@ TEST_P(TestSerialization, Parse_metadataAll)
     std::string result = stream.serialize(*format);
 
     std::vector<MetadataInternal> md;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
-        actual = format->parse(result, md, schemas, segments, /*stats,*/ attribs);
+        actual = format->parse(result, md, schemas, segments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     MetadataStream testStream;
@@ -387,11 +387,11 @@ TEST_P(TestSerialization, Parse_segmentArray)
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 0, 0, (int)segments.size(), 0, 0 } },
-        actual = format->parse(result, md, schemas, loadedSegments, /*stats,*/ attribs);
+        actual = format->parse(result, md, schemas, loadedSegments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     ASSERT_EQ(segments.size(), loadedSegments.size());
@@ -429,11 +429,11 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 
     std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas1;
-    //std::vector<Stat> stats;
+    std::vector<Stat> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 1, 1, 0, 0, 1 } },
-        actual = format->parse(result, md, schemas1, segments, /*stats,*/ attribs);
+        actual = format->parse(result, md, schemas1, segments, stats, attribs);
     ASSERT_EQ(TO_VECTOR(expected.cnt), TO_VECTOR(actual.cnt));
 
     ASSERT_EQ(1u, schemas1.size());
