@@ -27,17 +27,17 @@
 #pragma warning(disable: 4251)
 #endif
 
-#include "global.hpp"
-#include "metadatainternal.hpp"
-#include "metadataset.hpp"
-#include "metadataschema.hpp"
-#include "compressor.hpp"
-#include "statistics.hpp"
-#include "iquery.hpp"
+#include "vmf/global.hpp"
+#include "vmf/metadatainternal.hpp"
+#include "vmf/metadataset.hpp"
+#include "vmf/metadataschema.hpp"
+#include "vmf/compressor.hpp"
+#include "vmf/iquery.hpp"
+#include "vmf/statistics.hpp"
+
 #include <map>
 #include <memory>
 #include <vector>
-
 #include <algorithm>
 
 namespace vmf
@@ -45,6 +45,7 @@ namespace vmf
 class IDataSource;
 class IReader;
 class IWriter;
+class Format;
 
 /*!
 * \class MetadataStream
@@ -183,12 +184,12 @@ public:
 
     /*!
     * \brief Add new metadata item
-    * \param spMetadataInternal [in] pointer to metadataInternal object
-    * \return identifier of added metadata object
+    * \param mdi [in] reference to a MetadataInternal object
+    * \return ID of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     * \throw IncorrectParamException if metadata with such id is already exists
     */
-    IdType add( std::shared_ptr< MetadataInternal >& spMetadataInternal);
+    IdType add(MetadataInternal& mdi);
 
     /*!
     * \brief Remove metadata by their id
@@ -219,7 +220,7 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
 
     /*!
     * \brief Get metadata schema by its name
@@ -286,12 +287,12 @@ public:
     /*
     * \brief serialized stream in std::string in selected format
     */
-    std::string serialize(IWriter& formater);
+    std::string serialize(Format& format);
 
     /*
     * \brief deserialized stream from std::string in selected format
     */
-    void deserialize(const std::string& text, IReader& formater);
+    void deserialize(const std::string& text, Format& format);
 
     /*!
     * \brief Compute MD5 digest of media part of the opened file

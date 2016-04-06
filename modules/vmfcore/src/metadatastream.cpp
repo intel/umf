@@ -15,8 +15,7 @@
  *
  */
 #include "vmf/metadatastream.hpp"
-#include "vmf/ireader.hpp"
-#include "vmf/iwriter.hpp"
+#include "vmf/format.hpp"
 #include "datasource.hpp"
 #include "object_factory.hpp"
 #include <algorithm>
@@ -256,52 +255,56 @@ IdType MetadataStream::add( std::shared_ptr< Metadata >& spMetadata )
     return id;
 }
 
-IdType MetadataStream::add( std::shared_ptr< MetadataInternal >& spMetadataInternal)
+IdType MetadataStream::add(MetadataInternal& mdi)
 {
-    if( !this->getSchema(spMetadataInternal->getDesc()->getSchemaName()) )
-	VMF_EXCEPTION(vmf::NotFoundException, "Metadata schema is not in the stream");
+    auto schema = getSchema(mdi.schemaName);
+    if (!schema) VMF_EXCEPTION(vmf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
 
-    IdType id = spMetadataInternal->getId();
-    if(id != INVALID_ID)
+    auto desc = schema->findMetadataDesc(mdi.descName);
+    if (!desc) VMF_EXCEPTION(vmf::NotFoundException, "Unknown Metadata Description: " + mdi.descName);
+
+    if (mdi.id != INVALID_ID)
+        if (!getById(mdi.id)) nextId = std::max(nextId, mdi.id + 1);
+        else VMF_EXCEPTION(IncorrectParamException, "Duplicated Metadata ID: " + to_string(mdi.id));
+    else
+        mdi.id = nextId++;
+
+    auto spMd = std::make_shared<Metadata>(desc);
+    spMd->setId(mdi.id);
+    FieldDesc fd;
+    Variant val;
+    for (const auto& f : mdi.fields)
     {
-        if(this->getById(id) == nullptr)
+        if (desc->getFieldDesc(fd, f.first))
         {
-            if(nextId < id)
-                nextId = id + 1;
+            val.fromString(fd.type, f.second);
+            spMd->setFieldValue(f.first, val);
         }
         else
-            VMF_EXCEPTION(IncorrectParamException, "Metadata with such id is already in the stream");
+            VMF_EXCEPTION(IncorrectParamException, "Unknown Metadat field name: " + f.first);
     }
-    else
-    {
-        id = nextId++;
-        spMetadataInternal->setId(id);
-    }
-    internalAdd(spMetadataInternal);
-    addedIds.push_back(id);
+    spMd->setFrameIndex(mdi.frameIndex, mdi.frameNum);
+    spMd->setTimestamp(mdi.timestamp, mdi.duration);
+    internalAdd(spMd);
+    addedIds.push_back(spMd->getId());
 
-    if(!spMetadataInternal->vRefs.empty())
+    if (!mdi.refs.empty())
     {
-        auto spItem = getById(id);
-        for(auto ref = spMetadataInternal->vRefs.begin(); ref != spMetadataInternal->vRefs.end(); ref++)
+        for (const auto& ref : mdi.refs)
         {
-            auto referencedItem = getById(ref->first);
-            if(referencedItem != nullptr)
-                spItem->addReference(referencedItem, ref->second);
+            auto referencedItem = getById(ref.first);
+            if (referencedItem != nullptr)
+                spMd->addReference(referencedItem, ref.second);
             else
-                m_pendingReferences[ref->first].push_back(std::make_pair(id, ref->second));
+                m_pendingReferences[ref.first].push_back(std::make_pair(mdi.id, ref.second));
         }
     }
-    auto pendingReferences = m_pendingReferences[id];
-    if(!pendingReferences.empty())
-    {
-        for(auto pendingId = pendingReferences.begin(); pendingId != pendingReferences.end(); pendingId++)
-            getById(pendingId->first)->addReference(spMetadataInternal, pendingId->second);
-        m_pendingReferences[id].clear();
-        m_pendingReferences.erase(id);
-    }
+    for (const auto& pendingId : m_pendingReferences[mdi.id])
+        getById(pendingId.first)->addReference(spMd, pendingId.second);
 
-    return id;
+    m_pendingReferences.erase(mdi.id);
+
+    return mdi.id;
 }
 
 void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
@@ -311,13 +314,11 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
 
     // Make sure all referenced metadata are from the same stream
     auto vRefSet = spMetadata->getAllReferences();
-    std::for_each( vRefSet.begin(), vRefSet.end(), [&]( Reference& spRef )
+    for (auto& spRef : vRefSet)
     {
         if(spRef.getReferenceMetadata().lock()->m_pStream != this)
-        {
             VMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream.");
-        }
-    });
+    }
     m_oMetadataSet.push_back(spMetadata);
 
     notifyStat(StatAction::Add, spMetadata);
@@ -413,7 +414,7 @@ void MetadataStream::remove()
     m_mapSchemas.clear();
 }
 
-void MetadataStream::addSchema( std::shared_ptr< MetadataSchema >& spSchema )
+void MetadataStream::addSchema( const std::shared_ptr< MetadataSchema >& spSchema )
 {
     if( spSchema == nullptr )
     {
@@ -637,35 +638,29 @@ MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName,
     return m_oMetadataSet.queryByReference( sReferenceName, vFields );
 }
 
-std::string MetadataStream::serialize(IWriter& writer)
+std::string MetadataStream::serialize(Format& format)
 {
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    for(auto spMetadataIter = m_mapSchemas.begin(); spMetadataIter != m_mapSchemas.end(); spMetadataIter++)
-        schemas.push_back(spMetadataIter->second);
-    return writer.store(nextId, m_sFilePath, m_sChecksumMedia, videoSegments, schemas, m_oMetadataSet, m_stats);
+    for (const auto& spSchema : m_mapSchemas)
+        schemas.push_back(spSchema.second);
+
+    Format::AttribMap attribs{ { "nextId", to_string(nextId) }, { "filepath", m_sFilePath }, { "checksum", m_sChecksumMedia }, };
+    return format.store(m_oMetadataSet, schemas, videoSegments, /*m_stats,*/ attribs);
 }
 
-void MetadataStream::deserialize(const std::string& text, IReader& reader)
+void MetadataStream::deserialize(const std::string& text, Format& format)
 {
     std::vector<std::shared_ptr<VideoSegment>> segments;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    std::vector<std::shared_ptr<MetadataInternal>> metadata;
-    std::string filePath;
-    reader.parseAll(text, nextId, filePath, m_sChecksumMedia, segments, schemas, metadata, m_stats);
-    if(m_sFilePath.empty())
-        m_sFilePath = filePath;
-    std::for_each( segments.begin(), segments.end(), [&]( std::shared_ptr< VideoSegment >& spSegment )
-    {
-        addVideoSegment(spSegment);
-    });
-    std::for_each( schemas.begin(), schemas.end(), [&]( std::shared_ptr< MetadataSchema >& spSchema )
-    {
-        addSchema(spSchema);
-    });
-    std::for_each( metadata.begin(), metadata.end(), [&]( std::shared_ptr< MetadataInternal >& spMetadata )
-    {
-        add(spMetadata);
-    });
+    std::vector<MetadataInternal> metadata;
+    Format::AttribMap attribs;
+    format.parse(text, metadata, schemas, segments, /*m_stats,*/ attribs);
+    if(m_sFilePath.empty()) m_sFilePath = attribs["filepath"];
+    nextId = from_string<IdType>(attribs["nextId"]);
+    m_sChecksumMedia = attribs["checksum"];
+    for (const auto& spSegment : segments) addVideoSegment(spSegment);
+    for (const auto& spSchema : schemas) addSchema(spSchema);
+    for (auto& mdi : metadata) add(mdi);
     activateStats();
 }
 

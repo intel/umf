@@ -100,7 +100,7 @@ public class VmfMetadataSchemaTest
     public void testAddThrow()
     {
         schema.add(mdDesc1);
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Metadata with same name already exists!");
         schema.add(mdDesc1);
     }
@@ -108,7 +108,7 @@ public class VmfMetadataSchemaTest
     @Test
     public void testCreateSchemaThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Schema name can't be empty.");
         @SuppressWarnings("unused")
         MetadataSchema newSchema = new MetadataSchema("");

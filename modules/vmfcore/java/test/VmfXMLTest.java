@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 import com.intel.vmf.*;
 
 import static org.junit.Assert.*;
@@ -32,8 +34,7 @@ public class VmfXMLTest
     
     protected MetadataStream.VideoSegment videoSegs[];
     
-    protected XMLReader reader;
-    protected XMLWriter writer;
+    protected FormatXML xml;
     
     protected MetadataSet mdSet;
     
@@ -129,118 +130,67 @@ public class VmfXMLTest
         videoSegs[1] = videoSeg2;
         videoSegs[2] = videoSeg3;
         
-    	reader = new XMLReader();
-        writer = new XMLWriter();
+    	xml = new FormatXML();
     }
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    
+
     @Test
     public void testXMLReaderAndWriter()
     {
-        String schemasStr = writer.store(schema1, schema2);
+    	String schemasStr = xml.store(null, schemas, null, null);
         assertFalse(schemasStr.isEmpty());
         
-        MetadataSchema mdSchemas[] = reader.parseSchemas(schemasStr);
-        assertEquals (2, mdSchemas.length);
+        Format.Data data = xml.parse(schemasStr);
+        assertNotNull(data.schemas);
+        assertEquals (schemas.length, data.schemas.length);
         
-        String str = writer.store(mdSet);
+        String str = xml.store(mdSet, schemas, null, null);
         assertFalse(str.isEmpty());
         
-        MetadataInternal mdInt[] = reader.parseMetadata(str, schema1, schema2);
-        assertEquals (mdSet.getSize(), mdInt.length);
+        data = xml.parse(str);
+        assertNotNull(data.metadata);
+        assertEquals (mdSet.getSize(), data.metadata.length);
+        assertEquals (schemas.length,  data.schemas.length);
+        assertNull (data.segments);
         
-        String segments = writer.store(videoSeg1, videoSeg2, videoSeg3);
+        String segments = xml.store(null, null, videoSegs, null);
         assertFalse(segments.isEmpty());
         
-        MetadataStream.VideoSegment videoSegs1[] = reader.parseVideoSegments(segments);
-        assertEquals (3, videoSegs1.length);
+        data = xml.parse(segments);
+        assertNotNull(data.segments);
+        assertEquals (videoSegs.length, data.segments.length);
         
-        String all = writer.store(1, "path.txt", "trampampam", videoSegs, schemas, mdSet);
+        HashMap<String, String> attribs = new HashMap<String, String>();
+        attribs.put("nextId", "100");
+        attribs.put("filepath", "path.txt");
+        String all = xml.store(mdSet, schemas, videoSegs, attribs);
         assertFalse(all.isEmpty());
-    }
+
+        data = xml.parse(all);
+        assertEquals (mdSet.getSize(), data.metadata.length);
+        assertEquals (schemas.length,  data.schemas.length);
+        assertEquals (videoSegs.length, data.segments.length);
+        assertEquals (2, data.attrib.size());
+        assertEquals ("100", data.attrib.get("nextId"));
+}
     
     @Test
     public void testXMLParseSchemaThrown()
     {
         String text = "";
         
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Schemas can not be parsed.");
-        reader.parseSchemas(text);
+        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expectMessage("vmf::Exception: Empty input XML string");
+        xml.parse(text);
     }
 
-    @Test
-    public void testXMLParseMetadataThrown()
-    {
-        String text = "";
-        
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Metadata can not be parsed.");
-        reader.parseMetadata(text);
-    }
-    
-    @Test
-    public void testXMLParseSegmentsThrown()
-    {
-        String text = "";
-        
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Segments can not be parsed.");
-        reader.parseVideoSegments(text);
-    }
-    
-    @Test
-    public void testXMLStoreSchemaThrown()
-    {
-        MetadataSchema emptySchemas[] = new MetadataSchema[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input schemas vector is empty");
-        writer.store(emptySchemas);
-    }
-    
-    @Test
-    public void testXMLStoreSetThrown()
-    {
-        MetadataSet set = new MetadataSet();
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input MetadataSet is empty");
-        writer.store(set);
-    }
-    
-    @Test
-    public void testXMLStoreSegmentThrown()
-    {
-        MetadataStream.VideoSegment segment = new MetadataStream.VideoSegment();
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Invalid segment. Segment must have not empty title, fps > 0 and start time >= 0");
-        writer.store(segment);
-    }
-    
-    @Test
-    public void testXMLStoreSegmentsThrown()
-    {
-        MetadataStream.VideoSegment segments[] = new MetadataStream.VideoSegment[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input video segments vector is empty");
-        writer.store(segments);
-    }
-
-    @Test
-    public void testXMLStoreAllThrown()
-    {
-        MetadataSchema emptySchemas[] = new MetadataSchema[0];
-        thrown.expect(com.intel.vmf.VmfException.class);
-        thrown.expectMessage("vmf::Exception: Input schemas vector is empty");
-        writer.store(1, "path.txt", "trampampam", videoSegs, emptySchemas, mdSet);
-    }
-    
+   
     @Test
     public void testXMLDeleteByGC()
     {
-        reader = null;
-        writer = null;
+        xml = null;
         
         videoSeg1 = null;
         videoSeg2 = null;

@@ -409,12 +409,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1addInternal (JNIEnv
     try
     {
         std::shared_ptr <MetadataStream>* obj = (std::shared_ptr <MetadataStream>*) self;
-        std::shared_ptr <MetadataInternal>* mdInt = (std::shared_ptr <MetadataInternal>*) mdIntAddr;
+        MetadataInternal* mdInt = (MetadataInternal*) mdIntAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Stream is null pointer.");
 
-        if ((mdInt == NULL) || (*mdInt == NULL) || (mdInt->get() == NULL))
+        if (mdInt == NULL)
             VMF_EXCEPTION(NullPointerException, "Metadata internal is null pointer.");
 
         return (jlong)(*obj)->add(*mdInt);
@@ -791,7 +791,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataStream_n_1serialize (JNIEnv
         if ((writer == NULL) || (*writer == NULL) || (writer->get() == NULL))
             return 0;
 
-        jstring str = env->NewStringUTF(((*obj)->serialize((**writer))).c_str());
+        jstring str = env->NewStringUTF(""/*((*obj)->serialize((**writer))).c_str()*/);
         return str;
     }
     catch (const std::exception &e)
@@ -833,7 +833,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1deserialize (JNIEnv 
         std::string sText(tmp);
         env->ReleaseStringUTFChars(text, tmp);
 
-        (*obj)->deserialize(sText, (**reader));
+        //(*obj)->deserialize(sText, (**reader));
     }
     catch (const std::exception &e)
     {

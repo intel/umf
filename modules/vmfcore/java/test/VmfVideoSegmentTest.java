@@ -76,7 +76,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testCreateSegmentTitleThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment title can't be empty");
         newSegment = new MetadataStream.VideoSegment("", 25, 0);
     }
@@ -84,7 +84,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testCreateSegmentFPSThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment fps must be positive");
         newSegment = new MetadataStream.VideoSegment("vacation", -1, 0);
     }
@@ -92,7 +92,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testCreateSegmentStartThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment start time must be positive");
         newSegment = new MetadataStream.VideoSegment("vacation", 20, -1);
     }
@@ -100,7 +100,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testCreateSegmentDurationThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment duration must be positive");
         newSegment = new MetadataStream.VideoSegment("vacation", 20, 0, -1);
     }
@@ -108,7 +108,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testCreateSegmentResolutionThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment resoulution width and height must be positive");
         newSegment = new MetadataStream.VideoSegment("vacation", 20, 0, 0, -1, 0);
     }
@@ -116,7 +116,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testSetSegmentTitleThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment title can't be empty");
         vs1.setTitle("");
     }
@@ -124,7 +124,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testSetSegmentFPSThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment fps must be positive");
         vs1.setFPS(0);
     }
@@ -133,7 +133,7 @@ public class VmfVideoSegmentTest
     public void testSetSegmentDurationThrow()
     {
         newSegment = new MetadataStream.VideoSegment();
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment duration must positive");
         newSegment.setDuration(-1);
     }
@@ -141,7 +141,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testSetSegmentTimeThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment start time must be positive");
         vs1.setTime(-1);
     }
@@ -149,7 +149,7 @@ public class VmfVideoSegmentTest
     @Test
     public void testSetSegmentResolutionThrow()
     {
-        thrown.expect(com.intel.vmf.VmfException.class);
+        thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Segment resoulution width and height must be positive");
         vs1.setResolution(0, 0);
     }

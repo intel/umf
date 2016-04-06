@@ -455,7 +455,7 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
         }
         else
         {
-            this->emplace_back( FieldValue( sFieldName, value ) );
+            this->emplace_back(sFieldName, value);
         }
     }
     // If the field type is not the same, try to convert it to the right type
@@ -524,7 +524,7 @@ void Metadata::validate() const
                 throw std::runtime_error( "A structure cannot have duplicate field names!" );
 
             // Check field names and field types against field description property.
-            std::for_each( vUniqueNames.begin(), vUniqueNames.end(), [&]( const std::string& sFieldName )
+            for (const auto& sFieldName : vUniqueNames)
             {
                 FieldDesc field;
                 if( false == m_spDesc->getFieldDesc( field, sFieldName ))
@@ -535,9 +535,9 @@ void Metadata::validate() const
                 vmf::Variant varValue = this->getFieldValue( sFieldName );
                 if( field.type != varValue.getType() )
                 {
-                    VMF_EXCEPTION(ValidateException, "Field type does not match with file defined in descriptor!" );
+                    VMF_EXCEPTION(ValidateException, "Field type does not match with the descriptor!" );
                 }
-            });
+            }
 
         }
         // Array and single item value
