@@ -8,6 +8,7 @@
 
 #import "RTSPServer.h"
 #import "RTSPClientConnection.h"
+#import "VmfClientConnection.h"
 #import "ifaddrs.h"
 #import "arpa/inet.h"
 
@@ -18,6 +19,12 @@
     NSMutableArray* _connections;
     NSData* _configData;
     int _bitrate;
+    
+    CFSocketRef _listenerVmf;
+    VmfClientConnection* _vmf;
+    
+    //time in milliseconds
+    long long _startVideoStreamTime;
 }
 
 - (RTSPServer*) init:(NSData*) configData;
@@ -49,9 +56,41 @@ static void onSocket (
     
 }
 
+static void onVmfSocket (
+                         CFSocketRef s,
+                         CFSocketCallBackType callbackType,
+                         CFDataRef address,
+                         const void *data,
+                         void *info
+                         )
+{
+    
+    
+    RTSPServer* server = (__bridge RTSPServer*)info;
+    
+    if (server.vmf != nil && !server.vmf.isShutdown)
+        return;
+
+    switch (callbackType)
+    {
+        case kCFSocketAcceptCallBack:
+        {
+            CFSocketNativeHandle* pH = (CFSocketNativeHandle*) data;
+            [server onVmfAccept:*pH];
+            break;
+        }
+        default:
+            NSLog(@"unexpected socket event");
+            break;
+    }
+    
+}
+
 @implementation RTSPServer
 
 @synthesize bitrate = _bitrate;
+@synthesize vmf = _vmf;
+@synthesize startVideoStreamTime = _startVideoStreamTime;
 
 + (RTSPServer*) setupListener:(NSData*) configData
 {
@@ -67,6 +106,8 @@ static void onSocket (
 {
     _configData = configData;
     _connections = [NSMutableArray arrayWithCapacity:10];
+    _vmf = nil;
+    _startVideoStreamTime = -1;
     
     CFSocketContext info;
     memset(&info, 0, sizeof(info));
@@ -81,7 +122,7 @@ static void onSocket (
     struct sockaddr_in addr;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(554);
+    addr.sin_port = htons(1234);
     CFDataRef dataAddr = CFDataCreate(nil, (const uint8_t*)&addr, sizeof(addr));
     CFSocketError e = CFSocketSetAddress(_listener, dataAddr);
     CFRelease(dataAddr);
@@ -115,6 +156,48 @@ static void onSocket (
         }
     }
     
+    if (!_listenerVmf)
+    {
+        CFSocketContext info;
+        memset(&info, 0, sizeof(info));
+        info.info = (void*)CFBridgingRetain(self);
+        
+        _listenerVmf = CFSocketCreate(nil, PF_INET, SOCK_STREAM, IPPROTO_TCP, kCFSocketAcceptCallBack, onVmfSocket, &info);
+        
+        // must set SO_REUSEADDR in case a client is still holding this address
+        int t = 1;
+        setsockopt(CFSocketGetNative(_listenerVmf), SOL_SOCKET, SO_REUSEADDR, &t, sizeof(t));
+        
+        struct sockaddr_in addrVmf;
+        
+        addrVmf.sin_addr.s_addr = INADDR_ANY;
+        addrVmf.sin_family = AF_INET;
+        addrVmf.sin_port = htons(4321);
+        CFDataRef dataAddrVmf = CFDataCreate(nil, (const uint8_t*)&addrVmf, sizeof(addrVmf));
+        CFSocketError vmfSocketSetAddrErr = CFSocketSetAddress(_listenerVmf, dataAddrVmf);
+        CFRelease(dataAddrVmf);
+        
+        if (vmfSocketSetAddrErr)
+        {
+            NSLog(@"Failed vmf socket address setting: %d", (int) vmfSocketSetAddrErr);
+        }
+        
+        CFRunLoopSourceRef rlsVmf = CFSocketCreateRunLoopSource(nil, _listenerVmf, 0);
+        
+        CFRunLoopAddSource(CFRunLoopGetMain(), rlsVmf, kCFRunLoopCommonModes);
+        
+        CFRelease(rlsVmf);
+    }
+}
+
+- (void) onVmfAccept:(CFSocketNativeHandle) childHandle
+{
+    _vmf = [VmfClientConnection createWithSocket:childHandle server:self];
+    
+    if (_vmf == nil)
+        NSLog(@"Failed VmfClientConnection creating");
+    
+    _vmf.videoStreamStartTime = _startVideoStreamTime;
 }
 
 - (void) onVideoData:(NSArray*) data time:(double) pts
@@ -135,6 +218,20 @@ static void onSocket (
         NSLog(@"Client disconnected");
         [_connections removeObject:conn];
     }
+    
+    if ([_connections count] == 0)
+    {
+        @synchronized(self)
+        {
+            if (_listenerVmf)
+            {
+                CFSocketInvalidate(_listenerVmf);
+                _listenerVmf = nil;
+            }
+            
+            _startVideoStreamTime = -1;
+        }
+    }
 }
 
 - (void) shutdownServer
@@ -151,6 +248,15 @@ static void onSocket (
             CFSocketInvalidate(_listener);
             _listener = nil;
         }
+        
+        if (_listenerVmf != nil)
+        {
+            CFSocketInvalidate(_listenerVmf);
+            _listenerVmf = nil;
+        }
+        
+        if (_vmf != nil)
+            _vmf = nil;
     }
 }
 

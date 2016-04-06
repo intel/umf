@@ -8,20 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h> 
+//#import "VmfClientConnection.h"
 #include <sys/socket.h> 
 #include <netinet/in.h>
 
-@interface RTSPServer : NSObject
+@class VmfClientConnection;
 
+@interface RTSPServer : NSObject
 
 + (NSString*) getIPAddress;
 + (RTSPServer*) setupListener:(NSData*) configData;
 
 - (NSData*) getConfigData;
+- (void) onVmfAccept:(CFSocketNativeHandle) childHandle;
 - (void) onVideoData:(NSArray*) data time:(double) pts;
 - (void) shutdownConnection:(id) conn;
 - (void) shutdownServer;
 
 @property (readwrite, atomic) int bitrate;
-
+@property (readwrite) VmfClientConnection* vmf;
+@property (readwrite) long long startVideoStreamTime;
 @end

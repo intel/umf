@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		524B9FCD1CB3D9D1004240BC /* VmfClientConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */; };
+		524B9FD11CB3ED7A004240BC /* vmf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 524B9FD01CB3ED7A004240BC /* vmf.framework */; };
+		527904731CB52DDC005BE7AB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527904721CB52DDC005BE7AB /* CoreLocation.framework */; };
 		841255A116A035E3001749D9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A016A035E3001749D9 /* UIKit.framework */; };
 		841255A316A035E3001749D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A216A035E3001749D9 /* Foundation.framework */; };
 		841255A516A035E3001749D9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A416A035E3001749D9 /* CoreGraphics.framework */; };
@@ -17,7 +20,6 @@
 		841255B516A035E3001749D9 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 841255B416A035E3001749D9 /* Default@2x.png */; };
 		841255B716A035E3001749D9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 841255B616A035E3001749D9 /* Default-568h@2x.png */; };
 		841255BA16A035E3001749D9 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841255B816A035E3001749D9 /* MainStoryboard_iPhone.storyboard */; };
-		841255BD16A035E3001749D9 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841255BB16A035E3001749D9 /* MainStoryboard_iPad.storyboard */; };
 		841255C016A035E3001749D9 /* EncoderDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841255BF16A035E3001749D9 /* EncoderDemoViewController.m */; };
 		841255C716A035F1001749D9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255C616A035F1001749D9 /* AVFoundation.framework */; };
 		841255C916A035F9001749D9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255C816A035F9001749D9 /* CoreMedia.framework */; };
@@ -33,6 +35,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VmfClientConnection.mm; sourceTree = "<group>"; };
+		524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VmfClientConnection.h; sourceTree = "<group>"; };
+		524B9FD01CB3ED7A004240BC /* vmf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vmf.framework; path = ../vmf.framework; sourceTree = "<group>"; };
+		527904721CB52DDC005BE7AB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		52ED326C1CB500A600CE0FAB /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		8412559C16A035E3001749D9 /* Encoder Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Encoder Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		841255A016A035E3001749D9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		841255A216A035E3001749D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -47,7 +54,6 @@
 		841255B416A035E3001749D9 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		841255B616A035E3001749D9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		841255B916A035E3001749D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		841255BC16A035E3001749D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		841255BE16A035E3001749D9 /* EncoderDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EncoderDemoViewController.h; sourceTree = "<group>"; };
 		841255BF16A035E3001749D9 /* EncoderDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EncoderDemoViewController.m; sourceTree = "<group>"; };
 		841255C616A035F1001749D9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -76,6 +82,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				527904731CB52DDC005BE7AB /* CoreLocation.framework in Frameworks */,
+				524B9FD11CB3ED7A004240BC /* vmf.framework in Frameworks */,
 				841255CB16A09114001749D9 /* CoreVideo.framework in Frameworks */,
 				841255C916A035F9001749D9 /* CoreMedia.framework in Frameworks */,
 				841255C716A035F1001749D9 /* AVFoundation.framework in Frameworks */,
@@ -111,6 +119,8 @@
 		8412559F16A035E3001749D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				527904721CB52DDC005BE7AB /* CoreLocation.framework */,
+				524B9FD01CB3ED7A004240BC /* vmf.framework */,
 				841255A016A035E3001749D9 /* UIKit.framework */,
 				841255A216A035E3001749D9 /* Foundation.framework */,
 				841255A416A035E3001749D9 /* CoreGraphics.framework */,
@@ -121,10 +131,12 @@
 		841255A616A035E3001749D9 /* Encoder Demo */ = {
 			isa = PBXGroup;
 			children = (
+				52ED326C1CB500A600CE0FAB /* Location.h */,
+				524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */,
+				524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */,
 				841255AF16A035E3001749D9 /* EncoderDemoAppDelegate.h */,
 				841255B016A035E3001749D9 /* EncoderDemoAppDelegate.m */,
 				841255B816A035E3001749D9 /* MainStoryboard_iPhone.storyboard */,
-				841255BB16A035E3001749D9 /* MainStoryboard_iPad.storyboard */,
 				841255BE16A035E3001749D9 /* EncoderDemoViewController.h */,
 				841255BF16A035E3001749D9 /* EncoderDemoViewController.m */,
 				846119C516D3BF8D00468D98 /* CameraServer.h */,
@@ -205,7 +217,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = EncoderDemo;
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Geraint Davies";
 			};
 			buildConfigurationList = 8412559616A035E3001749D9 /* Build configuration list for PBXProject "Encoder Demo" */;
@@ -235,7 +247,6 @@
 				841255B516A035E3001749D9 /* Default@2x.png in Resources */,
 				841255B716A035E3001749D9 /* Default-568h@2x.png in Resources */,
 				841255BA16A035E3001749D9 /* MainStoryboard_iPhone.storyboard in Resources */,
-				841255BD16A035E3001749D9 /* MainStoryboard_iPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				524B9FCD1CB3D9D1004240BC /* VmfClientConnection.mm in Sources */,
 				841255AD16A035E3001749D9 /* main.m in Sources */,
 				841255B116A035E3001749D9 /* EncoderDemoAppDelegate.m in Sources */,
 				841255C016A035E3001749D9 /* EncoderDemoViewController.m in Sources */,
@@ -279,14 +291,6 @@
 			name = MainStoryboard_iPhone.storyboard;
 			sourceTree = "<group>";
 		};
-		841255BB16A035E3001749D9 /* MainStoryboard_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				841255BC16A035E3001749D9 /* en */,
-			);
-			name = MainStoryboard_iPad.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -301,6 +305,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -312,7 +318,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -330,11 +336,12 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -348,6 +355,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Encoder Demo/Encoder Demo-Prefix.pch";
 				INFOPLIST_FILE = "Encoder Demo/Encoder Demo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.gdcl.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -359,6 +368,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Encoder Demo/Encoder Demo-Prefix.pch";
 				INFOPLIST_FILE = "Encoder Demo/Encoder Demo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.gdcl.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
