@@ -146,6 +146,18 @@ static void onVmfSocket (
 
 - (void) onAccept:(CFSocketNativeHandle) childHandle
 {
+    if ([_connections count] > 0)
+    {
+        CFSocketContext info;
+        memset(&info, 0, sizeof(info));
+        info.info = (void*)CFBridgingRetain(self);
+
+        CFSocketRef s = CFSocketCreateWithNative(nil, childHandle, kCFSocketDataCallBack, onSocket, &info);
+        CFSocketInvalidate (s);
+        s = nil;
+        return;
+    }
+
     RTSPClientConnection* conn = [RTSPClientConnection createWithSocket:childHandle server:self];
     if (conn != nil)
     {

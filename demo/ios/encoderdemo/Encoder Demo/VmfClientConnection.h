@@ -16,19 +16,20 @@
     CLLocationManager* _locationManager;
     
     NSTimer *locationGenerationTimer;
-    size_t generatedDataIndex;
     
     CFRunLoopSourceRef _rls;
     bool _isShutdown;
     
     long long _videoStreamStartTime;
+    long long _mdStreamStartTime;
 }
 
 @property (readwrite) CFSocketRef dataSocket;
 @property (readonly) bool isShutdown;
 @property (readwrite) long long videoStreamStartTime;
+@property (readwrite) long long mdStreamStartTime;
 
 + (VmfClientConnection*) createWithSocket:(CFSocketNativeHandle) s server:(RTSPServer*) server;
 - (void) onSocketData:(CFDataRef)data;
-
+- (void) sendMessage:(NSData*) msgData;
 @end
