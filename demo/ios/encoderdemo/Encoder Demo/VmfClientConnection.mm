@@ -12,15 +12,19 @@
 #import "RTSPServer.h"
 #include <string>
 #include <vector>
-#import "Location.h"
+#import "LocationData.h"
 #define MILLISEC_PER_SEC 1000
+#define START_LATITUDE 37.388350
+#define START_LONGITUDE -121.964500
 
 @interface VmfClientConnection ()
 {
     std::vector<LocationData> gpsDataVector;
     std::vector<LocationData> buffer;
-    std::vector<LocationData> gpsGeneratedData;
+    
     BOOL _vmfMetadataSessionSetup;
+    double _radius;
+    double _angle;
 }
 @end
 
@@ -51,6 +55,7 @@ static void onSocket (
 @synthesize dataSocket = _dataSocket;
 @synthesize isShutdown = _isShutdown;
 @synthesize videoStreamStartTime = _videoStreamStartTime;
+@synthesize mdStreamStartTime = _mdStreamStartTime;
 
 + (VmfClientConnection*) createWithSocket:(CFSocketNativeHandle) s server:(RTSPServer*) server
 {
@@ -64,41 +69,11 @@ static void onSocket (
 
 - (VmfClientConnection*) initWithSocket:(CFSocketNativeHandle)s Server:(RTSPServer *)server
 {
-    LocationData newLocation;
-    newLocation.coordinate.latitude = 37.388350;
-    newLocation.coordinate.longitude = -121.964500;
-    
-    for (size_t i = 0; i < 10; i++)
-    {
-        newLocation.coordinate.latitude -= 0.000045;
-        newLocation.coordinate.longitude -= 0.000130;
-        gpsGeneratedData.push_back(newLocation);
-    }
-    
-    for (size_t i = 0; i < 10; i++)
-    {
-        newLocation.coordinate.latitude -= 0.000090;
-        newLocation.coordinate.longitude += 0.000050;
-        gpsGeneratedData.push_back(newLocation);
-    }
-    
-    for (size_t i = 0; i < 10; i++)
-    {
-        newLocation.coordinate.latitude += 0.000060;
-        newLocation.coordinate.longitude += 0.000150;
-        gpsGeneratedData.push_back(newLocation);
-    }
-    
-    for (size_t i = 0; i < 10; i++)
-    {
-        newLocation.coordinate.latitude += 0.000025;
-        newLocation.coordinate.longitude -= 0.000070;
-        gpsGeneratedData.push_back(newLocation);
-    }
-    
     _vmfMetadataSessionSetup = false;
-    generatedDataIndex = 0;
     locationGenerationTimer = nil;
+    _radius = 0;
+    _angle = 0;
+    _mdStreamStartTime = -1;
     
     _locationManager = [[CLLocationManager alloc] init];
     _locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
@@ -117,24 +92,7 @@ static void onSocket (
     NSString *msg = @"VMF";
     NSData* msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
     
-    CFDataRef msgDataRef = (__bridge CFDataRef)(msgData);
-    
-    __uint32_t bytes = CFDataGetLength(msgDataRef);
-    
-    NSData* data = [NSData dataWithBytes: &bytes length: sizeof(bytes)];
-    CFSocketError e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(data), 2);
-    
-    if (e)
-    {
-        NSLog(@"send size %ld", e);
-    }
-    
-    e = CFSocketSendData(_dataSocket, NULL, msgDataRef, 2);
-    
-    if (e)
-    {
-        NSLog(@"send %ld", e);
-    }
+    [self sendMessage:msgData];
     
     return self;
 }
@@ -150,6 +108,7 @@ static void onSocket (
         }
         
         [[CameraServer server].delegate setIPAddrLabel:@"Connection is lost"];
+        _mdStreamStartTime = -1;
         _vmfMetadataSessionSetup = FALSE;
         gpsDataVector.clear();
         buffer.clear();
@@ -163,7 +122,6 @@ static void onSocket (
             locationGenerationTimer = nil;
         }
         
-        generatedDataIndex = 0;
         _isShutdown = true;
         return;
     }
@@ -188,23 +146,7 @@ static void onSocket (
         NSString *msg = @"XML";
         NSData* msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
         
-        CFDataRef msgDataRef = (__bridge CFDataRef)(msgData);
-        
-        __uint32_t bytes = CFDataGetLength(msgDataRef);
-        
-        NSData* data = [NSData dataWithBytes: &bytes length: sizeof(bytes)];
-        CFSocketError e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(data), 2);
-        
-        if (e)
-        {
-            NSLog(@"send size %ld", e);
-        }
-        
-        e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(msgData), 2);
-        if (e)
-        {
-            NSLog(@"send %ld", e);
-        }
+        [self sendMessage:msgData];
     }
     else if (([clientResponse caseInsensitiveCompare:@"OK"] == NSOrderedSame))
     {
@@ -216,8 +158,6 @@ static void onSocket (
         //if (locationManager)
         //  [locationManager startUpdatingLocation];
         
-        generatedDataIndex = 0;
-        
         if (locationGenerationTimer)
         {
             [locationGenerationTimer invalidate];
@@ -225,6 +165,8 @@ static void onSocket (
         }
         
         _vmfMetadataSessionSetup = true;
+        
+        _mdStreamStartTime = vmf::getTimestamp();
         vmf::FormatXML xml;
         
         if (_videoStreamStartTime < 0)
@@ -238,44 +180,13 @@ static void onSocket (
         
         NSString *segmentMsg = [NSString stringWithUTF8String:segmentStr.c_str()];
         NSData* msgSegData = [segmentMsg dataUsingEncoding:NSUTF8StringEncoding];
-        CFDataRef msgSegDataRef = (__bridge CFDataRef)(msgSegData);
         
-        __uint32_t segBytes = CFDataGetLength(msgSegDataRef);
-        
-        NSData* segData = [NSData dataWithBytes: &segBytes length: sizeof(segBytes)];
-        CFSocketError e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(segData), 2);
-        
-        if (e)
-        {
-            NSLog(@"send size %ld", e);
-        }
-        
-        e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(msgSegData), 2);
-        if (e)
-        {
-            NSLog(@"send %ld", e);
-        }
+        [self sendMessage:msgSegData];
         
         NSString *schemaMsg = [NSString stringWithUTF8String:schemaStr.c_str()];
         NSData* msgSchemaData = [schemaMsg dataUsingEncoding:NSUTF8StringEncoding];
         
-        CFDataRef msgSchemaDataRef = (__bridge CFDataRef)(msgSchemaData);
-        __uint32_t schemaBytes = CFDataGetLength(msgSchemaDataRef);
-        
-        NSData* schemaData = [NSData dataWithBytes: &schemaBytes length: sizeof(schemaBytes)];
-        e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(schemaData), 2);
-        
-        if (e)
-        {
-            NSLog(@"send size %ld", e);
-        }
-        
-        
-        e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(msgSchemaData), 2);
-        if (e)
-        {
-            NSLog(@"send %ld", e);
-        }
+        [self sendMessage:msgSchemaData];
         
         locationGenerationTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector:@selector(sendNewLocationOnTimer:) userInfo: nil repeats:YES];
     }
@@ -284,10 +195,12 @@ static void onSocket (
 
 - (void) sendNewLocationOnTimer:(NSTimer*)timer
 {
-    if (generatedDataIndex == gpsGeneratedData.size())
-        generatedDataIndex -= gpsGeneratedData.size();
-    
-    LocationData newLocation = gpsGeneratedData[generatedDataIndex];
+    LocationData newLocation;
+   
+    newLocation.coordinate.latitude = (START_LATITUDE + _radius*cos(_angle));
+    newLocation.coordinate.longitude = (START_LONGITUDE + _radius*sin(_angle));
+    _radius += 0.0002;
+    _angle += M_PI/20;
     
     std::shared_ptr<vmf::MetadataSchema> spSchema = vmf::MetadataSchema::getStdSchema();
     
@@ -308,10 +221,18 @@ static void onSocket (
     
     NSString *msg = [NSString stringWithUTF8String:mdStr.c_str()];
     NSData* msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
-    CFDataRef msgDataRef = (__bridge CFDataRef)(msgData);
+    
+    [self sendMessage:msgData];
+}
+
+- (void) sendMessage:(NSData*) msgData
+{
     __uint32_t size = [msgData length];
+    __uint32_t bytes = htonl(size);
+
     NSLog(@"Size of message is %d", size);
-    __uint32_t bytes = size;
+    
+    CFDataRef msgDataRef = (__bridge CFDataRef)(msgData);
     
     NSData* data = [NSData dataWithBytes: &bytes length: sizeof(bytes)];
     
@@ -329,7 +250,6 @@ static void onSocket (
         {
             NSLog(@"send %ld", e);
         }
-        generatedDataIndex++;
     }
 }
 
@@ -350,7 +270,7 @@ static void onSocket (
     NSLog(@"didUpdateToLocation: %@", newLocation);
     
     LocationData currentLocation;
-    long long timeSinceStartInSecond = (currentTime - _videoStreamStartTime)/MILLISEC_PER_SEC;
+    long long timeSinceStartInSecond = (currentTime - _mdStreamStartTime)/MILLISEC_PER_SEC;
     
     if (newLocation == nil)
     {
@@ -389,17 +309,14 @@ static void onSocket (
         
         NSString *msg = [NSString stringWithUTF8String:mdStr.c_str()];
         NSData* msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
-        CFSocketError e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(msgData), 2);
-        if (e)
-        {
-            NSLog(@"send %ld", e);
-        }
+        
+        [self sendMessage:msgData];
     }
-    else if (timeSinceStartInSecond == ((gpsDataVector.back().time - _videoStreamStartTime)/MILLISEC_PER_SEC))
+    else if (timeSinceStartInSecond == ((gpsDataVector.back().time - _mdStreamStartTime)/MILLISEC_PER_SEC))
     {
         buffer.push_back (currentLocation);
     }
-    else if ((timeSinceStartInSecond > ((gpsDataVector.back ().time - _videoStreamStartTime)/MILLISEC_PER_SEC)))
+    else if ((timeSinceStartInSecond > ((gpsDataVector.back ().time - _mdStreamStartTime)/MILLISEC_PER_SEC)))
     {
         size_t bufSize = buffer.size();
         if (!buffer.empty())
@@ -445,11 +362,8 @@ static void onSocket (
         
         NSString *msg = [NSString stringWithUTF8String:mdStr.c_str()];
         NSData* msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
-        CFSocketError e = CFSocketSendData(_dataSocket, NULL, (__bridge CFDataRef)(msgData), 2);
-        if (e)
-        {
-            NSLog(@"send %ld", e);
-        }
+        
+        [self sendMessage:msgData];
     }
     
 }

@@ -39,7 +39,7 @@
 		524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VmfClientConnection.h; sourceTree = "<group>"; };
 		524B9FD01CB3ED7A004240BC /* vmf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vmf.framework; path = ../vmf.framework; sourceTree = "<group>"; };
 		527904721CB52DDC005BE7AB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		52ED326C1CB500A600CE0FAB /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
+		52ED326C1CB500A600CE0FAB /* LocationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationData.h; sourceTree = "<group>"; };
 		8412559C16A035E3001749D9 /* Encoder Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Encoder Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		841255A016A035E3001749D9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		841255A216A035E3001749D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -131,7 +131,7 @@
 		841255A616A035E3001749D9 /* Encoder Demo */ = {
 			isa = PBXGroup;
 			children = (
-				52ED326C1CB500A600CE0FAB /* Location.h */,
+				52ED326C1CB500A600CE0FAB /* LocationData.h */,
 				524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */,
 				524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */,
 				841255AF16A035E3001749D9 /* EncoderDemoAppDelegate.h */,

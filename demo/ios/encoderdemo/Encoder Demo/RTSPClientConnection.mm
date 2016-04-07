@@ -8,7 +8,7 @@
 
 #import "RTSPClientConnection.h"
 #import "VmfClientConnection.h"
-#import "Location.h"
+#import "LocationData.h"
 #import "RTSPMessage.h"
 #import "NALUnit.h"
 #import "arpa/inet.h"
