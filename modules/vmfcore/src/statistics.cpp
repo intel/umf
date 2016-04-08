@@ -1104,7 +1104,7 @@ void Stat::setUpdateMode( StatUpdateMode::Type updateMode )
             m_worker->wakeup( true );
             break;
         default:
-            VMF_EXCEPTION( vmf::NotImplementedException, "Unknown update mode" );
+            VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown update mode" );
         }
     }
 }

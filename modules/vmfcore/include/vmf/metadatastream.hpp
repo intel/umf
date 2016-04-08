@@ -345,9 +345,32 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
+    /*!
+    * \brief Add new statistics object (copy semantics).
+    * \param stat [in] statistics object to add
+    * \throw IncorrectParamException if such statistics object already exist
+    */
     void addStat( const Stat& stat );
+
+    /*!
+    * \brief Add new statistics object (move semantics). This feature requires C++11 compatible compiler.
+    * \param stat [in] statistics object to add/move
+    * \throw IncorrectParamException if such statistics object already exist
+    */
     void addStat( Stat&& stat );
+
+    /*!
+    * \brief Get statistics object by its name
+    * \param name [in] statistics object name
+    * \return Statistics object (reference to)
+    * \throw NotFoundException if such statistics object not exist
+    */
     Stat& getStat( const std::string& name ) const;
+
+    /*!
+    * \brief Get names of all statistics objects
+    * \return Statistics object names (vector of)
+    */
     std::vector< std::string > getAllStatNames() const;
 
     /*!
