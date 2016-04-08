@@ -3,7 +3,7 @@
 //  Encoder Demo
 //
 //  Created by Itseez on 05/04/16.
-//  Copyright © 2016 Geraint Davies. All rights reserved.
+//  Copyright © 2016 Intel Corporation. All rights reserved.
 //
 
 #import <CoreLocation/CoreLocation.h>
@@ -15,7 +15,7 @@
     
     CLLocationManager* _locationManager;
     
-    NSTimer *locationGenerationTimer;
+    NSTimer *_locationGenerationTimer;
     
     CFRunLoopSourceRef _rls;
     bool _isShutdown;
