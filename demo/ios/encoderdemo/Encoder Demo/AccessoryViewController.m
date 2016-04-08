@@ -91,32 +91,75 @@
 //| ----------------------------------------------------------------------------
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *kStandardCellID = @"StandardCell";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kStandardCellID];
+    UITableViewCell *cell;
+    NSDictionary *item = self.dataArray[(NSUInteger)indexPath.row];
+    NSString* title = [item objectForKey:@"text"];
     
-    if (cell.accessoryView == nil) {
-        // Only configure the Checkbox control once.
-        cell.accessoryView = [[Checkbox alloc] initWithFrame:CGRectMake(0, 0, 25, 43)];
-        cell.accessoryView.opaque = NO;
-        cell.backgroundColor = [UIColor clearColor];
+    if ([title isEqual: @"Video port"] || [title isEqual: @"Data port"])
+    {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
+        if (cell == nil)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:@"Cell"];
+            cell.accessoryType = UITableViewCellAccessoryNone;
         
-        [(Checkbox*)cell.accessoryView addTarget:self action:@selector(checkBoxTapped:forEvent:) forControlEvents:UIControlEventValueChanged];
+            if ([indexPath section] == 0)
+            {
+                UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(110, 10, 185, 30)];
+                textField.adjustsFontSizeToFitWidth = YES;
+                textField.textColor = [UIColor blackColor];
+                textField.borderStyle = bold;
+                textField.placeholder = @"Number";
+                textField.keyboardType = UIKeyboardTypeNumberPad;
+                textField.returnKeyType = UIReturnKeyDone;
+                textField.secureTextEntry = YES;
+            
+                textField.backgroundColor = [UIColor whiteColor];
+                textField.autocorrectionType = UITextAutocorrectionTypeNo; // no auto correction support
+                textField.autocapitalizationType = UITextAutocapitalizationTypeNone; // no auto capitalization support
+                textField.textAlignment = UITextAlignmentCenter;
+                textField.tag = 0;
+           
+            
+                textField.clearButtonMode = UITextFieldViewModeNever; // no clear 'x' button to the right
+                [textField setEnabled: YES];
+            
+                [cell.contentView addSubview:textField];
+            }
+        }
+        
+        if ([indexPath section] == 0)
+            cell.textLabel.text = title;
+        
+        cell.userInteractionEnabled = NO;
+        cell.textLabel.enabled = NO;
+        cell.detailTextLabel.enabled = NO;
     }
+    else
+    {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"StandardCell"];
     
-	NSDictionary *item = self.dataArray[(NSUInteger)indexPath.row];
+        if (cell.accessoryView == nil)
+        {
+            // Only configure the Checkbox control once.
+            cell.accessoryView = [[Checkbox alloc] initWithFrame:CGRectMake(0, 0, 25, 43)];
+            cell.accessoryView.opaque = NO;
+            cell.backgroundColor = [UIColor clearColor];
+        
+            [(Checkbox*)cell.accessoryView addTarget:self action:@selector(checkBoxTapped:forEvent:) forControlEvents:UIControlEventValueChanged];
+        }
     
-	cell.textLabel.text = [item objectForKey:@"text"];
-    [(Checkbox*)cell.accessoryView setChecked: [item[@"checked"] boolValue] ];
-    
-    if ([[item objectForKey:@"text"]  isEqual: @"Emulated GPS"])
-        [[CameraServer server].rtsp toggleEmulatedGPS:[item[@"checked"] boolValue]];
-    else if ([[item objectForKey:@"text"]  isEqual: @"Use compression"])
-        [[CameraServer server].rtsp toggleUseCompression:[item[@"checked"] boolValue]];
-    
+        cell.textLabel.text = title;
+        if ([title isEqual: @"Emulated GPS"])
+            [(Checkbox*)cell.accessoryView setChecked: [CameraServer server].rtsp.isEmulatedGPS ];
+        else if ([title isEqual: @"Use compression"])
+            [(Checkbox*)cell.accessoryView setChecked: [CameraServer server].rtsp.useCompression ];
+        else
+            [(Checkbox*)cell.accessoryView setChecked: [item[@"checked"] boolValue] ];
+    }
     // Accessibility
     [self updateAccessibilityForCell:cell];
-    
 	return cell;
 }
 

@@ -93,6 +93,8 @@ static void onVmfSocket (
 @synthesize bitrate = _bitrate;
 @synthesize vmf = _vmf;
 @synthesize startVideoStreamTime = _startVideoStreamTime;
+@synthesize isEmulatedGPS = _isEmulatedGPS;
+@synthesize useCompression = _useCompression;
 
 + (RTSPServer*) setupListener:(NSData*) configData
 {

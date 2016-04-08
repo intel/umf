@@ -22,15 +22,9 @@
 	</dict>
 	<dict>
 		<key>text</key>
-		<string>Metadata port</string>
+		<string>Data port</string>
 		<key>port</key>
 		<integer>4321</integer>
-	</dict>
-	<dict>
-		<key>text</key>
-		<string>Use encription</string>
-		<key>checked</key>
-		<false/>
 	</dict>
 </array>
 </plist>

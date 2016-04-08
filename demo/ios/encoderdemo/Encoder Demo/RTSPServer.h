@@ -30,4 +30,6 @@
 @property (readwrite, atomic) int bitrate;
 @property (readwrite) VmfClientConnection* vmf;
 @property (readwrite) long long startVideoStreamTime;
+@property (readonly) bool isEmulatedGPS;
+@property (readonly) bool useCompression;
 @end

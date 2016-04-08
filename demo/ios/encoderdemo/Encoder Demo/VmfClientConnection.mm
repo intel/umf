@@ -109,7 +109,7 @@ static void onSocket (
             _dataSocket = nil;
         }
         
-        [[CameraServer server].delegate setIPAddrLabel:@"Connection is lost"];
+        [[CameraServer server].delegate setIPAddrLabel:@"Metadata connection is lost"];
         _mdStreamStartTime = -1;
         _vmfMetadataSessionSetup = FALSE;
         gpsDataVector.clear();

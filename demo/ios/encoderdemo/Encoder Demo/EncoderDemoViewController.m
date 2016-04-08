@@ -18,6 +18,7 @@
 {
     [super viewDidLoad];
     [self startPreview];
+    self.settingsButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
     [CameraServer server].delegate = self;
 }
 

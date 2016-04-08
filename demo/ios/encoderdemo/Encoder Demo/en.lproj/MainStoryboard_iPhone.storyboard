@@ -32,7 +32,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="moQ-q6-xh3">
-                                <rect key="frame" x="276" y="435" width="40" height="40"/>
+                                <rect key="frame" x="251" y="58" width="50" height="50"/>
                                 <state key="normal" image="button.png"/>
                                 <connections>
                                     <action selector="clickButton:" destination="2" eventType="touchUpInside" id="OT0-4b-dhm"/>
@@ -77,7 +77,7 @@
                         <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zem-4C-fvg">
                             <rect key="frame" x="0.0" y="129" width="320" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
                             <state key="normal" title="Back"/>
                             <connections>
                                 <action selector="clickButton:" destination="Wxz-eb-Uui" eventType="touchUpInside" id="Qdk-2u-u0a"/>
