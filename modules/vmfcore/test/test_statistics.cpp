@@ -785,13 +785,6 @@ TEST_P( TestStatistics, ExportImportJSON )
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
                         ::testing::Values(
                             vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
-                            //,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
+                            ,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
                             ));
-
-//        std::cout << "nameCount     = " << nameCount.get_integer() << std::endl;
-//        std::cout << "nameLast      = " << nameLast.get_string() << std::endl;
-//        std::cout << "ageMin        = " << ageMin.get_integer() << std::endl;
-//        std::cout << "ageMax        = " << ageMax.get_integer() << std::endl;
-//        std::cout << "growthAverage = " << growthAverage.get_real() << std::endl;
-//        std::cout << "salarySum     = " << salarySum.get_integer() << std::endl;
 

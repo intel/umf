@@ -497,8 +497,6 @@ private:
 
     void handle( const std::shared_ptr< Metadata > metadata );
     void rescan();
-    void setState( StatState::Type state );
-    void resetState() { setState( StatState::UpToDate ); }
 
     class StatDesc;
     std::unique_ptr< StatDesc > m_desc;
@@ -513,7 +511,6 @@ private:
     bool m_isActive;
 
     mutable std::mutex m_lock;
-    StatState::Type m_state;
 };
 
 } // namespace vmf

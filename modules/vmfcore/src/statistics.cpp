@@ -808,6 +808,7 @@ public:
                     {
                         std::unique_lock< std::mutex > lock( m_lock );
                         std::queue< std::shared_ptr< Metadata >>().swap( m_items );
+                        m_updateScheduled = false;
                     }
                     if( m_stat != nullptr )
                         m_stat->rescan();
@@ -815,8 +816,6 @@ public:
                         std::unique_lock< std::mutex > lock( m_lock );
                         m_rescanScheduled = false;
                     }
-                    if( m_stat != nullptr )
-                        m_stat->resetState();
                 }
                 else if( m_updateScheduled )
                 {
@@ -831,8 +830,6 @@ public:
                         std::unique_lock< std::mutex > lock( m_lock );
                         m_updateScheduled = false;
                     }
-                    if( m_stat != nullptr )
-                        m_stat->resetState();
                 }
                 {
                     std::unique_lock< std::mutex > lock( m_lock );
@@ -891,6 +888,15 @@ public:
             m_exitScheduled = false;
             m_exitImmediate = false;
         }
+    StatState::Type getState() const
+        {
+            std::unique_lock< std::mutex > lock( m_lock );
+            if( m_rescanScheduled )
+                return StatState::NeedRescan;
+            if( m_updateScheduled || !m_items.empty() )
+                return StatState::NeedUpdate;
+            return StatState::UpToDate;
+        }
 
 private:
     bool tryPop( std::shared_ptr< Metadata >& metadata )
@@ -915,7 +921,7 @@ private:
     std::atomic< bool > m_exitScheduled;
     std::atomic< bool > m_exitImmediate;
     std::condition_variable m_signal;
-    std::mutex m_lock;
+    mutable std::mutex m_lock;
 };
 
 Stat::Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode )
@@ -925,7 +931,6 @@ Stat::Stat( const std::string& name, const std::vector< StatField >& fields, Sta
     , m_updateMode( updateMode )
     , m_updateTimeout( 0 )
     , m_isActive( false )
-    , m_state( StatState::UpToDate )
 {
 }
 
@@ -936,7 +941,6 @@ Stat::Stat( const Stat& other )
     , m_updateMode( other.m_updateMode )
     , m_updateTimeout( 0 )
     , m_isActive( other.m_isActive )
-    , m_state( other.m_state )
 {
 }
 
@@ -947,7 +951,6 @@ Stat::Stat( Stat&& other )
     , m_updateMode( other.m_updateMode )
     , m_updateTimeout( 0 )
     , m_isActive( other.m_isActive )
-    , m_state( other.m_state )
 {
 }
 
@@ -965,7 +968,6 @@ Stat& Stat::operator=( const Stat& other )
     m_updateMode    = other.m_updateMode;
     m_updateTimeout = other.m_updateTimeout;
     m_isActive      = other.m_isActive;
-    m_state         = other.m_state;
     setStream( other.getStream() );
 
     return *this;
@@ -981,7 +983,6 @@ Stat& Stat::operator=( Stat&& other )
     m_updateMode    = std::move( other.m_updateMode );
     m_updateTimeout = std::move( other.m_updateTimeout );
     m_isActive      = std::move( other.m_isActive );
-    m_state         = std::move( other.m_state );
     setStream( other.getStream() );
 
     return *this;
@@ -999,12 +1000,10 @@ void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata
             case StatUpdateMode::Disabled:
                 break;
             case StatUpdateMode::Manual:
-                setState( StatState::NeedUpdate );
                 m_worker->scheduleUpdate( metadata, false );
                 break;
             case StatUpdateMode::OnAdd:
             case StatUpdateMode::OnTimer:
-                setState( StatState::NeedUpdate );
                 m_worker->scheduleUpdate( metadata, true );
                 break;
             }
@@ -1015,11 +1014,9 @@ void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata
             case StatUpdateMode::Disabled:
                 break;
             case StatUpdateMode::Manual:
-                setState( StatState::NeedRescan );
                 break;
             case StatUpdateMode::OnAdd:
             case StatUpdateMode::OnTimer:
-                setState( StatState::NeedRescan );
                 m_worker->scheduleRescan();
                 break;
             }
@@ -1041,12 +1038,10 @@ void Stat::update( bool doRescan, bool doWait )
         case StatUpdateMode::OnTimer:
             if( doRescan )
             {
-                setState( StatState::NeedRescan );
                 m_worker->scheduleRescan();
             }
             else
             {
-                setState( StatState::NeedUpdate );
                 m_worker->wakeup();
             }
             break;
@@ -1075,7 +1070,7 @@ void Stat::handle( const std::shared_ptr< Metadata > metadata )
 
 void Stat::rescan()
 {
-    if( isActive() && (getState() != StatState::UpToDate) )
+    if( isActive() /*&& (getState() != StatState::UpToDate)*/ )
     {
         for( auto& statField : m_fields )
             statField.reset();
@@ -1084,7 +1079,6 @@ void Stat::rescan()
         {
             handle( metadata );
         }
-        resetState();
     }
 }
 
@@ -1152,14 +1146,7 @@ MetadataStream* Stat::getStream() const
 
 StatState::Type Stat::getState() const
 {
-    std::unique_lock< std::mutex > lock( m_lock );
-    return m_state;
-}
-
-void Stat::setState( StatState::Type state )
-{
-    std::unique_lock< std::mutex > lock( m_lock );
-    m_state = state;
+    return m_worker->getState();
 }
 
 std::string Stat::getName() const
