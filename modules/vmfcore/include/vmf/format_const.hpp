@@ -87,7 +87,6 @@
 #define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
 #define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
 
-#define TAG_STATS_ARRAY "stats-array"
 #define TAG_STAT "stat"
 #define TAG_STAT_FIELDS_ARRAY "fields-array"
 #define TAG_STAT_FIELD "field"
