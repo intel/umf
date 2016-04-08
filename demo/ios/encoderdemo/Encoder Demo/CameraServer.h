@@ -15,6 +15,7 @@
 #import "AVFoundation/AVMediaFormat.h"
 
 @protocol CameraServerDelegate;
+@class RTSPServer;
 
 @interface CameraServer : NSObject
 {
@@ -22,6 +23,7 @@
 }
 
 @property (readwrite) id <CameraServerDelegate> delegate;
+@property (readwrite) RTSPServer* rtsp;
 
 + (CameraServer*) server;
 - (void) startup;

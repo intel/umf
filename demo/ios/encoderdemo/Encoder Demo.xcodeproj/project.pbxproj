@@ -10,6 +10,11 @@
 		524B9FCD1CB3D9D1004240BC /* VmfClientConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */; };
 		524B9FD11CB3ED7A004240BC /* vmf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 524B9FD01CB3ED7A004240BC /* vmf.framework */; };
 		527904731CB52DDC005BE7AB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527904721CB52DDC005BE7AB /* CoreLocation.framework */; };
+		527904751CB67C86005BE7AB /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = 527904741CB67C86005BE7AB /* button.png */; };
+		527998A01CB7BBA1005D9071 /* AccessoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5279989F1CB7BBA1005D9071 /* AccessoryViewController.m */; };
+		527998A41CB7BBB9005D9071 /* Checkbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 527998A31CB7BBB9005D9071 /* Checkbox.m */; };
+		527998A61CB7BC27005D9071 /* TableData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 527998A51CB7BC27005D9071 /* TableData.plist */; };
+		527998A81CB7BD01005D9071 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 527998A71CB7BD01005D9071 /* Images.xcassets */; };
 		841255A116A035E3001749D9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A016A035E3001749D9 /* UIKit.framework */; };
 		841255A316A035E3001749D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A216A035E3001749D9 /* Foundation.framework */; };
 		841255A516A035E3001749D9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A416A035E3001749D9 /* CoreGraphics.framework */; };
@@ -39,6 +44,13 @@
 		524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VmfClientConnection.h; sourceTree = "<group>"; };
 		524B9FD01CB3ED7A004240BC /* vmf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vmf.framework; path = ../vmf.framework; sourceTree = "<group>"; };
 		527904721CB52DDC005BE7AB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		527904741CB67C86005BE7AB /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button.png; sourceTree = SOURCE_ROOT; };
+		5279989F1CB7BBA1005D9071 /* AccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessoryViewController.m; sourceTree = "<group>"; };
+		527998A11CB7BBB9005D9071 /* AccessoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessoryViewController.h; sourceTree = "<group>"; };
+		527998A21CB7BBB9005D9071 /* Checkbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Checkbox.h; sourceTree = "<group>"; };
+		527998A31CB7BBB9005D9071 /* Checkbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Checkbox.m; sourceTree = "<group>"; };
+		527998A51CB7BC27005D9071 /* TableData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TableData.plist; sourceTree = "<group>"; };
+		527998A71CB7BD01005D9071 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		52ED326C1CB500A600CE0FAB /* LocationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationData.h; sourceTree = "<group>"; };
 		8412559C16A035E3001749D9 /* Encoder Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Encoder Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		841255A016A035E3001749D9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -131,6 +143,10 @@
 		841255A616A035E3001749D9 /* Encoder Demo */ = {
 			isa = PBXGroup;
 			children = (
+				527998A11CB7BBB9005D9071 /* AccessoryViewController.h */,
+				527998A21CB7BBB9005D9071 /* Checkbox.h */,
+				527998A31CB7BBB9005D9071 /* Checkbox.m */,
+				5279989F1CB7BBA1005D9071 /* AccessoryViewController.m */,
 				52ED326C1CB500A600CE0FAB /* LocationData.h */,
 				524B9FCF1CB3DA30004240BC /* VmfClientConnection.h */,
 				524B9FCC1CB3D9D1004240BC /* VmfClientConnection.mm */,
@@ -151,6 +167,9 @@
 		841255A716A035E3001749D9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				527998A71CB7BD01005D9071 /* Images.xcassets */,
+				527998A51CB7BC27005D9071 /* TableData.plist */,
+				527904741CB67C86005BE7AB /* button.png */,
 				841255A816A035E3001749D9 /* Encoder Demo-Info.plist */,
 				841255A916A035E3001749D9 /* InfoPlist.strings */,
 				841255AC16A035E3001749D9 /* main.m */,
@@ -243,8 +262,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				841255AB16A035E3001749D9 /* InfoPlist.strings in Resources */,
+				527998A81CB7BD01005D9071 /* Images.xcassets in Resources */,
+				527904751CB67C86005BE7AB /* button.png in Resources */,
 				841255B316A035E3001749D9 /* Default.png in Resources */,
 				841255B516A035E3001749D9 /* Default@2x.png in Resources */,
+				527998A61CB7BC27005D9071 /* TableData.plist in Resources */,
 				841255B716A035E3001749D9 /* Default-568h@2x.png in Resources */,
 				841255BA16A035E3001749D9 /* MainStoryboard_iPhone.storyboard in Resources */,
 			);
@@ -257,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				527998A41CB7BBB9005D9071 /* Checkbox.m in Sources */,
 				524B9FCD1CB3D9D1004240BC /* VmfClientConnection.mm in Sources */,
 				841255AD16A035E3001749D9 /* main.m in Sources */,
 				841255B116A035E3001749D9 /* EncoderDemoAppDelegate.m in Sources */,
@@ -265,6 +288,7 @@
 				841255D116A4848E001749D9 /* VideoEncoder.m in Sources */,
 				841255D616A5AB8B001749D9 /* MP4Atom.m in Sources */,
 				841255D916A714B7001749D9 /* NALUnit.cpp in Sources */,
+				527998A01CB7BBA1005D9071 /* AccessoryViewController.m in Sources */,
 				841255DC16A85472001749D9 /* RTSPServer.m in Sources */,
 				841255E516B14E45001749D9 /* RTSPClientConnection.mm in Sources */,
 				841399FA16B1842B00FAD610 /* RTSPMessage.m in Sources */,

@@ -12,7 +12,9 @@
 @interface EncoderDemoViewController : UIViewController <CameraServerDelegate>
 @property (strong, nonatomic) IBOutlet UIView *cameraView;
 @property (strong, nonatomic) IBOutlet UILabel *serverAddress;
+@property (retain, nonatomic) IBOutlet UIButton *settingsButton;
 
 - (void) startPreview;
+- (IBAction)clickButton:(id)sender;
 
 @end

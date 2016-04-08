@@ -24,6 +24,8 @@
 - (void) onVideoData:(NSArray*) data time:(double) pts;
 - (void) shutdownConnection:(id) conn;
 - (void) shutdownServer;
+- (void) toggleEmulatedGPS:(bool) enable;
+- (void) toggleUseCompression:(bool) enable;
 
 @property (readwrite, atomic) int bitrate;
 @property (readwrite) VmfClientConnection* vmf;

@@ -56,6 +56,8 @@ static void onSocket (
 @synthesize isShutdown = _isShutdown;
 @synthesize videoStreamStartTime = _videoStreamStartTime;
 @synthesize mdStreamStartTime = _mdStreamStartTime;
+@synthesize isEmulatedGPS = _isEmulatedGPS;
+@synthesize useCompression = _useCompression;
 
 + (VmfClientConnection*) createWithSocket:(CFSocketNativeHandle) s server:(RTSPServer*) server
 {
@@ -70,7 +72,7 @@ static void onSocket (
 - (VmfClientConnection*) initWithSocket:(CFSocketNativeHandle)s Server:(RTSPServer *)server
 {
     _vmfMetadataSessionSetup = false;
-    locationGenerationTimer = nil;
+    _locationGenerationTimer = nil;
     _radius = 0;
     _angle = 0;
     _mdStreamStartTime = -1;
@@ -113,13 +115,13 @@ static void onSocket (
         gpsDataVector.clear();
         buffer.clear();
         
-        //if (locationManager)
-        //   [locationManager stopUpdatingLocation];
+        if (_locationManager && !_isEmulatedGPS)
+          [_locationManager stopUpdatingLocation];
         
-        if (locationGenerationTimer)
+        if (_locationGenerationTimer)
         {
-            [locationGenerationTimer invalidate];
-            locationGenerationTimer = nil;
+            [_locationGenerationTimer invalidate];
+            _locationGenerationTimer = nil;
         }
         
         _isShutdown = true;
@@ -150,24 +152,35 @@ static void onSocket (
     }
     else if (([clientResponse caseInsensitiveCompare:@"OK"] == NSOrderedSame))
     {
-        buffer.clear();
-        gpsDataVector.clear();
-        
-        [[CameraServer server].delegate setIPAddrLabel:@"Metadata session is setup"];
-        
-        //if (locationManager)
-        //  [locationManager startUpdatingLocation];
-        
-        if (locationGenerationTimer)
+        @synchronized(self)
         {
-            [locationGenerationTimer invalidate];
-            locationGenerationTimer = nil;
+            buffer.clear();
+            gpsDataVector.clear();
+        
+            [[CameraServer server].delegate setIPAddrLabel:@"Metadata session is setup"];
+        
+            if (_locationManager && !_isEmulatedGPS)
+                [_locationManager startUpdatingLocation];
+        
+            if (_locationGenerationTimer)
+            {
+                [_locationGenerationTimer invalidate];
+                _locationGenerationTimer = nil;
+            }
+        
+            _vmfMetadataSessionSetup = true;
+        
+            _mdStreamStartTime = vmf::getTimestamp();
         }
         
-        _vmfMetadataSessionSetup = true;
+        std::shared_ptr<vmf::FormatXML> format = std::make_shared<vmf::FormatXML>();
+        std::string str;
+        if (_useCompression)
+            str = "com.intel.vmf.compressor.zlib";
+        else
+            str = "";
         
-        _mdStreamStartTime = vmf::getTimestamp();
-        vmf::FormatXML xml;
+        vmf::FormatCompressed xml(format, str);
         
         if (_videoStreamStartTime < 0)
             throw "Start time of video streaming isn't initialized!";
@@ -187,10 +200,46 @@ static void onSocket (
         NSData* msgSchemaData = [schemaMsg dataUsingEncoding:NSUTF8StringEncoding];
         
         [self sendMessage:msgSchemaData];
-        
-        locationGenerationTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector:@selector(sendNewLocationOnTimer:) userInfo: nil repeats:YES];
+        @synchronized(self)
+        {
+            if (_isEmulatedGPS)
+                _locationGenerationTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector:@selector(sendNewLocationOnTimer:) userInfo: nil repeats:YES];
+        }
     }
 
+}
+
+- (void) toggleEmulatedGPS:(bool) enable
+{
+    if (enable == true)
+    {
+        [_locationManager stopUpdatingLocation];
+        
+        if (_locationGenerationTimer != nil)
+        {
+            [_locationGenerationTimer invalidate];
+            _locationGenerationTimer = nil;
+        }
+        
+        _locationGenerationTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector:@selector(sendNewLocationOnTimer:) userInfo: nil repeats:YES];
+        
+    }
+    else
+    {
+        [_locationManager startUpdatingLocation];
+        
+        if (_locationGenerationTimer != nil)
+        {
+            [_locationGenerationTimer invalidate];
+            _locationGenerationTimer = nil;
+        }
+    }
+    return;
+}
+
+- (void) toggleUseCompression:(bool) enable
+{
+    _useCompression = enable;
 }
 
 - (void) sendNewLocationOnTimer:(NSTimer*)timer
@@ -213,7 +262,15 @@ static void onSocket (
     spLocationMetadata->setFieldValue("speed", 2);
     spLocationMetadata->setTimestamp(vmf::getTimestamp());
     
-    vmf::FormatXML xml;
+    std::shared_ptr<vmf::FormatXML> format = std::make_shared<vmf::FormatXML>();
+    std::string str;
+    if (_useCompression)
+        str = "com.intel.vmf.compressor.zlib";
+    else
+        str = "";
+        
+    vmf::FormatCompressed xml(format, str);
+    
     vmf::MetadataSet set;
     
     set.push_back(spLocationMetadata);
@@ -287,7 +344,14 @@ static void onSocket (
     currentLocation.altitude = newLocation.altitude;
     currentLocation.speed = newLocation.speed;
     
-    vmf::FormatXML xml;
+    std::shared_ptr<vmf::FormatXML> format = std::make_shared<vmf::FormatXML>();
+    std::string str;
+    if (_useCompression)
+        str = "com.intel.vmf.compressor.zlib";
+    else
+        str = "";
+    
+    vmf::FormatCompressed xml(format, str);
     vmf::MetadataSet set;
     
     if (gpsDataVector.empty())

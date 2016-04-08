@@ -8,7 +8,7 @@
         <!--Encoder Demo View Controller-->
         <scene sceneID="5">
             <objects>
-                <viewController id="2" customClass="EncoderDemoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EncoderDemoViewController" id="2" customClass="EncoderDemoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="57b-Xs-xz4"/>
                         <viewControllerLayoutGuide type="bottom" id="8oS-I2-yY0"/>
@@ -31,6 +31,13 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="moQ-q6-xh3">
+                                <rect key="frame" x="276" y="435" width="40" height="40"/>
+                                <state key="normal" image="button.png"/>
+                                <connections>
+                                    <action selector="clickButton:" destination="2" eventType="touchUpInside" id="OT0-4b-dhm"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -52,5 +59,60 @@
             </objects>
             <point key="canvasLocation" x="142" y="84"/>
         </scene>
+        <!--Accessory View Controller-->
+        <scene sceneID="fD5-Jy-e8u">
+            <objects>
+                <tableViewController storyboardIdentifier="AccessoryViewController" id="Wxz-eb-Uui" customClass="AccessoryViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="xE4-jb-iKR">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Properties" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hFR-6y-ZvM">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="63"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zem-4C-fvg">
+                            <rect key="frame" x="0.0" y="129" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <state key="normal" title="Back"/>
+                            <connections>
+                                <action selector="clickButton:" destination="Wxz-eb-Uui" eventType="touchUpInside" id="Qdk-2u-u0a"/>
+                            </connections>
+                        </button>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StandardCell" textLabel="zcj-vX-djD" style="IBUITableViewCellStyleDefault" id="48x-ha-wnG">
+                                <rect key="frame" x="0.0" y="85" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="48x-ha-wnG" id="hM2-mc-MMw">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zcj-vX-djD">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                    </tableView>
+                    <connections>
+                        <outlet property="button" destination="zem-4C-fvg" id="P4t-8c-8p8"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aJA-ed-2xF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="518" y="84"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="button.png" width="64" height="64"/>
+    </resources>
 </document>

@@ -41,6 +41,16 @@
     self.serverAddress.text = [[CameraServer server] getURL];
 }
 
+- (IBAction)clickButton:(id)sender
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil];
+    UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"AccessoryViewController"];
+    [vc setModalPresentationStyle:UIModalPresentationPageSheet];
+    
+    [self presentViewController:vc animated:YES completion:nil];
+    //[self presentModalViewController:vc animated:YES];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
