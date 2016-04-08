@@ -144,8 +144,13 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 else()
   set(ARCH_DIR "x86")
 endif()
-set(VMF_LIB_INSTALL_DIR  ${ARCH_DIR})
-set(VMF_BIN_INSTALL_DIR  ${ARCH_DIR})
+
+if(ANDROID)
+  set(VMF_LIB_INSTALL_DIR "android-lib")
+else()
+  set(VMF_LIB_INSTALL_DIR  ${ARCH_DIR})
+  set(VMF_BIN_INSTALL_DIR  ${ARCH_DIR})
+endif()
 
 if(MSVC)
   if(MSVC_VERSION EQUAL 1600)
@@ -166,6 +171,11 @@ if(BUILD_SHARED_LIBS)
 else()
   set(VMF_LIB_INSTALL_DIR  "${VMF_LIB_INSTALL_DIR}/static-lib")
 endif()
+
+if(ANDROID)
+  set(VMF_LIB_INSTALL_DIR "${VMF_LIB_INSTALL_DIR}/${ANDROID_NDK_ABI_NAME}")
+endif()
+
 set(VMF_BIN_INSTALL_DIR  "${VMF_BIN_INSTALL_DIR}/bin")
 
 install(TARGETS ${VMF_LIBRARY_NAME}
@@ -184,9 +194,18 @@ if(MSVC AND NOT BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_LESS 2.8.12)
   endif()
 endif()
 
+if(ANDROID)
+  install(FILES ${VMFCORE_HEADERS} DESTINATION "android-lib/jni/include/vmf")
+  install(FILES ${VMDATASOURCE_HEADERS} DESTINATION "android-lib/jni/include/vmf")
+else()
+  install(FILES ${VMFCORE_HEADERS} DESTINATION "include/vmf")
+  install(FILES ${VMDATASOURCE_HEADERS} DESTINATION "include/vmf")
+endif()
 
-install(FILES ${VMFCORE_HEADERS} DESTINATION "include/vmf")
-install(FILES ${VMDATASOURCE_HEADERS} DESTINATION "include/vmf")
+if(ANDROID)
+  install(DIRECTORY "vmfcore/android-lib" DESTINATION ".")
+  install(DIRECTORY "vmfcore/java/src" DESTINATION "android-lib")
+endif()
 
 if(CODE_COVERAGE)
     append_target_property(${VMF_LIBRARY_NAME} LINK_FLAGS "--coverage")
