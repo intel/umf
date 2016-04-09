@@ -748,7 +748,7 @@ Format::ParseCounters FormatXML::parse(
             }
             else
             {
-                VMF_LOG_ERROR("Unknown XML element: %s", (char*)node->name);
+                VMF_LOG_WARNING("Unknown XML element: %s", (char*)node->name);
             }
         }
     }
