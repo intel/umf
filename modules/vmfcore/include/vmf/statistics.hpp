@@ -18,13 +18,12 @@
 /*!
 * \file statistics.hpp
 * \brief Statistics header file.
-* - Structs: %StatState, %StatAction, StatUpdateMode;
-* - Enums: %StatState::Type, %StatAction::Type, StatUpdateMode::Type;
 * - Classes: %StatOpBase, %StatOpFactory, %StatField, %Stat.
+* - Enums: %State::State::Type, %State::Action::Type, State::UpdateMode::Type;
 */
 
-#ifndef __VMF_STATISTICS_H__
-#define __VMF_STATISTICS_H__
+#ifndef VMF_STATISTICS_H
+#define VMF_STATISTICS_H
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -39,7 +38,6 @@
 #include <memory>
 #include <string>
 
-#include <atomic>
 #include <condition_variable>
 #include <queue>
 #include <thread>
@@ -50,76 +48,6 @@ class Metadata;
 class MetadataSchema;
 class MetadataStream;
 
-/*!
-* \struct StatState
-* \brief Holds statistics object states enum (StatState::Type)
-*/
-struct VMF_EXPORT StatState
-{
-    /*!
-    * \enum Type (StatState::Type)
-    * \brief Statistics object states
-    * \details
-    * - StatState::UpToDate: all statistics fields owned by statistics object are up-to-date;
-    * - StatState::NeedUpdate: any of fields need to be updated;
-    * - StatState::NeedRescan: need full rescan of statistics over stream metadata.
-    */
-    enum Type { UpToDate=1, NeedUpdate=2, NeedRescan=3 };
-};
-
-/*!
-* \struct StatAction
-* \brief Holds actions over statistics values enum (StatAction::Type)
-*/
-struct VMF_EXPORT StatAction
-{
-    /*!
-    * \enum Type (StatAction::Type)
-    * \brief Actions over statistics values
-    * \details
-    * - StatAction::Add: need to handle addition of new metadata;
-    * - StatAction::Remove: need to handle removal of metadata.
-    */
-    enum Type { Add, Remove /*, Change*/ };
-};
-
-/*!
-* \struct StatUpdateMode
-* \brief Holds statistics object update modes enum (StatUpdateMode::Type)
-*/
-struct VMF_EXPORT StatUpdateMode
-{
-    /*!
-    * \enum Type (StatUpdateMode::Type)
-    * \brief Statistics object update modes
-    * \details
-    * - StatUpdateMode::Disabled: statistics processing would be disabled for this statistics object;
-    * - StatUpdateMode::Manual: all input metadata would be queued for processing, but user need to call update() manually;
-    * - StatUpdateMode::OnAdd: metadata queued, processing would start automatically, immediately after queueing;
-    * - StatUpdateMode::OnTimer: metadata queued, processing would start automatically, by timer.
-    */
-    enum Type { Disabled, Manual, OnAdd, OnTimer };
-
-    /*!
-    * \brief Convert enum value from enum to string representation
-    * \param val [in] input enum value to be converted (@ref StatUpdateMode::Type)
-    * \return string representation of this value
-    * \throw IncorrectParamException if input value is outside of declared constant range
-    * (expected no throws occurred with regular enum type usage)
-    * \details The string representation produced in the form "vmf::StatUpdateMode::enum-constant"
-    */
-    static std::string toString( StatUpdateMode::Type val );
-
-    /*!
-    * \brief Convert enum value from string representation to enum
-    * \param str [in] input string value to be converted
-    * \return converted enum value (@ref StatUpdateMode::Type)
-    * \throw IncorrectParamException if input value doesn't correspond to any of enum values
-    * (expected no throws occurred with regular enum type usage)
-    * \details The string representation expected to be in the form "vmf::StatUpdateMode::enum-constant"
-    */
-    static StatUpdateMode::Type fromString( const std::string& str );
-};
 
 class Stat;
 class StatField;
@@ -371,13 +299,65 @@ class VMF_EXPORT Stat
     friend class StatWorker;     // handle()
 
 public:
+
+    /*!
+    * \struct State
+    * \brief Holds statistics object states enum (State::Type)
+    */
+    struct State
+    {
+        /*!
+        * \enum Type (State::Type)
+        * \brief Statistics object states
+        * \details
+        * - State::UpToDate: all statistics fields owned by statistics object are up-to-date;
+        * - State::NeedUpdate: any of fields need to be updated;
+        * - State::NeedRescan: need full rescan of statistics over stream metadata.
+        */
+        enum Type { UpToDate = 1, NeedUpdate = 2, NeedRescan = 3 };
+    };
+
+    /*!
+    * \struct Action
+    * \brief Holds actions over statistics values enum (Action::Type)
+    */
+    struct Action
+    {
+        /*!
+        * \enum Type (Action::Type)
+        * \brief Actions over statistics values
+        * \details
+        * - Action::Add: need to handle addition of new metadata;
+        * - Action::Remove: need to handle removal of metadata.
+        */
+        enum Type { Add = 1, Remove = 2 /*, Change*/ };
+    };
+
+    /*!
+    * \struct UpdateMode
+    * \brief Holds statistics object update modes enum (UpdateMode::Type)
+    */
+    struct UpdateMode
+    {
+        /*!
+        * \enum Type (UpdateMode::Type)
+        * \brief Statistics object update modes
+        * \details
+        * - UpdateMode::Disabled: statistics processing would be disabled for this statistics object;
+        * - UpdateMode::Manual: all input metadata would be queued for processing, but user need to call update() manually;
+        * - UpdateMode::OnAdd: metadata queued, processing would start automatically, immediately after queueing;
+        * - UpdateMode::OnTimer: metadata queued, processing would start automatically, by timer.
+        */
+        enum Type { Disabled = 1, Manual = 2, OnAdd = 3, OnTimer = 4 };
+    };
+
     /*!
     * \brief Class constructor
     * \param name [in] statistics object name string
     * \param fields [in] statistics fields (vector of)
-    * \param updateMode [in] initial update mode for statistics object (@ref StatUpdateMode::Type)
+    * \param updateMode [in] initial update mode for statistics object (@ref UpdateMode::Type)
     */
-    Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode );
+    Stat(const std::string& name, const std::vector< StatField >& fields, UpdateMode::Type updateMode = UpdateMode::Disabled);
 
     /*!
     * \brief Class copy constructor
@@ -418,35 +398,35 @@ public:
 
     /*!
     * \brief Get current state for statistics object
-    * \return current state (@ref StatState::Type)
+    * \return current state (@ref State::Type)
     */
-    StatState::Type getState() const;
+    State::Type getState() const;
 
     /*!
     * \brief Set update mode for statistics object
-    * \param updateMode [in] update mode (@ref StatUpdateMode::Type)
+    * \param updateMode [in] update mode (@ref UpdateMode::Type)
     * \throw IncorrectParamException if input value is outside of declared constant range
     * (expected no throws occurred with regular enum type usage)
     */
-    void setUpdateMode( StatUpdateMode::Type updateMode );
+    void setUpdateMode( UpdateMode::Type updateMode );
 
     /*!
     * \brief Get current update mode for statistics object
-    * \return current update mode (@ref StatUpdateMode::Type)
+    * \return current update mode (@ref UpdateMode::Type)
     */
-    StatUpdateMode::Type getUpdateMode() const { return m_updateMode; }
+    UpdateMode::Type getUpdateMode() const { return m_updateMode; }
 
     /*!
     * \brief Set update timeout for statistics object
     * \param ms [in] update timeout value, milliseconds
-    * \details Update timeout used only for StatUpdateMode::OnTimer update mode (@ref StatUpdateMode::Type)
+    * \details Update timeout used only for UpdateMode::OnTimer update mode (@ref UpdateMode::Type)
     */
     void setUpdateTimeout( unsigned ms ) { m_updateTimeout = ms; }
 
     /*!
     * \brief Get current update timeout for statistics object
     * \return current update timeout value, milliseconds
-    * \details Update timeout used only for StatUpdateMode::OnTimer update mode (@ref StatUpdateMode::Type)
+    * \details Update timeout used only for UpdateMode::OnTimer update mode (@ref UpdateMode::Type)
     */
     unsigned getUpdateTimeout() const { return m_updateTimeout; }
 
@@ -461,11 +441,11 @@ public:
 
     /*!
     * \brief Notifies statistics object about metadata event
-    * \param action [in] required action for the metadata (@ref StatAction::Type)
     * \param metadata [in] pointer to metadata to process
+    * \param action [in] required action for the metadata (@ref Action::Type)
     * \details Usually there is no need to call this function by user - metadata stream will do it automatically.
     */
-    void notify( StatAction::Type action, std::shared_ptr< Metadata > metadata );
+    void notify( std::shared_ptr< Metadata > metadata, Action::Type action = Action::Add);
 
     /*!
     * \brief Get names of all statistics fields for the statistics object
@@ -506,7 +486,7 @@ private:
     class StatWorker;
     std::unique_ptr< StatWorker > m_worker;
 
-    StatUpdateMode::Type m_updateMode;
+    UpdateMode::Type m_updateMode;
     unsigned m_updateTimeout;
     bool m_isActive;
 
@@ -519,5 +499,5 @@ private:
 #pragma warning(pop)
 #endif
 
-#endif /* __VMF_STATISTICS_H__ */
+#endif /* VMF_STATISTICS_H */
     

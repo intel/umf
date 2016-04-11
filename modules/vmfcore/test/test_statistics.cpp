@@ -30,18 +30,18 @@ protected:
     void SetUp()
     {
         statName = "SimpleStat";
-        defUpdateMode = vmf::StatUpdateMode::Manual;
+        defUpdateMode = vmf::Stat::UpdateMode::Manual;
         stat = std::make_shared< vmf::Stat >( statName, emptyFields, defUpdateMode );
 
         defUpdateTimeout = 0;
-        defStatState = vmf::StatState::UpToDate;
+        defStatState = vmf::Stat::State::UpToDate;
         inexistingFieldName = "AnyNameYouWish";
     }
 
     std::string statName;
-    vmf::StatUpdateMode::Type defUpdateMode;
+    vmf::Stat::UpdateMode::Type defUpdateMode;
     unsigned defUpdateTimeout;
-    vmf::StatState::Type defStatState;
+    vmf::Stat::State::Type defStatState;
     std::vector< vmf::StatField > emptyFields;
     std::string inexistingFieldName;
     std::shared_ptr< vmf::Stat > stat;
@@ -55,7 +55,7 @@ TEST_F( TestStat, Creation )
 
 TEST_F( TestStat, UpdateMode )
 {
-    vmf::StatUpdateMode::Type updateMode = vmf::StatUpdateMode::OnAdd;
+    vmf::Stat::UpdateMode::Type updateMode = vmf::Stat::UpdateMode::OnAdd;
     ASSERT_NE( updateMode, defUpdateMode );
 
     ASSERT_EQ( stat->getUpdateMode(), defUpdateMode );
@@ -66,38 +66,6 @@ TEST_F( TestStat, UpdateMode )
     EXPECT_NO_THROW( stat->setUpdateMode( defUpdateMode ));
     ASSERT_EQ( stat->getUpdateMode(), defUpdateMode );
 }
-
-#define CHECK_TO_STRING( _x ) \
-    { std::string _s_; EXPECT_NO_THROW( _s_ = vmf::StatUpdateMode::toString( _x )); ASSERT_EQ( _s_, #_x ); }
-#define CHECK_FROM_STRING( _x ) \
-    { vmf::StatUpdateMode::Type _v_; EXPECT_NO_THROW( _v_ = vmf::StatUpdateMode::fromString( #_x )); ASSERT_EQ( _v_, _x ); }
-TEST_F( TestStat, UpdateModeStrings )
-{
-    vmf::StatUpdateMode::Type val;
-    std::string str;
-
-    CHECK_TO_STRING( vmf::StatUpdateMode::Disabled );
-    CHECK_TO_STRING( vmf::StatUpdateMode::Manual );
-    CHECK_TO_STRING( vmf::StatUpdateMode::OnAdd );
-    CHECK_TO_STRING( vmf::StatUpdateMode::OnTimer );
-
-    val = vmf::StatUpdateMode::Type( int( vmf::StatUpdateMode::Disabled ) - 1 );
-    EXPECT_THROW( str = vmf::StatUpdateMode::toString( val ), vmf::IncorrectParamException );
-    val = vmf::StatUpdateMode::Type( int( vmf::StatUpdateMode::OnTimer ) + 1 );
-    EXPECT_THROW( str = vmf::StatUpdateMode::toString( val ), vmf::IncorrectParamException );
-
-    CHECK_FROM_STRING( vmf::StatUpdateMode::Disabled );
-    CHECK_FROM_STRING( vmf::StatUpdateMode::Manual );
-    CHECK_FROM_STRING( vmf::StatUpdateMode::OnAdd );
-    CHECK_FROM_STRING( vmf::StatUpdateMode::OnTimer );
-
-    str = "AnyUnknownStringYouWant";
-    EXPECT_THROW( val = vmf::StatUpdateMode::fromString( str ), vmf::IncorrectParamException );
-    str = "YetAnotherUnknownString";
-    EXPECT_THROW( val = vmf::StatUpdateMode::fromString( str ), vmf::IncorrectParamException );
-}
-#undef CHECK_TO_STRING
-#undef CHECK_FROM_STRING
 
 TEST_F( TestStat, UpdateTimeout )
 {
@@ -153,7 +121,7 @@ protected:
     void SetUp()
     {
         statName = "SimpleStat";
-        defUpdateMode = vmf::StatUpdateMode::Manual;
+        defUpdateMode = vmf::Stat::UpdateMode::Manual;
 
         initNameData();
         for( auto& n : nameData )
@@ -163,7 +131,7 @@ protected:
     }
 
     std::string statName;
-    vmf::StatUpdateMode::Type defUpdateMode;
+    vmf::Stat::UpdateMode::Type defUpdateMode;
     std::vector< NameData > nameData;
     std::vector< vmf::StatField > statFields;
     std::shared_ptr< vmf::Stat > stat;
@@ -440,7 +408,7 @@ TEST_F( TestStatOperations, StatOpFactory )
     testStatOpFactory();
 }
 
-class TestStatistics : public ::testing::TestWithParam< vmf::StatUpdateMode::Type >
+class TestStatistics : public ::testing::TestWithParam< vmf::Stat::UpdateMode::Type >
 {
 protected:
     void SetUp()
@@ -521,7 +489,7 @@ protected:
         fields.emplace_back( scPersonAgeMax, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
         fields.emplace_back( scPersonGrowthAverage, mcSchemaName, mcDescName, mcGrowthName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
         fields.emplace_back( scPersonSalarySum, mcSchemaName, mcDescName, mcSalaryName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ));
-        stream.addStat( vmf::Stat( scStatName, fields, vmf::StatUpdateMode::Disabled ));
+        stream.addStat( vmf::Stat( scStatName, fields, vmf::Stat::UpdateMode::Disabled ));
     }
 
     void initStatistics()
@@ -596,7 +564,7 @@ protected:
             finalizeStatistics();
     }
 
-    void checkStatistics( const vmf::Stat& stat, vmf::StatUpdateMode::Type updateMode, bool doCompareValues )
+    void checkStatistics( const vmf::Stat& stat, vmf::Stat::UpdateMode::Type updateMode, bool doCompareValues )
     {
         vmf::Variant nameCount     = stat[scPersonNameCount];
         vmf::Variant nameLast      = stat[scPersonNameLast];
@@ -605,7 +573,7 @@ protected:
         vmf::Variant growthAverage = stat[scPersonGrowthAverage];
         vmf::Variant salarySum     = stat[scPersonSalarySum];
 
-        if( updateMode != vmf::StatUpdateMode::Disabled )
+        if( updateMode != vmf::Stat::UpdateMode::Disabled )
         {
             ASSERT_EQ( nameCount.getType(), vmf::Variant::type_integer );
             ASSERT_EQ( nameLast.getType(), vmf::Variant::type_string );
@@ -659,7 +627,7 @@ protected:
 
 TEST_P( TestStatistics, Gathering )
 {
-    vmf::StatUpdateMode::Type updateMode = GetParam();
+    vmf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
 
@@ -686,7 +654,7 @@ TEST_P( TestStatistics, Gathering )
 
 TEST_P( TestStatistics, SaveLoad )
 {
-    vmf::StatUpdateMode::Type updateMode = GetParam();
+    vmf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
 
@@ -720,7 +688,7 @@ TEST_P( TestStatistics, SaveLoad )
 
 TEST_P( TestStatistics, ExportImportXML )
 {
-    vmf::StatUpdateMode::Type updateMode = GetParam();
+    vmf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
     vmf::FormatXML format;
@@ -752,7 +720,7 @@ TEST_P( TestStatistics, ExportImportXML )
 
 TEST_P( TestStatistics, ExportImportJSON )
 {
-    vmf::StatUpdateMode::Type updateMode = GetParam();
+    vmf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
     vmf::FormatJSON format;
@@ -784,7 +752,7 @@ TEST_P( TestStatistics, ExportImportJSON )
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
                         ::testing::Values(
-                            vmf::StatUpdateMode::Disabled ,vmf::StatUpdateMode::Manual
-                            ,vmf::StatUpdateMode::OnAdd, vmf::StatUpdateMode::OnTimer
+                            vmf::Stat::UpdateMode::Disabled ,vmf::Stat::UpdateMode::Manual
+                            ,vmf::Stat::UpdateMode::OnAdd, vmf::Stat::UpdateMode::OnTimer
                             ));
 

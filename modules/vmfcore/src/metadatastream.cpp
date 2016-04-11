@@ -321,7 +321,7 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
     }
     m_oMetadataSet.push_back(spMetadata);
 
-    notifyStat(StatAction::Add, spMetadata);
+    notifyStat(spMetadata);
 }
 
 bool MetadataStream::remove( const IdType& id )
@@ -339,7 +339,7 @@ bool MetadataStream::remove( const IdType& id )
     {
         std::shared_ptr< Metadata > spMetadata = *it;
 
-        notifyStat(StatAction::Remove, spMetadata);
+        notifyStat(spMetadata, Stat::Action::Remove);
 
         spMetadata->setStreamRef(nullptr);
         m_oMetadataSet.erase( it );
@@ -844,11 +844,11 @@ void MetadataStream::convertFrameIndexToTimestamp(
         timestamp = Metadata::UNDEFINED_TIMESTAMP, duration = Metadata::UNDEFINED_DURATION;
 }
 
-void MetadataStream::notifyStat(StatAction::Type action, std::shared_ptr< Metadata > spMetadata)
+void MetadataStream::notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action)
 {
     for( auto& stat : m_stats )
     {
-        stat.notify(action, spMetadata);
+        stat.notify(spMetadata, action);
     }
 }
 

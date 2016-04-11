@@ -18,35 +18,10 @@
 #include "vmf/metadata.hpp"
 #include "vmf/metadatastream.hpp"
 
+#include <atomic>
+
 namespace vmf
 {
-
-// struct StatUpdateMode
-
-#define CASE_VAL2STR( _x ) case _x:  return #_x
-std::string StatUpdateMode::toString( StatUpdateMode::Type val )
-{
-    switch( val )
-    {
-    CASE_VAL2STR( vmf::StatUpdateMode::Disabled );
-    CASE_VAL2STR( vmf::StatUpdateMode::Manual   );
-    CASE_VAL2STR( vmf::StatUpdateMode::OnAdd    );
-    CASE_VAL2STR( vmf::StatUpdateMode::OnTimer  );
-    }
-    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum value: " + to_string( (int)val ));
-}
-#undef CASE_VAL2STR
-
-#define IF_STR2VAL( _x )  if( str == #_x ) return _x
-StatUpdateMode::Type StatUpdateMode::fromString( const std::string& str )
-{
-    IF_STR2VAL( vmf::StatUpdateMode::Disabled );
-    IF_STR2VAL( vmf::StatUpdateMode::Manual   );
-    IF_STR2VAL( vmf::StatUpdateMode::OnAdd    );
-    IF_STR2VAL( vmf::StatUpdateMode::OnTimer  );
-    VMF_EXCEPTION( vmf::IncorrectParamException, "Unknown enum string: " + str );
-}
-#undef IF_STR2VAL
 
 // class StatOpBase: builtin operations
 
@@ -773,7 +748,7 @@ public:
                 // worker is going to sleep
                 {
                     std::unique_lock< std::mutex > lock( m_lock );
-                    if( m_stat->getUpdateMode() == StatUpdateMode::OnTimer )
+                    if( m_stat->getUpdateMode() == UpdateMode::OnTimer )
                     {
                         const unsigned tmo = std::max( m_stat->getUpdateTimeout(), (unsigned)10 );
                         bool awaken = false;
@@ -888,14 +863,14 @@ public:
             m_exitScheduled = false;
             m_exitImmediate = false;
         }
-    StatState::Type getState() const
+    State::Type getState() const
         {
             std::unique_lock< std::mutex > lock( m_lock );
             if( m_rescanScheduled )
-                return StatState::NeedRescan;
+                return State::NeedRescan;
             if( m_updateScheduled || !m_items.empty() )
-                return StatState::NeedUpdate;
-            return StatState::UpToDate;
+                return State::NeedUpdate;
+            return State::UpToDate;
         }
 
 private:
@@ -924,7 +899,7 @@ private:
     mutable std::mutex m_lock;
 };
 
-Stat::Stat( const std::string& name, const std::vector< StatField >& fields, StatUpdateMode::Type updateMode )
+Stat::Stat( const std::string& name, const std::vector< StatField >& fields, UpdateMode::Type updateMode )
     : m_desc( new StatDesc( name ))
     , m_fields( fields )
     , m_worker( new StatWorker( this ))
@@ -988,35 +963,35 @@ Stat& Stat::operator=( Stat&& other )
     return *this;
 }
 
-void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata )
+void Stat::notify( std::shared_ptr< Metadata > metadata, Action::Type action )
 {
     if( isActive() )
     {
         switch( action )
         {
-        case StatAction::Add:
+        case Action::Add:
             switch( m_updateMode )
             {
-            case StatUpdateMode::Disabled:
+            case UpdateMode::Disabled:
                 break;
-            case StatUpdateMode::Manual:
+            case UpdateMode::Manual:
                 m_worker->scheduleUpdate( metadata, false );
                 break;
-            case StatUpdateMode::OnAdd:
-            case StatUpdateMode::OnTimer:
+            case UpdateMode::OnAdd:
+            case UpdateMode::OnTimer:
                 m_worker->scheduleUpdate( metadata, true );
                 break;
             }
             break;
-        case StatAction::Remove:
+        case Action::Remove:
             switch( m_updateMode )
             {
-            case StatUpdateMode::Disabled:
+            case UpdateMode::Disabled:
                 break;
-            case StatUpdateMode::Manual:
+            case UpdateMode::Manual:
                 break;
-            case StatUpdateMode::OnAdd:
-            case StatUpdateMode::OnTimer:
+            case UpdateMode::OnAdd:
+            case UpdateMode::OnTimer:
                 m_worker->scheduleRescan();
                 break;
             }
@@ -1027,15 +1002,15 @@ void Stat::notify( StatAction::Type action, std::shared_ptr< Metadata > metadata
 
 void Stat::update( bool doRescan, bool doWait )
 {
-    if( isActive() && ((getState() != StatState::UpToDate) || doRescan) )
+    if( isActive() && ((getState() != State::UpToDate) || doRescan) )
     {
         switch( m_updateMode )
         {
-        case StatUpdateMode::Disabled:
+        case UpdateMode::Disabled:
             break;
-        case StatUpdateMode::Manual:
-        case StatUpdateMode::OnAdd:
-        case StatUpdateMode::OnTimer:
+        case UpdateMode::Manual:
+        case UpdateMode::OnAdd:
+        case UpdateMode::OnTimer:
             if( doRescan )
             {
                 m_worker->scheduleRescan();
@@ -1054,7 +1029,7 @@ void Stat::update( bool doRescan, bool doWait )
             //----
             //----
             */
-            while( getState() != StatState::UpToDate )
+            while( getState() != State::UpToDate )
                 ;
         }
     }
@@ -1070,7 +1045,7 @@ void Stat::handle( const std::shared_ptr< Metadata > metadata )
 
 void Stat::rescan()
 {
-    if( isActive() /*&& (getState() != StatState::UpToDate)*/ )
+    if( isActive() /*&& (getState() != State::UpToDate)*/ )
     {
         for( auto& statField : m_fields )
             statField.reset();
@@ -1082,18 +1057,18 @@ void Stat::rescan()
     }
 }
 
-void Stat::setUpdateMode( StatUpdateMode::Type updateMode )
+void Stat::setUpdateMode( UpdateMode::Type updateMode )
 {
     if( updateMode != m_updateMode )
     {
         switch( updateMode )
         {
-        case StatUpdateMode::Disabled:
+        case UpdateMode::Disabled:
             m_updateMode = updateMode;
             break;
-        case StatUpdateMode::Manual:
-        case StatUpdateMode::OnAdd:
-        case StatUpdateMode::OnTimer:
+        case UpdateMode::Manual:
+        case UpdateMode::OnAdd:
+        case UpdateMode::OnTimer:
             m_updateMode = updateMode;
             m_worker->wakeup( true );
             break;
@@ -1144,7 +1119,7 @@ MetadataStream* Stat::getStream() const
     return (m_fields.empty() ? nullptr : m_fields[0].getStream());
 }
 
-StatState::Type Stat::getState() const
+Stat::State::Type Stat::getState() const
 {
     return m_worker->getState();
 }

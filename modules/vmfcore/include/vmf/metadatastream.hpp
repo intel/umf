@@ -378,7 +378,7 @@ public:
     * \param action [in] action
     * \param spMetadata [in] pointer to metadata object
     */
-    void notifyStat(StatAction::Type action, std::shared_ptr< Metadata > spMetadata);
+    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
 
 protected:
     void dataSourceCheck();

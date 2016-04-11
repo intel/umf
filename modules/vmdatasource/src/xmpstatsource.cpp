@@ -126,7 +126,7 @@ void XMPStatSource::load(std::vector< Stat >& stats)
     while (statsIter.Next(nullptr, &pathToStat))
     {
         vmf_string tmpPath, statName, tmpStr;
-        const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
+        const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
         if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &statName, 0) )

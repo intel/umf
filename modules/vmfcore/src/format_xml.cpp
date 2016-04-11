@@ -560,7 +560,7 @@ static Stat parseStatFromNode(xmlNodePtr statNode)
     if(statName.empty())
         VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat name");
 
-    const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
+    const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
     std::vector< StatField > fields;
 

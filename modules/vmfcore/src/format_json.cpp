@@ -562,7 +562,7 @@ static Stat parseStatFromNode(const JSONNode& statNode)
         VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has no stat name");
 
     std::string statName = statNameIter->as_string();
-    const StatUpdateMode::Type updateMode = StatUpdateMode::Disabled;
+    const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
     if(statName.empty())
         VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has invalid stat name");

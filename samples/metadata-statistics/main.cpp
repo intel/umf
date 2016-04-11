@@ -212,10 +212,10 @@ int sample(int argc, char *argv[])
     fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
-    mdStream.addStat( vmf::Stat( GPS_STAT_NAME, fields, vmf::StatUpdateMode::Disabled ));
+    mdStream.addStat( vmf::Stat( GPS_STAT_NAME, fields, vmf::Stat::UpdateMode::Disabled ));
 
     mdStream.getStat(GPS_STAT_NAME).setUpdateTimeout( 50 );
-    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::OnTimer );
+    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::Stat::UpdateMode::OnTimer );
 
     std::shared_ptr<vmf::Metadata> gpsMetadata;
 
@@ -287,7 +287,7 @@ int sample(int argc, char *argv[])
         exit(1);
     }
 
-    loadStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::StatUpdateMode::Manual );
+    loadStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::Stat::UpdateMode::Manual );
 //    loadStream.getStat(GPS_STAT_NAME).update( true );
 
     // Select all metadata items from loaded schema
