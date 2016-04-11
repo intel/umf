@@ -94,7 +94,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatJSON_n_1store(JNIEnv *env, jc
             }
         }
 
-        /*
         std::vector <Stat> vecStats;
         jsize lenStats;
         jlong* statsArray;
@@ -112,7 +111,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatJSON_n_1store(JNIEnv *env, jc
                 env->ReleaseLongArrayElements(statsAddrs, statsArray, 0);
             }
         }
-        */
 
         Format::AttribMap attribs;
         if (attribNames && attribVals)
@@ -141,7 +139,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatJSON_n_1store(JNIEnv *env, jc
             (set && *set ? **set : MetadataSet()),
             vecSchemas,
             vecSegments,
-            /*vecStats,*/
+            vecStats,
             attribs
             );
         return env->NewStringUTF(xml.c_str());
@@ -185,9 +183,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
         std::vector<MetadataInternal> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-        //std::vector<Stat> stats;
+        std::vector<Stat> stats;
         Format::AttribMap attribs;
-        Format::ParseCounters counters = (*obj)->parse(textStr, metadata, schemas, segments, attribs);
+        Format::ParseCounters counters = (*obj)->parse(textStr, metadata, schemas, segments, stats, attribs);
 
         env->ReleaseStringUTFChars(text, textStr);
 
