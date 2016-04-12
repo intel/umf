@@ -220,18 +220,59 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-/*
 static void add(JSONNode& statNode, const Stat& stat)
 {
-    VMF_EXCEPTION(NotImplementedException, "Stat object serialization isn't yet implemented");
+    if (stat.getName().empty())
+        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+
+    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat.getName()));
+
+    std::vector< std::string > fieldNames = stat.getAllFieldNames();
+    if (!fieldNames.empty())
+    {
+        JSONNode fieldsArrayNode(JSON_ARRAY);
+        fieldsArrayNode.set_name(TAG_STAT_FIELDS_ARRAY);
+
+        for(auto& fieldName : fieldNames)
+        {
+            const StatField& field = stat.getField(fieldName);
+
+            if (field.getName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+            if (field.getFieldName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+            if (field.getOpName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+
+            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            if (metadataDesc == nullptr)
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
+            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+            if (metadataDesc->getMetadataName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+
+            JSONNode fieldNode(JSON_NODE);
+            fieldNode.set_name(TAG_STAT_FIELD);
+
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_NAME, field.getName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_SCHEMA_NAME, metadataDesc->getSchemaName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_METADATA_NAME, metadataDesc->getMetadataName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_FIELD_NAME, field.getFieldName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_OP_NAME, field.getOpName()));
+
+            fieldsArrayNode.push_back(fieldNode);
+        }
+
+        statNode.push_back(fieldsArrayNode);
+    }
 }
-*/
 
 std::string FormatJSON::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //const std::vector<Stat>& stats,
+    const std::vector<Stat>& stats,
     const AttribMap& attribs
     )
 {
@@ -246,18 +287,18 @@ std::string FormatJSON::store(
     vmfRootNode.push_back(attribsArrayNode);
 
     // stats
-    /*
     if(!stats.empty())
-    JSONNode statsArrayNode(JSON_ARRAY);
-    statsArrayNode.set_name(TAG_STATS_ARRAY);
-    for (const auto& s : stats)
     {
-        JSONNode statNode(JSON_NODE);
-        add(statNode, s);
-        statsArrayNode.push_back(statNode);
+        JSONNode statsArrayNode(JSON_ARRAY);
+        statsArrayNode.set_name(TAG_STATS_ARRAY);
+        for (const auto& s : stats)
+        {
+            JSONNode statNode(JSON_NODE);
+            add(statNode, s);
+            statsArrayNode.push_back(statNode);
+        }
+        vmfRootNode.push_back(statsArrayNode);
     }
-    vmfRootNode.push_back(statsArrayNode);
-    */
 
     // segments
     if (!segments.empty())
@@ -627,19 +668,67 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(c
     return spSegment;
 }
 
-/*
 static Stat parseStatFromNode(const JSONNode& statNode)
 {
-    VMF_EXCEPTION(NotImplementedException, "parseStatFromNode NYI");
+    auto statNameIter = statNode.find(ATTR_STAT_NAME);
+
+    if(statNameIter == statNode.end())
+        VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has no stat name");
+
+    std::string statName = statNameIter->as_string();
+    const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
+
+    if(statName.empty())
+        VMF_EXCEPTION(vmf::InternalErrorException, "JSON element has invalid stat name");
+
+    std::vector< StatField > fields;
+
+    auto fieldsArrayIter = statNode.find(TAG_STAT_FIELDS_ARRAY);
+    if(fieldsArrayIter != statNode.end())
+    {
+        for(auto fieldNode = fieldsArrayIter->begin(); fieldNode != fieldsArrayIter->end(); fieldNode++)
+        {
+            auto fieldNameIter = fieldNode->find(ATTR_STAT_FIELD_NAME);
+            if(fieldNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no name");
+
+            auto schemaNameIter = fieldNode->find(ATTR_STAT_FIELD_SCHEMA_NAME);
+            if(schemaNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata schema name");
+
+            auto metadataNameIter = fieldNode->find(ATTR_STAT_FIELD_METADATA_NAME);
+            if(metadataNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata name");
+
+            auto metadataFieldNameIter = fieldNode->find(ATTR_STAT_FIELD_FIELD_NAME);
+            if(metadataFieldNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata field name");
+
+            auto opNameIter = fieldNode->find(ATTR_STAT_FIELD_OP_NAME);
+            if(opNameIter == fieldNode->end())
+                VMF_EXCEPTION(IncorrectParamException, "Stat field has no operation name");
+
+            std::string fieldName, schemaName, metadataName, metadataFieldName, opName;
+
+            fieldName = fieldNameIter->as_string();
+            schemaName = schemaNameIter->as_string();
+            metadataName = metadataNameIter->as_string();
+            metadataFieldName = metadataFieldNameIter->as_string();
+            opName = opNameIter->as_string();
+
+            fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
+        }
+    }
+
+    return Stat(statName, fields, updateMode);
 }
-*/
 
 Format::ParseCounters FormatJSON::parse(
     const std::string& text,
     std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //std::vector<Stat>& stats,
+    std::vector<Stat>& stats,
     AttribMap& attribs // nextId, checksum, etc
     )
 {
@@ -669,7 +758,7 @@ Format::ParseCounters FormatJSON::parse(
         else if (node.name() == TAG_STATS_ARRAY)
         {
             for (const auto& st : node)
-                st;//stats.push_back(parseStatFromNode(st)), counter.stats++;
+                stats.push_back(parseStatFromNode(st)), counter.stats++;
         }
         else if (node.name() == TAG_VIDEO_SEGMENTS_ARRAY)
         {

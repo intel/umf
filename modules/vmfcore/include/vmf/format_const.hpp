@@ -96,4 +96,15 @@
 #define ENCRYPTED_DATA_DESC_NAME "encrypted-metadata"
 #define ENCRYPTED_DATA_SCHEMA_NAME "com.intel.vmf.encrypted-metadata"
 
+#define TAG_STAT "stat"
+#define TAG_STAT_FIELDS_ARRAY "fields-array"
+#define TAG_STAT_FIELD "field"
+
+#define ATTR_STAT_NAME "name"
+#define ATTR_STAT_FIELD_NAME "name"
+#define ATTR_STAT_FIELD_SCHEMA_NAME "schema-name"
+#define ATTR_STAT_FIELD_METADATA_NAME "metadata-name"
+#define ATTR_STAT_FIELD_FIELD_NAME "field-name"
+#define ATTR_STAT_FIELD_OP_NAME "op-name"
+
 #endif /* __VMF_RWCONST_H__ */

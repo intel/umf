@@ -238,18 +238,65 @@ static void add(xmlNodePtr segNode, const std::shared_ptr<MetadataStream::VideoS
     }
 }
 
-/*
+
 static void add(xmlNodePtr statNode, const Stat& stat)
 {
-VMF_EXCEPTION(NotImplementedException, "Stat -> XML NYI");
+    if (stat.getName().empty())
+        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat.getName().c_str()) == NULL)
+        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
+
+    std::vector< std::string > fieldNames = stat.getAllFieldNames();
+    if (!fieldNames.empty())
+    {
+        for(auto fieldName : fieldNames)
+        {
+            const StatField& field = stat.getField(fieldName);
+
+            if (field.getName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+            if (field.getFieldName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+            if (field.getOpName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+
+            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            if (metadataDesc == nullptr)
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
+            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+            if (metadataDesc->getMetadataName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+
+            xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
+            if(fieldNode == NULL)
+                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for stat object field" );
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST metadataDesc->getSchemaName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST metadataDesc->getMetadataName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
+
+            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
+                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
+        }
+    }
 }
-*/
+
 
 std::string FormatXML::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    //const std::vector<Stat>& stats,
+    const std::vector<Stat>& stats,
     const AttribMap& attribs
     )
 {
@@ -268,7 +315,6 @@ std::string FormatXML::store(
         }
 
     // stats
-    /*
     if (!stats.empty())
     {
         xmlNodePtr statsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
@@ -280,7 +326,6 @@ std::string FormatXML::store(
             add(statNode, st);
         }
     }
-    */
 
     // segments
     if (!segments.empty())
@@ -595,7 +640,7 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
     return mdi;
 }
 
-static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNodePtr segmentNode)
+static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(xmlNodePtr segmentNode)
 {
     std::string title;
     double fps = 0;
@@ -633,12 +678,69 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseSegmentFromNode(xmlNod
     return spSegment;
 }
 
+
+static Stat parseStatFromNode(xmlNodePtr statNode)
+{
+    std::string statName;
+
+    for(xmlAttr* cur_prop = statNode->properties; cur_prop; cur_prop = cur_prop->next)
+    {
+        if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_NAME))
+            statName = (char*)xmlGetProp(statNode, cur_prop->name);
+    }
+
+    if(statName.empty())
+        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat name");
+
+    const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
+
+    std::vector< StatField > fields;
+
+    for(xmlNode *fieldNode = statNode->children; fieldNode; fieldNode = fieldNode->next)
+    {
+        if(fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_STAT_FIELD))
+        {
+            std::string fieldName, schemaName, metadataName, metadataFieldName, opName;
+
+            for(xmlAttr* cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next)
+            {
+                if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_NAME))
+                    fieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_SCHEMA_NAME))
+                    schemaName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_METADATA_NAME))
+                    metadataName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_FIELD_NAME))
+                    metadataFieldName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+                else if(std::string((char*)cur_prop->name) == std::string(ATTR_STAT_FIELD_OP_NAME))
+                    opName = (char*)xmlGetProp(fieldNode, cur_prop->name);
+            }
+
+            if(fieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field name");
+            if(schemaName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata schema name");
+            if(metadataName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata name");
+            if(metadataFieldName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata field name");
+            if(opName.empty())
+                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field operation name");
+
+            fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
+        }
+    }
+
+    return Stat(statName, fields, updateMode);
+}
+
+
 Format::ParseCounters FormatXML::parse(
         const std::string& text,
         std::vector<MetadataInternal>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-        //std::vector<Stat>& stats,
+        std::vector<Stat>& stats,
         AttribMap& attribs // nextId, checksum, etc
         )
 {
@@ -671,24 +773,22 @@ Format::ParseCounters FormatXML::parse(
         {
             if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_STATS_ARRAY))
             {
-                /*
-                    for (xmlNodePtr st = node->children; st; st = st->next)
+                for (xmlNodePtr st = node->children; st; st = st->next)
+                {
+                    if (st->type == XML_ELEMENT_NODE && (char*)st->name == std::string(TAG_STAT_OBJ))
                     {
-                        if (st->type == XML_ELEMENT_NODE && (char*)st->name == std::string(TAG_STAT_OBJ))
+                        try
                         {
-                            try
-                            {
-                                Stat stat = parseStatFromNode(st);
-                                stats.push_back(stat);
-                                cnt.stats++;
-                            }
-                            catch (Exception& e)
-                            {
-                                VMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
-                            }
+                            Stat stat = parseStatFromNode(st);
+                            stats.push_back(stat);
+                            cnt.stats++;
+                        }
+                        catch (Exception& e)
+                        {
+                            VMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
                         }
                     }
-                    */
+                }
             }
             else if (node->type == XML_ELEMENT_NODE && (char*)node->name == std::string(TAG_VIDEO_SEGMENTS_ARRAY))
             {
@@ -698,7 +798,7 @@ Format::ParseCounters FormatXML::parse(
                     {
                         try
                         {
-                            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseSegmentFromNode(seg);
+                            std::shared_ptr<MetadataStream::VideoSegment> spSegment = parseVideoSegmentFromNode(seg);
                             segments.push_back(spSegment);
                             cnt.segments++;
                         }

@@ -385,6 +385,41 @@ public:
      */
     void setEncryptor(std::shared_ptr<Encryptor> encryptor);
 
+    /*!
+    * \brief Add new statistics object (copy semantics).
+    * \param stat [in] statistics object to add
+    * \throw IncorrectParamException if such statistics object already exist
+    */
+    void addStat( const Stat& stat );
+
+    /*!
+    * \brief Add new statistics object (move semantics). This feature requires C++11 compatible compiler.
+    * \param stat [in] statistics object to add/move
+    * \throw IncorrectParamException if such statistics object already exist
+    */
+    void addStat( Stat&& stat );
+
+    /*!
+    * \brief Get statistics object by its name
+    * \param name [in] statistics object name
+    * \return Statistics object (reference to)
+    * \throw NotFoundException if such statistics object not exist
+    */
+    Stat& getStat( const std::string& name ) const;
+
+    /*!
+    * \brief Get names of all statistics objects
+    * \return Statistics object names (vector of)
+    */
+    std::vector< std::string > getAllStatNames() const;
+
+    /*!
+    * \brief Notify statistics object(s) about statistics-related events
+    * \param action [in] action
+    * \param spMetadata [in] pointer to metadata object
+    */
+    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
+
 protected:
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
@@ -394,6 +429,9 @@ protected:
     void encrypt();
 
 private:
+    void activateStats();
+    void clearStats();
+
     OpenMode m_eMode;
     std::string m_sFilePath;
     MetadataSet m_oMetadataSet;
@@ -410,6 +448,7 @@ private:
     bool m_useEncryption;
     std::shared_ptr<Encryptor> m_encryptor;
     std::string m_hintEncryption;
+    std::vector< Stat > m_stats;
 };
 
 }

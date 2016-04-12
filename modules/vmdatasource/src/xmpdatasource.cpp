@@ -21,6 +21,7 @@
 
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
+#include "xmpstatsource.hpp"
 
 #include <XMPUtils.hpp>
 
@@ -136,11 +137,14 @@ void XMPDataSource::loadXMPstructs()
     std::shared_ptr<XMPSchemaSource> tmpSchemaSource;
     tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
     tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
-    if(!tmpMetaSource || !tmpSchemaSource)
+    tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
+    if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
     {
         VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
     }
 
+    //load standard VMF metadata and decompress them if there is a corresponding schema
+    //or pass them further
     try
     {
         //load standard VMF metadata and decrypt them if there is a corresponding schema
@@ -190,10 +194,11 @@ void XMPDataSource::loadXMPstructs()
                 tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
                 tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
-                if(!tmpMetaSource || !tmpSchemaSource)
+                tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
+                if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
                 {
                     VMF_EXCEPTION(DataStorageException,
-                                  "Failed to create metadata source or schema source");
+                                  "Failed to create metadata source, schema source or stat source");
                 }
             }
         }
@@ -225,10 +230,11 @@ void XMPDataSource::loadXMPstructs()
                 tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
                 tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
-                if(!tmpMetaSource || !tmpSchemaSource)
+                tmpStatSource = make_shared<XMPStatSource(tmpXMP);
+                if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
                 {
                     VMF_EXCEPTION(DataStorageException,
-                                  "Failed to create metadata source or schema source");
+                                  "Failed to create metadata source, schema source or stat source");
                 }
             }
             catch(IncorrectParamException& ce)
@@ -261,6 +267,7 @@ void XMPDataSource::loadXMPstructs()
     xmp = tmpXMP;
     schemaSource = tmpSchemaSource;
     metadataSource = tmpMetaSource;
+    statSource = tmpStatSource;
 }
 
 
@@ -424,6 +431,7 @@ void XMPDataSource::closeFile()
     {
         metadataSource.reset();
         schemaSource.reset();
+        statSource.reset();
         xmp.reset();
         xmpFile.CloseFile();
     }
@@ -526,6 +534,7 @@ void XMPDataSource::serializeAndParse()
     xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
     schemaSource = make_shared<XMPSchemaSource>(xmp);
     metadataSource = make_shared<XMPMetadataSource>(xmp);
+    statSource = make_shared<XMPStatSource>(xmp);
 }
 
 
@@ -571,14 +580,50 @@ void XMPDataSource::load(std::map<vmf_string, std::shared_ptr<MetadataSchema> >&
     }
 }
 
+void XMPDataSource::saveStats(const std::vector< Stat >& stats)
+{
+    statSourceCheck();
+    try
+    {
+        statSource->save(stats);
+    }
+    catch(const XMP_Error& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+    }
+    catch(const std::exception& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.what());
+    }
+}
+
+void XMPDataSource::loadStats(std::vector< Stat >& stats)
+{
+    statSourceCheck();
+    try
+    {
+        statSource->load(stats);
+    }
+    catch(const XMP_Error& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+    }
+    catch(const std::exception& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.what());
+    }
+}
+
 void XMPDataSource::clear()
 {
     metadataSourceCheck();
     schemaSourceCheck();
+    statSourceCheck();
     try
     {
         metadataSource->clear();
         schemaSource->clear();
+        statSource->clear();
     }
     catch(const XMP_Error& e)
     {
@@ -628,6 +673,14 @@ void XMPDataSource::schemaSourceCheck()
     if (!schemaSource)
     {
         VMF_EXCEPTION(DataStorageException, "Schema source doesn't exist");
+    }
+}
+
+void XMPDataSource::statSourceCheck()
+{
+    if (!statSource)
+    {
+        VMF_EXCEPTION(DataStorageException, "Statistics source doesn't exist");
     }
 }
 

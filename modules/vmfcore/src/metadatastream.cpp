@@ -55,6 +55,7 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         removedIds.clear();
         addedIds.clear();
         videoSegments.clear();
+        clearStats();
 
         m_sFilePath = sFilePath;
         //encryption of all scopes except whole stream should be performed by MetadataStream
@@ -64,11 +65,13 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         dataSource->openFile(m_sFilePath, eMode);
         dataSource->loadVideoSegments(videoSegments);
         dataSource->load(m_mapSchemas);
+        dataSource->loadStats(m_stats);
         m_eMode = eMode;
         m_sFilePath = sFilePath;
         nextId = dataSource->loadId();
         m_hintEncryption = dataSource->loadHintEncryption();
         m_sChecksumMedia = dataSource->loadChecksum();
+        activateStats();
 
         return true;
     }
@@ -170,6 +173,8 @@ bool MetadataStream::save(const vmf_string &compressorId)
                 dataSource->saveSchema(p.second, encryptedStream.getAll());
                 dataSource->save(p.second);
             }
+
+            dataSource->saveStats(m_stats);
 
             dataSource->saveVideoSegments(videoSegments);
 
@@ -368,6 +373,8 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
             VMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream.");
     }
     m_oMetadataSet.push_back(spMetadata);
+
+    notifyStat(spMetadata);
 }
 
 bool MetadataStream::remove( const IdType& id )
@@ -383,7 +390,11 @@ bool MetadataStream::remove( const IdType& id )
     // Found it, let's remove it
     if( it != m_oMetadataSet.end() )
     {
-        (*it)->setStreamRef(nullptr);
+        std::shared_ptr< Metadata > spMetadata = *it;
+
+        notifyStat(spMetadata, Stat::Action::Remove);
+
+        spMetadata->setStreamRef(nullptr);
         m_oMetadataSet.erase( it );
 
         // Also remove any reference to it. There might be other shared pointers pointing to this object, so that
@@ -603,6 +614,7 @@ bool MetadataStream::import( MetadataStream& srcStream, MetadataSet& srcSet, lon
 
 void MetadataStream::clear()
 {
+    clearStats();
     m_eMode = InMemory;
     m_sFilePath = "";
     m_useEncryption = false;
@@ -695,7 +707,7 @@ std::string MetadataStream::serialize(Format& format)
                                { "filepath", m_sFilePath },
                                { "checksum", m_sChecksumMedia },
                                { "hint", m_hintEncryption }, };
-    return format.store(encryptedStream.m_oMetadataSet, schemas, videoSegments, attribs);
+    return format.store(encryptedStream.m_oMetadataSet, schemas, videoSegments, m_stats, attribs);
 }
 
 void MetadataStream::deserialize(const std::string& text, Format& format)
@@ -704,7 +716,7 @@ void MetadataStream::deserialize(const std::string& text, Format& format)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<MetadataInternal> metadata;
     Format::AttribMap attribs;
-    format.parse(text, metadata, schemas, segments, attribs);
+    format.parse(text, metadata, schemas, segments, m_stats, attribs);
     if(m_sFilePath.empty()) m_sFilePath = attribs["filepath"];
     nextId = from_string<IdType>(attribs["nextId"]);
     m_sChecksumMedia = attribs["checksum"];
@@ -714,6 +726,7 @@ void MetadataStream::deserialize(const std::string& text, Format& format)
     for (auto& mdi : metadata) add(mdi);
 
     decrypt();
+    activateStats();
 }
 
 std::string MetadataStream::computeChecksum()
@@ -1136,6 +1149,97 @@ void MetadataStream::convertFrameIndexToTimestamp(
     }
     if (i == videoSegments.size())
         timestamp = Metadata::UNDEFINED_TIMESTAMP, duration = Metadata::UNDEFINED_DURATION;
+}
+
+void MetadataStream::notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action)
+{
+    for( auto& stat : m_stats )
+    {
+        stat.notify(spMetadata, action);
+    }
+}
+
+void MetadataStream::addStat(const Stat& stat)
+{
+    const std::string& name = stat.getName();
+
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
+    {
+        return s.getName() == name;
+    });
+
+    if (it != m_stats.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
+    }
+
+    m_stats.push_back(stat);
+    m_stats.back().setStream(this);
+}
+
+void MetadataStream::addStat(Stat&& stat)
+{
+    const std::string& name = stat.getName();
+
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& s)->bool
+    {
+        return s.getName() == name;
+    });
+
+    if (it != m_stats.end())
+    {
+        VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: '" + name + "'");
+    }
+
+    m_stats.push_back(stat);
+    m_stats.back().setStream(this);
+}
+
+Stat& MetadataStream::getStat(const std::string& name) const
+{
+    auto it = std::find_if(m_stats.begin(), m_stats.end(), [&]( const Stat& stat)->bool
+    {
+        return stat.getName() == name;
+    });
+
+    if (it == m_stats.end())
+    {
+        VMF_EXCEPTION(vmf::NotFoundException, "Statistics object not found: '" + name + "'");
+    }
+
+    return (Stat&)*it;
+}
+
+std::vector< std::string > MetadataStream::getAllStatNames() const
+{
+    std::vector< std::string > names;
+
+    for (auto& stat : m_stats)
+    {
+        names.push_back(stat.getName());
+    }
+
+    return names;
+}
+
+void MetadataStream::activateStats()
+{
+    if (!m_stats.empty())
+    {
+        for (auto& stat : m_stats)
+            stat.setStream(this);
+    }
+}
+
+void MetadataStream::clearStats()
+{
+    if (!m_stats.empty())
+    {
+        for (auto& stat : m_stats)
+            stat.setStream(nullptr);
+        m_stats.clear();
+        std::vector< Stat >().swap(m_stats);
+    }
 }
 
 }//namespace vmf
