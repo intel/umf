@@ -22,16 +22,16 @@ public class Stat {
     }
 
     protected final long nativeObj;
-    
+
     // State
     public static final int State_UpToDate   = 1;
     public static final int State_NeedUpdate = 2;
     public static final int State_NeedRescan = 3;
-    
+
     // Action
     public static final int Action_Add    = 1;
     public static final int Action_Remove = 2;
-    
+
     //UpdateMode
     public static final int UpdateMode_Disabled = 1;
     public static final int UpdateMode_Manual   = 2;
@@ -41,87 +41,87 @@ public class Stat {
     protected Stat (long addr) {
         if (addr == 0)
             throw new java.lang.IllegalArgumentException("Native object address is NULL");
-        
+
         nativeObj = addr;
     }
 
     private static long[] fields2Addr(StatField[] fields) {
-    	long[] fieldsAddr = null;
-    	if(fields != null && fields.length > 0) {
-    		fieldsAddr = new long[fields.length];
-    		int cnt = 0;
-    		for(StatField sf : fields)
-    			fieldsAddr[cnt++] = sf.nativeObj;
-    	}
-    	return fieldsAddr;
+        long[] fieldsAddr = null;
+        if(fields != null && fields.length > 0) {
+            fieldsAddr = new long[fields.length];
+            int cnt = 0;
+            for(StatField sf : fields)
+                fieldsAddr[cnt++] = sf.nativeObj;
+        }
+        return fieldsAddr;
     }
-    
+
     public Stat(String name, StatField...fields) {
-    	this( n_Stat(name, Stat.fields2Addr(fields)) );
+        this( n_Stat(name, Stat.fields2Addr(fields)) );
     }
-    
+
     public String getName() {
-    	return n_getName(nativeObj);
+        return n_getName(nativeObj);
     }
-    
+
     public int getState() {
-    	return n_getState(nativeObj);
+        return n_getState(nativeObj);
     }
-    
+
     public void setUpdateMode( int updateMode ) {
-    	n_setUpdateMode(nativeObj, updateMode);
+        n_setUpdateMode(nativeObj, updateMode);
     }
-    
+
     public int getUpdateMode() {
-    	return n_getUpdateMode(nativeObj);
+        return n_getUpdateMode(nativeObj);
     }
-    
+
     public void setUpdateTimeout( int ms ) {
-    	n_setUpdateTimeout(nativeObj, ms);
+        n_setUpdateTimeout(nativeObj, ms);
     }
-    
+
     public int getUpdateTimeout() {
-    	return n_getUpdateTimeout(nativeObj);
+        return n_getUpdateTimeout(nativeObj);
     }
-    
+
     public void update( boolean doRescan, boolean doWait ) {
-    	n_update(nativeObj, doRescan, doWait);
+        n_update(nativeObj, doRescan, doWait);
     }
-    
+
     public void update( boolean doRescan ) {
-    	update(doRescan, false);
+        update(doRescan, false);
     }
-    
+
     public void update() {
-    	update(false, false);
+        update(false, false);
     }
-    
+
     public void notify( Metadata metadata, int action ) {
-    	n_notify(nativeObj, metadata.nativeObj, action);
+        n_notify(nativeObj, metadata.nativeObj, action);
     }
-    
+
     public void notify( Metadata metadata ) {
-    	notify(metadata, Action_Add);
+        notify(metadata, Action_Add);
     }
 
     public String[] getAllFieldNames() {
-    	return n_getAllFieldNames(nativeObj);
+        return n_getAllFieldNames(nativeObj);
     }
-    
+
     public StatField getField( String name ) {
-    	return new StatField( n_getField(nativeObj, name) );
+        return new StatField( n_getField(nativeObj, name) );
     }
-    
-  
+
+
     @Override
-    protected void finalize () throws Throwable 
+    protected void finalize () throws Throwable
     {
         if (nativeObj != 0)
             n_delete (nativeObj);
-        
+
         super.finalize();
     }
-    
+
     private native static void n_delete(long nativeObj);
     private native static long n_Stat(String name, long[] fields2Addr);
     private native static String n_getName(long nativeObj);
