@@ -285,11 +285,14 @@ bool Variant::operator == (const Variant& other) const
                 bIsEqual = std::equal( content.begin(), content.end(), other.get_real_vector().begin(), DOUBLE_EQ );
         }
         break;
-        COMPARE_VECTOR_OBJECT( string )
-        COMPARE_VECTOR_OBJECT( vec2d )
-        COMPARE_VECTOR_OBJECT( vec3d )
-        COMPARE_VECTOR_OBJECT( vec4d )
-    default:
+        COMPARE_VECTOR_OBJECT(string)
+        COMPARE_VECTOR_OBJECT(vec2d)
+        COMPARE_VECTOR_OBJECT(vec3d)
+        COMPARE_VECTOR_OBJECT(vec4d)
+        case type_unknown:
+            bIsEqual = true;
+            break;
+        default:
         VMF_EXCEPTION(IncorrectParamException, "unknown type.");
         break;
     }

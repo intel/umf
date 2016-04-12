@@ -126,8 +126,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FieldDesc_n_1getName (JNIEnv *env, 
     {
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
-        if ((obj == NULL) || (obj->get() == NULL))
-            return JNI_FALSE;
+        if (obj == NULL || *obj == NULL)
+            return 0;
 
         std::string str = (**obj).name;
         return env->NewStringUTF(str.c_str());

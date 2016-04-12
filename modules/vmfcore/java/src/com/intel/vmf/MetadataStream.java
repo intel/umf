@@ -350,6 +350,18 @@ public class MetadataStream implements IQuery
         return objs;
     }
     
+    public void addStat(Stat s) {
+    	n_addStat(nativeObj, s.nativeObj);
+    }
+    
+    public String[] getAllStatNames() {
+    	return n_getAllStatNames(nativeObj);
+    }
+    
+    public Stat getStat(String name) {
+    	return new Stat( n_getStat(nativeObj, name) );
+    }
+    
     public long convertDurationToNumOfFrames (long timestamp, long duration)
     {
         return n_convertDurationToNumOfFrames (nativeObj, timestamp, duration);
@@ -511,6 +523,9 @@ public class MetadataStream implements IQuery
     private native static void n_setChecksum (long nativeObj, String checksum);
     private native static void n_addVideoSegment (long nativeObj, long newSegmentAddr);
     private native static long[] n_getAllVideoSegments (long nativeObjAddr);
+    private native static void n_addStat(long self, long stat);
+    private native static String[] n_getAllStatNames(long self);
+    private native static long n_getStat(long self, String name);
     
     private native static long n_convertTimestampToFrameIndex (long nativeObj, long timestamp, long duration);
     private native static long n_convertDurationToNumOfFrames (long nativeObj, long timestamp, long duration);

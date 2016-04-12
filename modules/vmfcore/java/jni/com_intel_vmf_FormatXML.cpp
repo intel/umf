@@ -105,8 +105,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
             {
                 for (int i = 0; i < lenStats; i++)
                 {
-                    Stat* stat = (Stat*)statsArray[i];
-                    vecStats.push_back(*stat);
+                    std::shared_ptr<Stat>* stat = (std::shared_ptr<Stat>*)statsArray[i];
+                    vecStats.push_back(**stat);
                 }
                 env->ReleaseLongArrayElements(statsAddrs, statsArray, 0);
             }
@@ -210,7 +210,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
             objsAddrs[counters.segments + cnt] = 0;
             cnt += counters.segments + 1;
             //stats
-            //for (int i = 0; i < counters[3]; i++) objsAddrs[i + cnt] = (jlong) new Stat(stats[i]);
+            for (int i = 0; i < counters.stats; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<Stat>(new Stat(stats[i]));
             env->ReleaseLongArrayElements(objs, objsAddrs, 0);
         }
 

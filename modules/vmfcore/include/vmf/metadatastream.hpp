@@ -223,9 +223,14 @@ public:
     void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
 
     /*!
+    * \brief Alias for %addSchema
+    */
+    void add(const std::shared_ptr< MetadataSchema >& spSchema)
+    { addSchema(spSchema); }
+    /*!
     * \brief Get metadata schema by its name
     * \param sSchemaName [in] schema name
-    * \return pointer to schema o9bject or null if schema not found
+    * \return pointer to schema object or null if schema not found
     */
     const std::shared_ptr< MetadataSchema > getSchema( const std::string& sSchemaName ) const;
 
@@ -327,6 +332,12 @@ public:
     void addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment);
 
     /*!
+    * \brief Alias for %addVideoSegment
+    */
+    void add(const std::shared_ptr<VideoSegment>& newSegment)
+    { addVideoSegment(newSegment); }
+
+    /*!
     * \brief Get vector of video segments that were set for the video
     */
     std::vector<std::shared_ptr<VideoSegment>>& getAllVideoSegments();
@@ -351,6 +362,14 @@ public:
     * \throw IncorrectParamException if such statistics object already exist
     */
     void addStat( const Stat& stat );
+
+    /*!
+    * \brief Alias for %addStat
+    */
+    void add(const Stat& stat)
+    { addStat(stat); }
+    void add(Stat&& stat)
+    { addStat(std::forward<Stat>(stat)); }
 
     /*!
     * \brief Add new statistics object (move semantics). This feature requires C++11 compatible compiler.

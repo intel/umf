@@ -1,19 +1,7 @@
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.MetadataStream.VideoSegment;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.MetadataInternal;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.FieldValue;
-import com.intel.vmf.Log;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Variant;
-//import com.intel.vmf.XMLReader;
-//import com.intel.vmf.XMLWriter;
-import com.intel.vmf.MetadataSchema;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +15,19 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.vmf.FieldDesc;
+import com.intel.vmf.FieldValue;
+import com.intel.vmf.Log;
+import com.intel.vmf.Metadata;
+import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.MetadataSchema;
+import com.intel.vmf.MetadataSet;
+import com.intel.vmf.MetadataStream;
+import com.intel.vmf.MetadataStream.VideoSegment;
+import com.intel.vmf.ReferenceDesc;
+import com.intel.vmf.Variant;
+
 
 public class VmfMetadataStreamTest 
 {

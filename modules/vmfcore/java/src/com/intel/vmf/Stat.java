@@ -96,14 +96,6 @@ public class Stat {
         update(false, false);
     }
 
-    public void notify( Metadata metadata, int action ) {
-        n_notify(nativeObj, metadata.nativeObj, action);
-    }
-
-    public void notify( Metadata metadata ) {
-        notify(metadata, Action_Add);
-    }
-
     public String[] getAllFieldNames() {
         return n_getAllFieldNames(nativeObj);
     }
@@ -131,7 +123,6 @@ public class Stat {
     private native static void n_setUpdateTimeout(long nativeObj, int ms);
     private native static int n_getUpdateTimeout(long nativeObj);
     private native static void n_update(long nativeObj, boolean doRescan, boolean doWait);
-    private native static void n_notify(long nativeObj, long metadata, int action);
     private native static String[] n_getAllFieldNames(long nativeObj);
     private native static long n_getField(long nativeObj, String name);
 }

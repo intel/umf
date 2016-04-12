@@ -1539,7 +1539,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__J
 
         const char* tmp = env->GetStringUTFChars(name, NULL);
         std::string sName(tmp);
-        
+        env->ReleaseStringUTFChars(name, tmp);
+
         jlong *body = env->GetLongArrayElements(fieldValues, 0);
         std::vector <FieldValue> values;
         jsize len = env->GetArrayLength(fieldValues);
@@ -1551,7 +1552,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1queryByReference__J
         }
 
         env->ReleaseLongArrayElements(fieldValues, body, 0);
-        env->ReleaseStringUTFChars(name, tmp);
         return (jlong) new std::shared_ptr <MetadataSet>(new MetadataSet((*obj)->queryByReference(sName, values)));
     }
     catch (const std::exception &e)
@@ -1597,5 +1597,69 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1delete (JNIEnv *env,
     }
 }
 
+//void n_addStat(long self, long stat);
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addStat(JNIEnv *env, jclass, jlong self, jlong stat);
+
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addStat(JNIEnv *env, jclass, jlong self, jlong stat)
+{
+    static const char method_name[] = "MetadataStream::n_1addStat";
+    try
+    {
+        std::shared_ptr<MetadataStream>* obj = (std::shared_ptr<MetadataStream>*) self;
+        if (obj == NULL || *obj == NULL) VMF_EXCEPTION(NullPointerException, "Stream (self) is null pointer.");
+
+        std::shared_ptr<Stat>* statObj = (std::shared_ptr<Stat>*)stat;
+        if (statObj == NULL || *statObj == NULL) VMF_EXCEPTION(NullPointerException, "Stat object to add is null pointer.");
+
+        (*obj)->addStat(**statObj);
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name);}
+    catch (...) { throwJavaException(env, 0, method_name); }
+}
+
+//String[] n_getAllStatNames(long self);
+JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllStatNames(JNIEnv *env, jclass, jlong self);
+
+JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_MetadataStream_n_1getAllStatNames(JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataStream::n_1getAllStatNames";
+    try
+    {
+        std::shared_ptr<MetadataStream>* obj = (std::shared_ptr<MetadataStream>*) self;
+        if (obj == NULL || *obj == NULL) VMF_EXCEPTION(NullPointerException, "Stream (self) is null pointer.");
+
+        std::vector<std::string> names = (*obj)->getAllStatNames();
+        jobjectArray result = (jobjectArray)env->NewObjectArray((jsize)names.size(), env->FindClass("java/lang/String"), env->NewStringUTF(""));
+        for (jsize i = 0; i<names.size(); i++)
+            env->SetObjectArrayElement(result, i, env->NewStringUTF(names[i].c_str()));
+
+        return result;
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
+    return 0;
+}
+
+//long n_getStat(long self, String name);
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getStat(JNIEnv *env, jclass, jlong self, jstring name);
+
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getStat(JNIEnv *env, jclass, jlong self, jstring name)
+{
+    static const char method_name[] = "MetadataStream::n_1getStat";
+    try
+    {
+        std::shared_ptr<MetadataStream>* obj = (std::shared_ptr<MetadataStream>*) self;
+        if (obj == NULL || *obj == NULL) VMF_EXCEPTION(NullPointerException, "Stream (self) is null pointer.");
+
+        const char* _name = env->GetStringUTFChars(name, NULL);
+        std::string _nameS(_name);
+        env->ReleaseStringUTFChars(name, _name);
+
+        return (jlong) new std::shared_ptr<Stat>( new Stat((*obj)->getStat(_nameS)) );
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
+    return 0;
+}
 
 }

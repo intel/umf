@@ -226,6 +226,12 @@ public:
     StatField& operator=( StatField&& other );
 
     /*!
+    * \brief Equality operator.
+    * \param rhs [in] another StatField object reference to compare
+    * \return true if fields are equal and false otherwise
+    */
+    bool operator==(const StatField& rhs) const;
+    /*!
     * \brief Get name string for statistics field object
     * \return name string
     */
@@ -288,6 +294,7 @@ private:
     StatOpBase* m_op;
     bool m_isActive;
 };
+
 
 /*!
 * \class Stat

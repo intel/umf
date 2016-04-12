@@ -20,6 +20,8 @@
 
 #include <atomic>
 
+#include<stdio.h>
+
 namespace vmf
 {
 
@@ -490,6 +492,13 @@ public:
             return *this;
         }
 
+    bool StatFieldDesc::operator==(const StatFieldDesc& rhs) const {
+        return m_schemaName == rhs.m_schemaName &&
+               m_metadataName == rhs.m_metadataName &&
+               m_fieldName == rhs.m_fieldName &&
+               m_opName == rhs.m_opName;
+    }
+
     std::string getName() const
         { return m_name; }
     std::string getSchemaName() const
@@ -616,6 +625,11 @@ StatField& StatField::operator=( StatField&& other )
     setStream( other.getStream() );
 
     return *this;
+}
+
+bool StatField::operator==(const StatField& rhs) const
+{
+    return *m_desc == *rhs.m_desc;
 }
 
 void StatField::handle( std::shared_ptr< Metadata > metadata )
