@@ -135,6 +135,7 @@ void XMPDataSource::loadXMPstructs()
 
     std::shared_ptr<XMPMetadataSource> tmpMetaSource;
     std::shared_ptr<XMPSchemaSource> tmpSchemaSource;
+    std::shared_ptr<XMPStatSource> tmpStatSource;
     tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
     tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
     tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
@@ -230,7 +231,7 @@ void XMPDataSource::loadXMPstructs()
                 tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
                 tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
-                tmpStatSource = make_shared<XMPStatSource(tmpXMP);
+                tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
                 if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
                 {
                     VMF_EXCEPTION(DataStorageException,

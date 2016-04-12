@@ -34,6 +34,7 @@
 #include "vmf/compressor.hpp"
 #include "vmf/encryptor.hpp"
 #include "vmf/iquery.hpp"
+#include "vmf/statistics.hpp"
 
 #include <map>
 #include <memory>

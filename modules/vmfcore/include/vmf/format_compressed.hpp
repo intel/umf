@@ -70,6 +70,7 @@ public:
      * \param metadata Metadata records
      * \param schemas Schemas of the metadata
      * \param segments Video segments
+     * \param stats Statistical object
      * \param attribs Attributes like nextId, checksum, etc.
      * \return Numbers of items read by categories
      */
