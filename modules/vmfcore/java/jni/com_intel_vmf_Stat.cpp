@@ -176,9 +176,9 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, 
 }
 
 //void n_update(long nativeObj, boolean doRescan, boolean doWait);
-JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doRescan, jboolean doWait);
+JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait);
 
-JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doRescan, jboolean doWait)
+JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait)
 {
     static const char method_name[] = "Stat::n_1update";
 
@@ -186,7 +186,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jl
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
-        (*obj)->update(doRescan == JNI_TRUE, doWait == JNI_TRUE);
+        (*obj)->update(doWait == JNI_TRUE);
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -234,6 +234,29 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass,
         env->ReleaseStringUTFChars(name, _name);
 
         return (jlong) new std::shared_ptr<StatField>( new StatField((*obj)->getField(_nameS)) );
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
+    return 0;
+}
+
+
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass, jlong self, jstring name);
+
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass, jlong self, jstring name)
+{
+    static const char method_name[] = "Stat::n_1getValue";
+
+    try
+    {
+        std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
+        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+
+        const char* _name = env->GetStringUTFChars(name, NULL);
+        std::string _nameS(_name);
+        env->ReleaseStringUTFChars(name, _name);
+
+        return (jlong) new std::shared_ptr<Variant>(new Variant((*obj)->getField(_nameS).getValue()));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }

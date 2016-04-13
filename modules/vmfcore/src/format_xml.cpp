@@ -186,20 +186,20 @@ static void add(xmlNodePtr segNode, const std::shared_ptr<MetadataStream::VideoS
     }
 }
 
-static void add(xmlNodePtr statNode, const Stat& stat)
+static void add(xmlNodePtr statNode, std::shared_ptr<Stat> stat)
 {
-    if (stat.getName().empty())
+    if (stat->getName().empty())
         VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
-    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat.getName().c_str()) == NULL)
+    if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat->getName().c_str()) == NULL)
         VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
 
-    std::vector< std::string > fieldNames = stat.getAllFieldNames();
+    std::vector< std::string > fieldNames = stat->getAllFieldNames();
     if (!fieldNames.empty())
     {
         for(auto fieldName : fieldNames)
         {
-            const StatField& field = stat.getField(fieldName);
+            const StatField& field = stat->getField(fieldName);
 
             if (field.getName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
@@ -208,12 +208,12 @@ static void add(xmlNodePtr statNode, const Stat& stat)
             if (field.getOpName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
 
-            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            /*std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
             if (metadataDesc == nullptr)
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
-            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
+            if (field.getSchemaName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
-            if (metadataDesc->getMetadataName().empty())
+            if (field.getMetadataName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
 
             xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
@@ -223,10 +223,10 @@ static void add(xmlNodePtr statNode, const Stat& stat)
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
                 VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
 
-            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST metadataDesc->getSchemaName().c_str() ) == NULL)
+            if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST field.getSchemaName().c_str()) == NULL)
                 VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
 
-            if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST metadataDesc->getMetadataName().c_str() ) == NULL)
+            if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST field.getMetadataName().c_str()) == NULL)
                 VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
@@ -242,7 +242,7 @@ std::string FormatXML::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    const std::vector<Stat>& stats,
+    const std::vector<std::shared_ptr<Stat>>& stats,
     const AttribMap& attribs
     )
 {
@@ -369,7 +369,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                 if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
                 {
                     std::string field_name;
-                    vmf::Variant::Type field_type = vmf::Variant::type_unknown;
+                    vmf::Variant::Type field_type = vmf::Variant::type_empty;
                     bool field_optional = false;
                     for (xmlAttrPtr cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next) //fill field's attributes
                     {
@@ -547,7 +547,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(x
     return spSegment;
 }
 
-static Stat parseStatFromNode(xmlNodePtr statNode)
+static std::shared_ptr<Stat> parseStatFromNode(xmlNodePtr statNode)
 {
     std::string statName;
 
@@ -599,7 +599,7 @@ static Stat parseStatFromNode(xmlNodePtr statNode)
         }
     }
 
-    return Stat(statName, fields, updateMode);
+    return std::make_shared<Stat>(statName, fields, updateMode);
 }
 
 Format::ParseCounters FormatXML::parse(
@@ -607,7 +607,7 @@ Format::ParseCounters FormatXML::parse(
     std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<Stat>& stats,
+    std::vector<std::shared_ptr<Stat>>& stats,
     AttribMap& attribs // nextId, checksum, etc
     )
 {
@@ -646,8 +646,7 @@ Format::ParseCounters FormatXML::parse(
                     {
                         try
                         {
-                            Stat stat = parseStatFromNode(st);
-                            stats.push_back(stat);
+                            stats.push_back(parseStatFromNode(st));
                             cnt.stats++;
                         }
                         catch (Exception& e)

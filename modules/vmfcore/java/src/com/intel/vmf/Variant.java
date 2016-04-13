@@ -23,7 +23,7 @@ import com.intel.vmf.Vmf;
          }
      }
 
-    public static final int type_unknown = 0;
+    public static final int type_empty = 0;
     public static final int type_integer = 1;
     public static final int type_real = 2;
     public static final int type_string = 3;
@@ -296,14 +296,24 @@ import com.intel.vmf.Vmf;
         return n_equals (nativeObj, other.nativeObj);
     }
 
+    public String toString (boolean withType)
+    {
+        return n_toString (nativeObj, withType);
+    }
+
     public String toString ()
     {
-        return n_toString (nativeObj);
+        return toString (false);
     }
 
     public void fromString (int type, String str)
     {
         n_fromString (nativeObj, type, str);
+    }
+    
+    public void fromString (String str)
+    {
+        n_fromString2 (nativeObj, str);
     }
     
     public int getType ()
@@ -391,8 +401,9 @@ import com.intel.vmf.Vmf;
     
     private native static void n_set (long nativeAddr, long otherAddr);
     private native static boolean n_equals (long nativeObj, long other);
-    private native static String n_toString (long nativeObj);
+    private native static String n_toString (long nativeObj, boolean withType);
     private native static void n_fromString (long nativeObj, int type, String str);
+    private native static void n_fromString2 (long nativeObj, String str);
     private native static int n_getType (long nativeObj);
     private native static boolean n_isEmpty (long nativeObj);
     private native static String n_getTypeName (long nativeObj);

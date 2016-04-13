@@ -53,20 +53,8 @@ public class StatField {
         return n_getMetadataName(nativeObj);
     }
 
-    public MetadataDesc getMetadataDesc() {
-        long addr = n_getMetadataDesc(nativeObj);
-        if(addr == 0) return null;
-        else return new MetadataDesc( addr );
-    }
-
     public String getFieldName() {
         return n_getFieldName(nativeObj);
-    }
-
-    public FieldDesc getFieldDesc() {
-        long addr = n_getFieldDesc(nativeObj);
-        if(addr == 0) return null;
-        else return new FieldDesc( addr );
     }
 
     public String getOpName() {
@@ -98,9 +86,7 @@ public class StatField {
     private native static String n_getName(long nativeObj);
     private native static String n_getSchemaName(long nativeObj);
     private native static String n_getMetadataName(long nativeObj);
-    private native static long n_getMetadataDesc(long nativeObj);
     private native static String n_getFieldName(long nativeObj);
-    private native static long n_getFieldDesc(long nativeObj);
     private native static String n_getOpName(long nativeObj);
     private native static long n_getValue(long nativeObj);
     private native static boolean n_equals(long self, long other);

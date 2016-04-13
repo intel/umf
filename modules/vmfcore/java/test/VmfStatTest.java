@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Log;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.MetadataSchema;
@@ -43,9 +44,6 @@ public class VmfStatTest {
         assertEquals( sf1.getFieldName(), "fieldName" );
         assertEquals( sf1.getOpName(), StatField.BuiltinOp_Min );
         assertNotEquals( sf1.getOpName(), sfX.getOpName() );
-
-        assertNull(sf1.getMetadataDesc());
-        assertNull(sfX.getFieldDesc());
     }
 
     @Test
@@ -96,7 +94,8 @@ public class VmfStatTest {
         
         Stat st = stream.getStat("stat");
         assertEquals(st.getUpdateMode(), Stat.UpdateMode_Disabled);
-        st.setUpdateMode(Stat.UpdateMode_OnAdd);
+        st.setUpdateMode(Stat.UpdateMode_Manual);
+        assertEquals(stream.getStat("stat").getUpdateMode(), Stat.UpdateMode_Manual);
         
         String[] sfNames = st.getAllFieldNames();
         assertEquals(sfNames.length, 2);
@@ -106,20 +105,21 @@ public class VmfStatTest {
         assertTrue(st.getField("min-x").getValue().equals(new Variant()));
         assertTrue(st.getField("cnt-y").getValue().equals(new Variant(0)));
         
-        /*
         Metadata md1 = new Metadata(mdDesc);
         md1.setFieldValue("x", new Variant(1));
         md1.setFieldValue("y", new Variant(1));
         stream.add(md1);
-        assertTrue(st.getField("min-x").getValue().equals(new Variant(1)));
-        assertTrue(st.getField("cnt-y").getValue().equals(new Variant(1)));
+        st.update(true);
+        
+        assertTrue(st.getValue("min-x").equals(new Variant(1)));
+        assertTrue(st.getValue("cnt-y").equals(new Variant(1)));
 
         Metadata md2 = new Metadata(mdDesc);
         md2.setFieldValue("x", new Variant(2));
         md2.setFieldValue("y", new Variant(2));
         stream.add(md2);
-        assertTrue(st.getField("min-x").getValue().equals(new Variant(1)));
-        assertTrue(st.getField("cnt-y").getValue().equals(new Variant(2)));
-        */
+        st.update(true);
+        assertTrue(st.getValue("min-x").equals(new Variant(1)));
+        assertTrue(st.getValue("cnt-y").equals(new Variant(2)));
     }
 }

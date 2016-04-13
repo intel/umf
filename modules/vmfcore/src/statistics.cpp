@@ -175,7 +175,7 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             switch( m_value.getType() )
             {
-            case Variant::type_unknown: // isEmpty()
+            case Variant::type_empty: // isEmpty()
                 return m_value;
                 break;
             case Variant::type_integer:
@@ -331,13 +331,13 @@ StatOpBase* StatOpFactory::create( const std::string& name )
     auto it = ops.find( name );
     if( it == ops.end() )
     {
-        VMF_EXCEPTION( vmf::NotFoundException, "User operation not registered: '" + name + "'" );
+        VMF_EXCEPTION( vmf::NotFoundException, "User operation not registered: " + name );
     }
 
     StatOpBase* op = (it->second)();
     if( op == nullptr )
     {
-        VMF_EXCEPTION( vmf::NullPointerException, "User operation isn't created: '" + name + "'" );
+        VMF_EXCEPTION( vmf::NullPointerException, "User operation isn't created: " + name );
     }
 
     return op;
@@ -365,7 +365,7 @@ void StatOpFactory::registerUserOp( InstanceCreator createInstance )
     if( it != ops.end() )
     {
         // Note that op can't be registered twice even with the same creator func. Use isRegistered() to check
-        VMF_EXCEPTION( vmf::IncorrectParamException, "User operation is registered twice: '" + userOpName + "'" );
+        VMF_EXCEPTION( vmf::IncorrectParamException, "User operation is already registered: " + userOpName );
     }
     else
     {
@@ -443,56 +443,57 @@ public:
                    const std::string& metadataName, const std::string& fieldName,
                    const std::string& opName )
         : m_name( name ), m_schemaName( schemaName ), m_metadataName( metadataName ),
-          m_metadataDesc( nullptr ), m_fieldName( fieldName ), m_fieldDesc(),
-          m_opName( opName ), m_pMetadataStream( nullptr )
+          m_fieldName(fieldName), m_opName(opName)/*,
+          m_metadataDesc(nullptr), m_fieldDesc(), m_pMetadataStream( nullptr )*/
         {}
     StatFieldDesc( const StatFieldDesc& other )
         : m_name( other.m_name ), m_schemaName( other.m_schemaName ), m_metadataName( other.m_metadataName ),
-          m_metadataDesc( nullptr ), m_fieldName( other.m_fieldName ), m_fieldDesc(),
-          m_opName( other.m_opName ), m_pMetadataStream( nullptr )
+          m_fieldName(other.m_fieldName), m_opName(other.m_opName)/*,
+          m_metadataDesc(nullptr), m_fieldDesc(), m_pMetadataStream( nullptr )*/
         {}
     StatFieldDesc( StatFieldDesc&& other )
         : m_name( std::move( other.m_name )), m_schemaName( std::move( other.m_schemaName )),
-          m_metadataName( std::move( other.m_metadataName )), m_metadataDesc( std::move( nullptr )),
-          m_fieldName( std::move( other.m_fieldName )), m_fieldDesc( std::move( other.m_fieldDesc )),
-          m_opName( std::move( other.m_opName )), m_pMetadataStream( nullptr )
+          m_metadataName(std::move(other.m_metadataName)), m_fieldName(std::move(other.m_fieldName)),
+          m_opName(std::move(other.m_opName))/*,
+          m_metadataDesc(std::move(nullptr)), m_fieldDesc(std::move(other.m_fieldDesc)), m_pMetadataStream(nullptr)*/
         {}
     StatFieldDesc()
         : m_name( "" ), m_schemaName( "" ), m_metadataName( "" ),
-          m_metadataDesc( nullptr ), m_fieldName( "" ), m_fieldDesc(),
-          m_opName( "" ), m_pMetadataStream( nullptr )
+          m_fieldName(""), m_opName("")/*,
+          m_metadataDesc(nullptr), m_fieldDesc(), m_pMetadataStream( nullptr )*/
         {}
     ~StatFieldDesc()
         {}
 
     StatFieldDesc& operator=( const StatField::StatFieldDesc& other )
         {
-            setStream( nullptr );
+            //setStream( nullptr );
             m_name         = other.m_name;
             m_schemaName   = other.m_schemaName;
             m_metadataName = other.m_metadataName;
-            m_metadataDesc = nullptr;
+            //m_metadataDesc = nullptr;
             m_fieldName    = other.m_fieldName;
-            m_fieldDesc    = FieldDesc();
+            //m_fieldDesc    = FieldDesc();
             m_opName       = other.m_opName;
-            setStream( other.getStream() );
+            //setStream( other.getStream() );
             return *this;
         }
     StatFieldDesc& operator=( StatField::StatFieldDesc&& other )
         {
-            setStream( nullptr );
+            //setStream( nullptr );
             m_name         = std::move( other.m_name );
             m_schemaName   = std::move( other.m_schemaName );
             m_metadataName = std::move( other.m_metadataName );
-            m_metadataDesc = std::move( other.m_metadataDesc );
+            //m_metadataDesc = std::move( other.m_metadataDesc );
             m_fieldName    = std::move( other.m_fieldName );
-            m_fieldDesc    = std::move( other.m_fieldDesc );
+            //m_fieldDesc    = std::move( other.m_fieldDesc );
             m_opName       = std::move( other.m_opName );
-            setStream( other.getStream() );
+            //setStream( other.getStream() );
             return *this;
         }
 
-    bool StatFieldDesc::operator==(const StatFieldDesc& rhs) const {
+    bool operator==(const StatFieldDesc& rhs) const
+    {
         return m_schemaName == rhs.m_schemaName &&
                m_metadataName == rhs.m_metadataName &&
                m_fieldName == rhs.m_fieldName &&
@@ -505,17 +506,17 @@ public:
         { return m_schemaName; }
     std::string getMetadataName() const
         { return m_metadataName; }
-    std::shared_ptr< MetadataDesc > getMetadataDesc() const
-        { return m_metadataDesc; }
+    /*std::shared_ptr< MetadataDesc > getMetadataDesc() const
+        { return m_metadataDesc; }*/
     std::string getFieldName() const
         { return m_fieldName; }
-    FieldDesc getFieldDesc() const
-        { return m_fieldDesc; }
+    /*FieldDesc getFieldDesc() const
+        { return m_fieldDesc; }*/
     std::string getOpName() const
         { return m_opName; }
 
 public:
-    void setStream( MetadataStream* pMetadataStream )
+    /*void setStream( MetadataStream* pMetadataStream )
         {
             m_pMetadataStream = pMetadataStream;
             if( m_pMetadataStream != nullptr )
@@ -544,17 +545,17 @@ public:
             }
         }
     MetadataStream* getStream() const
-        { return m_pMetadataStream; }
+        { return m_pMetadataStream; }*/
 
 private:
     std::string m_name;
     std::string m_schemaName;
     std::string m_metadataName;
-    std::shared_ptr< MetadataDesc > m_metadataDesc;
+    //std::shared_ptr< MetadataDesc > m_metadataDesc;
     std::string m_fieldName;
-    FieldDesc m_fieldDesc;
+    //FieldDesc m_fieldDesc;
     std::string m_opName;
-    MetadataStream* m_pMetadataStream;
+    //MetadataStream* m_pMetadataStream;
 };
 
 StatField::StatField(
@@ -565,21 +566,16 @@ StatField::StatField(
         const std::string& opName )
     : m_desc( new StatFieldDesc( name, schemaName, metadataName, fieldName, opName ))
     , m_op( StatOpFactory::create( opName ))
-    , m_isActive( false )
-{
-}
+{}
 
 StatField::StatField( const StatField& other )
     : m_desc( new StatFieldDesc( *other.m_desc ))
     , m_op( (other.m_op != nullptr) ? StatOpFactory::create( other.m_op->name() ) : nullptr )
-    , m_isActive( other.m_isActive )
-{
-}
+{}
 
 StatField::StatField( StatField&& other )
     : m_desc( std::move( other.m_desc ))
     , m_op( nullptr )
-    , m_isActive( std::move( other.m_isActive ))
 {
     std::swap( m_op, other.m_op );
 }
@@ -587,43 +583,25 @@ StatField::StatField( StatField&& other )
 StatField::StatField()
     : m_desc()
     , m_op( nullptr )
-    , m_isActive( false )
-{
-}
+{}
 
 StatField::~StatField()
-{
-    delete m_op; m_op = nullptr;
-}
+{}
 
 StatField& StatField::operator=( const StatField& other )
 {
-    setStream( nullptr );
-
-    m_desc.reset( new StatFieldDesc( *other.m_desc ));
-
-    delete m_op; m_op = nullptr;
-    m_op = (other.m_op != nullptr) ? StatOpFactory::create( other.m_op->name() ) : nullptr;
-
-    m_isActive = other.m_isActive;
-
-    setStream( other.getStream() );
-
+    if (this != &other)
+    {
+        m_desc.reset(new StatFieldDesc(*other.m_desc));
+        m_op.reset((other.m_op != nullptr) ? StatOpFactory::create(other.m_op->name()) : nullptr);
+    }
     return *this;
 }
 
 StatField& StatField::operator=( StatField&& other )
 {
-    setStream( nullptr );
-
     m_desc = std::move( other.m_desc );
-
     std::swap( m_op, other.m_op );
-
-    m_isActive = other.m_isActive;
-
-    setStream( other.getStream() );
-
     return *this;
 }
 
@@ -636,10 +614,10 @@ void StatField::handle( std::shared_ptr< Metadata > metadata )
 {
     const std::shared_ptr< MetadataDesc > metadataDesc = metadata->getDesc();
     if( metadataDesc &&
-        (metadataDesc->getSchemaName() == this->getSchemaName()) &&
-        (metadataDesc->getMetadataName() == this->getMetadataName()) )
+        (metadataDesc->getSchemaName() == getSchemaName()) &&
+        (metadataDesc->getMetadataName() == getMetadataName()) )
     {
-        const std::string& fieldName = this->getFieldName();
+        const std::string& fieldName = getFieldName();
         Metadata::iterator it = metadata->findField( fieldName );
         if( it != metadata->end() )
         {
@@ -650,15 +628,15 @@ void StatField::handle( std::shared_ptr< Metadata > metadata )
 
 void StatField::reset()
 {
-    if( isActive() )
+    //if( isActive() )
         m_op->reset();
 }
 
-void StatField::setStream( MetadataStream* pMetadataStream )
+/*void StatField::setStream( MetadataStream* pMetadataStream )
 {
     m_desc->setStream( pMetadataStream );
     m_isActive = bool( pMetadataStream != nullptr );
-}
+}*/
 
 std::string StatField::getName() const
 {
@@ -675,30 +653,30 @@ std::string StatField::getMetadataName() const
     return m_desc->getMetadataName();
 }
 
-std::shared_ptr< MetadataDesc > StatField::getMetadataDesc() const
+/*std::shared_ptr< MetadataDesc > StatField::getMetadataDesc() const
 {
     return m_desc->getMetadataDesc();
-}
+}*/
 
 std::string StatField::getFieldName() const
 {
     return m_desc->getFieldName();
 }
 
-FieldDesc StatField::getFieldDesc() const
+/*FieldDesc StatField::getFieldDesc() const
 {
     return m_desc->getFieldDesc();
-}
+}*/
 
 std::string StatField::getOpName() const
 {
     return m_desc->getOpName();
 }
 
-MetadataStream* StatField::getStream() const
+/*MetadataStream* StatField::getStream() const
 {
     return m_desc->getStream();
-}
+}*/
 
 // class Stat (StatDesc, StatWorker)
 
@@ -742,7 +720,6 @@ public:
         : m_stat( stat )
         , m_wakeupForced( false )
         , m_updateScheduled( false )
-        , m_rescanScheduled( false )
         , m_exitScheduled( false )
         , m_exitImmediate( false )
         {
@@ -770,7 +747,6 @@ public:
                             awaken = m_signal.wait_for( lock, std::chrono::milliseconds(tmo), [&]
                             {
                                 return m_exitScheduled ||
-                                        m_rescanScheduled ||
                                         m_wakeupForced ||
                                         (m_updateScheduled && !m_items.empty());
                             });
@@ -781,7 +757,6 @@ public:
                         m_signal.wait( lock, [&]
                         {
                             return m_exitScheduled ||
-                                    m_rescanScheduled ||
                                     m_wakeupForced ||
                                     (m_updateScheduled && !m_items.empty());
                         });
@@ -791,22 +766,7 @@ public:
                         break;
                 }
                 // worker has awaken
-                if( m_rescanScheduled )
-                {
-                    // rescan
-                    {
-                        std::unique_lock< std::mutex > lock( m_lock );
-                        std::queue< std::shared_ptr< Metadata >>().swap( m_items );
-                        m_updateScheduled = false;
-                    }
-                    if( m_stat != nullptr )
-                        m_stat->rescan();
-                    {
-                        std::unique_lock< std::mutex > lock( m_lock );
-                        m_rescanScheduled = false;
-                    }
-                }
-                else if( m_updateScheduled )
+                if( m_updateScheduled )
                 {
                     std::shared_ptr< Metadata > metadata;
                     while( tryPop( metadata ))
@@ -838,15 +798,6 @@ public:
                 m_signal.notify_one();
             }
         }
-    void scheduleRescan( bool doWake = true )
-        {
-            std::unique_lock< std::mutex > lock( m_lock );
-            if( doWake && !m_rescanScheduled )
-            {
-                m_rescanScheduled = true;
-                m_signal.notify_one();
-            }
-        }
     void scheduleExit( bool doImmediate = false )
         {
             std::unique_lock< std::mutex > lock( m_lock );
@@ -873,15 +824,12 @@ public:
             if( !m_items.empty() )
                 std::queue< std::shared_ptr< Metadata >>().swap( m_items );
             m_updateScheduled = false;
-            m_rescanScheduled = false;
             m_exitScheduled = false;
             m_exitImmediate = false;
         }
     State::Type getState() const
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            if( m_rescanScheduled )
-                return State::NeedRescan;
             if( m_updateScheduled || !m_items.empty() )
                 return State::NeedUpdate;
             return State::UpToDate;
@@ -906,7 +854,6 @@ private:
     std::queue< std::shared_ptr< Metadata >> m_items;
     std::atomic< bool > m_wakeupForced;
     std::atomic< bool > m_updateScheduled;
-    std::atomic< bool > m_rescanScheduled;
     std::atomic< bool > m_exitScheduled;
     std::atomic< bool > m_exitImmediate;
     std::condition_variable m_signal;
@@ -919,9 +866,8 @@ Stat::Stat( const std::string& name, const std::vector< StatField >& fields, Upd
     , m_worker( new StatWorker( this ))
     , m_updateMode( updateMode )
     , m_updateTimeout( 0 )
-    , m_isActive( false )
-{
-}
+    , m_needRescan(false)
+{}
 
 Stat::Stat( const Stat& other )
     : m_desc( new StatDesc( *other.m_desc ))
@@ -929,9 +875,8 @@ Stat::Stat( const Stat& other )
     , m_worker( new StatWorker( this ))
     , m_updateMode( other.m_updateMode )
     , m_updateTimeout( 0 )
-    , m_isActive( other.m_isActive )
-{
-}
+    , m_needRescan(other.m_needRescan)
+{}
 
 Stat::Stat( Stat&& other )
     : m_desc( std::move( other.m_desc ))
@@ -939,25 +884,21 @@ Stat::Stat( Stat&& other )
     , m_worker( new StatWorker( this ))
     , m_updateMode( other.m_updateMode )
     , m_updateTimeout( 0 )
-    , m_isActive( other.m_isActive )
-{
-}
+    , m_needRescan(other.m_needRescan)
+{}
 
 Stat::~Stat()
-{
-}
+{}
 
 Stat& Stat::operator=( const Stat& other )
 {
     m_worker->reset();
 
-    setStream( nullptr );
     m_desc.reset( new StatDesc( *other.m_desc ));
     m_fields        = other.m_fields;
     m_updateMode    = other.m_updateMode;
     m_updateTimeout = other.m_updateTimeout;
-    m_isActive      = other.m_isActive;
-    setStream( other.getStream() );
+    m_needRescan    = other.m_needRescan;
 
     return *this;
 }
@@ -966,57 +907,55 @@ Stat& Stat::operator=( Stat&& other )
 {
     m_worker->reset();
 
-    setStream( nullptr );
     m_desc          = std::move( other.m_desc );
     m_fields        = std::move( other.m_fields );
-    m_updateMode    = std::move( other.m_updateMode );
-    m_updateTimeout = std::move( other.m_updateTimeout );
-    m_isActive      = std::move( other.m_isActive );
-    setStream( other.getStream() );
+    m_updateMode    = other.m_updateMode;
+    m_updateTimeout = other.m_updateTimeout;
+    m_needRescan    = other.m_needRescan;
 
     return *this;
 }
 
 void Stat::notify( std::shared_ptr< Metadata > metadata, Action::Type action )
 {
-    if( isActive() )
+    switch( action )
     {
-        switch( action )
+    case Action::Add:
+        switch( m_updateMode )
         {
-        case Action::Add:
-            switch( m_updateMode )
-            {
-            case UpdateMode::Disabled:
-                break;
-            case UpdateMode::Manual:
-                m_worker->scheduleUpdate( metadata, false );
-                break;
-            case UpdateMode::OnAdd:
-            case UpdateMode::OnTimer:
-                m_worker->scheduleUpdate( metadata, true );
-                break;
-            }
+        case UpdateMode::Disabled:
             break;
-        case Action::Remove:
-            switch( m_updateMode )
-            {
-            case UpdateMode::Disabled:
-                break;
-            case UpdateMode::Manual:
-                break;
-            case UpdateMode::OnAdd:
-            case UpdateMode::OnTimer:
-                m_worker->scheduleRescan();
-                break;
-            }
+        case UpdateMode::Manual:
+            if(!m_needRescan) m_worker->scheduleUpdate( metadata, false );
+            break;
+        case UpdateMode::OnAdd:
+        case UpdateMode::OnTimer:
+            if (!m_needRescan) m_worker->scheduleUpdate(metadata, true);
             break;
         }
+        break;
+    case Action::Remove:
+        switch( m_updateMode )
+        {
+        case UpdateMode::Disabled:
+            break;
+        case UpdateMode::Manual:
+        case UpdateMode::OnAdd:
+        case UpdateMode::OnTimer:
+            m_needRescan = true;
+            m_worker->reset();
+            break;
+        }
+        break;
     }
 }
 
-void Stat::update( bool doRescan, bool doWait )
+void Stat::update(bool doWait )
 {
-    if( isActive() && ((getState() != State::UpToDate) || doRescan) )
+    if (m_needRescan) 
+        VMF_EXCEPTION(IncorrectParamException, "Stat object detected metadata removal, call MetadataStream::recalcStat() before continue using statistics");
+
+    if( getState() != State::UpToDate )
     {
         switch( m_updateMode )
         {
@@ -1025,14 +964,7 @@ void Stat::update( bool doRescan, bool doWait )
         case UpdateMode::Manual:
         case UpdateMode::OnAdd:
         case UpdateMode::OnTimer:
-            if( doRescan )
-            {
-                m_worker->scheduleRescan();
-            }
-            else
-            {
-                m_worker->wakeup();
-            }
+            m_worker->wakeup();
             break;
         }
         if( doWait )
@@ -1040,35 +972,23 @@ void Stat::update( bool doRescan, bool doWait )
             /*
             // TODO: Busy wait loop. Perhaps it would be better to wait on conditional variable.
             //       Also, it can be potentially dangerous and leads to deadlocks.
-            //----
-            //----
             */
             while( getState() != State::UpToDate )
-                ;
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 }
 
 void Stat::handle( const std::shared_ptr< Metadata > metadata )
 {
-    for( auto& statField : m_fields )
-    {
-        statField.handle( metadata );
-    }
+    for( auto& statField : m_fields ) statField.handle( metadata );
 }
 
-void Stat::rescan()
+void Stat::clear()
 {
-    if( isActive() /*&& (getState() != State::UpToDate)*/ )
-    {
-        for( auto& statField : m_fields )
-            statField.reset();
-        MetadataSet metadataSet = getStream()->getAll();
-        for( auto metadata : metadataSet )
-        {
-            handle( metadata );
-        }
-    }
+    for( auto& statField : m_fields )
+        statField.reset();
+    m_needRescan = false;
 }
 
 void Stat::setUpdateMode( UpdateMode::Type updateMode )
@@ -1113,29 +1033,16 @@ const StatField& Stat::getField( const std::string& name ) const
 
     if( it == m_fields.end() )
     {
-        VMF_EXCEPTION( vmf::NotFoundException, "Statistics field not found: '" + name + "'" );
+        VMF_EXCEPTION( vmf::NotFoundException, "Statistics field not found: " + name );
     }
 
     return *it;
 }
 
-void Stat::setStream( MetadataStream* pMetadataStream )
-{
-    for( auto& statField : m_fields )
-    {
-        statField.setStream( pMetadataStream );
-    }
-    m_isActive = bool( pMetadataStream != nullptr );
-}
-
-MetadataStream* Stat::getStream() const
-{
-    return (m_fields.empty() ? nullptr : m_fields[0].getStream());
-}
-
 Stat::State::Type Stat::getState() const
 {
-    return m_worker->getState();
+    if (m_needRescan) return Stat::State::NeedRescan;
+    else return m_worker->getState();
 }
 
 std::string Stat::getName() const

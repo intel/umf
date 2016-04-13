@@ -84,16 +84,12 @@ public class Stat {
         return n_getUpdateTimeout(nativeObj);
     }
 
-    public void update( boolean doRescan, boolean doWait ) {
-        n_update(nativeObj, doRescan, doWait);
-    }
-
-    public void update( boolean doRescan ) {
-        update(doRescan, false);
+    public void update( boolean doWait ) {
+        n_update(nativeObj, doWait);
     }
 
     public void update() {
-        update(false, false);
+        update(false);
     }
 
     public String[] getAllFieldNames() {
@@ -104,6 +100,9 @@ public class Stat {
         return new StatField( n_getField(nativeObj, name) );
     }
 
+    public Variant getValue( String name ) {
+        return new Variant( n_getValue(nativeObj, name) );
+    }
 
     @Override
     protected void finalize () throws Throwable
@@ -122,7 +121,8 @@ public class Stat {
     private native static int n_getUpdateMode(long nativeObj);
     private native static void n_setUpdateTimeout(long nativeObj, int ms);
     private native static int n_getUpdateTimeout(long nativeObj);
-    private native static void n_update(long nativeObj, boolean doRescan, boolean doWait);
+    private native static void n_update(long nativeObj, boolean doWait);
     private native static String[] n_getAllFieldNames(long nativeObj);
     private native static long n_getField(long nativeObj, String name);
+    private native static long n_getValue(long nativeObj, String name);
 }

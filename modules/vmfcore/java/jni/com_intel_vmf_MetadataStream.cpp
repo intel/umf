@@ -1611,7 +1611,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1addStat(JNIEnv *env,
         std::shared_ptr<Stat>* statObj = (std::shared_ptr<Stat>*)stat;
         if (statObj == NULL || *statObj == NULL) VMF_EXCEPTION(NullPointerException, "Stat object to add is null pointer.");
 
-        (*obj)->addStat(**statObj);
+        (*obj)->addStat(*statObj);
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name);}
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -1655,7 +1655,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getStat(JNIEnv *env
         std::string _nameS(_name);
         env->ReleaseStringUTFChars(name, _name);
 
-        return (jlong) new std::shared_ptr<Stat>( new Stat((*obj)->getStat(_nameS)) );
+        return (jlong) new std::shared_ptr<Stat>( (*obj)->getStat(_nameS) );
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }

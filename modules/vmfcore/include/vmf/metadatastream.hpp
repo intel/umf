@@ -180,7 +180,7 @@ public:
     * \return identifier of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     */
-    IdType add( std::shared_ptr< Metadata >& spMetadata);
+    IdType add( std::shared_ptr< Metadata > spMetadata);
 
     /*!
     * \brief Add new metadata item
@@ -207,7 +207,7 @@ public:
     /*!
     * \brief Remove schema and all objects in it.
     */
-    void remove( const std::shared_ptr< MetadataSchema >& schema );
+    void remove( std::shared_ptr< MetadataSchema > schema );
 
     /*!
     * \brief Remove all metadata.
@@ -220,12 +220,12 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( std::shared_ptr< MetadataSchema > spSchema );
 
     /*!
     * \brief Alias for %addSchema
     */
-    void add(const std::shared_ptr< MetadataSchema >& spSchema)
+    void add(std::shared_ptr< MetadataSchema > spSchema)
     { addSchema(spSchema); }
     /*!
     * \brief Get metadata schema by its name
@@ -329,12 +329,12 @@ public:
     * \brief Add new video segment
     * \throw IncorrectParamException when input segment intersected with anyone of already created segments.
     */
-    void addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment);
+    void addVideoSegment(std::shared_ptr<VideoSegment> newSegment);
 
     /*!
     * \brief Alias for %addVideoSegment
     */
-    void add(const std::shared_ptr<VideoSegment>& newSegment)
+    void add(std::shared_ptr<VideoSegment> newSegment)
     { addVideoSegment(newSegment); }
 
     /*!
@@ -361,22 +361,13 @@ public:
     * \param stat [in] statistics object to add
     * \throw IncorrectParamException if such statistics object already exist
     */
-    void addStat( const Stat& stat );
+    void addStat(std::shared_ptr<Stat> stat);
 
     /*!
     * \brief Alias for %addStat
     */
-    void add(const Stat& stat)
+    void add(std::shared_ptr<Stat> stat)
     { addStat(stat); }
-    void add(Stat&& stat)
-    { addStat(std::forward<Stat>(stat)); }
-
-    /*!
-    * \brief Add new statistics object (move semantics). This feature requires C++11 compatible compiler.
-    * \param stat [in] statistics object to add/move
-    * \throw IncorrectParamException if such statistics object already exist
-    */
-    void addStat( Stat&& stat );
 
     /*!
     * \brief Get statistics object by its name
@@ -384,7 +375,7 @@ public:
     * \return Statistics object (reference to)
     * \throw NotFoundException if such statistics object not exist
     */
-    Stat& getStat( const std::string& name ) const;
+    std::shared_ptr<Stat> getStat(const std::string& name) const;
 
     /*!
     * \brief Get names of all statistics objects
@@ -393,22 +384,18 @@ public:
     std::vector< std::string > getAllStatNames() const;
 
     /*!
-    * \brief Notify statistics object(s) about statistics-related events
-    * \param action [in] action
-    * \param spMetadata [in] pointer to metadata object
+    * \brief Clear statistics and re-calculates it again using all the existing metadata items
     */
-    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
+    void recalcStat();
 
 protected:
+    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
     void internalAdd(const std::shared_ptr< Metadata >& spMetadata);
 
 private:
-    void activateStats();
-    void clearStats();
-
     OpenMode m_eMode;
     std::string m_sFilePath;
     MetadataSet m_oMetadataSet;
@@ -422,7 +409,7 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
-    std::vector< Stat > m_stats;
+    std::vector< std::shared_ptr<Stat> > m_stats;
 };
 
 }

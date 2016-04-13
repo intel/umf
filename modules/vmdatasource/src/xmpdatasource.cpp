@@ -456,7 +456,7 @@ void XMPDataSource::load(std::map<vmf_string, std::shared_ptr<MetadataSchema> >&
     }
 }
 
-void XMPDataSource::saveStats(const std::vector< Stat >& stats)
+void XMPDataSource::saveStats(const std::vector< std::shared_ptr<Stat> >& stats)
 {
     statSourceCheck();
     try
@@ -473,7 +473,7 @@ void XMPDataSource::saveStats(const std::vector< Stat >& stats)
     }
 }
 
-void XMPDataSource::loadStats(std::vector< Stat >& stats)
+void XMPDataSource::loadStats(std::vector< std::shared_ptr<Stat> >& stats)
 {
     statSourceCheck();
     try

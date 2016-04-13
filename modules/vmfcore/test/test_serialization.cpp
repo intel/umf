@@ -234,8 +234,8 @@ TEST_P(TestSerialization, StoreAll)
 
     segments.clear();
     schemas.clear();
-    std::vector<vmf::MetadataInternal> mdInt;
-    std::vector<vmf::Stat> stats;
+    std::vector<MetadataInternal> mdInt;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
 
     ASSERT_THROW(format->parse("", mdInt, schemas, segments, stats, attribs), vmf::IncorrectParamException);
@@ -255,7 +255,7 @@ TEST_P(TestSerialization, Parse_schemasArray)
     schemas.clear();
 
     std::vector<MetadataInternal> metadata;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 0, 2, 0, 0, 0 } },
@@ -278,7 +278,7 @@ TEST_P(TestSerialization, Parse_schemasAll)
     std::string result = stream.serialize(*format);
 
     std::vector<MetadataInternal> metadata;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 11, 2, 0, 0, 3 } },
@@ -301,7 +301,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
     schemas.push_back(spSchemaPeople);
     
     std::vector<MetadataInternal> md;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { (int)set.size(), 0, 0, 0, 0 } },
@@ -335,7 +335,7 @@ TEST_P(TestSerialization, Parse_metadataAll)
     std::string result = stream.serialize(*format);
 
     std::vector<MetadataInternal> md;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { (int)set.size(), (int)schemas.size(), 0, 0, 3 } },
@@ -387,7 +387,7 @@ TEST_P(TestSerialization, Parse_segmentArray)
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> loadedSegments;
     std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 0, 0, (int)segments.size(), 0, 0 } },
@@ -429,7 +429,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 
     std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas1;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
     Format::ParseCounters
         expected{ { 1, 1, 0, 0, 1 } },

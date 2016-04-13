@@ -129,7 +129,7 @@ public class VmfMetadataDescTest
         thrown.expect(com.intel.vmf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid metadata descriprion type.");
         @SuppressWarnings("unused")
-        MetadataDesc mdDesc = new MetadataDesc ("name", Variant.type_unknown);
+        MetadataDesc mdDesc = new MetadataDesc ("name", Variant.type_empty);
     }
     
     @Test

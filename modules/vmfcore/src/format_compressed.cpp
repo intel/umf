@@ -41,7 +41,7 @@ std::string FormatCompressed::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    const std::vector<Stat>& stats,
+    const std::vector<std::shared_ptr<Stat>>& stats,
     const AttribMap& attribs
 )
 {
@@ -55,7 +55,7 @@ Format::ParseCounters FormatCompressed::parse(
     std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<Stat>& stats,
+    std::vector<std::shared_ptr<Stat>>& stats,
     AttribMap& attribs // nextId, checksum, etc
     )
 {
@@ -105,7 +105,7 @@ std::string FormatCompressed::compress(const std::string& input)
 
         const IdType nextId = 1;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-        std::vector<Stat> stats;
+        std::vector<std::shared_ptr<Stat>> stats;
         AttribMap attribs{ {"nextId", to_string(nextId)}, };
 
         //create writer with no compression enabled
@@ -128,7 +128,7 @@ std::string FormatCompressed::decompress(const std::string& input)
     schemas.push_back(cSchema);
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     AttribMap attribs;
 
     //any exceptions thrown inside will be passed further

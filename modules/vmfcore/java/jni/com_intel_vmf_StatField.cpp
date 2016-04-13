@@ -111,26 +111,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getMetadataName(JNIEnv
     return 0;
 }
 
-//long n_getMetadataDesc(long nativeObj);
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1getMetadataDesc(JNIEnv *env, jclass, jlong self);
-
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1getMetadataDesc(JNIEnv *env, jclass, jlong self)
-{
-    static const char method_name[] = "StatField::n_1getMetadataDesc";
-
-    try
-    {
-        std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
-        std::shared_ptr<MetadataDesc> mDesc = (*obj)->getMetadataDesc();
-        if (mDesc.get() == nullptr) return 0;
-        else return (jlong) new std::shared_ptr<MetadataDesc>(mDesc);
-    }
-    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
-    catch (...) { throwJavaException(env, 0, method_name); }
-    return 0;
-}
-
 //String n_getFieldName(long nativeObj);
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getFieldName(JNIEnv *env, jclass, jlong self);
 
@@ -143,26 +123,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getFieldName(JNIEnv *e
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getFieldName().c_str());
-    }
-    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
-    catch (...) { throwJavaException(env, 0, method_name); }
-    return 0;
-}
-
-//long n_getFieldDesc(long nativeObj);
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1getFieldDesc(JNIEnv *env, jclass, jlong self);
-
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1getFieldDesc(JNIEnv *env, jclass, jlong self)
-{
-    static const char method_name[] = "StatField::n_1getFieldDesc";
-
-    try
-    {
-        std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
-        FieldDesc fDesc = (*obj)->getFieldDesc();
-        if (fDesc == FieldDesc()) return 0;
-        else return (jlong) new std::shared_ptr<FieldDesc>(new FieldDesc(fDesc));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
