@@ -32,7 +32,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="moQ-q6-xh3">
-                                <rect key="frame" x="251" y="58" width="50" height="50"/>
+                                <rect key="frame" x="8" y="58" width="50" height="50"/>
                                 <state key="normal" image="button.png"/>
                                 <connections>
                                     <action selector="clickButton:" destination="2" eventType="touchUpInside" id="OT0-4b-dhm"/>
