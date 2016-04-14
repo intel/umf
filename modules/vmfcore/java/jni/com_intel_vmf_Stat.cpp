@@ -42,7 +42,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jst
     try
     {
         if (name == 0 || fields == 0) VMF_EXCEPTION(NullPointerException, "Neither name nor fields array can be null.");
-        
+
         const char* _name = env->GetStringUTFChars(name, NULL);
         std::string _nameS(_name);
         env->ReleaseStringUTFChars(name, _name);
@@ -175,7 +175,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, 
     return 0;
 }
 
-//void n_update(long nativeObj, boolean doRescan, boolean doWait);
+//void n_update(long nativeObj, boolean doWait);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait);
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait)
@@ -261,6 +261,23 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass,
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
+}
+
+//void n_clear(long nativeObj);
+JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1clear(JNIEnv *env, jclass, jlong self);
+
+JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1clear(JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "Stat::n_1clear";
+
+    try
+    {
+        std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
+        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        (*obj)->clear();
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
 }
 
 }

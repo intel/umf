@@ -35,7 +35,7 @@ public class VmfStatTest {
     @Test
     public void testStatFieldSimple () {
         assertTrue(sf1.equals(sf2));
-    	assertTrue(sf1.equals(sf2));
+        assertTrue(sf1.equals(sf2));
         assertFalse(sf1.equals(sfX));
 
         assertEquals( sf1.getName(), "name1" );
@@ -64,53 +64,53 @@ public class VmfStatTest {
         assertEquals(afn[1], sf2.getName());
         assertEquals(afn[2], sfX.getName());
 
-        assertTrue( s.getField(sf1.getName()).equals(sf1) );
-        assertTrue( s.getField(sfX.getName()).equals(sfX) );
+        assertTrue( s.getFieldCopy(sf1.getName()).equals(sf1) );
+        assertTrue( s.getFieldCopy(sfX.getName()).equals(sfX) );
     }
-    
+
     @Test
     public void testStat () {
-        MetadataDesc mdDesc = new MetadataDesc("point", 
-        		new FieldDesc("x", Variant.type_integer),
-            	new FieldDesc("y", Variant.type_real)
-        ); 
-        
+        MetadataDesc mdDesc = new MetadataDesc("point",
+                new FieldDesc("x", Variant.type_integer),
+                new FieldDesc("y", Variant.type_real)
+        );
+
         MetadataSchema schema = new MetadataSchema("test schema");
         schema.add(mdDesc);
 
         MetadataStream stream = new MetadataStream();
         stream.addSchema(schema);
-        
+
         stream.addStat(
-        	new Stat("stat",
-        		new StatField("min-x", schema.getName(), mdDesc.getMetadataName(), "x", StatField.BuiltinOp_Min),
-        		new StatField("cnt-y", schema.getName(), mdDesc.getMetadataName(), "y", StatField.BuiltinOp_Count)
-        	)
+            new Stat("stat",
+                new StatField("min-x", schema.getName(), mdDesc.getMetadataName(), "x", StatField.BuiltinOp_Min),
+                new StatField("cnt-y", schema.getName(), mdDesc.getMetadataName(), "y", StatField.BuiltinOp_Count)
+            )
         );
-        
+
         String[] sNames = stream.getAllStatNames();
         assertEquals(sNames.length, 1);
         assertEquals(sNames[0], "stat");
-        
+
         Stat st = stream.getStat("stat");
         assertEquals(st.getUpdateMode(), Stat.UpdateMode_Disabled);
         st.setUpdateMode(Stat.UpdateMode_Manual);
         assertEquals(stream.getStat("stat").getUpdateMode(), Stat.UpdateMode_Manual);
-        
+
         String[] sfNames = st.getAllFieldNames();
         assertEquals(sfNames.length, 2);
         assertEquals(sfNames[0], "min-x");
         assertEquals(sfNames[1], "cnt-y");
-        
-        assertTrue(st.getField("min-x").getValue().equals(new Variant()));
-        assertTrue(st.getField("cnt-y").getValue().equals(new Variant(0)));
-        
+
+        assertTrue(st.getValue("min-x").equals(new Variant()));
+        assertTrue(st.getValue("cnt-y").equals(new Variant(0)));
+
         Metadata md1 = new Metadata(mdDesc);
         md1.setFieldValue("x", new Variant(1));
         md1.setFieldValue("y", new Variant(1));
         stream.add(md1);
         st.update(true);
-        
+
         assertTrue(st.getValue("min-x").equals(new Variant(1)));
         assertTrue(st.getValue("cnt-y").equals(new Variant(1)));
 
@@ -121,5 +121,12 @@ public class VmfStatTest {
         st.update(true);
         assertTrue(st.getValue("min-x").equals(new Variant(1)));
         assertTrue(st.getValue("cnt-y").equals(new Variant(2)));
+
+        stream.remove(md1.getID());
+        assertTrue(st.getState() == Stat.State_NeedRescan);
+        stream.recalcStat();
+        st.update(true);
+        assertTrue(st.getValue("min-x").equals(new Variant(2)));
+        assertTrue(st.getValue("cnt-y").equals(new Variant(1)));
     }
 }

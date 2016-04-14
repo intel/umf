@@ -1662,4 +1662,21 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataStream_n_1getStat(JNIEnv *env
     return 0;
 }
 
+//void n_recalcStat(long self);
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1recalcStat(JNIEnv *env, jclass, jlong self);
+
+JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_n_1recalcStat(JNIEnv *env, jclass, jlong self)
+{
+    static const char method_name[] = "MetadataStream::n_1recalcStat";
+    try
+    {
+        std::shared_ptr<MetadataStream>* obj = (std::shared_ptr<MetadataStream>*) self;
+        if (obj == NULL || *obj == NULL) VMF_EXCEPTION(NullPointerException, "Stream (self) is null pointer.");
+
+        (*obj)->recalcStat();
+    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
+}
+
 }

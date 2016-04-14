@@ -92,11 +92,15 @@ public class Stat {
         update(false);
     }
 
+    public void clear() {
+        n_clear(nativeObj);
+    }
+
     public String[] getAllFieldNames() {
         return n_getAllFieldNames(nativeObj);
     }
 
-    public StatField getField( String name ) {
+    public StatField getFieldCopy( String name ) {
         return new StatField( n_getField(nativeObj, name) );
     }
 
@@ -122,6 +126,7 @@ public class Stat {
     private native static void n_setUpdateTimeout(long nativeObj, int ms);
     private native static int n_getUpdateTimeout(long nativeObj);
     private native static void n_update(long nativeObj, boolean doWait);
+    private native static void n_clear(long nativeObj);
     private native static String[] n_getAllFieldNames(long nativeObj);
     private native static long n_getField(long nativeObj, String name);
     private native static long n_getValue(long nativeObj, String name);
