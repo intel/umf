@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>text</key>
+		<string>Emulated GPS</string>
+		<key>checked</key>
+		<true/>
+	</dict>
+	<dict>
+		<key>text</key>
+		<string>Use compression</string>
+		<key>checked</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>text</key>
+		<string>Video port</string>
+		<key>port</key>
+		<integer>1234</integer>
+	</dict>
+	<dict>
+		<key>text</key>
+		<string>Data port</string>
+		<key>port</key>
+		<integer>4321</integer>
+	</dict>
+</array>
+</plist>

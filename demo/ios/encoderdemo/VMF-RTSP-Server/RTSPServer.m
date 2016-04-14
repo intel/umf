@@ -22,6 +22,8 @@
     
     CFSocketRef _listenerVmf;
     VmfClientConnection* _vmf;
+    bool _isEmulatedGPS;
+    bool _useCompression;
     
     //time in milliseconds
     long long _startVideoStreamTime;
@@ -91,6 +93,8 @@ static void onVmfSocket (
 @synthesize bitrate = _bitrate;
 @synthesize vmf = _vmf;
 @synthesize startVideoStreamTime = _startVideoStreamTime;
+@synthesize isEmulatedGPS = _isEmulatedGPS;
+@synthesize useCompression = _useCompression;
 
 + (RTSPServer*) setupListener:(NSData*) configData
 {
@@ -108,6 +112,8 @@ static void onVmfSocket (
     _connections = [NSMutableArray arrayWithCapacity:10];
     _vmf = nil;
     _startVideoStreamTime = -1;
+    _isEmulatedGPS = true;
+    _useCompression = false;
     
     CFSocketContext info;
     memset(&info, 0, sizeof(info));
@@ -210,6 +216,8 @@ static void onVmfSocket (
         NSLog(@"Failed VmfClientConnection creating");
     
     _vmf.videoStreamStartTime = _startVideoStreamTime;
+    _vmf.isEmulatedGPS = _isEmulatedGPS;
+    _vmf.useCompression = _useCompression;
 }
 
 - (void) onVideoData:(NSArray*) data time:(double) pts
@@ -293,6 +301,27 @@ static void onVmfSocket (
     }
     freeifaddrs(interfaces);
     return address;
+}
+
+
+- (void) toggleEmulatedGPS:(bool) enable
+{
+    if (_vmf)
+        [_vmf toggleEmulatedGPS:enable];
+    
+    _isEmulatedGPS = enable;
+   
+    return;
+}
+
+- (void) toggleUseCompression:(bool) enable
+{
+    if (_vmf)
+        [_vmf toggleUseCompression:enable];
+    
+    _useCompression = enable;
+    
+    return;
 }
 
 @end

@@ -28,6 +28,7 @@ static CameraServer* theServer;
 
 @implementation CameraServer
 
+@synthesize rtsp = _rtsp;
 @synthesize delegate;
 
 + (void) initialize
