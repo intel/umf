@@ -44,7 +44,7 @@ XMPStatSource::~XMPStatSource()
 {
 }
 
-void XMPStatSource::save(const std::vector< Stat >& stats)
+void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
 {
     metadata->DeleteProperty(VMF_NS, VMF_STATISTICS);
 
@@ -63,16 +63,16 @@ void XMPStatSource::save(const std::vector< Stat >& stats)
 
         vmf_string tmpPath;
 
-        if (stat.getName().empty())
+        if (stat->getName().empty())
             VMF_EXCEPTION(DataStorageException, "Invalid stat object: name is invalid!");
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
-        metadata->SetProperty(VMF_NS, tmpPath.c_str(), stat.getName().c_str());
+        metadata->SetProperty(VMF_NS, tmpPath.c_str(), stat->getName().c_str());
 
-        std::vector< std::string > fieldNames = stat.getAllFieldNames();
+        std::vector< std::string > fieldNames = stat->getAllFieldNames();
         for( auto fieldName : fieldNames )
         {
-            const StatField& field = stat.getField(fieldName);
+            const StatField& field = stat->getField(fieldName);
 
             vmf_string pathToFieldArray;
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_FIELD, &pathToFieldArray);
@@ -87,22 +87,19 @@ void XMPStatSource::save(const std::vector< Stat >& stats)
             if (field.getOpName().empty())
                 VMF_EXCEPTION(DataStorageException, "Invalid stat object: field operation name is invalid!");
 
-            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
-            if (metadataDesc == nullptr)
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata descriptor is null!");
-            if (metadataDesc->getSchemaName().empty())
+            if (field.getSchemaName().empty())
                 VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata schema name is invalid!");
-            if (metadataDesc->getMetadataName().empty())
+            if (field.getMetadataName().empty())
                 VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata name is invalid!");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_NAME, &tmpPath);
             metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getName().c_str());
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_SCHEMA_NAME, &tmpPath);
-            metadata->SetProperty(VMF_NS, tmpPath.c_str(), metadataDesc->getSchemaName().c_str());
+            metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getSchemaName().c_str());
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_METADATA_NAME, &tmpPath);
-            metadata->SetProperty(VMF_NS, tmpPath.c_str(), metadataDesc->getMetadataName().c_str());
+            metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getMetadataName().c_str());
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_FIELD_NAME, &tmpPath);
             metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getFieldName().c_str());
@@ -113,7 +110,7 @@ void XMPStatSource::save(const std::vector< Stat >& stats)
     }
 }
 
-void XMPStatSource::load(std::vector< Stat >& stats)
+void XMPStatSource::load(std::vector< std::shared_ptr<Stat> >& stats)
 {
     vmf_string pathToStatData;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_STATISTICS, kXMP_ArrayLastItem, &pathToStatData);
@@ -166,7 +163,7 @@ void XMPStatSource::load(std::vector< Stat >& stats)
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }
 
-        stats.emplace_back(statName, fields, updateMode);
+        stats.emplace_back(make_shared<Stat>(statName, fields, updateMode));
     }
 }
 

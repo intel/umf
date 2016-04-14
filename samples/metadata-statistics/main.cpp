@@ -104,19 +104,19 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
     {
         for( auto& statName : statNames )
         {
-            const vmf::Stat& stat = mdStream.getStat( statName );
-            std::cout << "statistics: '" << stat.getName() << "'" << std::endl;
+            auto stat = mdStream.getStat( statName );
+            std::cout << "statistics: '" << stat->getName() << "'" << std::endl;
 
-            std::vector< std::string > fieldNames = stat.getAllFieldNames();
+            std::vector< std::string > fieldNames = stat->getAllFieldNames();
             if( !fieldNames.empty() )
             {
                 for( auto& fieldName : fieldNames )
                 {
-                    const vmf::StatField& field = stat.getField( fieldName );
+                    const vmf::StatField& field = stat->getField( fieldName );
 
                     std::cout << "  name='" << field.getName() << "'"
                                  "  operation='" << field.getOpName() << "'"
-                                 "  metadata='" << field.getMetadataDesc()->getMetadataName() << "'"
+                                 "  metadata='" << field.getMetadataName() << "'"
                                  "  field='" << field.getFieldName() << "'"
                                  "  value=" << field.getValue()
                               << std::endl;
@@ -212,10 +212,10 @@ int sample(int argc, char *argv[])
     fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
-    mdStream.addStat( vmf::Stat( GPS_STAT_NAME, fields, vmf::Stat::UpdateMode::Disabled ));
+    mdStream.addStat( make_shared<vmf::Stat>( GPS_STAT_NAME, fields, vmf::Stat::UpdateMode::Disabled ));
 
-    mdStream.getStat(GPS_STAT_NAME).setUpdateTimeout( 50 );
-    mdStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::Stat::UpdateMode::OnTimer );
+    mdStream.getStat(GPS_STAT_NAME)->setUpdateTimeout( 50 );
+    mdStream.getStat(GPS_STAT_NAME)->setUpdateMode( vmf::Stat::UpdateMode::OnTimer );
 
     std::shared_ptr<vmf::Metadata> gpsMetadata;
 
@@ -258,7 +258,7 @@ int sample(int argc, char *argv[])
     gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
 
-    mdStream.getStat(GPS_STAT_NAME).update();
+    mdStream.getStat(GPS_STAT_NAME)->update();
 
     // dump statistics
     dumpStatistics( mdStream );
@@ -287,7 +287,7 @@ int sample(int argc, char *argv[])
         exit(1);
     }
 
-    loadStream.getStat(GPS_STAT_NAME).setUpdateMode( vmf::Stat::UpdateMode::Manual );
+    loadStream.getStat(GPS_STAT_NAME)->setUpdateMode( vmf::Stat::UpdateMode::Manual );
 //    loadStream.getStat(GPS_STAT_NAME).update( true );
 
     // Select all metadata items from loaded schema
@@ -306,7 +306,7 @@ int sample(int argc, char *argv[])
         cout << "\tAssociated time is: " << time << endl;
     }
 
-    loadStream.getStat(GPS_STAT_NAME).update( true, true );
+    loadStream.getStat(GPS_STAT_NAME)->update( true );
 
     // dump statistics
     dumpStatistics( loadStream );

@@ -26,7 +26,7 @@ FormatEncrypted::~FormatEncrypted()
 std::string FormatEncrypted::store(const MetadataSet &set,
                                    const std::vector<std::shared_ptr<MetadataSchema> > &schemas,
                                    const std::vector<std::shared_ptr<MetadataStream::VideoSegment> > &segments,
-                                   const std::vector<Stat>& stats,
+                                   const std::vector<std::shared_ptr<Stat> > &stats,
                                    const AttribMap &attribs)
 {
     std::string text = format->store(set, schemas, segments, stats, attribs);
@@ -35,11 +35,11 @@ std::string FormatEncrypted::store(const MetadataSet &set,
 
 
 Format::ParseCounters FormatEncrypted::parse(const std::string &text,
-    std::vector<MetadataInternal> &metadata,
-    std::vector<std::shared_ptr<MetadataSchema> > &schemas,
-    std::vector<std::shared_ptr<MetadataStream::VideoSegment> > &segments,
-    std::vector<Stat>& stats,
-    AttribMap &attribs)
+                                             std::vector<MetadataInternal> &metadata,
+                                             std::vector<std::shared_ptr<MetadataSchema> > &schemas,
+                                             std::vector<std::shared_ptr<MetadataStream::VideoSegment> > &segments,
+                                             std::vector<std::shared_ptr<Stat> > &stats,
+                                             AttribMap &attribs)
 {
     std::string decrypted = decrypt(text);
     return format->parse(decrypted, metadata, schemas, segments, stats, attribs);
@@ -86,7 +86,7 @@ std::string FormatEncrypted::encrypt(const std::string &input)
 
         const IdType nextId = 1;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-        std::vector<Stat> stats;
+        std::vector<std::shared_ptr<Stat>> stats;
         AttribMap attribs{ {"nextId", to_string(nextId)} };
 
         //create writer with no wrapping (like compression or encryption) enabled
@@ -108,7 +108,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-    std::vector<Stat> stats;
+    std::vector<std::shared_ptr<Stat>> stats;
     AttribMap attribs;
 
     //any exceptions thrown inside will be passed further

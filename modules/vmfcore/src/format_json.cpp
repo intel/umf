@@ -220,14 +220,14 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
     }
 }
 
-static void add(JSONNode& statNode, const Stat& stat)
+static void add(JSONNode& statNode, std::shared_ptr<Stat> stat)
 {
-    if (stat.getName().empty())
+    if (stat->getName().empty())
         VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
-    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat.getName()));
+    statNode.push_back(JSONNode(ATTR_STAT_NAME, stat->getName()));
 
-    std::vector< std::string > fieldNames = stat.getAllFieldNames();
+    std::vector< std::string > fieldNames = stat->getAllFieldNames();
     if (!fieldNames.empty())
     {
         JSONNode fieldsArrayNode(JSON_ARRAY);
@@ -235,7 +235,7 @@ static void add(JSONNode& statNode, const Stat& stat)
 
         for(auto& fieldName : fieldNames)
         {
-            const StatField& field = stat.getField(fieldName);
+            const StatField& field = stat->getField(fieldName);
 
             if (field.getName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
@@ -244,20 +244,20 @@ static void add(JSONNode& statNode, const Stat& stat)
             if (field.getOpName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
 
-            std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
+            /*std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
             if (metadataDesc == nullptr)
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");
-            if (metadataDesc->getSchemaName().empty())
+                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
+            if (field.getSchemaName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
-            if (metadataDesc->getMetadataName().empty())
+            if (field.getMetadataName().empty())
                 VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
 
             JSONNode fieldNode(JSON_NODE);
             fieldNode.set_name(TAG_STAT_FIELD);
 
             fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_NAME, field.getName()));
-            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_SCHEMA_NAME, metadataDesc->getSchemaName()));
-            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_METADATA_NAME, metadataDesc->getMetadataName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_SCHEMA_NAME, field.getSchemaName()));
+            fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_METADATA_NAME, field.getMetadataName()));
             fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_FIELD_NAME, field.getFieldName()));
             fieldNode.push_back(JSONNode(ATTR_STAT_FIELD_OP_NAME, field.getOpName()));
 
@@ -272,7 +272,7 @@ std::string FormatJSON::store(
     const MetadataSet& set,
     const std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    const std::vector<Stat>& stats,
+    const std::vector<std::shared_ptr<Stat>>& stats,
     const AttribMap& attribs
     )
 {
@@ -668,7 +668,7 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(c
     return spSegment;
 }
 
-static Stat parseStatFromNode(const JSONNode& statNode)
+static std::shared_ptr<Stat> parseStatFromNode(const JSONNode& statNode)
 {
     auto statNameIter = statNode.find(ATTR_STAT_NAME);
 
@@ -720,7 +720,7 @@ static Stat parseStatFromNode(const JSONNode& statNode)
         }
     }
 
-    return Stat(statName, fields, updateMode);
+    return std::make_shared<Stat>(statName, fields, updateMode);
 }
 
 Format::ParseCounters FormatJSON::parse(
@@ -728,7 +728,7 @@ Format::ParseCounters FormatJSON::parse(
     std::vector<MetadataInternal>& metadata,
     std::vector<std::shared_ptr<MetadataSchema>>& schemas,
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-    std::vector<Stat>& stats,
+    std::vector<std::shared_ptr<Stat>>& stats,
     AttribMap& attribs // nextId, checksum, etc
     )
 {

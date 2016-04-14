@@ -101,9 +101,9 @@ public:
 
     virtual void pushChanges();
 
-    virtual void saveStats(const std::vector< Stat >& stats);
+    virtual void saveStats(const std::vector< std::shared_ptr<Stat> >& stats);
 
-    virtual void loadStats(std::vector< Stat >& stats);
+    virtual void loadStats(std::vector< std::shared_ptr<Stat> >& stats);
 
     /*!
      * \brief Initializes XMPDataSource class dependecies

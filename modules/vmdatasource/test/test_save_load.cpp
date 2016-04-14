@@ -1290,7 +1290,7 @@ TEST_F(TestSaveLoadFields, Attributes)
         vmf::Variant addressValue;
         ASSERT_FALSE(people[0]->hasField(TEST_FIELD_ADDRESS));
         ASSERT_NO_THROW(addressValue = people[0]->getFieldValue(TEST_FIELD_ADDRESS));
-        ASSERT_EQ(vmf::Variant::type_unknown, addressValue.getType());
+        ASSERT_EQ(vmf::Variant::type_empty, addressValue.getType());
         ASSERT_TRUE(addressValue.isEmpty());
 
         ASSERT_EQ("Vasya Pupkin", (vmf::vmf_string)people[1]->getFieldValue(TEST_FIELD_NAME) );

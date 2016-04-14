@@ -226,6 +226,12 @@ public:
     StatField& operator=( StatField&& other );
 
     /*!
+    * \brief Equality operator.
+    * \param rhs [in] another StatField object reference to compare
+    * \return true if fields are equal (use the same operation for the same metadata field) and false otherwise
+    */
+    bool operator==(const StatField& rhs) const;
+    /*!
     * \brief Get name string for statistics field object
     * \return name string
     */
@@ -243,23 +249,12 @@ public:
     */
     std::string getMetadataName() const;
 
-    /*!
-    * \brief Get pointer to metadata descriptor for statistics field object
-    * \return metadata descriptor pointer
-    */
-    std::shared_ptr< MetadataDesc > getMetadataDesc() const;
 
     /*!
     * \brief Get metadata field name string for statistics field object
     * \return metadata field name string
     */
     std::string getFieldName() const;
-
-    /*!
-    * \brief Get metadata field descriptor for statistics field object
-    * \return metadata field descriptor object
-    */
-    FieldDesc getFieldDesc() const;
 
     /*!
     * \brief Get statistics operation name string for statistics field object
@@ -274,20 +269,15 @@ public:
     Variant getValue() const { return m_op->value(); }
 
 private:
-    void setStream( MetadataStream* pMetadataStream );
-    MetadataStream* getStream() const;
-
-    bool isActive() const { return m_isActive; }
-
     void handle( std::shared_ptr< Metadata > metadata );
     void reset();
 
     class StatFieldDesc;
-    std::unique_ptr< StatFieldDesc > m_desc;
+    std::unique_ptr<StatFieldDesc> m_desc;
 
-    StatOpBase* m_op;
-    bool m_isActive;
+    std::unique_ptr<StatOpBase> m_op;
 };
+
 
 /*!
 * \class Stat
@@ -431,13 +421,16 @@ public:
     unsigned getUpdateTimeout() const { return m_updateTimeout; }
 
     /*!
+    * \brief Clear accumulated statistics
+    */
+    void clear();
+
+    /*!
     * \brief Update statistics object
-    * \param doRescan [in] schedule full rescan of metadata for statistics object, if true;
-    * schedule incremental update otherwise
     * \param doWait [in] specifies whether update will be done in blocking or non-blocking mode;
     * function will wait for completion of scheduled update/rescan if true, and not wait otherwise
     */
-    void update( bool doRescan = false, bool doWait = false );
+    void update(bool doWait = false );
 
     /*!
     * \brief Notifies statistics object about metadata event
@@ -470,13 +463,7 @@ public:
     Variant operator[]( const std::string& name ) const { return getField( name ).getValue(); }
 
 private:
-    void setStream( MetadataStream* pMetadataStream );
-    MetadataStream* getStream() const;
-
-    bool isActive() const { return m_isActive; }
-
     void handle( const std::shared_ptr< Metadata > metadata );
-    void rescan();
 
     class StatDesc;
     std::unique_ptr< StatDesc > m_desc;
@@ -488,9 +475,9 @@ private:
 
     UpdateMode::Type m_updateMode;
     unsigned m_updateTimeout;
-    bool m_isActive;
 
     mutable std::mutex m_lock;
+    bool m_needRescan;
 };
 
 } // namespace vmf

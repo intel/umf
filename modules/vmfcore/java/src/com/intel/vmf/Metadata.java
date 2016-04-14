@@ -286,8 +286,6 @@ public class Metadata
     }
 
     private native static long n_Metadata (long mdDescriptionAddr);
-    //private native static long n_MetadataCopy (long other);
-    //TO DO: private native static void n_clear (long nativeObj);
     private native static long n_getID (long nativeObj);
     private native static long n_getFrameIndex (long nativeObj);
     private native static long n_getNumOfFrames (long nativeObj);

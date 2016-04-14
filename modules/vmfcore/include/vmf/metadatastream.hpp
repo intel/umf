@@ -137,14 +137,14 @@ public:
     * \param eMode [in] open mode
     * \return Open result
     */
-    bool open( const std::string& sFilePath, OpenMode eMode = ReadOnly);
+    bool open( const std::string& sFilePath, OpenMode eMode = ReadOnly );
 
     /*!
     * \brief Reopen a previously closed metadata stream. 
     * \param eMode [in] open mode
     * \return Open result
     */
-    bool reopen( OpenMode eMode = ReadOnly);
+    bool reopen( OpenMode eMode = ReadOnly );
 
     /*!
     * \brief Load metadata with specified scheme
@@ -170,6 +170,7 @@ public:
     */
     bool save(const vmf_string& compressorId = vmf_string());
 
+
     /*!
     * \brief Save the in-memory metadata to a different video file.
     * \param sFilePath the path of the new file.
@@ -177,7 +178,7 @@ public:
     * (empty string means no compression)
     * \return true if succeed.
     */
-    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string());
+    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string() );
 
     /*!
     * \brief Close previously opened media file
@@ -197,7 +198,7 @@ public:
     * \return identifier of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     */
-    IdType add( std::shared_ptr< Metadata >& spMetadata);
+    IdType add( std::shared_ptr< Metadata > spMetadata);
 
     /*!
     * \brief Add new metadata item
@@ -224,7 +225,7 @@ public:
     /*!
     * \brief Remove schema and all objects in it.
     */
-    void remove( const std::shared_ptr< MetadataSchema >& schema );
+    void remove( std::shared_ptr< MetadataSchema > schema );
 
     /*!
     * \brief Remove all metadata.
@@ -237,12 +238,17 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( std::shared_ptr< MetadataSchema > spSchema );
 
+    /*!
+    * \brief Alias for %addSchema
+    */
+    void add(std::shared_ptr< MetadataSchema > spSchema)
+    { addSchema(spSchema); }
     /*!
     * \brief Get metadata schema by its name
     * \param sSchemaName [in] schema name
-    * \return pointer to schema o9bject or null if schema not found
+    * \return pointer to schema object or null if schema not found
     */
     const std::shared_ptr< MetadataSchema > getSchema( const std::string& sSchemaName ) const;
 
@@ -341,7 +347,13 @@ public:
     * \brief Add new video segment
     * \throw IncorrectParamException when input segment intersected with anyone of already created segments.
     */
-    void addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment);
+    void addVideoSegment(std::shared_ptr<VideoSegment> newSegment);
+
+    /*!
+    * \brief Alias for %addVideoSegment
+    */
+    void add(std::shared_ptr<VideoSegment> newSegment)
+    { addVideoSegment(newSegment); }
 
     /*!
     * \brief Get vector of video segments that were set for the video
@@ -391,14 +403,13 @@ public:
     * \param stat [in] statistics object to add
     * \throw IncorrectParamException if such statistics object already exist
     */
-    void addStat( const Stat& stat );
+    void addStat(std::shared_ptr<Stat> stat);
 
     /*!
-    * \brief Add new statistics object (move semantics). This feature requires C++11 compatible compiler.
-    * \param stat [in] statistics object to add/move
-    * \throw IncorrectParamException if such statistics object already exist
+    * \brief Alias for %addStat
     */
-    void addStat( Stat&& stat );
+    void add(std::shared_ptr<Stat> stat)
+    { addStat(stat); }
 
     /*!
     * \brief Get statistics object by its name
@@ -406,7 +417,7 @@ public:
     * \return Statistics object (reference to)
     * \throw NotFoundException if such statistics object not exist
     */
-    Stat& getStat( const std::string& name ) const;
+    std::shared_ptr<Stat> getStat(const std::string& name) const;
 
     /*!
     * \brief Get names of all statistics objects
@@ -415,13 +426,17 @@ public:
     std::vector< std::string > getAllStatNames() const;
 
     /*!
+    * \brief Clear statistics and re-calculates it again using all the existing metadata items
+    */
+    void recalcStat();
+
+protected:
+    /*!
     * \brief Notify statistics object(s) about statistics-related events
     * \param action [in] action
     * \param spMetadata [in] pointer to metadata object
     */
     void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
-
-protected:
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
@@ -430,9 +445,6 @@ protected:
     void encrypt();
 
 private:
-    void activateStats();
-    void clearStats();
-
     OpenMode m_eMode;
     std::string m_sFilePath;
     MetadataSet m_oMetadataSet;
@@ -449,7 +461,7 @@ private:
     bool m_useEncryption;
     std::shared_ptr<Encryptor> m_encryptor;
     std::string m_hintEncryption;
-    std::vector< Stat > m_stats;
+    std::vector< std::shared_ptr<Stat> > m_stats;
 };
 
 }

@@ -40,13 +40,12 @@ TEST_F(TestVariant, Compare)
     ASSERT_TRUE(var3 == var1);
     ASSERT_TRUE(var2 == var1);
     ASSERT_TRUE(var1 == var2);
-    bool tmp;
-    ASSERT_THROW(tmp = var4 == var5, vmf::IncorrectParamException);
+    ASSERT_TRUE(var4 == var5);
 }
 
-TEST_F(TestVariant, CreateUnknown)
+TEST_F(TestVariant, CreateEmpty)
 {
-    ASSERT_EQ(v.getType(), vmf::Variant::type_unknown);
+    ASSERT_EQ(v.getType(), vmf::Variant::type_empty);
 }
 
 TEST_F(TestVariant, CreateInteger)
@@ -192,9 +191,9 @@ TEST_F(TestVariant, CreateVec4dVector)
     ASSERT_TRUE(result);
 }
 
-TEST_F(TestVariant, GetTypeNameUnknown)
+TEST_F(TestVariant, GetTypeNameEmpty)
 {
-    ASSERT_EQ(v.getTypeName(), "unknown");
+    ASSERT_EQ(v.getTypeName(), "empty");
 }
 
 TEST_F(TestVariant, GetTypeNameInteger)
@@ -304,7 +303,7 @@ TEST_F(TestVariant, GetTypeNameVec4dVector)
 
 TEST_F(TestVariant, MaxLimitUnknown)
 {
-    EXPECT_THROW(vmf::Variant::maxLimit<vmf::vmf_integer>(vmf::Variant::type_unknown), vmf::IncorrectParamException);
+    EXPECT_THROW(vmf::Variant::maxLimit<vmf::vmf_integer>(vmf::Variant::type_empty), vmf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, MaxLimitInteger)
@@ -321,7 +320,7 @@ TEST_F(TestVariant, MaxLimitReal)
 
 TEST_F(TestVariant, MinLimitUnknown)
 {
-    EXPECT_THROW(vmf::Variant::minLimit<vmf::vmf_integer>(vmf::Variant::type_unknown), vmf::IncorrectParamException);
+    EXPECT_THROW(vmf::Variant::minLimit<vmf::vmf_integer>(vmf::Variant::type_empty), vmf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, MinLimitInteger)
@@ -336,9 +335,14 @@ TEST_F(TestVariant, MinLimitReal)
     ASSERT_DOUBLE_EQ(limitReal, std::numeric_limits<vmf::vmf_real>::lowest());
 }
 
-TEST_F(TestVariant, FromStringUnknown)
+TEST_F(TestVariant, FromStringEmpty)
 {
-    v.fromString(vmf::Variant::type_unknown, "noType");
+    v.fromString(vmf::Variant::type_empty, "noType");
+    ASSERT_TRUE(v.isEmpty());
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringInteger)
@@ -346,6 +350,10 @@ TEST_F(TestVariant, FromStringInteger)
     v.fromString(vmf::Variant::type_integer, "42");
     ASSERT_EQ(v.getType(), vmf::Variant::type_integer);
     ASSERT_EQ((vmf::vmf_integer) v, 42);
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringReal)
@@ -353,6 +361,10 @@ TEST_F(TestVariant, FromStringReal)
     v.fromString(vmf::Variant::type_real, "42.42");
     ASSERT_EQ(v.getType(), vmf::Variant::type_real);
     ASSERT_EQ((vmf::vmf_real) v, 42.42);
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringString)
@@ -360,12 +372,16 @@ TEST_F(TestVariant, FromStringString)
     v.fromString(vmf::Variant::type_string, "string");
     ASSERT_EQ(v.getType(), vmf::Variant::type_string);
     ASSERT_EQ((vmf::vmf_string) v, "string");
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
 }
 
-TEST_F(TestVariant, ToStringUnknown)
+TEST_F(TestVariant, ToStringEmpty)
 {
-    std::string typeStr = v.toString();
-    ASSERT_EQ("<Unknown type>", typeStr);
+    ASSERT_EQ("<empty value>", v.toString());
+    ASSERT_EQ("(empty) <empty value>", v.toString(true));
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorInteger)
@@ -378,6 +394,10 @@ TEST_F(TestVariant, ToStringFromStringVectorInteger)
     v = vmf::Variant(vint);
     vmf::Variant v2;
     v2.fromString(vmf::Variant::type_integer_vector, v.toString());
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
     ASSERT_THROW(v2.fromString(vmf::Variant::type_integer_vector, "0 : 0 : 0 : 0"), vmf::IncorrectParamException);
@@ -395,6 +415,11 @@ TEST_F(TestVariant, ToStringFromStringVectorReal)
     v2.fromString(vmf::Variant::type_real_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
+    ASSERT_TRUE(v == v2);
+
     ASSERT_THROW(v2.fromString(vmf::Variant::type_real_vector, "0.0 : 0.0 : 0.0 : 0.0"), vmf::IncorrectParamException);
 }
 
@@ -408,6 +433,11 @@ TEST_F(TestVariant, ToStringFromStringVectorString)
     v = vmf::Variant(vstring);
     vmf::Variant v2;
     v2.fromString(vmf::Variant::type_string_vector, v.toString());
+    ASSERT_TRUE(v == v2);
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
     ASSERT_THROW(v2.fromString(vmf::Variant::type_string_vector, "AA== : AA=="), vmf::IncorrectParamException);
@@ -425,6 +455,11 @@ TEST_F(TestVariant, ToStringFromStringVectorVec2d)
     v2.fromString(vmf::Variant::type_vec2d_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
+    ASSERT_TRUE(v == v2);
+
     ASSERT_THROW(v2.fromString(vmf::Variant::type_vec2d_vector, "0 0 : 0 0 : 0 0 : 0 0"), vmf::IncorrectParamException);
 }
 
@@ -440,6 +475,11 @@ TEST_F(TestVariant, ToStringFromStringVectorVec3d)
     v2.fromString(vmf::Variant::type_vec3d_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
+    ASSERT_TRUE(v == v2);
+
     ASSERT_THROW(v2.fromString(vmf::Variant::type_vec3d_vector, "0 0 0 : 0 0 0 : 0 0 0 : 0 0 0"), vmf::IncorrectParamException);
 }
 
@@ -453,6 +493,11 @@ TEST_F(TestVariant, ToStringFromStringVectorVec4d)
     v = vmf::Variant(vvec4d);
     vmf::Variant v2;
     v2.fromString(vmf::Variant::type_vec4d_vector, v.toString());
+    ASSERT_TRUE(v == v2);
+
+    vmf::Variant v3;
+    v3.fromString(v.toString(true));
+    ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
     ASSERT_THROW(v2.fromString(vmf::Variant::type_vec4d_vector, "0 0 0 0 : 0 0 0 0 : 0 0 0 0 : 0 0 0 0"), vmf::IncorrectParamException);
@@ -504,7 +549,7 @@ TEST_F(TestVariant, typeFromString)
     ASSERT_THROW(v.typeFromString(""), vmf::IncorrectParamException);
     ASSERT_THROW(v.typeFromString("invalid type"), vmf::IncorrectParamException);
 
-    ASSERT_EQ(v.typeFromString("unknown"), vmf::Variant::type_unknown);
+    ASSERT_EQ(v.typeFromString("empty"), vmf::Variant::type_empty);
     ASSERT_EQ(v.typeFromString("char"), vmf::Variant::type_integer); // removed char replaced with integer
     ASSERT_EQ(v.typeFromString("integer"), vmf::Variant::type_integer);
     ASSERT_EQ(v.typeFromString("real"), vmf::Variant::type_real);
@@ -534,37 +579,46 @@ protected:
         w = 24.42;
     }
     vmf::vmf_real x, y, z, w;
-    vmf::Variant v1, v2;
+    vmf::Variant v1, v2, v3;
 };
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec2d)
 {
     vmf::vmf_vec2d vec(x, y);
-    v1 = vmf::Variant(vec);
-    v2.fromString(vmf::Variant::type_vec2d, v1.toString());
-    bool result = v1 == v2;
-    ASSERT_TRUE(result);
     ASSERT_FALSE(vec == vmf::vmf_vec2d());
+    v1 = vmf::Variant(vec);
+
+    v2.fromString(vmf::Variant::type_vec2d, v1.toString());
+    ASSERT_TRUE(v1 == v2);
+
+    v3.fromString(v1.toString(true));
+    ASSERT_TRUE(v3 == v1);
 }
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec3d)
 {
     vmf::vmf_vec3d vec(x, y, z);
-    v1 = vmf::Variant(vec);
-    v2.fromString(vmf::Variant::type_vec3d, v1.toString());
-    bool result = v1 == v2;
-    ASSERT_TRUE(result);
     ASSERT_FALSE(vec == vmf::vmf_vec3d());
+    v1 = vmf::Variant(vec);
+
+    v2.fromString(vmf::Variant::type_vec3d, v1.toString());
+    ASSERT_TRUE(v1 == v2);
+
+    v3.fromString(v1.toString(true));
+    ASSERT_TRUE(v3 == v1);
 }
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec4d)
 {
     vmf::vmf_vec4d vec(x, y, z, w);
-    v1 = vmf::Variant(vec);
-    v2.fromString(vmf::Variant::type_vec4d, v1.toString());
-    bool result = v1 == v2;
-    ASSERT_TRUE(result);
     ASSERT_FALSE(vec == vmf::vmf_vec4d());
+    v1 = vmf::Variant(vec);
+
+    v2.fromString(vmf::Variant::type_vec4d, v1.toString());
+    ASSERT_TRUE(v1 == v2);
+
+    v3.fromString(v1.toString(true));
+    ASSERT_TRUE(v3 == v1);
 }
 
 class TestVariantRawByfferType : public ::testing::TestWithParam<size_t>
@@ -595,6 +649,10 @@ TEST_P(TestVariantRawByfferType, ToStringFromString)
     v2.fromString(vmf::Variant::type_rawbuffer, v1.toString());
     bool result = v1 == v2;
     ASSERT_TRUE(result);
+
+    vmf::Variant v3;
+    v3.fromString(v1.toString(true));
+    ASSERT_TRUE(v3 == v1);
 }
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestVariantRawByfferType, ::testing::Values(0, 1, 2, 3, 4, 5, 512) );

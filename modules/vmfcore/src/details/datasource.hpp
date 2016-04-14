@@ -179,13 +179,13 @@ public:
      * \param [in] stats statistics object vector to be saved
      * \throw DataStorageException
      */
-    virtual void saveStats(const std::vector< Stat >& stats) = 0;
+    virtual void saveStats(const std::vector< std::shared_ptr<Stat> >& stats) = 0;
 
     /*!
      * \brief Loads all statistics objects described in current metafile
      * \param [in] stats statistics object vector to be loaded
      */
-    virtual void loadStats(std::vector< Stat >& stats) = 0;
+    virtual void loadStats(std::vector< std::shared_ptr<Stat> >& stats) = 0;
 };
 
 } /* vmf */

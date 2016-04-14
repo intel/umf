@@ -94,7 +94,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
             }
         }
 
-        std::vector <Stat> vecStats;
+        std::vector <std::shared_ptr<Stat>> vecStats;
         jsize lenStats;
         jlong* statsArray;
         if (statsAddrs)
@@ -105,7 +105,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
             {
                 for (int i = 0; i < lenStats; i++)
                 {
-                    Stat* stat = (Stat*)statsArray[i];
+                    std::shared_ptr<Stat>* stat = (std::shared_ptr<Stat>*)statsArray[i];
                     vecStats.push_back(*stat);
                 }
                 env->ReleaseLongArrayElements(statsAddrs, statsArray, 0);
@@ -183,7 +183,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
         std::vector<MetadataInternal> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
-        std::vector<Stat> stats;
+        std::vector<std::shared_ptr<Stat>> stats;
         Format::AttribMap attribs;
         Format::ParseCounters counters = (*obj)->parse(textStr, metadata, schemas, segments, stats, attribs);
 
@@ -210,7 +210,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
             objsAddrs[counters.segments + cnt] = 0;
             cnt += counters.segments + 1;
             //stats
-            //for (int i = 0; i < counters[3]; i++) objsAddrs[i + cnt] = (jlong) new Stat(stats[i]);
+            for (int i = 0; i < counters.stats; i++) objsAddrs[i + cnt] = (jlong) new std::shared_ptr<Stat>(stats[i]);
             env->ReleaseLongArrayElements(objs, objsAddrs, 0);
         }
 
