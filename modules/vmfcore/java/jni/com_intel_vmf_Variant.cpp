@@ -786,10 +786,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1equals (JNIEnv *env, jc
  * Method:    n_toString
  * Signature: (J)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString(JNIEnv *env, jclass, jlong self);
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString(JNIEnv *env, jclass, jlong self, jboolean withType);
 
 
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString (JNIEnv *env, jclass, jlong self)
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString(JNIEnv *env, jclass, jlong self, jboolean withType)
 {
     static const char method_name[] = "Variant::n_1toString";
 
@@ -800,7 +800,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1toString (JNIEnv *env, j
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
 
-        std::string str = (*obj)->toString();
+        std::string str = (*obj)->toString(withType == JNI_TRUE);
         return env->NewStringUTF(str.c_str());
     }
     catch (const std::exception &e)
@@ -846,6 +846,35 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString (JNIEnv *env, jc
     {
         throwJavaException(env, &e, method_name);
     } 
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+}
+
+// fromString(string)
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString2(JNIEnv *env, jclass, jlong self, jstring value);
+
+
+JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1fromString2(JNIEnv *env, jclass, jlong self, jstring value)
+{
+    static const char method_name[] = "Variant::n_1fromString2";
+
+    try
+    {
+        std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
+        if (obj == NULL || *obj == NULL) VMF_EXCEPTION(NullPointerException, "Variant (self) is null pointer.");
+
+        const char* tmp = env->GetStringUTFChars(value, NULL);
+        std::string str(tmp);
+        env->ReleaseStringUTFChars(value, tmp);
+
+        (*obj)->fromString(str);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
     catch (...)
     {
         throwJavaException(env, 0, method_name);
@@ -967,7 +996,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1convertTo (JNIEnv *env, jcl
     try 
     {
         Variant::Type Type = (Variant::Type) type;
-        if ((Type >= Variant::Type::type_unknown) && (Type <= Variant::Type::type_vec4d_vector))
+        if ((Type >= Variant::Type::type_empty) && (Type <= Variant::Type::type_vec4d_vector))
         {
             std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
 
@@ -1005,7 +1034,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1typeToString (JNIEnv *en
     {
         Variant::Type Type = (Variant::Type) type;
 
-        if (Type >= Variant::Type::type_unknown && Type <= Variant::Type::type_vec4d_vector)
+        if (Type >= Variant::Type::type_empty && Type <= Variant::Type::type_vec4d_vector)
         {
             std::string str = Variant::typeToString (Type);
             return env->NewStringUTF (str.c_str());
@@ -1072,7 +1101,7 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_Variant_n_1isConvertible (JNIEnv *
     {
         Variant::Type src = (Variant::Type) srcType;
         Variant::Type dst = (Variant::Type) dstType;
-        if ((src >= Variant::Type::type_unknown) && (src <= Variant::Type::type_vec4d_vector) && (dst >= Variant::Type::type_unknown) && (dst <= Variant::Type::type_vec4d_vector))
+        if ((src >= Variant::Type::type_empty) && (src <= Variant::Type::type_vec4d_vector) && (dst >= Variant::Type::type_empty) && (dst <= Variant::Type::type_vec4d_vector))
         {
             return (jboolean)Variant::isConvertible(src, dst);
         }

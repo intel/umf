@@ -21,6 +21,7 @@
 
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"
+#include "xmpstatsource.hpp"
 
 #include <XMPUtils.hpp>
 
@@ -119,10 +120,8 @@ void XMPDataSource::loadXMPstructs()
     std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
     xmpFile.GetXMP(compressedXMP.get());
 
-    std::shared_ptr<XMPMetadataSource> cMetaSource;
-    std::shared_ptr<XMPSchemaSource> cSchemaSource;
-    cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
-    cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
+    std::shared_ptr<XMPSchemaSource> cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
+    std::shared_ptr<XMPMetadataSource> cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
     if (!cMetaSource || !cSchemaSource)
     {
         VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
@@ -155,6 +154,7 @@ void XMPDataSource::loadXMPstructs()
                 xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
                 schemaSource = make_shared<XMPSchemaSource>(xmp);
                 metadataSource = make_shared<XMPMetadataSource>(xmp);
+                statSource = make_shared<XMPStatSource>(xmp);
             }
             catch(IncorrectParamException& ce)
             {
@@ -164,6 +164,7 @@ void XMPDataSource::loadXMPstructs()
                     xmp = compressedXMP;
                     schemaSource = cSchemaSource;
                     metadataSource = cMetaSource;
+                    statSource = make_shared<XMPStatSource>(xmp);
                 }
                 else
                 {
@@ -176,6 +177,7 @@ void XMPDataSource::loadXMPstructs()
             xmp = compressedXMP;
             schemaSource = cSchemaSource;
             metadataSource = cMetaSource;
+            statSource = make_shared<XMPStatSource>(xmp);
         }
     }
     catch(const XMP_Error& e)
@@ -305,6 +307,7 @@ void XMPDataSource::closeFile()
     {
         metadataSource.reset();
         schemaSource.reset();
+        statSource.reset();
         xmp.reset();
         xmpFile.CloseFile();
     }
@@ -407,6 +410,7 @@ void XMPDataSource::serializeAndParse()
     xmp->ParseFromBuffer(tempBuffer.c_str(), tempBuffer.size(), 0);
     schemaSource = make_shared<XMPSchemaSource>(xmp);
     metadataSource = make_shared<XMPMetadataSource>(xmp);
+    statSource = make_shared<XMPStatSource>(xmp);
 }
 
 
@@ -452,14 +456,50 @@ void XMPDataSource::load(std::map<vmf_string, std::shared_ptr<MetadataSchema> >&
     }
 }
 
+void XMPDataSource::saveStats(const std::vector< std::shared_ptr<Stat> >& stats)
+{
+    statSourceCheck();
+    try
+    {
+        statSource->save(stats);
+    }
+    catch(const XMP_Error& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+    }
+    catch(const std::exception& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.what());
+    }
+}
+
+void XMPDataSource::loadStats(std::vector< std::shared_ptr<Stat> >& stats)
+{
+    statSourceCheck();
+    try
+    {
+        statSource->load(stats);
+    }
+    catch(const XMP_Error& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+    }
+    catch(const std::exception& e)
+    {
+        VMF_EXCEPTION(DataStorageException, e.what());
+    }
+}
+
 void XMPDataSource::clear()
 {
     metadataSourceCheck();
     schemaSourceCheck();
+    statSourceCheck();
     try
     {
         metadataSource->clear();
         schemaSource->clear();
+        statSource->clear();
     }
     catch(const XMP_Error& e)
     {
@@ -509,6 +549,14 @@ void XMPDataSource::schemaSourceCheck()
     if (!schemaSource)
     {
         VMF_EXCEPTION(DataStorageException, "Schema source doesn't exist");
+    }
+}
+
+void XMPDataSource::statSourceCheck()
+{
+    if (!statSource)
+    {
+        VMF_EXCEPTION(DataStorageException, "Statistics source doesn't exist");
     }
 }
 

@@ -103,5 +103,5 @@ TEST_F(TestMetadataDesc, CreateEvent)
 
 TEST_F(TestMetadataDesc, CreateEventUnknownType)
 {
-    EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( "people", vmf::Variant::type_unknown )), vmf::IncorrectParamException);
+    EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( "people", vmf::Variant::type_empty )), vmf::IncorrectParamException);
 }

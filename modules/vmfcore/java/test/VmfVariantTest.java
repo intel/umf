@@ -44,7 +44,7 @@ public class VmfVariantTest
         vmf_vec3d vec3d = new vmf_vec3d ();
         vmf_vec4d vec4d = new vmf_vec4d ();
         
-        assertEquals(Variant.type_unknown, var1.getType());
+        assertEquals(Variant.type_empty, var1.getType());
         
         var1.setTo(floatValue);
         assertEquals(Variant.type_real, var1.getType());
@@ -172,6 +172,9 @@ public class VmfVariantTest
 
         value = var2.toString();
         assertEquals("5.5", value);
+
+        value = var2.toString(true);
+        assertEquals("(real) 5.5", value);
 
         String typeStr = Variant.typeToString(Variant.type_vec4d_vector);
         assertEquals ("vec4d[]", typeStr);

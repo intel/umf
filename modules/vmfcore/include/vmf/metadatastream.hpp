@@ -33,6 +33,7 @@
 #include "vmf/metadataschema.hpp"
 #include "vmf/compressor.hpp"
 #include "vmf/iquery.hpp"
+#include "vmf/statistics.hpp"
 
 #include <map>
 #include <memory>
@@ -179,7 +180,7 @@ public:
     * \return identifier of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     */
-    IdType add( std::shared_ptr< Metadata >& spMetadata);
+    IdType add( std::shared_ptr< Metadata > spMetadata);
 
     /*!
     * \brief Add new metadata item
@@ -206,7 +207,7 @@ public:
     /*!
     * \brief Remove schema and all objects in it.
     */
-    void remove( const std::shared_ptr< MetadataSchema >& schema );
+    void remove( std::shared_ptr< MetadataSchema > schema );
 
     /*!
     * \brief Remove all metadata.
@@ -219,12 +220,17 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( const std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( std::shared_ptr< MetadataSchema > spSchema );
 
+    /*!
+    * \brief Alias for %addSchema
+    */
+    void add(std::shared_ptr< MetadataSchema > spSchema)
+    { addSchema(spSchema); }
     /*!
     * \brief Get metadata schema by its name
     * \param sSchemaName [in] schema name
-    * \return pointer to schema o9bject or null if schema not found
+    * \return pointer to schema object or null if schema not found
     */
     const std::shared_ptr< MetadataSchema > getSchema( const std::string& sSchemaName ) const;
 
@@ -323,7 +329,13 @@ public:
     * \brief Add new video segment
     * \throw IncorrectParamException when input segment intersected with anyone of already created segments.
     */
-    void addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment);
+    void addVideoSegment(std::shared_ptr<VideoSegment> newSegment);
+
+    /*!
+    * \brief Alias for %addVideoSegment
+    */
+    void add(std::shared_ptr<VideoSegment> newSegment)
+    { addVideoSegment(newSegment); }
 
     /*!
     * \brief Get vector of video segments that were set for the video
@@ -344,7 +356,40 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
+    /*!
+    * \brief Add new statistics object (copy semantics).
+    * \param stat [in] statistics object to add
+    * \throw IncorrectParamException if such statistics object already exist
+    */
+    void addStat(std::shared_ptr<Stat> stat);
+
+    /*!
+    * \brief Alias for %addStat
+    */
+    void add(std::shared_ptr<Stat> stat)
+    { addStat(stat); }
+
+    /*!
+    * \brief Get statistics object by its name
+    * \param name [in] statistics object name
+    * \return Statistics object (reference to)
+    * \throw NotFoundException if such statistics object not exist
+    */
+    std::shared_ptr<Stat> getStat(const std::string& name) const;
+
+    /*!
+    * \brief Get names of all statistics objects
+    * \return Statistics object names (vector of)
+    */
+    std::vector< std::string > getAllStatNames() const;
+
+    /*!
+    * \brief Clear statistics and re-calculates it again using all the existing metadata items
+    */
+    void recalcStat();
+
 protected:
+    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
@@ -364,6 +409,7 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
+    std::vector< std::shared_ptr<Stat> > m_stats;
 };
 
 }

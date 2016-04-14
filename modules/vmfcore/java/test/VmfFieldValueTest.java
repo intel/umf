@@ -69,8 +69,8 @@ public class VmfFieldValueTest
          assertEquals(Variant.type_integer, fieldValue2.getType());
          assertEquals("integer", fieldValue3.getTypeName());
          
-         assertEquals(Variant.type_unknown, fieldValue1.getType());
-         assertEquals("unknown", fieldValue1.getTypeName());
+         assertEquals(Variant.type_empty, fieldValue1.getType());
+         assertEquals("empty", fieldValue1.getTypeName());
     }
     
     @Test
@@ -100,8 +100,8 @@ public class VmfFieldValueTest
         fieldValue2.clear();
         assertEquals("", fieldValue2.getName());
         assertEquals(fv.getType(), fieldValue2.getType());
-        assertEquals(Variant.type_unknown, fieldValue2.getType());
-        assertEquals("unknown", fv.getTypeName());
+        assertEquals(Variant.type_empty, fieldValue2.getType());
+        assertEquals("empty", fv.getTypeName());
     }
     
     @Test

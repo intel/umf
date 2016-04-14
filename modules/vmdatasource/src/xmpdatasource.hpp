@@ -44,6 +44,7 @@ namespace vmf
 
 class XMPMetadataSource;
 class XMPSchemaSource;
+class XMPStatSource;
 
 /*!
  * \brief Class implements IDataSource interface with usage of XMP
@@ -92,6 +93,10 @@ public:
 
     virtual void pushChanges();
 
+    virtual void saveStats(const std::vector< std::shared_ptr<Stat> >& stats);
+
+    virtual void loadStats(std::vector< std::shared_ptr<Stat> >& stats);
+
     /*!
      * \brief Initializes XMPDataSource class dependecies
      * \throws DataStorageException
@@ -109,6 +114,8 @@ protected:
 
     virtual void metadataSourceCheck();
 
+    virtual void statSourceCheck();
+
 private:
     void loadXMPstructs();
     void saveXMPstructs();
@@ -118,6 +125,7 @@ private:
     std::shared_ptr<SXMPMeta> xmp;
     std::shared_ptr<XMPMetadataSource> metadataSource;
     std::shared_ptr<XMPSchemaSource> schemaSource;
+    std::shared_ptr<XMPStatSource> statSource;
     vmf::vmf_string metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;

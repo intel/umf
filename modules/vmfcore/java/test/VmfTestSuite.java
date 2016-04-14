@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
   VmfMetadataTest.class,
   VmfReferenceDescTest.class,
   VmfReferenceTest.class,
+  VmfStatTest.class,
   VmfVariantTest.class,
   VmfVec2d3d4dTest.class,
   VmfVideoSegmentTest.class,

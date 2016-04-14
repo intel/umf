@@ -46,7 +46,7 @@ namespace vmf
         */
         enum Type
         {
-            type_unknown = 0,
+            type_empty = 0,
             type_integer,
             type_real,
             type_string,
@@ -207,9 +207,8 @@ namespace vmf
         /*!
         * \brief Return the string representation of the value.
         * \return The string description of the value.
-        * \details The string returned from this routine does not contain information of the data type.
         */
-        std::string toString() const;
+        std::string toString(bool withType = false) const;
 
         /*!
         * \brief Assign value by a string.
@@ -220,6 +219,13 @@ namespace vmf
         void fromString(Type eType, const std::string& sValue);
 
         /*!
+        * \brief Assign value by a string.
+        * \param [in] sValue The string that contains the value. This is typically the value returned from toString().
+        * \details This function should be used with toString(true), it uses the type from the string.
+        */
+        void fromString(const std::string& value);
+
+        /*!
         * \brief Return the type of the value stored.
         * \return The type of the internal value.
         */
@@ -227,7 +233,7 @@ namespace vmf
 
         /*!
         * \brief Check if a value is stored in the object.
-        * \return 'true' if no value is tored in the object (i.e. its type is 'type_unknown').
+        * \return 'true' if no value is tored in the object (i.e. its type is 'type_empty').
         */
         bool isEmpty() const;
 
@@ -289,7 +295,7 @@ namespace vmf
             switch (eType)
             {
             default:
-            case vmf::Variant::type_unknown:
+            case vmf::Variant::type_empty:
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
@@ -317,7 +323,7 @@ namespace vmf
             switch( eType )
             {
             default:
-            case vmf::Variant::type_unknown:
+            case vmf::Variant::type_empty:
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
