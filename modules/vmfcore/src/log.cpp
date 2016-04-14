@@ -27,7 +27,7 @@ namespace vmf
 {
 string Log::logFile = "";
 bool Log::writeToFile = false;
-LogLevel Log::verbosityLevel = LOG_INFO;
+LogLevel Log::verbosityLevel = LOG_ERROR;
 
 void Log::log(LogLevel level, const string &_msg, const string &func, const string &file, int line, ...)
 {

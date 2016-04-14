@@ -16,6 +16,8 @@
  */
 #include "test_precomp.hpp"
 
+#include <iostream>
+
 std::string workingPath;
 
 int main(int argc, char **argv)
@@ -37,6 +39,7 @@ int main(int argc, char **argv)
         workingPath = ".";
     }
 
+    std::cout << "VMF build info:\n" << vmf::getBuildInfo() << std::endl;
     ::testing::InitGoogleTest(&argc, argv);
     vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
     return RUN_ALL_TESTS();

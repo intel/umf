@@ -19,6 +19,7 @@
 * \brief %Metadata class header file
 */
 
+#pragma once
 #ifndef __VMF_METADATA_H__
 #define __VMF_METADATA_H__
 
@@ -33,9 +34,9 @@
 #include <map>
 #include <stdexcept>
 #include <limits>
-#include "fieldvalue.hpp"
-#include "metadatadesc.hpp"
-#include "metadatareference.hpp"
+#include "vmf/fieldvalue.hpp"
+#include "vmf/metadatadesc.hpp"
+#include "vmf/metadatareference.hpp"
 
 namespace vmf
 {
@@ -146,7 +147,7 @@ public:
     * \note For missing optional fields returns an empty Variant value
     *       that can be checked via 'Variant::isEmpty()' call.
     */
-    vmf::Variant getFieldValue( const std::string& sName ) const;
+    vmf::Variant getFieldValue( const std::string& sName = std::string()) const;
 
     /*!
     * \brief Find field by name

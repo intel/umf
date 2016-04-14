@@ -28,6 +28,8 @@
 #include <memory>
 #include <cstring>
 #include <utility>
+#include <vector>
+#include <limits>
 
 namespace vmf
 {
@@ -103,87 +105,50 @@ namespace vmf
     };
 
     /*!
-    * \brief binary buffer with arbitrary content.
+    * \brief binary buffer with arbitrary content
     */
-    struct vmf_rawbuffer
+    struct vmf_rawbuffer : public std::vector<char>
     {
-	vmf_rawbuffer() : data(nullptr), size(0) {}
+    public:
+        vmf_rawbuffer() : std::vector<char>()
+        { }
 
-	vmf_rawbuffer(const char* _data, const size_t& _size) : size(_size)
-	{
-	    if(_data && _size > 0)
-	    {
-		data = std::unique_ptr<char[]>(new char[size]);
-		memcpy(data.get(), _data, _size);
-	    }
-	    else if(!_data && _size == 0)
-		data = nullptr;
-	    else
-		VMF_EXCEPTION(IncorrectParamException, "Raw buffer object can't be created. Empty data or invalid size.");
-	}
+        vmf_rawbuffer(const std::vector<char>& vec) : std::vector<char>(vec)
+        { }
 
-	vmf_rawbuffer(const vmf_rawbuffer& other) : size(other.size)
-	{
-	    if(other.size > 0)
-	    {
-		data = std::unique_ptr<char[]>(new char[other.size]);
-		memcpy(data.get(), other.data.get(), other.size);
-	    }
-	    else
-		data = nullptr;
-	}
+        vmf_rawbuffer(std::vector<char>&& rVec) : std::vector<char>(rVec)
+        { }
 
-	vmf_rawbuffer(vmf_rawbuffer&& other)
-	{
-	    *this = std::move(other);
-	}
+        vmf_rawbuffer(const vmf_rawbuffer& other) : std::vector<char>(other)
+        { }
 
-	~vmf_rawbuffer()
-	{
-	    data = nullptr;
-	}
+        vmf_rawbuffer(vmf_rawbuffer&& other) : std::vector<char>(static_cast< std::vector<char> && >(other))
+        { }
 
-	vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
-	{
-	    if(this != &other)
-	    {
-		if(other.size > 0)
-		{
-		    data = std::unique_ptr<char[]>(new char[other.size]);
-		    memcpy(data.get(), other.data.get(), other.size);
-		}
-		else
-		{
-		    data = nullptr;
-		    size = 0;
-		}
-	    }
-	    return *this;
-	}
+        vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
+        {
+            std::vector<char>::operator=( static_cast< const std::vector<char> & >(other) );
+            return *this;
+        }
 
-	bool operator == (const vmf_rawbuffer& value) const
-	{
-	    if(size != value.size)
-		return false;
+        vmf_rawbuffer& operator=(vmf_rawbuffer&& other)
+        {
+            std::vector<char>::operator=( static_cast< std::vector<char> && >(other) );
+            return *this;
+        }
 
-	    if(data == value.data)
-		return true;
+        vmf_rawbuffer(const char* ptr, const size_t len)
+        {
+            *this = (ptr != nullptr) ? vmf_rawbuffer(ptr, ptr + len) : vmf_rawbuffer(len);
+        }
 
-	    for(size_t i = 0; i < size; i++)
-	    {
-		char t1 = data[i], t2 = value.data[i];
-		if(t1 != t2)
-		    return false;
-	    }
+        explicit vmf_rawbuffer(const size_t len) : std::vector<char>(len)
+        { }
 
-	    return true;
-	}
-
-
-
-	std::unique_ptr<char[]> data;
-	size_t size;
+        vmf_rawbuffer(const char* ptrBegin, const char* ptrEnd) : std::vector<char>(ptrBegin, ptrEnd)
+        { }
     };
+
 
 } /* vmf */
 #endif /* __VMF_TYPES_H__ */

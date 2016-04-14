@@ -28,41 +28,51 @@ class VMF_EXPORT FieldValue : public vmf::Variant
 {
 public:
     FieldValue() : m_name("")
-    {
-    }
+    {}
 
-    FieldValue( const FieldValue& other )
-    {
-        *this = other;
-    }
+	FieldValue(const FieldValue& other) : m_name(other.m_name), Variant(other)
+    {}
 
-    virtual ~FieldValue(void)
-    {
-    }
+	FieldValue(FieldValue&& other) : m_name(std::move(other.m_name)), Variant(std::forward<Variant>(other))
+	{}
+
+	virtual ~FieldValue(void)
+    {}
 
     FieldValue( const std::string& name, vmf::Variant variant )
         : vmf::Variant( variant )
         , m_name( name )
-    {
-    }
+    {}
 
     const std::string& getName() const { return m_name; }
 
     FieldValue& operator = ( const FieldValue& other )
     {
-        m_name = other.m_name;
-        Variant::operator = ( other );
-
+		if (this != &other)
+		{
+			Variant::operator=(other);
+			m_name = other.m_name;
+		}
         return *this;
     }
 
-    bool operator == ( const FieldValue& other ) const
+	FieldValue& operator = (FieldValue&& other)
+	{
+		if (this != &other)
+		{
+			Variant::operator=(std::forward<Variant>(other));
+			m_name = std::move(other.m_name);
+		}
+		return *this;
+	}
+
+	bool operator == (const FieldValue& other) const
     {
         return m_name == other.m_name && Variant::operator == ( other );
     }
 
 private:
-    MetaString m_name;
+    vmf_string m_name;
 };
 
 }

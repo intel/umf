@@ -58,6 +58,7 @@ ObjectFactory::ObjectFactory()
 
 ObjectFactory::~ObjectFactory()
 {
+    Uninitialize();
 }
 
 ObjectFactory* ObjectFactory::getInstance()
@@ -74,7 +75,7 @@ std::shared_ptr<IDataSource> ObjectFactory::getDataSource()
 {
     if (!dataSourceFactoryInstance)
     {
-        VMF_EXCEPTION(NotInitializedException, "ObjectFactory isn't initialized.");
+        vmf::initialize();
     }
     std::shared_ptr<IDataSource> dataSource =
             dataSourceFactoryInstance->createDataSource();

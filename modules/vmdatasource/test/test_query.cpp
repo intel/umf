@@ -34,7 +34,7 @@ protected:
     {
         n = 10;
 
-        vmf::initialize();
+        //vmf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_PROPERTY_NAME1 = "TEST_PROPERTY_NAME1";
@@ -55,7 +55,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        if (!stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite))
+        if (!stream.open(TEST_FILE, vmf::MetadataStream::Update))
             std::cout << "Cann't open stream!" << std::endl;
 
         stream.addSchema(schema);
@@ -79,7 +79,7 @@ protected:
 
     virtual void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     int n;
@@ -108,9 +108,24 @@ TEST_F(TestQuery, QueryByNameAndValue)
             vmf::Variant value(2*i);
             vmf::FieldValue fieldValue(TEST_FIELD_NAME2, value);
             auto set = newStream.queryByNameAndValue(TEST_PROPERTY_NAME1, fieldValue);
-            ASSERT_EQ(set.size(), 1);
+            ASSERT_EQ(set.size(), 1u);
 
         }
         newStream.close();
     }
+}
+
+TEST_F(TestQuery, Query)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    newStream.load(TEST_SCHEMA_NAME);
+    
+    vmf::MetadataSet set = newStream.query([&](const std::shared_ptr< vmf::Metadata >& spItem)->bool
+    {
+        return (spItem->getName() == TEST_PROPERTY_NAME1);
+    });
+
+    ASSERT_EQ(set.size(), 10);
+    newStream.close();
 }

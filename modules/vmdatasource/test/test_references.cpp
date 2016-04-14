@@ -69,7 +69,7 @@ protected:
         spMDesc2 = make_shared<MetadataDesc>("CAR", vFieldDescs2, vspReferenceDescs2);
         spSchema->add(spMDesc2);
        
-        if (!stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite))
+        if (!stream.open(TEST_FILE, vmf::MetadataStream::Update))
             cout << "Cann't open stream!" << endl;
 
         stream.addSchema(spSchema);
@@ -111,7 +111,7 @@ protected:
 
     virtual void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     MetadataStream stream;
@@ -128,31 +128,31 @@ TEST_F(TestNamedReferences, SaveLoad)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     auto refs = md[0]->getAllReferences();
-    EXPECT_EQ(0, refs.size());
+    EXPECT_EQ(0u, refs.size());
 
     refs = md[1]->getAllReferences();
-    EXPECT_EQ(3, refs.size());
+    EXPECT_EQ(3u, refs.size());
 
     refs = md[2]->getAllReferences();
-    EXPECT_EQ(3, refs.size());
+    EXPECT_EQ(3u, refs.size());
 
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[0]);
 
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(2, refs.size());
+    EXPECT_EQ(2u, refs.size());
 
     newStream.save();
     newStream.load();
 
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(2, refs.size());
+    EXPECT_EQ(2u, refs.size());
 
     auto mdSet = md[1]->getReferencesByName("COLLEAGUE");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.close();
 }
@@ -164,10 +164,12 @@ TEST_F(TestNamedReferences, AddReferences)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     auto refs = md[0]->getAllReferences();
-    EXPECT_EQ(0, refs.size());
+    EXPECT_EQ(0u, refs.size());
+
+    EXPECT_THROW(md[0]->addReference(nullptr, "CAR"), NullPointerException);
 
     md[0]->addReference(md[2], "CAR");
     md[0]->addReference(md[1], "SPOUSE");
@@ -179,39 +181,54 @@ TEST_F(TestNamedReferences, AddReferences)
     EXPECT_THROW(md[0]->addReference(md[2], "MODEL"), vmf::IncorrectParamException);
     
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(6, refs.size());
+    EXPECT_EQ(6u, refs.size());
 
     auto mdSet = md[0]->getReferencesByName("");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
     
     mdSet = md[0]->getReferencesByName("SPOUSE");
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("CAR");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(2u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("MODEL");
-    EXPECT_EQ(0, mdSet.size());
+    EXPECT_EQ(0u, mdSet.size());
 
     mdSet = md[0]->getReferencesByName("FRIEND");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(2u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(5, mdSet.size());
+    EXPECT_EQ(5u, mdSet.size());
 
-    md[0]->addReference(md[2], "SPOUSE");
+    EXPECT_THROW(md[0]->addReference(md[2], "SPOUSE"), vmf::IncorrectParamException);
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
-    EXPECT_EQ(4, mdSet.size());
+    EXPECT_EQ(5u, mdSet.size());
 
     mdSet = md[0]->getReferencesByMetadata("CAR");
-    EXPECT_EQ(2, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.save();
     newStream.load();
     refs = md[0]->getAllReferences();
-    EXPECT_EQ(6, refs.size());
+    EXPECT_EQ(6u, refs.size());
 
+    newStream.close();
+}
+
+TEST_F(TestNamedReferences, QueryByReference)
+{
+    vmf::MetadataStream newStream;
+    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    newStream.load();
+
+    vmf::MetadataSet set = newStream.queryByReference([&](const std::shared_ptr< vmf::Metadata >& spItem, const std::shared_ptr< vmf::Metadata >& spReferenceMd)->bool
+    {
+        return (spItem->getName() == spReferenceMd->getName());
+    });
+
+    ASSERT_EQ(set.size(), 2);
     newStream.close();
 }
 
@@ -222,7 +239,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     newStream.load();
 
     auto md = newStream.getAll();
-    EXPECT_EQ(3, md.size());
+    EXPECT_EQ(3u, md.size());
 
     ASSERT_FALSE(md[0]->isReference(2, "SPOUSE"));
 
@@ -238,7 +255,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     ASSERT_FALSE(md[1]->isReference(md[0], "SPOUSE"));
 
     auto mdSet = md[1]->getAllReferences();
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     ASSERT_TRUE(md[2]->isReference(md[2]));
     ASSERT_TRUE(md[2]->isReference(md[0], "OWNER"));
@@ -251,7 +268,7 @@ TEST_F(TestNamedReferences, RemoveReferences)
     ASSERT_FALSE(md[2]->isReference(md[0], "OWNER"));
 
     mdSet = md[2]->getAllReferences();
-    EXPECT_EQ(1, mdSet.size());
+    EXPECT_EQ(1u, mdSet.size());
 
     newStream.close();
 }
@@ -271,7 +288,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         schema[0] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_0));
         schema[1] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_1));
@@ -285,7 +302,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema[2];
@@ -353,7 +370,7 @@ TEST_F(TestSaveLoadReference, RecursiveReference)
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -400,7 +417,7 @@ TEST_F(TestSaveLoadReference, ToItselfReference)
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -449,7 +466,7 @@ TEST_F(TestSaveLoadReference, InsideOnePropertyReference)
         metadata[1]->addValue(TEST_INTEGER_VAL_1);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
         stream.add(metadata[1]);
@@ -489,7 +506,7 @@ TEST_F(TestSaveLoadReference, SeveralReferences)
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -534,7 +551,7 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
         schema[0]->add(desc[1]);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema[0]);
 
         std::shared_ptr<vmf::Metadata> metadata, intMetadata;
@@ -561,18 +578,18 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
     }
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME_0, TEST_DESC_NAME_1);
         stream.save();
         stream.close();
     }
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load();
         stream.close();
-        EXPECT_EQ(1, stream.queryByName(TEST_DESC_NAME_1).size());
-        EXPECT_EQ(3, stream.queryByName(TEST_DESC_NAME_0).size());
+        EXPECT_EQ(1u, stream.queryByName(TEST_DESC_NAME_1).size());
+        EXPECT_EQ(3u, stream.queryByName(TEST_DESC_NAME_0).size());
     }
 }
 
@@ -600,7 +617,7 @@ TEST_F(TestSaveLoadReference, NonSimpleReferencesOrder)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
         stream.addSchema(schema[1]);
         for (int i = 0; i < 10; i++)
@@ -622,7 +639,7 @@ TEST_F(TestSaveLoadReference, NonSimpleReferencesOrder)
     }
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME_1);
 
         auto item2 = stream.getById(2);

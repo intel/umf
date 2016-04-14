@@ -36,11 +36,11 @@
 * \details Throw an exception of specified class with text message
 */
 #ifdef __GNUC__
-#define VMF_EXCEPTION(ex, message ) { VMF_LOG_ERROR(message); \
-                                  throw ( ex(message, __func__, __FILE__, __LINE__) ); }
+#define VMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
+                                    throw ( ex(message, __func__, __FILE__, __LINE__) ); } while(0)
 #else
-#define VMF_EXCEPTION(ex, message ) { VMF_LOG_ERROR(message); \
-                                  throw ( ex(message, "", __FILE__, __LINE__) ); }
+#define VMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
+                                    throw ( ex(message, "", __FILE__, __LINE__) ); } while(0)
 #endif
 
 namespace vmf

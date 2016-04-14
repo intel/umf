@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+	<style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <title>Maps</title>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script type="text/javascript">
+var map, myPaths = [], myObjects = [];
+
+function initialize() 
+{
+	var center = new google.maps.LatLng(37.387635, -121.963427);
+	var mapOptions = {
+		zoom: 15,
+		center: center,
+		scrollWheelZoom: true,
+		doubleClickZoom: false
+	};	
+	map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+}
+
+function drawRoute(myCoordinates, myColor, nPath)
+{
+    if (myCoordinates.length != 0)
+    {
+        myPaths[nPath] = new google.maps.Polyline({
+            path: myCoordinates,
+            strokeColor: myColor,
+            strokeOpacity: 4.0,
+            strokeWeight: 5,
+            map: map
+        });
+
+        google.maps.event.addListener(myPaths[nPath], 'click', function(evt)
+            {
+                Map.getCoordinates(evt.latLng.lat(), evt.latLng.lng());
+            }
+        );
+    }
+}
+
+function cleanupMap()
+{
+    myPaths.forEach(  function(item){if(item)item.setMap(null)});
+    myObjects.forEach(function(item){if(item)item.setMap(null)});
+}
+
+function removePath(nPath)
+{
+    if(myPaths[nPath]) myPaths[nPath].setMap(null);
+}
+
+function removeObject(nObject)
+{
+    if(myObjects[nObject]) myObjects[nObject].setMap(null);
+}
+
+function drawObject(objX, objY, rotate, color, nObject)
+{
+    var arrow = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    fillColor: color,
+    fillOpacity: 0.8,
+    scale: 5,
+    rotation: rotate,
+    strokeColor: "white",
+    strokeWeight: 1
+    }
+
+    var objOptions = {
+        icon: arrow,
+        position: new google.maps.LatLng(objX, objY),
+        map: map
+        };
+
+    if(myObjects[nObject] != null)
+        myObjects[nObject].setMap(null);
+    myObjects[nObject] = new google.maps.Marker(objOptions);
+}
+	</script>
+  </head>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width: 100%; height: 100%;"></div>
+  </body>
+</html>

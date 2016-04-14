@@ -120,7 +120,7 @@ void removeMetadata(const string& path, const string& schemaName = "", const str
                                                (setName.empty() ? string("*") : setName) ) 
          << endl;
     MetadataStream ms;
-    if (!ms.open(path, MetadataStream::ReadWrite))
+    if (!ms.open(path, MetadataStream::Update))
         throw std::runtime_error("Can't open MetadataStream");
     vector<string> schemas;
     if(schemaName.empty())
@@ -166,13 +166,6 @@ void removeMetadata(const string& path, const string& schemaName = "", const str
 
 int main(int argc, char* argv[])
 {
-    class VMF_init
-    {
-    public:
-        VMF_init()  { vmf::initialize(); }
-        ~VMF_init() { vmf::terminate();  }
-    } vmf_init;
-
     if(argc != 2)
     {
         cout << "Usage: " << argv[0] << " video_file_path" << endl;

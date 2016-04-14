@@ -46,15 +46,13 @@ static void copyFile(const std::string& src, const std::string& dest)
 
 int main(int argc, char* argv[])
 {
-    vmf::initialize();
-
     MetadataStream stream;
 
     try
     {
         copyFile(VIDEO_FILE, WORKING_FILE);
 
-        if(!stream.open(WORKING_FILE, MetadataStream::ReadWrite))
+        if(!stream.open(WORKING_FILE, MetadataStream::Update))
             throw std::runtime_error("Can't open MetadataStream");
 
         //create predefined STD schema
@@ -143,8 +141,6 @@ int main(int argc, char* argv[])
 
         return -1;
     }
-
-    vmf::terminate();
 
     return 0;
 }
