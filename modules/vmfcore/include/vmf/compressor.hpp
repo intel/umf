@@ -92,6 +92,8 @@ public:
      * \return A list of registered compressors IDs
      */
     static std::vector<vmf_string> getRegisteredIds();
+
+    static const std::string BUILTIN_ZLIB;
 };
 
 } /* vmf */
