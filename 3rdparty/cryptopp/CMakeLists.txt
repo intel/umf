@@ -116,3 +116,5 @@ endif()
 
 find_package(Threads)
 target_link_libraries(cryptopp ${CMAKE_THREAD_LIBS_INIT})
+
+set_target_properties(cryptopp PROPERTIES FOLDER "3rdparty")
