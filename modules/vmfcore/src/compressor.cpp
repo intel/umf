@@ -24,7 +24,10 @@ namespace vmf {
 typedef std::map< vmf_string, std::shared_ptr<Compressor> > CompressorsMap;
 enum CompressorType {BUILTIN=0, USER=1};
 
-const std::string Compressor::BUILTIN_ZLIB = "com.intel.vmf.compressor.zlib";
+/*static*/ std::string Compressor::builtinId()
+{
+    return "com.intel.vmf.compressor.zlib";
+}
 
 CompressorsMap& getMapInstance(CompressorType type)
 {

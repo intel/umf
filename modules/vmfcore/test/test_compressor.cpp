@@ -160,8 +160,8 @@ TEST_P(TestCompressor, CheckRegisteredIds)
 {
     std::vector<vmf_string> regIds = vmf::Compressor::getRegisteredIds();
     std::set<vmf_string> registeredIds(regIds.begin(), regIds.end());
-    std::set<vmf_string> knownIds = {"com.intel.vmf.compressor.zlib",
-                                     "com.intel.vmf.compressor.test.bloating"};
+    std::set<vmf_string> knownIds = { Compressor::builtinId(),
+                                      "com.intel.vmf.compressor.test.bloating" };
     ASSERT_EQ(registeredIds, knownIds);
 }
 
@@ -184,7 +184,7 @@ TEST_P(TestCompressor, TryRegisterExisting)
 
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestCompressor,
-                        ::testing::Values("com.intel.vmf.compressor.zlib",
+                        ::testing::Values(Compressor::builtinId(),
                                           "unregistered",
                                           "com.intel.vmf.compressor.test.bloating"));
 

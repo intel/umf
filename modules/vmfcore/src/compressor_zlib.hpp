@@ -65,7 +65,7 @@ public:
      */
     virtual vmf_string getId()
     {
-        return Compressor::BUILTIN_ZLIB;
+        return Compressor::builtinId();
     }
 };
 

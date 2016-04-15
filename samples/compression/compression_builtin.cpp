@@ -44,8 +44,8 @@ int compress_builtin(const string& videoFile)
     cout << "Generating metadata..." << endl;
     generateMetadata(mdStream);
 
-    cout << "Saving metadata using 'Compressor::BUILTIN_ZLIB'..." << endl;
-    mdStream.save(Compressor::BUILTIN_ZLIB);
+    cout << "Saving metadata using builtin ZLib Compressor..." << endl;
+    mdStream.save(Compressor::builtinId());
 
     mdStream.close();
 

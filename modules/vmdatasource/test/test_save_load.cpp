@@ -1562,7 +1562,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompressionEncryption,
                         ::testing::Combine(
-                            ::testing::Values("com.intel.vmf.compressor.zlib",
+                            ::testing::Values(vmf::Compressor::builtinId(),
                                               "unregistered",
                                               "com.intel.vmf.compressor.test.bloating"),
                             ::testing::Values(vmf::CryptAlgo::DEFAULT, vmf::CryptAlgo::WEAK, vmf::CryptAlgo::NONE)

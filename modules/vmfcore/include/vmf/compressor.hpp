@@ -93,7 +93,11 @@ public:
      */
     static std::vector<vmf_string> getRegisteredIds();
 
-    static const std::string BUILTIN_ZLIB;
+    /*!
+    * \brief Returns an ID of the builtin (pre-registered) compressor
+    * \return A compressors ID
+    */
+    static std::string builtinId();
 };
 
 } /* vmf */
