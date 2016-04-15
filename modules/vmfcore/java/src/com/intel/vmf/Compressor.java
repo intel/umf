@@ -1,20 +1,48 @@
 package com.intel.vmf;
 
-public abstract class Compressor {
-	public static final String BUILTIN_ZLIB = "com.intel.vmf.compressor.zlib";
-	public abstract Variant compress(String input);
-	public abstract String decompress(Variant data);
-	public abstract Compressor createNewInstance(); // == clone()
-	public abstract String getId();
+public class Compressor {
 	
+	public static final String BUILTIN_ZLIB = "com.intel.vmf.compressor.zlib";
+
     public final long nativeObj;
     
     protected Compressor(long addr) {
         if (addr == 0) throw new java.lang.IllegalArgumentException("Native object address is NULL");
         nativeObj = addr;
     }
+
+    public Variant compress(String input) {
+		long addr = n_compress(nativeObj, input);
+		if(addr == 0) return null;
+		else return new Variant(addr);
+	}
+
+	public String decompress(Variant data) {
+		return n_decompress(nativeObj, data.nativeObj);
+	}
+
+	public Compressor createNewInstance() {
+		long addr = n_createNewInstance(nativeObj);
+		if(addr == 0) return null;
+		else return new Compressor(addr);
+	}
+
+	public String getId() {
+		return n_getId(nativeObj);
+	}
 	
-	// factory methods
+	public static Compressor create(String id) {
+		long addr = n_create(id);
+		if(addr == 0) return null;
+		else return new Compressor(addr);
+	}
+	
+	public static String[] getRegisteredIds() {
+		//return n_getRegisteredIds();
+		return new String[] {BUILTIN_ZLIB};
+	}
+	
+	// user-provided Compressors support factory methods
     // TODO: NYI
     /*
 	public static void registerNew(Compressor compressor) {
@@ -25,24 +53,24 @@ public abstract class Compressor {
 		n_unregister(id);
 	}
 	
-	public static Compressor create(String id) {
-		return n_create(id);
-	}
-	
-	public static String[] getRegisteredIds() {
-		return n_getRegisteredIds();
-	}
-	
 	// native
 	
 	private static native void n_registerNew(long addr);
 	private static native void n_unregister(String id);
-	private static native Compressor n_create(String id);
 	private static native String[] n_getRegisteredIds();
 	*/
     // JNI lib loading
 
-	static
+    @Override
+    protected void finalize () throws Throwable
+    {
+        if (nativeObj != 0)
+            n_delete (nativeObj);
+
+        super.finalize();
+    }
+
+    static
     {
         try
         {
@@ -60,4 +88,12 @@ public abstract class Compressor {
             }
         }
     }
+
+    private native static void n_delete(long nativeObj);
+	private static native long n_compress(long self, String str);
+	private static native String n_decompress(long self, long variantAddr);
+	private static native long n_createNewInstance(long self);
+	private static native String n_getId(long self);
+	private static native long n_create(String str);
+
 }

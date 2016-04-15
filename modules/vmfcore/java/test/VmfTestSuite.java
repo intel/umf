@@ -18,7 +18,9 @@ import org.junit.runners.Suite;
   VmfVariantTest.class,
   VmfVec2d3d4dTest.class,
   VmfVideoSegmentTest.class,
-  VmfXMLTest.class
+  VmfXMLTest.class,
+  VmfStatTest.class,
+  VmfCompressorTest.class
 })
 
 public class VmfTestSuite {}
