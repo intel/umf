@@ -24,7 +24,7 @@ namespace vmf
 {
 
 /*!
- * \file default_encryptor.hpp
+ * \file encryptor_default.hpp
  * \brief %EncryptorDefault header files
  */
 

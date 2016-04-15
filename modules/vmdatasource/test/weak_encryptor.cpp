@@ -1,5 +1,5 @@
 #include "weak_encryptor.hpp"
-#include "vmf/default_encryptor.hpp"
+#include "vmf/encryptor_default.hpp"
 
 namespace vmf
 {
