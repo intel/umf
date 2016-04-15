@@ -20,7 +20,8 @@ import org.junit.runners.Suite;
   VmfVideoSegmentTest.class,
   VmfXMLTest.class,
   VmfStatTest.class,
-  VmfCompressorTest.class
+  VmfCompressorTest.class,
+  VmfEncryptorTest.class
 })
 
 public class VmfTestSuite {}

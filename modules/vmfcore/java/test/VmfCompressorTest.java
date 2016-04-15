@@ -14,7 +14,7 @@ public class VmfCompressorTest {
     }
 
     @Test
-    public void testStatFieldSimple () {
+    public void testCompressor () {
     	String[] ids = Compressor.getRegisteredIds();
         assertNotNull(ids);
         assertTrue(ids.length == 1);

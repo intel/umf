@@ -5,19 +5,21 @@ public class Compressor {
 	public static final String BUILTIN_ZLIB = "com.intel.vmf.compressor.zlib";
 
     public final long nativeObj;
-    
+
     protected Compressor(long addr) {
         if (addr == 0) throw new java.lang.IllegalArgumentException("Native object address is NULL");
         nativeObj = addr;
     }
 
     public Variant compress(String input) {
-		long addr = n_compress(nativeObj, input);
+		if(input == null) return null;
+    	long addr = n_compress(nativeObj, input);
 		if(addr == 0) return null;
 		else return new Variant(addr);
 	}
 
 	public String decompress(Variant data) {
+		if(data == null) return null;
 		return n_decompress(nativeObj, data.nativeObj);
 	}
 

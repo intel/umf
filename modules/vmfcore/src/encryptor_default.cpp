@@ -1,4 +1,4 @@
-#include "vmf/default_encryptor.hpp"
+#include "vmf/encryptor_default.hpp"
 
 #include "filters.h"
 #include "default.h"
