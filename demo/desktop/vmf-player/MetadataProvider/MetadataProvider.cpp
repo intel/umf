@@ -1,10 +1,8 @@
 #include "MetadataProvider.h"
 
 #if defined(WIN32)
-# include <winsock2.h>
 # include <stdio.h>
-# include <windows.h>
-//# pragma comment(lib, "ws2_32.lib")
+# include <Ws2tcpip.h>
 #else //if defined(__linux__)
 # include <arpa/inet.h>
 # include <netinet/in.h>
@@ -37,29 +35,29 @@ static const std::string statName = "stat";
 # define zzntohl(_sz) ntohl(_sz)
 #endif
 
-static ssize_t sendMessage(int fd, const char* buf, size_t msgSize)
+static size_t sendMessage(int fd, const char* buf, size_t msgSize)
 {
-    return ::send(fd, (void*) buf, msgSize, 0);
+    return ::send(fd, buf, msgSize, 0);
 }
 
-static ssize_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
+static size_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
 {
     const int  flags = (doWait ? MSG_WAITALL : 0);
     uint32_t sz = 0;
-    ssize_t size = ::recv(fd, (void*) &sz, 4, flags);
+    size_t size = ::recv(fd, (char*)&sz, 4, flags);
     if ((size == 4) && ((sz = zzntohl(sz)) < bufSize))
     {
-        size = ::recv(fd, (void*) buf, sz, flags);
+        size = ::recv(fd, buf, sz, flags);
         if (size == sz)
         {
             buf[sz] = 0;
             return size;
         }
     }
-    return (ssize_t)-1;
+    return (size_t)-1;
 }
 
-static ssize_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
+static size_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
 {
 #if defined(USE_SIZES_ON_HANDSHAKE)
     return receiveMessage(fd, buf, msgSize, true);
@@ -138,7 +136,11 @@ bool MetadataProvider::putAddress(const QString& address)
         const QString& portStr = list.last();
 
         struct in_addr in;
+#ifdef WIN32
+        if (inet_pton(AF_INET, ipStr.toStdString().c_str(), &in))
+        #else
         if (inet_aton(ipStr.toStdString().c_str(), &in))
+#endif
         {
             bool ok = false;
             int port = portStr.toInt(&ok, 10);
@@ -206,7 +208,7 @@ bool MetadataProvider::connect()
             char buf[40000];
 
             // VMF/VMF
-            ssize_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
+            size_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
             if ((size == 3) && (buf[0] == 'V') && (buf[1] == 'M') && (buf[2] == 'F'))
             {
                 size = sendMessage(m_sock, buf, 3);
@@ -223,8 +225,11 @@ bool MetadataProvider::connect()
                 }
             }
         }
-
+#ifdef WIN32
+        ::closesocket(m_sock);
+#else
         ::close(m_sock);
+#endif
         m_sock = -1;
     }
     return false;
@@ -241,7 +246,11 @@ void MetadataProvider::disconnect()
         buf[2] = 'E';
         sendMessage(m_sock, buf, 3);
 
+#ifdef WIN32
+        ::closesocket(m_sock);
+#else
         ::close(m_sock);
+#endif
         m_sock = -1;
     }
 }
@@ -283,7 +292,7 @@ void MetadataProvider::execute()
 
             if (!m_exiting)
             {
-                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
@@ -304,7 +313,7 @@ void MetadataProvider::execute()
 
             if (!m_exiting)
             {
-                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
@@ -332,11 +341,11 @@ void MetadataProvider::execute()
                                     vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Average));
             statFields.emplace_back(lastStatName, schemaName, descName, latFieldName,
                                     vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Last));
-            m_ms.addStat(vmf::Stat(statName, statFields, vmf::Stat::UpdateMode::Manual));
+            m_ms.addStat(std::make_shared<vmf::Stat>(statName, statFields, vmf::Stat::UpdateMode::Manual));
 
             while (!m_exiting)
             {
-                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     std::cerr << std::string(buf) << std::endl;
@@ -432,13 +441,13 @@ void MetadataProvider::updateLocations()
     }
 
     //update statistics: doRescan + doWait
-    vmf::Stat& stat = m_ms.getStat(statName);
-    stat.update(true, true);
+    std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
+    stat->update(true);
 
     //grab statistics
-    m_statInfo->setCount((vmf::vmf_integer)stat.getField(countStatName).getValue());
-    m_statInfo->setMinLat(stat.getField(minStatName).getValue());
-    m_statInfo->setAvgLat(stat.getField(avgStatName).getValue());
-    m_statInfo->setLastLat(stat.getField(lastStatName).getValue());
+    m_statInfo->setCount((vmf::vmf_integer)stat->getField(countStatName).getValue());
+    m_statInfo->setMinLat(stat->getField(minStatName).getValue());
+    m_statInfo->setAvgLat(stat->getField(avgStatName).getValue());
+    m_statInfo->setLastLat(stat->getField(lastStatName).getValue());
 }
 

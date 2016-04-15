@@ -5,11 +5,18 @@ QT += qml quick widgets webengine
 include(3dparty/QmlVlc/QmlVlc.pri)
 INCLUDEPATH += 3dparty
 
-#== replace by cmake procedure
-#INCLUDEPATH += ../vmf3-demo-player.vmf/include
-#LIBS += -L../vmf3-demo-player.vmf/x64/lib -lvmfd
-INCLUDEPATH += ../vmf-debug/install/include
-LIBS += -L../vmf-debug/install/x64/lib -lvmfd
+#== TODO replace by cmake procedure
+isEmpty(VMF_DIR) {
+    message("'VMF_DIR' variable is empty, the default value '../../../../vmf-build/install' is used")
+    VMF_DIR = ../../../../vmf-build/install
+}
+INCLUDEPATH += $$VMF_DIR/include
+LIBS += -L$$VMF_DIR/x64/lib -L$$VMF_DIR/x64/vc12/lib
+debug {
+    LIBS += -lvmfd
+} else {
+    LIBS += -lvmf
+}
 #==
 
 SOURCES += main.cpp \
