@@ -25,19 +25,19 @@ namespace vmf
 
 /*!
  * \file default_encryptor.hpp
- * \brief %DefaultEncryptor header files
+ * \brief %EncryptorDefault header files
  */
 
 /*!
- * \class DefaultEncryptor
+ * \class EncryptorDefault
  * \brief The class representing default algorithms of encryption and decryption
  * (currently this is TripleDES with HMAC/SHA-1)
  */
 
-class VMF_EXPORT DefaultEncryptor : public Encryptor
+class VMF_EXPORT EncryptorDefault : public Encryptor
 {
 public:
-    DefaultEncryptor(const vmf_string& _passphrase) : passphrase(_passphrase)
+    EncryptorDefault(const vmf_string& _passphrase) : passphrase(_passphrase)
     { }
 
     /*!
@@ -65,7 +65,7 @@ public:
     /*!
      * \brief Default destructor
      */
-    virtual ~DefaultEncryptor() { }
+    virtual ~EncryptorDefault() { }
 
 private:
     vmf_string passphrase;

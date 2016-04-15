@@ -9,7 +9,7 @@ using namespace CryptoPP;
 namespace vmf
 {
 
-void DefaultEncryptor::encrypt(const vmf_string& input, vmf_rawbuffer& output)
+void EncryptorDefault::encrypt(const vmf_string& input, vmf_rawbuffer& output)
 {
     string outBuf;
     try
@@ -26,7 +26,7 @@ void DefaultEncryptor::encrypt(const vmf_string& input, vmf_rawbuffer& output)
     output = vmf_rawbuffer(outBuf.data(), outBuf.length());
 }
 
-void DefaultEncryptor::decrypt(const vmf_rawbuffer& input, vmf_string& output)
+void EncryptorDefault::decrypt(const vmf_rawbuffer& input, vmf_string& output)
 {
     if(input.size() == 0)
     {

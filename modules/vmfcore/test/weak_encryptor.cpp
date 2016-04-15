@@ -43,7 +43,7 @@ std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong)
     switch(algo)
     {
         case CryptAlgo::DEFAULT:
-            return std::make_shared<DefaultEncryptor>(wrong ? wrongKey : rightKey);
+            return std::make_shared<EncryptorDefault>(wrong ? wrongKey : rightKey);
         case CryptAlgo::WEAK:
             return std::make_shared<WeakEncryptor>(wrong ? 13 : 42);
         default:
