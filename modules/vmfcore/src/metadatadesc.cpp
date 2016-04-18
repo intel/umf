@@ -46,7 +46,7 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
 MetadataDesc::MetadataDesc( const std::string& sMetadataName, Variant::Type type )
     : m_sMetadataName( sMetadataName )
 {
-    if (type == Variant::type_unknown)
+    if (type == Variant::type_empty)
     {
         VMF_EXCEPTION(IncorrectParamException, "Invalid metadata descriprion type.");
     }

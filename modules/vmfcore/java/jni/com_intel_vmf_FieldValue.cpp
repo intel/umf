@@ -326,7 +326,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo (JNIEnv *env, 
     try
     {
         Variant::Type Type = (Variant::Type) type;
-        if ((Type >= Variant::Type::type_unknown) && (Type <= Variant::Type::type_vec4d_vector))
+        if ((Type >= Variant::Type::type_empty) && (Type <= Variant::Type::type_vec4d_vector))
         {
             std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
 

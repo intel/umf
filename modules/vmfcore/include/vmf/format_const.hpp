@@ -87,4 +87,15 @@
 #define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
 #define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
 
+#define TAG_STAT "stat"
+#define TAG_STAT_FIELDS_ARRAY "fields-array"
+#define TAG_STAT_FIELD "field"
+
+#define ATTR_STAT_NAME "name"
+#define ATTR_STAT_FIELD_NAME "name"
+#define ATTR_STAT_FIELD_SCHEMA_NAME "schema-name"
+#define ATTR_STAT_FIELD_METADATA_NAME "metadata-name"
+#define ATTR_STAT_FIELD_FIELD_NAME "field-name"
+#define ATTR_STAT_FIELD_OP_NAME "op-name"
+
 #endif /* __VMF_RWCONST_H__ */

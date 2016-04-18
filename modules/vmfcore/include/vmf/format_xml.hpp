@@ -23,7 +23,7 @@
 #ifndef VMF_FORMAT_XML_H
 #define VMF_FORMAT_XML_H
 
-#include "vmf/format_json.hpp"
+#include "vmf/format.hpp"
 
 namespace vmf
 {
@@ -51,7 +51,7 @@ public:
         const MetadataSet& set,
         const std::vector<std::shared_ptr<MetadataSchema>>& schemas = {},
         const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments = {},
-        //const std::vector<Stat>& stats = {},
+        const std::vector<std::shared_ptr<Stat>>& stats = {},
         const AttribMap& attribs = AttribMap() // nextId, checksum, etc
         );
 
@@ -63,7 +63,7 @@ public:
         std::vector<MetadataInternal>& metadata,
         std::vector<std::shared_ptr<MetadataSchema>>& schemas,
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments,
-        //std::vector<Stat>& stats,
+        std::vector<std::shared_ptr<Stat>>& stats,
         AttribMap& attribs // nextId, checksum, etc
         );
 };
