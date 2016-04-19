@@ -64,7 +64,7 @@ TEST(Integration, fullFunctionality_1)
         ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         ASSERT_NO_THROW(s.addSchema(schema[0]));
         ASSERT_NO_THROW(s.addSchema(schema[1]));
-        s.save();
+        ASSERT_TRUE(s.save());
         ASSERT_NO_THROW(s.close());
     }
 
@@ -102,7 +102,7 @@ TEST(Integration, fullFunctionality_1)
         metadata[3]->setFieldValue(TEST_FIELD_NAME_1, TEST_INT32_VALUE_5);
         metadata[3]->setFieldValue(TEST_FIELD_NAME_2, TEST_STRING_VALUE_3);
         for(int i = 0; i < 4; ++i) s.add(metadata[i]);
-        s.save();
+        ASSERT_TRUE(s.save());
         s.close();
     }
 

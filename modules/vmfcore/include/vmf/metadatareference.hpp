@@ -35,6 +35,10 @@ namespace vmf
 {
 class Metadata;
 
+/*!
+ * \class Reference
+ * \brief The class representing a reference from one metadata record to another
+ */
 class VMF_EXPORT Reference
 {
 private:

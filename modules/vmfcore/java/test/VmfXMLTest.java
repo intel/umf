@@ -3,6 +3,7 @@ import java.util.HashMap;
 import com.intel.vmf.*;
 
 import static org.junit.Assert.*;
+
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
@@ -38,6 +39,9 @@ public class VmfXMLTest
     
     protected MetadataSet mdSet;
     
+    protected Stat mStat;
+    protected Stat[] mStats;
+
     protected Variant var1;
     protected Variant var2;
     protected Variant var3;
@@ -130,6 +134,9 @@ public class VmfXMLTest
         videoSegs[1] = videoSeg2;
         videoSegs[2] = videoSeg3;
         
+        mStat = new Stat("stat 1", new StatField("stat fiels 1", mdDesc1.getSchemaName(), mdDesc1.getMetadataName(), mdDesc1.getFields()[0].getName(), StatField.BuiltinOp_Count));
+        mStats = new Stat[]{mStat};
+        
     	xml = new FormatXML();
     }
     
@@ -139,14 +146,15 @@ public class VmfXMLTest
     @Test
     public void testXMLReaderAndWriter()
     {
-    	String schemasStr = xml.store(null, schemas, null, null);
+    	String schemasStr = xml.store(null, schemas, null, mStats, null);
         assertFalse(schemasStr.isEmpty());
         
         Format.Data data = xml.parse(schemasStr);
         assertNotNull(data.schemas);
         assertEquals (schemas.length, data.schemas.length);
+        assertEquals(mStats.length, data.stats.length);
         
-        String str = xml.store(mdSet, schemas, null, null);
+        String str = xml.store(mdSet, schemas, null, null, null);
         assertFalse(str.isEmpty());
         
         data = xml.parse(str);
@@ -155,7 +163,7 @@ public class VmfXMLTest
         assertEquals (schemas.length,  data.schemas.length);
         assertNull (data.segments);
         
-        String segments = xml.store(null, null, videoSegs, null);
+        String segments = xml.store(null, null, videoSegs, null, null);
         assertFalse(segments.isEmpty());
         
         data = xml.parse(segments);
@@ -165,7 +173,7 @@ public class VmfXMLTest
         HashMap<String, String> attribs = new HashMap<String, String>();
         attribs.put("nextId", "100");
         attribs.put("filepath", "path.txt");
-        String all = xml.store(mdSet, schemas, videoSegs, attribs);
+        String all = xml.store(mdSet, schemas, videoSegs, mStats, attribs);
         assertFalse(all.isEmpty());
 
         data = xml.parse(all);
@@ -174,6 +182,9 @@ public class VmfXMLTest
         assertEquals (videoSegs.length, data.segments.length);
         assertEquals (2, data.attrib.size());
         assertEquals ("100", data.attrib.get("nextId"));
+        assertEquals(mStats.length, data.stats.length);
+        assertEquals(mStats[0].getName(), data.stats[0].getName());
+        assertEquals(mStats[0].getAllFieldNames().length, data.stats[0].getAllFieldNames().length);
 }
     
     @Test

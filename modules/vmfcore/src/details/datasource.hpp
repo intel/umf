@@ -73,11 +73,11 @@ public:
 
     /*!
      * \brief Saves all metadata belonging to the specified schema
-     * \param [in] schemaName name of the specified schema
-     * \param [in] stream stream with metadata
+     * \param [in] schemaDesc shared pointer to specified schema
+     * \param [in] mdSet metadata set of the stream this schema belongs to
      * \throw DataStorageException
      */
-    virtual void saveSchema(const vmf_string& schemaName, const MetadataStream& stream) = 0;
+    virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet) = 0;
 
     /*!
      * \brief Saves schema in the file with specified name
@@ -137,22 +137,39 @@ public:
     */
     virtual std::string computeChecksum(long long& XMPPacketSize, long long& XMPPacketOffset) = 0;
 
-    /*
+    /*!
     * \brief Saves all video segments
     */
     virtual void saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
 
-    /*
+    /*!
     * \brief Loads stored video segments
     */
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>> &videoSegments) = 0;
 
-    /*
+    /*!
      * \brief Sets registered compressor for compression operations at saving
      */
     virtual void setCompressor(const vmf_string& id) = 0;
 
-    /*
+    /*!
+     * \brief Sets encryption algorithm implementation for reading/writing encrypted data
+     */
+    virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor) = 0;
+
+    /*!
+     * \brief Loads a human-readable hint for decryption
+     * \return String containing hint
+     */
+    virtual std::string loadHintEncryption() = 0;
+
+    /*!
+     * \brief Saves a human-readable hint for encryption
+     * \param hint String containing hint
+     */
+    virtual void saveHintEncryption(const vmf_string& hint) = 0;
+
+    /*!
      *\brief Commits saved changes to file
      */
     virtual void pushChanges() = 0;

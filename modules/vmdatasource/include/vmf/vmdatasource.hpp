@@ -18,9 +18,14 @@ limitations under the License.*/
 #include "config.hpp"
 
 namespace vmf {
-
+/*!
+ * \brief Prepares VMF internal objects for work
+ */
 void VMF_EXPORT initialize();
 
+/*!
+ * \brief Destroys VMF internal objects
+ */
 void VMF_EXPORT terminate();
 
 } // namespace vmf

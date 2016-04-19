@@ -25,15 +25,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatXML_n_1FormatXML(JNIEnv *env, j
         std::shared_ptr<FormatXML>* obj = new std::shared_ptr<FormatXML>(new FormatXML());
         return (jlong)obj;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -144,15 +137,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
             );
         return env->NewStringUTF(xml.c_str());
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -190,7 +176,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
         env->ReleaseStringUTFChars(text, textStr);
 
         //fill the output objects addresses aray
-        jsize addressesArraySize = std::accumulate(std::begin(counters.cnt), std::end(counters.cnt), 3);
+        jsize addressesArraySize = counters.metadata + 1 + counters.schemas + 1 + counters.segments + 1 + counters.stats;
 
         jlongArray objs  = env->NewLongArray(addressesArraySize);
         jlong* objsAddrs = env->GetLongArrayElements(objs, 0);
@@ -232,14 +218,8 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
 
         return objs;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -263,14 +243,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FormatXML_n_1delete(JNIEnv *env, jclas
 
         delete obj;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
 }
 
 

@@ -5,6 +5,14 @@
 #include "vmf/statistics.hpp"
 #include "throwJavaException.hpp"
 
+static std::string getJavaStirng(JNIEnv *env, jstring str)
+{
+    const char* tmp = env->GetStringUTFChars(str, NULL);
+    std::string result(tmp);
+    env->ReleaseStringUTFChars(str, tmp);
+    return result;
+}
+
 extern "C" {
 
 using namespace vmf;
@@ -15,8 +23,6 @@ using namespace vmf;
 * Signature: (J)V
 */
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1delete(JNIEnv *env, jclass, jlong self);
-
-
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1delete(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1delete";
@@ -34,7 +40,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1delete(JNIEnv *env, jclass, jl
 
 //long n_Stat(String name, long[] fields);
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jstring name, jlongArray fields);
-
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jstring name, jlongArray fields)
 {
     static const char method_name[] = "Stat::n_1Stat";
@@ -42,11 +47,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jst
     try
     {
         if (name == 0 || fields == 0) VMF_EXCEPTION(NullPointerException, "Neither name nor fields array can be null.");
-
-        const char* _name = env->GetStringUTFChars(name, NULL);
-        std::string _nameS(_name);
-        env->ReleaseStringUTFChars(name, _name);
-
         std::vector <StatField> sfs;
         jsize len;
         jlong* addrArray;
@@ -61,7 +61,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jst
             }
             env->ReleaseLongArrayElements(fields, addrArray, 0);
         }
-        return (jlong) new std::shared_ptr<Stat>(new Stat(_nameS, sfs));
+        return (jlong) new std::shared_ptr<Stat>(new Stat(getJavaStirng(env, name), sfs));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -70,7 +70,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jst
 
 //String n_getName(long nativeObj);
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Stat_n_1getName(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT jstring JNICALL Java_com_intel_vmf_Stat_n_1getName(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1getName";
@@ -89,7 +88,6 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Stat_n_1getName(JNIEnv *env, jclass
 
 //int n_getState(long nativeObj);
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getState(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getState(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1getState";
@@ -107,7 +105,6 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getState(JNIEnv *env, jclass, 
 
 //void n_setUpdateMode(long nativeObj, int updateMode);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateMode(JNIEnv *env, jclass, jlong self, jint updateMode);
-
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateMode(JNIEnv *env, jclass, jlong self, jint updateMode)
 {
     static const char method_name[] = "Stat::n_1setUpdateMode";
@@ -124,7 +121,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateMode(JNIEnv *env, jcl
 
 //int n_getUpdateMode(long nativeObj);
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateMode(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateMode(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1getUpdateMode";
@@ -142,7 +138,6 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateMode(JNIEnv *env, jcl
 
 //void n_setUpdateTimeout(long nativeObj, int ms);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateTimeout(JNIEnv *env, jclass, jlong self, jint ms);
-
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateTimeout(JNIEnv *env, jclass, jlong self, jint ms)
 {
     static const char method_name[] = "Stat::n_1setUpdateTimeout";
@@ -159,7 +154,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateTimeout(JNIEnv *env, 
 
 //int n_getUpdateTimeout(long nativeObj);
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1getUpdateTimeout";
@@ -177,7 +171,6 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, 
 
 //void n_update(long nativeObj, boolean doWait);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait);
-
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jlong self, jboolean doWait)
 {
     static const char method_name[] = "Stat::n_1update";
@@ -192,10 +185,8 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jl
     catch (...) { throwJavaException(env, 0, method_name); }
 }
 
-
 //String[] n_getAllFieldNames(long nativeObj);
 JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Stat_n_1getAllFieldNames(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Stat_n_1getAllFieldNames(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "MetadataStream::n_1getAllFieldNames";
@@ -216,10 +207,8 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Stat_n_1getAllFieldNames(JNIEn
     return 0;
 }
 
-
 //long n_getField(long nativeObj, String name);
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass, jlong self, jstring name);
-
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Stat::n_1getField";
@@ -228,12 +217,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass,
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
-
-        const char* _name = env->GetStringUTFChars(name, NULL);
-        std::string _nameS(_name);
-        env->ReleaseStringUTFChars(name, _name);
-
-        return (jlong) new std::shared_ptr<StatField>( new StatField((*obj)->getField(_nameS)) );
+        return (jlong) new std::shared_ptr<StatField>( new StatField((*obj)->getField(getJavaStirng(env, name))) );
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -242,7 +226,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass,
 
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass, jlong self, jstring name);
-
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass, jlong self, jstring name)
 {
     static const char method_name[] = "Stat::n_1getValue";
@@ -251,12 +234,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass,
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
-
-        const char* _name = env->GetStringUTFChars(name, NULL);
-        std::string _nameS(_name);
-        env->ReleaseStringUTFChars(name, _name);
-
-        return (jlong) new std::shared_ptr<Variant>(new Variant((*obj)->getField(_nameS).getValue()));
+        return (jlong) new std::shared_ptr<Variant>(new Variant((*obj)->getField(getJavaStirng(env, name)).getValue()));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -265,7 +243,6 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass,
 
 //void n_clear(long nativeObj);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1clear(JNIEnv *env, jclass, jlong self);
-
 JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1clear(JNIEnv *env, jclass, jlong self)
 {
     static const char method_name[] = "Stat::n_1clear";

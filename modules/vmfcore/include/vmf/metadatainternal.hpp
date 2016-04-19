@@ -40,24 +40,39 @@ namespace vmf
 */
 struct VMF_EXPORT MetadataInternal
 {
+    struct VMF_EXPORT FieldInternal
+    {
+        FieldInternal() :
+            value(), useEncryption(false), encryptedData()
+        { }
+
+        std::string value;
+        bool        useEncryption;
+        std::string encryptedData;
+    };
+
     MetadataInternal(const std::string& descName, const std::string& schemaName) :
         id(-1), descName(descName), schemaName(schemaName),
         frameIndex(Metadata::UNDEFINED_FRAME_INDEX), frameNum(Metadata::UNDEFINED_FRAMES_NUMBER),
-        timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION)
+        timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION),
+        fields(), refs(),
+        useEncryption(false), encryptedData()
     {}
 
     MetadataInternal(const MetadataInternal& mdi) :
         id(mdi.id), descName(mdi.descName), schemaName(mdi.schemaName),
         frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
         timestamp(mdi.timestamp), duration(mdi.duration),
-        fields(mdi.fields), refs(mdi.refs)
+        fields(mdi.fields), refs(mdi.refs),
+        useEncryption(mdi.useEncryption), encryptedData(mdi.encryptedData)
     {}
 
     MetadataInternal(MetadataInternal&& mdi) :
         id(std::move(mdi.id)), descName(std::move(mdi.descName)), schemaName(std::move(mdi.schemaName)),
         frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
         timestamp(mdi.timestamp), duration(mdi.duration),
-        fields(std::move(mdi.fields)), refs(std::move(mdi.refs))
+        fields(std::move(mdi.fields)), refs(std::move(mdi.refs)),
+        useEncryption(mdi.useEncryption), encryptedData(std::move(mdi.encryptedData))
     {}
 
     IdType      id;
@@ -67,8 +82,10 @@ struct VMF_EXPORT MetadataInternal
     long long   frameNum;
     long long   timestamp;
     long long   duration;
-    std::map<std::string, std::string> fields;
+    std::map<std::string, FieldInternal> fields;
     std::vector<std::pair<IdType, std::string>> refs;
+    bool        useEncryption;
+    std::string encryptedData;
 };
 
 }//vmf

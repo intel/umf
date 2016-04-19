@@ -108,9 +108,9 @@ std::string FormatCompressed::compress(const std::string& input)
         std::vector<std::shared_ptr<Stat>> stats;
         AttribMap attribs{ {"nextId", to_string(nextId)}, };
 
-        //create writer with no compression enabled
+        //create writer with no wrapping (like compression or encryption) enabled
         std::string outputString;
-        outputString = format->store(cSet, cSchemas, segments, stats, attribs);
+        outputString = getBackendFormat()->store(cSet, cSchemas, segments, stats, attribs);
 
         return outputString;
     }
@@ -123,9 +123,8 @@ std::string FormatCompressed::compress(const std::string& input)
 
 std::string FormatCompressed::decompress(const std::string& input)
 {
-    //parse it as usual serialized VMF XML, search for specific schemas
+    //parse it as usual serialized VMF data, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
-    schemas.push_back(cSchema);
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
     std::vector<std::shared_ptr<Stat>> stats;
@@ -133,15 +132,15 @@ std::string FormatCompressed::decompress(const std::string& input)
 
     //any exceptions thrown inside will be passed further
     Format::ParseCounters counter;
-    counter = format->parse(input, metadata, schemas, segments, stats, attribs);
+    counter = getBackendFormat()->parse(input, metadata, schemas, segments, stats, attribs);
 
-    if(counter.schemas == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
+    if(counter.schemas == 1 && schemas.size() == 1 && schemas[0]->getName() == COMPRESSED_DATA_SCHEMA_NAME)
     {
         auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
              dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
              mapEnd   = metadata[0].fields.end();
-        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second;
-        vmf_string data = dataIter == mapEnd ? "" : dataIter->second;
+        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second.value;
+        vmf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
 
         if(algo.empty())
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");

@@ -47,9 +47,19 @@ public:
     * \brief Class constructor. Create new schema with specified name
     * \param sName [in] schema name
     * \param sAuthor [in] author of the schema
+    * \param isEncrypted [in] whether to encrypt the whole schema or not
     * \throw IncorrectParamException if schema name is empty
     */
-    MetadataSchema( const std::string& sName, const std::string& sAuthor = "" );
+    MetadataSchema( const std::string& sName, const std::string& sAuthor = "",
+                    bool isEncrypted = false);
+
+    /*!
+    * \brief Class constructor. Create new schema with specified name
+    * \param sName [in] schema name
+    * \param isEncrypted [in] whether to encrypt the whole schema or not
+    * \throw IncorrectParamException if schema name is empty
+    */
+    MetadataSchema( const std::string& sName, bool isEncrypted);
 
     /*!
     * \brief Class destructor
@@ -67,6 +77,19 @@ public:
     * \return the author of metadata schema
     */
     std::string getAuthor() const;
+
+    /*!
+     * \brief Check if metadata records of this schema should be encrypted
+     * at saving or serialization
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables encryption
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
 
     /*!
     * \brief Get count of schema items
@@ -116,6 +139,7 @@ protected:
 private:
     std::string m_sName;
     std::string m_sAuthor;
+    bool        m_useEncryption;
 };
 
 

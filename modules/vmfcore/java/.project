@@ -18,7 +18,7 @@
 		<link>
 			<name>VMF_BIN_DIR</name>
 			<type>2</type>
-			<locationURI>VMF_BIN_DIR</locationURI>
+			<location>W:/Dev/git/VMF/vmf3-build-x64-vc12-dyn/bin/Debug</location>
 		</link>
 	</linkedResources>
 </projectDescription>

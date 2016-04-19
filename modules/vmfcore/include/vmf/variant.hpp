@@ -220,7 +220,7 @@ namespace vmf
 
         /*!
         * \brief Assign value by a string.
-        * \param [in] sValue The string that contains the value. This is typically the value returned from toString().
+        * \param [in] value The string that contains the value. This is typically the value returned from toString().
         * \details This function should be used with toString(true), it uses the type from the string.
         */
         void fromString(const std::string& value);
