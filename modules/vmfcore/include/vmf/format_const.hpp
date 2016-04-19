@@ -49,6 +49,9 @@
 #define ATTR_ID_HI "id-hi"
 #define ATTR_ID_LO "id-lo"
 
+#define ATTR_ENCRYPTED_DATA "encrypted-data"
+#define ATTR_ENCRYPTED_BOOL "is-encrypted"
+
 #define ATTR_SEGMENT_TITLE "title"
 #define ATTR_SEGMENT_FPS "fps"
 #define ATTR_SEGMENT_TIME "time"
@@ -67,6 +70,7 @@
 #define ATTR_VMF_NEXTID "nextId"
 #define ATTR_VMF_FILEPATH "filepath"
 #define ATTR_VMF_CHECKSUM "checksum"
+#define ATTR_VMF_HINT "hint-encryption"
 #define ATTR_METADATA_SCHEMA "schema"
 #define ATTR_METADATA_DESCRIPTION "description"
 #define ATTR_METADATA_FRAME_IDX "frame-index"
@@ -86,6 +90,11 @@
 #define COMPRESSED_DATA_PROP_NAME   "data"
 #define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
 #define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
+
+#define ENCRYPTION_HINT_PROP_NAME "hint"
+#define ENCRYPTED_DATA_PROP_NAME "data"
+#define ENCRYPTED_DATA_DESC_NAME "encrypted-metadata"
+#define ENCRYPTED_DATA_SCHEMA_NAME "com.intel.vmf.encrypted-metadata"
 
 #define TAG_STAT "stat"
 #define TAG_STAT_FIELDS_ARRAY "fields-array"

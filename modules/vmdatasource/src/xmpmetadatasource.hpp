@@ -29,7 +29,7 @@ class XMPMetadataSource
 {
 public:
     explicit XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta);
-    void saveSchema(const vmf::vmf_string& schemaName, const vmf::MetadataStream& stream);
+    void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const vmf::MetadataSet& mdSet);
     void loadSchema(const vmf::vmf_string& schemaName, vmf::MetadataStream& stream);
     void loadProperty(const vmf::vmf_string& schemaName, const vmf::vmf_string& metadataName, vmf::MetadataStream& stream);
     void remove(const std::vector<vmf::IdType>& removedIds);
@@ -52,8 +52,10 @@ private:
     void loadSchemaName(const vmf::vmf_string& pathToSchema, vmf::vmf_string& schemaName);
     void loadReference(const vmf::vmf_string& thisRefPath, const std::shared_ptr<vmf::Metadata>& md, vmf::MetadataStream& stream);
 
-    void loadField(const vmf::vmf_string& fieldPath, const std::shared_ptr<vmf::Metadata>& md, const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
-    void saveField(const vmf::vmf_string& fieldName, const vmf::Variant& value, const vmf::vmf_string& fieldsPath);
+    void loadField(const vmf::vmf_string& fieldPath, const std::shared_ptr<vmf::Metadata>& md,
+                   const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
+    void saveField(const vmf::vmf_string& fieldName, const vmf::Variant& value, const bool isEncrypted,
+                   const vmf::vmf_string& encryptedData, const vmf::vmf_string& fieldsPath);
 
     void loadIds();
     void loadIds(const vmf::vmf_string& pathToSchema);
@@ -69,6 +71,11 @@ private:
 
     void loadMetadataTime(const vmf::vmf_string& pathToProperty, long long& timestamp);
     void saveMetadataTime(const vmf::vmf_string& pathToProperty, const long long& timestamp);
+
+    void loadMetadataEncrypted(const vmf::vmf_string& pathToProperty, bool &isEncrypted,
+                               vmf::vmf_string& encryptedData);
+    void saveMetadataEncrypted(const vmf::vmf_string& pathToProperty, bool isEncrypted,
+                               const vmf::vmf_string& encryptedData);
 
     void loadMetadataDuration(const vmf::vmf_string& pathToProperty, long long& duration);
     void saveMetadataDuration(const vmf::vmf_string& pathToProperty, const long long& duration);

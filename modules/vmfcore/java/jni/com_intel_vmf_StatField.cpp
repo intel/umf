@@ -5,6 +5,14 @@
 #include "vmf/statistics.hpp"
 #include "throwJavaException.hpp"
 
+static std::string getJavaStirng(JNIEnv *env, jstring str)
+{
+    const char* tmp = env->GetStringUTFChars(str, NULL);
+    std::string result(tmp);
+    env->ReleaseStringUTFChars(str, tmp);
+    return result;
+}
+
 extern "C" {
 
 using namespace vmf;
@@ -34,7 +42,6 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_StatField_n_1delete(JNIEnv *env, jclas
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1StatField(JNIEnv *env, jclass,
     jstring name, jstring schemaName, jstring metadataName, jstring fieldName, jstring opName);
 
-#define GET_JAVA_STR(x) const char* _ ## x = env->GetStringUTFChars(x, NULL); std::string __ ## x(_ ## x); env->ReleaseStringUTFChars(x, _ ## x)
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1StatField(JNIEnv *env, jclass,
     jstring name, jstring schemaName, jstring metadataName, jstring fieldName, jstring opName)
 {
@@ -42,13 +49,15 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1StatField(JNIEnv *env, j
 
     try
     {
-        GET_JAVA_STR(name);
-        GET_JAVA_STR(schemaName);
-        GET_JAVA_STR(metadataName);
-        GET_JAVA_STR(fieldName);
-        GET_JAVA_STR(opName);
-
-        std::shared_ptr<StatField>* obj = new std::shared_ptr<StatField> (new StatField(__name, __schemaName, __metadataName, __fieldName, __opName));
+        std::shared_ptr<StatField>* obj = new std::shared_ptr<StatField> (
+            new StatField(
+                getJavaStirng(env, name),
+                getJavaStirng(env, schemaName),
+                getJavaStirng(env, metadataName),
+                getJavaStirng(env, fieldName),
+                getJavaStirng(env, opName)
+            )
+        );
         return (jlong)obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }

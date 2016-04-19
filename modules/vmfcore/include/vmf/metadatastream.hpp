@@ -32,12 +32,14 @@
 #include "vmf/metadataset.hpp"
 #include "vmf/metadataschema.hpp"
 #include "vmf/compressor.hpp"
+#include "vmf/encryptor.hpp"
 #include "vmf/iquery.hpp"
 #include "vmf/statistics.hpp"
 
 #include <map>
 #include <memory>
 #include <vector>
+
 #include <algorithm>
 
 namespace vmf
@@ -63,15 +65,32 @@ public:
         InMemory  = 0, /**< Stream data are in-memory */
         ReadOnly  = 1, /**< Open file for read only */
         Update = 2, /**< Open file for read and write */
-        IgnoreUnknownCompressor = 4 /**< Represent compressed data as VMF metadata if decompressor is unknown*/
+        IgnoreUnknownCompressor = 4, /**< Represent compressed data as VMF metadata if decompressor is unknown*/
+        IgnoreUnknownEncryptor = 8 /**< Represent encrypted data as VMF metadata if decryptor is unknown*/
     };
     typedef int OpenMode;
 
+    /*!
+     * \class VideoSegment
+     * \brief The class representing a video segment
+     */
     class VMF_EXPORT VideoSegment
     {
     public:
+        /*!
+         * \brief Default constructor
+         */
         VideoSegment();
 
+        /*!
+         * \brief Constructor with all fields
+         * \param title
+         * \param fps
+         * \param timeStart
+         * \param duration
+         * \param width
+         * \param height
+         */
         VideoSegment( const std::string& title, double fps, long long timeStart,
                       long long duration = 0, long width = 0, long height = 0 );
 
@@ -160,7 +179,6 @@ public:
     * \return true if succeed.
     */
     bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string() );
-
 
     /*!
     * \brief Close previously opened media file
@@ -357,6 +375,30 @@ public:
         long long& timestamp, long long& duration );
 
     /*!
+     * \brief Check if the encryption of the whole metadata is enabled or not
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables the encryption of the whole data at saving or
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
+
+    /*!
+     * \brief Gets the Encryptor instance to be used at saving or serialization
+     * \return the instance of Encryptor
+     */
+    std::shared_ptr<Encryptor> getEncryptor() const;
+
+    /*!
+     * \brief Sets the instance of Encryptor to be used at saving or serialization
+     * \param encryptor
+     */
+    void setEncryptor(std::shared_ptr<Encryptor> encryptor);
+
+    /*!
     * \brief Add new statistics object (copy semantics).
     * \param stat [in] statistics object to add
     * \throw IncorrectParamException if such statistics object already exist
@@ -389,11 +431,18 @@ public:
     void recalcStat();
 
 protected:
+    /*!
+    * \brief Notify statistics object(s) about statistics-related events
+    * \param action [in] action
+    * \param spMetadata [in] pointer to metadata object
+    */
     void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
     void internalAdd(const std::shared_ptr< Metadata >& spMetadata);
+    void decrypt();
+    void encrypt();
 
 private:
     OpenMode m_eMode;
@@ -409,6 +458,9 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
+    bool m_useEncryption;
+    std::shared_ptr<Encryptor> m_encryptor;
+    std::string m_hintEncryption;
     std::vector< std::shared_ptr<Stat> > m_stats;
 };
 

@@ -39,6 +39,9 @@ public class VmfJSONTest
     
     protected MetadataSet mdSet;
     
+    protected Stat mStat;
+    protected Stat[] mStats;
+    
     protected Variant var1;
     protected Variant var2;
     protected Variant var3;
@@ -131,6 +134,9 @@ public class VmfJSONTest
         videoSegs[1] = videoSeg2;
         videoSegs[2] = videoSeg3;
         
+        mStat = new Stat("stat 1", new StatField("stat fiels 1", mdDesc1.getSchemaName(), mdDesc1.getMetadataName(), mdDesc1.getFields()[0].getName(), StatField.BuiltinOp_Count));
+        mStats = new Stat[]{mStat};
+        
     	json = new FormatJSON();
     }
     
@@ -140,14 +146,15 @@ public class VmfJSONTest
     @Test
     public void testJSONReaderAndWriter()
     {
-    	String schemasStr = json.store(null, schemas, null, null);
+    	String schemasStr = json.store(null, schemas, null, mStats, null);
         assertFalse(schemasStr.isEmpty());
         
         Format.Data data = json.parse(schemasStr);
         assertNotNull(data.schemas);
         assertEquals (schemas.length, data.schemas.length);
+        assertEquals(mStats.length, data.stats.length);
         
-        String str = json.store(mdSet, schemas, null, null);
+        String str = json.store(mdSet, schemas, null, null, null);
         assertFalse(str.isEmpty());
         
         data = json.parse(str);
@@ -156,7 +163,7 @@ public class VmfJSONTest
         assertEquals (schemas.length,  data.schemas.length);
         assertNull (data.segments);
         
-        String segments = json.store(null, null, videoSegs, null);
+        String segments = json.store(null, null, videoSegs, null, null);
         assertFalse(segments.isEmpty());
         
         data = json.parse(segments);
@@ -166,7 +173,7 @@ public class VmfJSONTest
         HashMap<String, String> attribs = new HashMap<String, String>();
         attribs.put("nextId", "100");
         attribs.put("filepath", "path.txt");
-        String all = json.store(mdSet, schemas, videoSegs, attribs);
+        String all = json.store(mdSet, schemas, videoSegs, mStats, attribs);
         assertFalse(all.isEmpty());
 
         data = json.parse(all);
@@ -175,6 +182,9 @@ public class VmfJSONTest
         assertEquals (videoSegs.length, data.segments.length);
         assertEquals (2, data.attrib.size());
         assertEquals ("100", data.attrib.get("nextId"));
+        assertEquals(mStats.length, data.stats.length);
+        assertEquals(mStats[0].getName(), data.stats[0].getName());
+        assertEquals(mStats[0].getAllFieldNames().length, data.stats[0].getAllFieldNames().length);
     }
     
     @Test

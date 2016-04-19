@@ -20,22 +20,33 @@
 namespace vmf
 {
 MetadataDesc::MetadataDesc()
+    : m_sSchemaName()
+    , m_sMetadataName()
+    , m_vFields()
+    , m_useEncryption(false)
+
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
 }
 
-MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields)
-    : m_sMetadataName(sMetadataName)
+MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                           bool useEncryption)
+    : m_sSchemaName()
+    , m_sMetadataName(sMetadataName)
     , m_vFields(vFields)
+    , m_useEncryption(useEncryption)
 {
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>("", false));
     validate();
 }
 
-MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields, const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs)
-    : m_sMetadataName( sMetadataName )
+MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< FieldDesc >& vFields,
+                           const std::vector<std::shared_ptr<ReferenceDesc>>& vRefs, bool useEncryption)
+    : m_sSchemaName()
+    , m_sMetadataName( sMetadataName )
     , m_vFields( vFields )
     , m_vRefDesc( vRefs )
+    , m_useEncryption(useEncryption)
 {
     if (find_if(m_vRefDesc.begin(), m_vRefDesc.end(), [](const std::shared_ptr<ReferenceDesc>& r)->bool { return r->name.empty(); }) == m_vRefDesc.end())
         m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>());
@@ -44,7 +55,9 @@ MetadataDesc::MetadataDesc(const std::string& sMetadataName, const std::vector< 
 }
 
 MetadataDesc::MetadataDesc( const std::string& sMetadataName, Variant::Type type )
-    : m_sMetadataName( sMetadataName )
+    : m_sSchemaName()
+    , m_sMetadataName( sMetadataName )
+    , m_useEncryption(false)
 {
     if (type == Variant::type_empty)
     {
@@ -101,6 +114,16 @@ std::string MetadataDesc::getSchemaName() const
     return m_sSchemaName;
 }
 
+bool MetadataDesc::getUseEncryption() const
+{
+    return m_useEncryption;
+}
+
+void MetadataDesc::setUseEncryption(bool useEncryption)
+{
+    m_useEncryption = useEncryption;
+}
+
 std::vector<FieldDesc> MetadataDesc::getFields() const
 {
     return m_vFields;
@@ -134,6 +157,33 @@ bool MetadataDesc::getFieldDesc( FieldDesc& field, const std::string& sFieldName
 
     return bRet;
 }
+
+
+FieldDesc& MetadataDesc::getFieldDesc(const std::string &sFieldName)
+{
+    if( sFieldName.empty() )
+    {
+        if( m_vFields.size() == 1 )
+        {
+            return m_vFields[0];
+        }
+    }
+    else
+    {
+        auto it = std::find_if( m_vFields.begin(), m_vFields.end(), [&sFieldName]( FieldDesc fieldDesc )->bool
+        {
+            return fieldDesc.name == sFieldName;
+        });
+
+        if( it != m_vFields.end() )
+        {
+            return *it;
+        }
+    }
+
+    VMF_EXCEPTION(IncorrectParamException, "No field description found: \"" + sFieldName + "\"");
+}
+
 
 const std::vector<std::shared_ptr<ReferenceDesc>>& MetadataDesc::getAllReferenceDescs() const
 {

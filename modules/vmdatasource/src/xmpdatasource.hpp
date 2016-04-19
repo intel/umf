@@ -26,6 +26,7 @@
 
 #include "vmf/metadataschema.hpp"
 #include "vmf/compressor.hpp"
+#include "vmf/encryptor.hpp"
 
 #define TXMP_STRING_TYPE vmf::vmf_string
 #define XMP_INCLUDE_XMPFILES 1
@@ -47,6 +48,7 @@ class XMPSchemaSource;
 class XMPStatSource;
 
 /*!
+ * \class XMPDataSource
  * \brief Class implements IDataSource interface with usage of XMP
  */
 class VMF_EXPORT XMPDataSource: public IDataSource {
@@ -63,7 +65,7 @@ public:
 
     virtual void loadProperty(const vmf::vmf_string &schemaName, const vmf::vmf_string &propertyName, MetadataStream &stream);
 
-    virtual void saveSchema(const vmf::vmf_string& schemaName, const vmf::MetadataStream& stream);
+    virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet);
 
     virtual void save(const std::shared_ptr<vmf::MetadataSchema>& schema);
 
@@ -90,6 +92,12 @@ public:
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
     virtual void setCompressor(const vmf_string& id);
+
+    virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor);
+
+    virtual std::string loadHintEncryption();
+
+    virtual void saveHintEncryption(const vmf_string& hint);
 
     virtual void pushChanges();
 
@@ -129,7 +137,9 @@ private:
     vmf::vmf_string metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
+    std::shared_ptr<Encryptor>  encryptor;
     std::shared_ptr<vmf::MetadataSchema> schemaCompression;
+    std::shared_ptr<vmf::MetadataSchema> schemaEncryption;
 };
 
 #ifdef _MSC_VER

@@ -19,13 +19,19 @@
 
 namespace vmf
 {
-MetadataSchema::MetadataSchema( const std::string& sName, const std::string& sAuthor )
-    : m_sName(sName), m_sAuthor(sAuthor)
+MetadataSchema::MetadataSchema(const std::string& sName, const std::string& sAuthor, bool useEncryption)
+    : m_sName(sName), m_sAuthor(sAuthor), m_useEncryption(useEncryption)
 {
     if (sName.empty())
     {
         VMF_EXCEPTION(IncorrectParamException, "Schema name can't be empty.");
     }
+}
+
+MetadataSchema::MetadataSchema(const std::string &sName, bool isEncrypted)
+    : MetadataSchema(sName, "", isEncrypted)
+{
+
 }
 
 MetadataSchema::~MetadataSchema(void)
@@ -41,6 +47,17 @@ std::string MetadataSchema::getAuthor() const
 {
     return m_sAuthor;
 }
+
+void MetadataSchema::setUseEncryption(bool useEncryption)
+{
+    m_useEncryption = useEncryption;
+}
+
+bool MetadataSchema::getUseEncryption() const
+{
+    return m_useEncryption;
+}
+
 size_t MetadataSchema::size() const
 {
     return std::vector< std::shared_ptr< MetadataDesc >>::size();

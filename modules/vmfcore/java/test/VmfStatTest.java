@@ -1,14 +1,9 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataDesc;
 import com.intel.vmf.MetadataSchema;

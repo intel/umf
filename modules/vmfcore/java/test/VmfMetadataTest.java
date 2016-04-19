@@ -1,22 +1,24 @@
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.MetadataInternal;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Reference;
-import com.intel.vmf.Variant;
-import com.intel.vmf.MetadataSchema;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Log;
+import com.intel.vmf.Metadata;
+import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.MetadataSchema;
+import com.intel.vmf.MetadataSet;
+import com.intel.vmf.MetadataStream;
+import com.intel.vmf.Reference;
+import com.intel.vmf.ReferenceDesc;
+import com.intel.vmf.Variant;
 
 public class VmfMetadataTest 
 {
@@ -229,7 +231,7 @@ public class VmfMetadataTest
     public void testValidateTrown()
     {
         thrown.expect(com.intel.vmf.Exception.class);
-        thrown.expectMessage("vmf::Exception: The metadata contains no value");
+        thrown.expectMessage("vmf::Exception: The metadata contains neither value nor encrypted data");
         md1.validate();
     }
     

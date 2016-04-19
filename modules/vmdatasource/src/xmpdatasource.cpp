@@ -27,6 +27,7 @@
 
 #define VMF_GLOBAL_NEXT_ID "next-id"
 #define VMF_GLOBAL_CHECKSUM "media-checksum"
+#define VMF_GLOBAL_HINT "hint-encryption"
 
 #define VMF_INTERNAL "internal"
 #define VMF_VIDEO_SEGMENTS "video-segments"
@@ -88,13 +89,19 @@ void XMPDataSource::terminate()
 
 
 XMPDataSource::XMPDataSource()
-  : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr)
+  : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr), encryptor(nullptr)
 {
     schemaCompression = make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
     VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
         VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
         VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaCompression);
+
+    schemaEncryption = make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
+    VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
+        VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
+        VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
+    VMF_METADATA_END(schemaEncryption);
 }
 
 XMPDataSource::~XMPDataSource()
@@ -115,14 +122,24 @@ void XMPDataSource::setCompressor(const vmf_string &id)
 }
 
 
+void XMPDataSource::setEncryptor(std::shared_ptr<Encryptor> _encryptor)
+{
+    encryptor = _encryptor;
+}
+
+
 void XMPDataSource::loadXMPstructs()
 {
-    std::shared_ptr<SXMPMeta> compressedXMP = make_shared<SXMPMeta>();
-    xmpFile.GetXMP(compressedXMP.get());
+    std::shared_ptr<SXMPMeta> tmpXMP = make_shared<SXMPMeta>();
+    xmpFile.GetXMP(tmpXMP.get());
 
-    std::shared_ptr<XMPSchemaSource> cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
-    std::shared_ptr<XMPMetadataSource> cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
-    if (!cMetaSource || !cSchemaSource)
+    std::shared_ptr<XMPMetadataSource> tmpMetaSource;
+    std::shared_ptr<XMPSchemaSource> tmpSchemaSource;
+    std::shared_ptr<XMPStatSource> tmpStatSource;
+    tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+    tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
+    tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
+    if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
     {
         VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
     }
@@ -131,18 +148,77 @@ void XMPDataSource::loadXMPstructs()
     //or pass them further
     try
     {
+        //load standard VMF metadata and decrypt them if there is a corresponding schema
+        //or pass them further
+        std::map<vmf_string, std::shared_ptr<MetadataSchema> > eSchemas;
+        tmpSchemaSource->load(eSchemas);
+        auto itEncryption = eSchemas.find(ENCRYPTED_DATA_SCHEMA_NAME);
+        if(itEncryption != eSchemas.end())
+        {
+            MetadataStream eStream;
+            eStream.addSchema(itEncryption->second);
+            tmpMetaSource->loadSchema(ENCRYPTED_DATA_SCHEMA_NAME, eStream);
+            MetadataSet eSet = eStream.queryBySchema(ENCRYPTED_DATA_SCHEMA_NAME);
+            std::shared_ptr<Metadata> eItem = eSet[0];
+            vmf_string hint      = eItem->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
+            vmf_string encodedB64 = eItem->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
+            bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor) != 0;
+            if(!encryptor)
+            {
+                if(!ignoreBad)
+                {
+                    VMF_EXCEPTION(IncorrectParamException,
+                                  "No decryption algorithm provided for encrypted data");
+                }
+            }
+            else
+            {
+                string decodedFromB64;
+                XMPUtils::DecodeFromBase64(encodedB64.data(), encodedB64.length(), &decodedFromB64);
+                vmf_rawbuffer encrypted(decodedFromB64.c_str(), decodedFromB64.size());
+                string theData;
+                try
+                {
+                    encryptor->decrypt(encrypted, theData);
+                }
+                catch(Exception& ee)
+                {
+                    //if we've failed with decryption (whatever the reason was)
+                    //and we're allowed to ignore that
+                    if(!ignoreBad)
+                    {
+                        string message = "Decryption failed: " + string(ee.what()) + ", hint: " + hint;
+                        VMF_EXCEPTION(IncorrectParamException, message);
+                    }
+                }
+                //replace tmp XMP entities
+                tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
+                tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+                tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
+                tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
+                if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
+                {
+                    VMF_EXCEPTION(DataStorageException,
+                                  "Failed to create metadata source, schema source or stat source");
+                }
+            }
+        }
+
+        //load standard VMF metadata and decompress them if there is a corresponding schema
+        //or pass them further
         std::map<vmf_string, std::shared_ptr<MetadataSchema> > cSchemas;
-        cSchemaSource->load(cSchemas);
-        auto it = cSchemas.find(COMPRESSED_DATA_SCHEMA_NAME);
-        if(it != cSchemas.end())
+        tmpSchemaSource->load(cSchemas);
+        auto itCompression = cSchemas.find(COMPRESSED_DATA_SCHEMA_NAME);
+        if(itCompression != cSchemas.end())
         {
             MetadataStream cStream;
-            cStream.addSchema(it->second);
-            cMetaSource->loadSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
+            cStream.addSchema(itCompression->second);
+            tmpMetaSource->loadSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
             MetadataSet cSet = cStream.queryBySchema(COMPRESSED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> cItem = cSet[0];
             vmf_string algo    = cItem->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
             vmf_string encoded = cItem->getFieldValue(COMPRESSED_DATA_PROP_NAME);
+            bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor) != 0;
             try
             {
                 std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
@@ -151,33 +227,33 @@ void XMPDataSource::loadXMPstructs()
                 vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
                 string theData;
                 decompressor->decompress(compressed, theData);
-                xmp->ParseFromBuffer(theData.c_str(), theData.size(), 0);
-                schemaSource = make_shared<XMPSchemaSource>(xmp);
-                metadataSource = make_shared<XMPMetadataSource>(xmp);
-                statSource = make_shared<XMPStatSource>(xmp);
+                //replace tmp XMP entities
+                tmpXMP->ParseFromBuffer(theData.c_str(), theData.size(), 0);
+                tmpSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+                tmpMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
+                tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
+                if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
+                {
+                    VMF_EXCEPTION(DataStorageException,
+                                  "Failed to create metadata source, schema source or stat source");
+                }
             }
             catch(IncorrectParamException& ce)
             {
                 //if there's no such compressor and we're allowed to ignore that
-                if(openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor)
-                {
-                    xmp = compressedXMP;
-                    schemaSource = cSchemaSource;
-                    metadataSource = cMetaSource;
-                    statSource = make_shared<XMPStatSource>(xmp);
-                }
-                else
+                if(!ignoreBad)
                 {
                     VMF_EXCEPTION(IncorrectParamException, ce.what());
                 }
             }
-        }
-        else
-        {
-            xmp = compressedXMP;
-            schemaSource = cSchemaSource;
-            metadataSource = cMetaSource;
-            statSource = make_shared<XMPStatSource>(xmp);
+            catch(InternalErrorException& ce)
+            {
+                //if there was an error during decompression
+                if(!ignoreBad)
+                {
+                    VMF_EXCEPTION(IncorrectParamException, ce.what());
+                }
+            }
         }
     }
     catch(const XMP_Error& e)
@@ -188,23 +264,27 @@ void XMPDataSource::loadXMPstructs()
     {
         VMF_EXCEPTION(DataStorageException, e.what());
     }
+
+    xmp = tmpXMP;
+    schemaSource = tmpSchemaSource;
+    metadataSource = tmpMetaSource;
+    statSource = tmpStatSource;
 }
 
 
 void XMPDataSource::saveXMPstructs()
 {
-    std::shared_ptr<SXMPMeta> compressedXMP;
+    std::shared_ptr<SXMPMeta> tmpXMP = xmp;
+
     //Sometimes compressed&encoded data is bigger than the source data
     //but there's no need to compare their sizes and write the smallest one.
     //Because due to RDF's verbosity it happens only when the source data is small.
     //That's why the economy wouldn't be significant.
     if(compressor)
     {
-        compressedXMP = std::make_shared<SXMPMeta>();
-
         string buffer;
         XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
-        xmp->SerializeToBuffer(&buffer, options, 0, NULL);
+        tmpXMP->SerializeToBuffer(&buffer, options, 0, NULL);
         vmf_rawbuffer compressed;
         compressor->compress(buffer, compressed);
         string encoded;
@@ -219,10 +299,11 @@ void XMPDataSource::saveXMPstructs()
         cMetadata->push_back(FieldValue(COMPRESSED_DATA_PROP_NAME,  encoded));
         cStream.add(cMetadata);
 
+        tmpXMP = make_shared<SXMPMeta>();
         std::shared_ptr<XMPMetadataSource> cMetaSource;
         std::shared_ptr<XMPSchemaSource> cSchemaSource;
-        cSchemaSource = make_shared<XMPSchemaSource>(compressedXMP);
-        cMetaSource = make_shared<XMPMetadataSource>(compressedXMP);
+        cSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+        cMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
         if (!cMetaSource || !cSchemaSource)
         {
             VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
@@ -230,7 +311,7 @@ void XMPDataSource::saveXMPstructs()
 
         try
         {
-            cMetaSource->saveSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
+            cMetaSource->saveSchema(schemaCompression, cStream.getAll());
             cSchemaSource->save(schemaCompression);
         }
         catch(const XMP_Error& e)
@@ -242,15 +323,59 @@ void XMPDataSource::saveXMPstructs()
             VMF_EXCEPTION(DataStorageException, e.what());
         }
         IdType cNextId = 1;
-        compressedXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
+        tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
     }
-    else
+
+    //existing encryptor should mean that we need an encryption
+    if(encryptor)
     {
-        compressedXMP = xmp;
+        string buffer;
+        XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
+        tmpXMP->SerializeToBuffer(&buffer, options, 0, NULL);
+        vmf_rawbuffer encrypted;
+        encryptor->encrypt(buffer, encrypted);
+        string encoded;
+        XMPUtils::EncodeToBase64(encrypted.data(), encrypted.size(), &encoded);
+
+        //save encrypted data as VMF metadata with corresponding schema
+        MetadataStream eStream;
+        eStream.addSchema(schemaEncryption);
+        shared_ptr<Metadata> eMetadata;
+        eMetadata = make_shared<Metadata>(schemaEncryption->findMetadataDesc(ENCRYPTED_DATA_DESC_NAME));
+        eMetadata->push_back(FieldValue(ENCRYPTION_HINT_PROP_NAME, encryptor->getHint()));
+        eMetadata->push_back(FieldValue(ENCRYPTED_DATA_PROP_NAME, encoded));
+        eStream.add(eMetadata);
+
+        tmpXMP = make_shared<SXMPMeta>();
+        std::shared_ptr<XMPMetadataSource> eMetaSource;
+        std::shared_ptr<XMPSchemaSource> eSchemaSource;
+        eSchemaSource = make_shared<XMPSchemaSource>(tmpXMP);
+        eMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
+        if(!eMetaSource || !eSchemaSource)
+        {
+            VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
+        }
+
+        try
+        {
+            eMetaSource->saveSchema(schemaEncryption, eStream.getAll());
+            eSchemaSource->save(schemaEncryption);
+        }
+        catch(const XMP_Error& e)
+        {
+            VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        }
+        catch(const std::exception& e)
+        {
+            VMF_EXCEPTION(DataStorageException, e.what());
+        }
+        IdType eNextId = 1;
+        tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, eNextId);
     }
-    if(xmpFile.CanPutXMP(*compressedXMP))
+
+    if(xmpFile.CanPutXMP(*tmpXMP))
     {
-        xmpFile.PutXMP(*compressedXMP);
+        xmpFile.PutXMP(*tmpXMP);
     }
     else
     {
@@ -359,12 +484,12 @@ void XMPDataSource::loadProperty(const vmf_string &schemaName, const vmf_string 
 }
 
 
-void XMPDataSource::saveSchema(const vmf_string& schemaName, const MetadataStream& stream)
+void XMPDataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet)
 {
     metadataSourceCheck();
     try
     {
-        metadataSource->saveSchema(schemaName, stream);
+        metadataSource->saveSchema(schemaDesc, mdSet);
     }
     catch(const XMP_Error& e)
     {
@@ -596,6 +721,7 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
     }
 }
 
+
 std::string XMPDataSource::loadChecksum()
 {
     std::string checksum;
@@ -608,6 +734,22 @@ void XMPDataSource::saveChecksum(const vmf_string& checksum)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
 }
+
+
+std::string XMPDataSource::loadHintEncryption()
+{
+    std::string hint;
+    if(!xmp->GetProperty(VMF_NS, VMF_GLOBAL_HINT, &hint, NULL))
+        return "";
+    return hint;
+}
+
+
+void XMPDataSource::saveHintEncryption(const vmf_string& hint)
+{
+    xmp->SetProperty(VMF_NS, VMF_GLOBAL_HINT, hint.c_str());
+}
+
 
 void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {

@@ -19,7 +19,7 @@
 
 #include "vmf/vmf.hpp"
 
-// User-created compression algorithm should implement ICompressor interface
+// User-created compression algorithm should implement Compressor interface
 // Straightforward implementation of LZW algorithm
 class MyLZWCompressor : public vmf::Compressor
 {

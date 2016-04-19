@@ -29,5 +29,7 @@
 #include "vmf/format_xml.hpp"
 #include "vmf/format_json.hpp"
 #include "vmf/format_compressed.hpp"
+#include "vmf/encryptor_default.hpp"
+#include "vmf/format_encrypted.hpp"
 
 #endif /* __VMF_H__ */
