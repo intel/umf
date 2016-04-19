@@ -42,7 +42,7 @@
 
 /* Begin PBXFileReference section */
 		527904721CB52DDC005BE7AB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		527904741CB67C86005BE7AB /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button.png; sourceTree = SOURCE_ROOT; };
+		527904741CB67C86005BE7AB /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = classes/button.png; sourceTree = SOURCE_ROOT; };
 		52FDBC9C1CBEAEF500F41BB2 /* vmf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = vmf.framework; sourceTree = "<group>"; };
 		52FDBC9E1CBEB10000F41BB2 /* AccessoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccessoryViewController.h; path = "classes/AccessoryViewController.h"; sourceTree = SOURCE_ROOT; };
 		52FDBC9F1CBEB10000F41BB2 /* AccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccessoryViewController.m; path = "classes/AccessoryViewController.m"; sourceTree = SOURCE_ROOT; };
