@@ -44,6 +44,11 @@ public class Compressor {
 		return new String[] {BUILTIN_ZLIB};
 	}
 	
+	public static String builtinId() {
+		//return n_builtinId();
+		return BUILTIN_ZLIB;
+	}
+
 	// user-provided Compressors support factory methods
     // TODO: NYI
     /*

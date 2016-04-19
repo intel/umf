@@ -4,10 +4,10 @@ import java.util.Map;
 
 import com.intel.vmf.MetadataStream.VideoSegment;
 
-public class FormatXML extends Format {
-    
-	public FormatXML() {
-		super( n_FormatXML() );
+public class FormatEncrypted extends Format {
+
+	public FormatEncrypted(Format format, Encryptor encryptor) {
+		super( n_FormatEncrypted(format.nativeObj, encryptor.nativeObj) );
 	}
 
 	@Override
@@ -15,7 +15,7 @@ public class FormatXML extends Format {
 			MetadataSet set,
 			MetadataSchema[] schemas,
 			VideoSegment[] segments,
-	        Stat[] stats,
+			Stat[] stats,
 			Map<String, String> attribs
 			) {
 		long[] schemasAddrs = null, segmentsAddrs = null, statsAddrs = null;
@@ -61,9 +61,8 @@ public class FormatXML extends Format {
 		long[] objects = n_parse(nativeObj, text, attribNames, attribVals);
 		return new Data(objects, attribNames, attribVals);
 	}
-	
-	private native static long n_FormatXML();
-	private native static String n_store(long nativeObj, long set, long[] schemas, long[] segments, long[] stats, String[] attribNames, String[] attribVals);
-	private native static long[] n_parse(long nativeObj, String text, String[] attribNames, String[] attribVals);
 
+	private native static long n_FormatEncrypted(long format, long encryptor);
+    private native static String n_store(long nativeObj, long set, long[] schemas, long[] segments, long[] stats, String[] attribNames, String[] attribVals);
+    private native static long[] n_parse(long nativeObj, String text, String[] attribNames, String[] attribVals);
 }

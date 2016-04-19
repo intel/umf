@@ -1,20 +1,31 @@
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 
-import com.intel.vmf.*;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.intel.vmf.Compressor;
+import com.intel.vmf.FieldDesc;
+import com.intel.vmf.Format;
+import com.intel.vmf.FormatCompressed;
+import com.intel.vmf.FormatJSON;
+import com.intel.vmf.Metadata;
+import com.intel.vmf.MetadataDesc;
+import com.intel.vmf.MetadataSchema;
+import com.intel.vmf.MetadataSet;
+import com.intel.vmf.MetadataStream;
+import com.intel.vmf.ReferenceDesc;
+import com.intel.vmf.Stat;
+import com.intel.vmf.StatField;
+import com.intel.vmf.Variant;
 
-import org.junit.*;
-import org.junit.rules.ExpectedException;
 
-public class VmfXMLTest 
-{
-    @BeforeClass
-    public static void disableLogging()
-    {
-        Log.setVerbosityLevel(Log.LOG_NO_MESSAGE);
-    }
-	
+public class VmfFormatCompressedTest {
+
     protected MetadataStream stream;
     protected final MetadataSchema schema1 = new MetadataSchema ("people");
     protected final MetadataSchema schema2 = new MetadataSchema ("transport");
@@ -35,20 +46,19 @@ public class VmfXMLTest
     
     protected MetadataStream.VideoSegment videoSegs[];
     
-    protected FormatXML xml;
-    
     protected MetadataSet mdSet;
     
     protected Stat mStat;
     protected Stat[] mStats;
-
+    
     protected Variant var1;
     protected Variant var2;
     protected Variant var3;
     
-    @Before
-    public void setUp ()
-    {
+    protected FormatCompressed format;
+
+	@Before
+    public void setUp() {
     	stream = new MetadataStream ();
     	
     	videoSegs = new MetadataStream.VideoSegment[3];
@@ -137,46 +147,42 @@ public class VmfXMLTest
         mStat = new Stat("stat 1", new StatField("stat fiels 1", mdDesc1.getSchemaName(), mdDesc1.getMetadataName(), mdDesc1.getFields()[0].getName(), StatField.BuiltinOp_Count));
         mStats = new Stat[]{mStat};
         
-    	xml = new FormatXML();
+    	format = new FormatCompressed(new FormatJSON(), Compressor.BUILTIN_ZLIB);
     }
-    
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testXMLReaderAndWriter()
-    {
-    	String schemasStr = xml.store(null, schemas, null, mStats, null);
+    public void testFormatCompressed () {
+    	String schemasStr = format.store(null, schemas, null, mStats, null);
         assertFalse(schemasStr.isEmpty());
         
-        Format.Data data = xml.parse(schemasStr);
+        Format.Data data = format.parse(schemasStr);
         assertNotNull(data.schemas);
         assertEquals (schemas.length, data.schemas.length);
         assertEquals(mStats.length, data.stats.length);
         
-        String str = xml.store(mdSet, schemas, null, null, null);
+        String str = format.store(mdSet, schemas, null, null, null);
         assertFalse(str.isEmpty());
         
-        data = xml.parse(str);
+        data = format.parse(str);
         assertNotNull(data.metadata);
         assertEquals (mdSet.getSize(), data.metadata.length);
         assertEquals (schemas.length,  data.schemas.length);
         assertNull (data.segments);
         
-        String segments = xml.store(null, null, videoSegs, null, null);
+        String segments = format.store(null, null, videoSegs, null, null);
         assertFalse(segments.isEmpty());
         
-        data = xml.parse(segments);
+        data = format.parse(segments);
         assertNotNull(data.segments);
         assertEquals (videoSegs.length, data.segments.length);
         
         HashMap<String, String> attribs = new HashMap<String, String>();
         attribs.put("nextId", "100");
         attribs.put("filepath", "path.txt");
-        String all = xml.store(mdSet, schemas, videoSegs, mStats, attribs);
+        String all = format.store(mdSet, schemas, videoSegs, mStats, attribs);
         assertFalse(all.isEmpty());
 
-        data = xml.parse(all);
+        data = format.parse(all);
         assertEquals (mdSet.getSize(), data.metadata.length);
         assertEquals (schemas.length,  data.schemas.length);
         assertEquals (videoSegs.length, data.segments.length);
@@ -185,38 +191,6 @@ public class VmfXMLTest
         assertEquals(mStats.length, data.stats.length);
         assertEquals(mStats[0].getName(), data.stats[0].getName());
         assertEquals(mStats[0].getAllFieldNames().length, data.stats[0].getAllFieldNames().length);
-}
-    
-    @Test
-    public void testXMLParseSchemaThrown()
-    {
-        String text = "";
-        
-        thrown.expect(com.intel.vmf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Empty input XML string");
-        xml.parse(text);
     }
 
-   
-    @Test
-    public void testXMLDeleteByGC()
-    {
-        xml = null;
-        
-        videoSeg1 = null;
-        videoSeg2 = null;
-        videoSeg3 = null;
-        
-        var1 = null;
-        var2 = null;
-        var3 = null;
-        
-        mdDesc1 = null;
-        mdDesc2 = null;
-        
-        mdSet = null;
-        stream = null;
-        
-        System.gc();
-    }
 }

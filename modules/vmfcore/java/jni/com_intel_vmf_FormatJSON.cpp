@@ -25,15 +25,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatJSON_n_1FormatJSON(JNIEnv *env,
         std::shared_ptr<FormatJSON>* obj = new std::shared_ptr<FormatJSON>(new FormatJSON());
         return (jlong)obj;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -144,15 +137,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatJSON_n_1store(JNIEnv *env, jc
             );
         return env->NewStringUTF(xml.c_str());
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
-
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -189,7 +175,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
 
         env->ReleaseStringUTFChars(text, textStr);
 
-        jsize addressesArraySize = 3 + std::accumulate(std::begin(counters.cnt), std::end(counters.cnt), 3);
+        jsize addressesArraySize = counters.metadata + 1 + counters.schemas + 1 + counters.segments + 1 + counters.stats;
 
         jlongArray objs  = env->NewLongArray(addressesArraySize);
         jlong* objsAddrs = env->GetLongArrayElements(objs, 0);
@@ -231,14 +217,8 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
 
         return objs;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
 
@@ -256,20 +236,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FormatJSON_n_1delete(JNIEnv *env, jcla
     try
     {
         std::shared_ptr<FormatJSON>* obj = (std::shared_ptr<FormatJSON>*) self;
-
-        if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'this' is null.");
-
+        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'this' is null.");
         delete obj;
     }
-    catch (const std::exception &e)
-    {
-        throwJavaException(env, &e, method_name);
-    }
-    catch (...)
-    {
-        throwJavaException(env, 0, method_name);
-    }
+    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
+    catch (...) { throwJavaException(env, 0, method_name); }
 }
 
 

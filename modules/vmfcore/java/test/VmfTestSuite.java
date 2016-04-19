@@ -21,7 +21,9 @@ import org.junit.runners.Suite;
   VmfXMLTest.class,
   VmfStatTest.class,
   VmfCompressorTest.class,
-  VmfEncryptorTest.class
+  VmfEncryptorTest.class,
+  VmfFormatCompressedTest.class,
+  VmfFormatEncryptedTest.class
 })
 
 public class VmfTestSuite {}

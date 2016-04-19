@@ -1,28 +1,31 @@
 #include<string>
 #include<vector>
 #include<numeric>
-#include "vmf/format_xml.hpp"
+#include "vmf/format_compressed.hpp"
 #include "throwJavaException.hpp"
+
+static std::string getJavaStirng(JNIEnv *env, jstring str)
+{
+    const char* tmp = env->GetStringUTFChars(str, NULL);
+    std::string result(tmp);
+    env->ReleaseStringUTFChars(str, tmp);
+    return result;
+}
 
 extern "C" {
 
 using namespace vmf;
 
-/*
- * Class:     com_intel_vmf_FormatXML
- * Method:    n_FormatXML
- * Signature: ()J
- */
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatXML_n_1FormatXML(JNIEnv *env, jclass);
-
-
-JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatXML_n_1FormatXML(JNIEnv *env, jclass)
+//long n_FormatCompressed(long format, String compressorId)
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatCompressed_n_1FormatCompressed(JNIEnv *env, jclass, jlong format, jstring compressorId);
+JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatCompressed_n_1FormatCompressed(JNIEnv *env, jclass, jlong format, jstring compressorId)
 {
-    static const char method_name[] = "FormatXML::n_1FormatXML";
+    static const char method_name[] = "FormatCompressed::FormatCompressed";
 
     try
     {
-        std::shared_ptr<FormatXML>* obj = new std::shared_ptr<FormatXML>(new FormatXML());
+        std::shared_ptr<Format>* formatObj = (std::shared_ptr<Format>*) format;
+        std::shared_ptr<FormatCompressed>* obj = new std::shared_ptr<FormatCompressed>(new FormatCompressed(*formatObj, getJavaStirng(env, compressorId)));
         return (jlong)obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -32,22 +35,19 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatXML_n_1FormatXML(JNIEnv *env, j
 
 
 /*
- * Class:     com_intel_vmf_FormatXML
+ * Class:     com_intel_vmf_FormatCompressed
  * Method:    n_store
  * Signature: (long nativeObj, long set, long[] schemas, long[] segments, long[] stats, String[] attribNames, String[] attribVals);
  */
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jclass, jlong self, jlong setAddr, jlongArray schemaAddrs, jlongArray segAddrs, jlongArray statsAddrs, jobjectArray attribNames, jobjectArray attribVals);
-
-
-JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jclass, jlong self, jlong setAddr, jlongArray schemaAddrs, jlongArray segAddrs, jlongArray statsAddrs, jobjectArray attribNames, jobjectArray attribVals)
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatCompressed_n_1store(JNIEnv *env, jclass, jlong self, jlong setAddr, jlongArray schemaAddrs, jlongArray segAddrs, jlongArray statsAddrs, jobjectArray attribNames, jobjectArray attribVals);
+JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatCompressed_n_1store(JNIEnv *env, jclass, jlong self, jlong setAddr, jlongArray schemaAddrs, jlongArray segAddrs, jlongArray statsAddrs, jobjectArray attribNames, jobjectArray attribVals)
 {
-    static const char method_name[] = "FormatXML::n_1store";
+    static const char method_name[] = "FormatCompressed::n_1store";
 
     try
     {
-        std::shared_ptr<FormatXML>* obj = (std::shared_ptr<FormatXML>*) self;
-        if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'self' is null.");
+        std::shared_ptr<FormatCompressed>* obj = (std::shared_ptr<FormatCompressed>*) self;
+        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null.");
 
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
@@ -99,7 +99,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
                 for (int i = 0; i < lenStats; i++)
                 {
                     std::shared_ptr<Stat>* stat = (std::shared_ptr<Stat>*)statsArray[i];
-                    vecStats.push_back(*stat);
+                    vecStats.push_back( *stat );
                 }
                 env->ReleaseLongArrayElements(statsAddrs, statsArray, 0);
             }
@@ -128,14 +128,14 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
         }
 
 
-        std::string xml = (*obj)->store(
+        std::string text = (*obj)->store(
             (set && *set ? **set : MetadataSet()),
             vecSchemas,
             vecSegments,
             vecStats,
             attribs
             );
-        return env->NewStringUTF(xml.c_str());
+        return env->NewStringUTF(text.c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
     catch (...) { throwJavaException(env, 0, method_name); }
@@ -144,38 +144,28 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatXML_n_1store(JNIEnv *env, jcl
 
 
 /*
-* Class:     com_intel_vmf_FormatXML
+* Class:     com_intel_vmf_FormatCompressed
 * Method:    n_parse
 * Signature: long[] n_parse(long nativeObj, String text, String[] attribNames, String[] attribVals)
 */
-JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, jclass, jlong self, jstring text, jobjectArray attribNames, jobjectArray attribVals);
-
-JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, jclass, jlong self, jstring text, jobjectArray attribNames, jobjectArray attribVals)
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatCompressed_n_1parse(JNIEnv *env, jclass, jlong self, jstring text, jobjectArray attribNames, jobjectArray attribVals);
+JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatCompressed_n_1parse(JNIEnv *env, jclass, jlong self, jstring text, jobjectArray attribNames, jobjectArray attribVals)
 {
-    static const char method_name[] = "FormatXML::n_1parse";
+    static const char method_name[] = "FormatCompressed::n_1parse";
     try
     {
-        std::shared_ptr<FormatXML>* obj = (std::shared_ptr<FormatXML>*) self;
-        if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'self' is null");
+        std::shared_ptr<FormatCompressed>* obj = (std::shared_ptr<FormatCompressed>*) self;
+        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null");
 
-        if (!text)
-            VMF_EXCEPTION(NullPointerException, "Input text is null");
-
-        const char* textStr = env->GetStringUTFChars(text, 0);
-        if (!textStr)
-            VMF_EXCEPTION(InternalErrorException, "Error accessing input text");
+        if (!text) VMF_EXCEPTION(NullPointerException, "Input text is null");
 
         std::vector<MetadataInternal> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
         std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;
         std::vector<std::shared_ptr<Stat>> stats;
         Format::AttribMap attribs;
-        Format::ParseCounters counters = (*obj)->parse(textStr, metadata, schemas, segments, stats, attribs);
+        Format::ParseCounters counters = (*obj)->parse(getJavaStirng(env, text), metadata, schemas, segments, stats, attribs);
 
-        env->ReleaseStringUTFChars(text, textStr);
-
-        //fill the output objects addresses aray
         jsize addressesArraySize = counters.metadata + 1 + counters.schemas + 1 + counters.segments + 1 + counters.stats;
 
         jlongArray objs  = env->NewLongArray(addressesArraySize);
@@ -222,30 +212,5 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatXML_n_1parse(JNIEnv *env, 
     catch (...) { throwJavaException(env, 0, method_name); }
     return 0;
 }
-
-/*
- * Class:     com_intel_vmf_FormatXML
- * Method:    n_delete
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_com_intel_vmf_FormatXML_n_1delete(JNIEnv *env, jclass, jlong self);
-
-JNIEXPORT void JNICALL Java_com_intel_vmf_FormatXML_n_1delete(JNIEnv *env, jclass, jlong self)
-{
-    static const char method_name[] = "FormatXML::n_1delete";
-
-    try
-    {
-        std::shared_ptr<FormatXML>* obj = (std::shared_ptr<FormatXML>*) self;
-
-        if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'this' is null.");
-
-        delete obj;
-    }
-    catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
-    catch (...) { throwJavaException(env, 0, method_name); }
-}
-
 
 }

@@ -19,15 +19,15 @@ public class VmfCompressorTest {
         assertNotNull(ids);
         assertTrue(ids.length == 1);
         assertTrue(ids[0].equals(Compressor.BUILTIN_ZLIB));
-        
+
         Compressor comp = Compressor.create(Compressor.BUILTIN_ZLIB);
         assertNotNull(comp);
         assertTrue(comp.getId().equals(Compressor.BUILTIN_ZLIB));
-        
+
         Compressor comp2 = comp.createNewInstance();
         assertNotNull(comp2);
-        assertTrue(comp2.getId().equals(Compressor.BUILTIN_ZLIB));
-        
+        assertTrue(comp2.getId().equals(Compressor.builtinId()));
+
         String text = "This is a text for Compressor test";
         Variant v = comp.compress(text);
         assertNotNull(v);
