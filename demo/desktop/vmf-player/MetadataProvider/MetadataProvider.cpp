@@ -332,16 +332,24 @@ void MetadataProvider::execute()
             }
 
             //set up statistics object
-            std::vector< vmf::StatField > statFields;
-            statFields.emplace_back(countStatName, schemaName, descName, latFieldName,
-                                    vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Count));
-            statFields.emplace_back(minStatName, schemaName, descName, latFieldName,
-                                    vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Min));
-            statFields.emplace_back(avgStatName, schemaName, descName, latFieldName,
-                                    vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Average));
-            statFields.emplace_back(lastStatName, schemaName, descName, latFieldName,
-                                    vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Last));
-            m_ms.addStat(std::make_shared<vmf::Stat>(statName, statFields, vmf::Stat::UpdateMode::Manual));
+            try
+            {
+                std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
+            }
+            catch(vmf::NotFoundException&)
+            {
+                //add it to the stream if it does not exist yet
+                std::vector< vmf::StatField > statFields;
+                statFields.emplace_back(countStatName, schemaName, descName, latFieldName,
+                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Count));
+                statFields.emplace_back(minStatName, schemaName, descName, latFieldName,
+                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Min));
+                statFields.emplace_back(avgStatName, schemaName, descName, latFieldName,
+                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Average));
+                statFields.emplace_back(lastStatName, schemaName, descName, latFieldName,
+                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Last));
+                m_ms.addStat(std::make_shared<vmf::Stat>(statName, statFields, vmf::Stat::UpdateMode::Manual));
+            }
 
             while (!m_exiting)
             {
