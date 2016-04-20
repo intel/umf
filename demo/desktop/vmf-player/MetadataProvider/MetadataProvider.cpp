@@ -274,17 +274,17 @@ void MetadataProvider::execute()
             {
                 std::unique_lock< std::mutex > lock( m_lock );
                 m_wrappingInfo->setCompressionID("com.intel.vmf.compressor.zlib");
-                m_wrappingInfo->setPassphrase("");
+                m_wrappingInfo->setPassphrase("thereisnospoon");
             }
 
             f = std::make_shared<vmf::FormatCompressed>(f, m_wrappingInfo->compressionID().toStdString());
-
-            vmf::FormatEncrypted parser(f, nullptr);
+            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(m_wrappingInfo->passphrase().toStdString());
+            vmf::FormatEncrypted parser(f, e);
 
             std::vector<vmf::MetadataInternal> metadata;
             std::vector<std::shared_ptr<vmf::MetadataSchema>> schemas;
             std::vector<std::shared_ptr<vmf::MetadataStream::VideoSegment>> segments;
-            std::vector< vmf::Stat > stats;
+            std::vector<std::shared_ptr<vmf::Stat>> stats;
             vmf::Format::AttribMap attribs;
             vmf::Format::ParseCounters c;
 
