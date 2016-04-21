@@ -29,6 +29,8 @@ static const std::string avgStatName = "avgLat";
 static const std::string lastStatName = "lastLat";
 static const std::string statName = "stat";
 
+static const size_t bufSize = 1 << 20;
+
 #if defined(USE_NATIVE_ENDIAN)
 # define zzntohl(_sz) (_sz)
 #else
@@ -301,10 +303,10 @@ void MetadataProvider::execute()
             vmf::Format::AttribMap attribs;
             vmf::Format::ParseCounters c;
 
-            char buf[10240];
-
             if (!m_exiting)
             {
+                char buf[bufSize];
+
                 size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
@@ -326,6 +328,8 @@ void MetadataProvider::execute()
 
             if (!m_exiting)
             {
+                char buf[bufSize];
+
                 size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
@@ -366,6 +370,7 @@ void MetadataProvider::execute()
 
             while (!m_exiting)
             {
+                char buf[bufSize];
                 size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
