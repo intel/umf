@@ -56,7 +56,7 @@ static size_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = fa
             return size;
         }
     }
-    return (size_t)-1;
+    return (size_t)0;
 }
 
 static size_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
