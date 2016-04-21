@@ -89,6 +89,7 @@ MetadataProvider::MetadataProvider(QObject *parent)
     , m_working(false)
     , m_exiting(false)
     , m_sock(-1)
+    , m_useXml(true)
     , m_wrappingInfo(new WrappingInfo())
     , m_statInfo(new StatInfo())
     , m_deviceId("")
@@ -213,10 +214,14 @@ bool MetadataProvider::connect()
             {
                 size = sendMessage(m_sock, buf, 3);
 
-                // XML/OK
+                // XML or JSON/OK
                 size = receiveMessageRaw(m_sock, buf, sizeof(buf));
-                if ((size == 3) && (buf[0] == 'X') && (buf[1] == 'M') && (buf[2] == 'L'))
+                bool isXml  = (size == 3) && (buf[0] == 'X') && (buf[1] == 'M') && (buf[2] == 'L');
+                bool isJson = (size == 4) && (buf[0] == 'J') && (buf[1] == 'S') && (buf[2] == 'O') && (buf[3] == 'N');
+                if (isXml || isJson)
                 {
+                    m_useXml = isXml;
+
                     buf[0] = 'O';
                     buf[1] = 'K';
                     size = sendMessage(m_sock, buf, 2);
@@ -267,7 +272,15 @@ void MetadataProvider::execute()
         std::cerr << "*** MetadataProvider::execute() : connect : " << (connection.isSuccessful() ? "SUCC" : "FAIL") << std::endl;
         if (connection.isSuccessful())
         {
-            std::shared_ptr<vmf::Format> f = std::make_shared<vmf::FormatXML>();
+            std::shared_ptr<vmf::Format> f;
+            if(m_useXml)
+            {
+                f = std::make_shared<vmf::FormatXML>();
+            }
+            else
+            {
+                f = std::make_shared<vmf::FormatJSON>();
+            }
 
             //actual compressor ID will be recognized at parse() call, but should be the following
             //TODO: specify actual Encryptor and passphrase

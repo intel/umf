@@ -223,6 +223,7 @@ private:
     std::atomic<bool> m_working;
     std::atomic<bool> m_exiting;
     int m_sock;
+    bool m_useXml;
 
     vmf::MetadataStream m_ms;
     QList<Location*> m_locations;
