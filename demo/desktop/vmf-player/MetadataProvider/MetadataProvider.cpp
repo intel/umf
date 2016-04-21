@@ -263,6 +263,8 @@ void MetadataProvider::disconnect()
         ::close(m_sock);
 #endif
         m_sock = -1;
+
+        std::cerr << "Socket closed" << std::endl;
     }
 }
 
@@ -530,5 +532,7 @@ void MetadataProvider::updateLocations()
 
     //set last timestamp
     m_lastTimestamp = ms.back()->getTime();
+
+    std::cerr << "*** MetadataProvider::updateLocations() ***" << std::endl;
 }
 
