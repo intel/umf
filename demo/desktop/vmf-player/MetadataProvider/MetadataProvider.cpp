@@ -31,6 +31,9 @@ static const std::string statName = "stat";
 
 static const size_t bufSize = 1 << 20;
 
+static const std::string streamCompressionId = "com.intel.vmf.compressor.zlib";
+static const std::string streamPassphrase = "VMF Demo passphrase!";
+
 #if defined(USE_NATIVE_ENDIAN)
 # define zzntohl(_sz) (_sz)
 #else
@@ -262,6 +265,45 @@ void MetadataProvider::disconnect()
     }
 }
 
+
+void MetadataProvider::setWrappingStatus(std::shared_ptr<vmf::Format> f,
+                                         std::shared_ptr<vmf::Encryptor> e,
+                                         std::string buf)
+{
+    //this parser should be transparent for encryption
+    //it shows existence (or absence) of compression schema in input data
+    vmf::FormatEncrypted compressionDetector(f, e);
+
+    std::vector<vmf::MetadataInternal> tmpMetadata;
+    std::vector<std::shared_ptr<vmf::MetadataSchema>> tmpSchemas;
+    std::vector<std::shared_ptr<vmf::MetadataStream::VideoSegment>> tmpSegments;
+    std::vector<std::shared_ptr<vmf::Stat>> tmpStats;
+    vmf::Format::AttribMap tmpAttribs;
+    vmf::Format::ParseCounters tmpCounter;
+
+    std::string toSetCompressionId, toSetPassphrase;
+    //check encryption status
+    tmpCounter = f->parse(buf, tmpMetadata, tmpSchemas, tmpSegments,
+                          tmpStats, tmpAttribs);
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.encrypted-metadata")
+    {
+        toSetPassphrase = streamPassphrase;
+    }
+    //check compression status
+    tmpSchemas.clear();
+    tmpCounter = compressionDetector.parse(buf, tmpMetadata, tmpSchemas,
+                                           tmpSegments, tmpStats, tmpAttribs);
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.compressed-metadata")
+    {
+        toSetCompressionId = streamCompressionId;
+    }
+
+    std::unique_lock< std::mutex > lock( m_lock );
+    m_wrappingInfo->setCompressionID(QString::fromStdString(toSetCompressionId));
+    m_wrappingInfo->setPassphrase(QString::fromStdString(toSetPassphrase));
+}
+
+
 void MetadataProvider::execute()
 {
     std::cerr << "*** MetadataProvider::execute()" << std::endl;
@@ -284,17 +326,9 @@ void MetadataProvider::execute()
                 f = std::make_shared<vmf::FormatJSON>();
             }
 
-            //actual compressor ID will be recognized at parse() call, but should be the following
-            //TODO: specify actual Encryptor and passphrase
-            {
-                std::unique_lock< std::mutex > lock( m_lock );
-                m_wrappingInfo->setCompressionID("com.intel.vmf.compressor.zlib");
-                m_wrappingInfo->setPassphrase("VMF Demo passphrase!");
-            }
-
-            f = std::make_shared<vmf::FormatCompressed>(f, m_wrappingInfo->compressionID().toStdString());
-            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(m_wrappingInfo->passphrase().toStdString());
-            vmf::FormatEncrypted parser(f, e);
+            std::shared_ptr<vmf::Format> cf = std::make_shared<vmf::FormatCompressed>(f, streamCompressionId);
+            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(streamPassphrase);
+            vmf::FormatEncrypted parser(cf, e);
 
             std::vector<vmf::MetadataInternal> metadata;
             std::vector<std::shared_ptr<vmf::MetadataSchema>> schemas;
@@ -310,6 +344,9 @@ void MetadataProvider::execute()
                 size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
+
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
                     if (!(c.segments > 0))
                         throw std::runtime_error("expected video segment(s) not sent by server");
@@ -333,6 +370,9 @@ void MetadataProvider::execute()
                 size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
+
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
                     if (!(c.schemas > 0))
                         throw std::runtime_error("expected video schema(s) not sent by server");
@@ -375,6 +415,9 @@ void MetadataProvider::execute()
                 if (size > 0)
                 {
                     std::cerr << std::string(buf) << std::endl;
+
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
 
                     metadata.clear();
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);

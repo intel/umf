@@ -218,6 +218,9 @@ private:
 
     void updateLocations();
     static double getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name);
+    void setWrappingStatus(std::shared_ptr<vmf::Format> f,
+                           std::shared_ptr<vmf::Encryptor> e,
+                           std::string buf);
 
     std::thread m_worker;
     std::atomic<bool> m_working;
