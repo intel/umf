@@ -20,20 +20,28 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.intel.vmf.Compressor;
+import com.intel.vmf.EncryptorDefault;
 import com.intel.vmf.Format;
+import com.intel.vmf.FormatCompressed;
+import com.intel.vmf.FormatEncrypted;
+import com.intel.vmf.FormatJSON;
 import com.intel.vmf.FormatXML;
 import com.intel.vmf.Metadata;
 import com.intel.vmf.MetadataSchema;
@@ -61,6 +69,7 @@ public class MainActivity extends Activity implements  LocationListener {
 			Log.i(LOGTAG, "Ready for connection via " + rtstAddr);
 			runOnUiThread(new Runnable() {
 			    public void run() {
+			    	mTextURL.setVisibility(View.VISIBLE);
 			    	mTextURL.setText("Connect " + rtstAddr);
 			    	//Toast.makeText(MainActivity.this, rtstAddr, Toast.LENGTH_LONG).show();
 			    }
@@ -73,15 +82,171 @@ public class MainActivity extends Activity implements  LocationListener {
 		}
 	};
 
+	protected LocationManager mLocationManager;
+	protected boolean mUseGpsEmulation = true;
 	protected RtspServer mRtspServer;
 	protected ServerSocket mServerSocket;
 	protected Socket mSocket;
 	protected DataOutputStream mSockOut;
 	protected DataInputStream mSockIn;
 	protected boolean mIsVMFStreamming = false;
-	protected Format mVMFFormat = new FormatXML(); 
-	protected String mStdSchemaString;
-	protected String mVSegString;
+	protected Format mVMFFormat; 
+	protected Metadata m = new Metadata(MetadataSchema.getStdSchema().findMetadataDesc("location"));
+	protected MetadataSet set = new MetadataSet();
+	protected Variant lat = new Variant(), lng = new Variant();
+	
+	protected Thread mGpsEmulationTread = null;
+	protected Runnable mGpsEmulation = new Runnable() {
+		@Override
+		public void run() {
+            // fake locations generation
+            Log.i(LOGTAG, "STARTING streaming fake locations...");
+        	double stepAndgle = Math.PI / 20., stepRadius = 0;
+        	double angle = Math.PI * 2, radius = 0.;
+        	try{
+            	while(mIsVMFStreamming) {
+            		if(Thread.currentThread().isInterrupted())
+            			throw new Exception("Thread is interrupted");
+            		angle -= stepAndgle;
+            		angle = angle < 0 ? angle + Math.PI * 2 : angle;
+            		if(radius > 0.1) stepRadius = -stepRadius;
+            		else if(radius < 1e-4) stepRadius = Math.random() * 4e-4 + 1e-4;
+            		radius += stepRadius;
+            		lat.setTo(37.388305 + radius * Math.cos(angle));
+            		lng.setTo(-121.96463 + radius * Math.sin(angle));
+	            	m.setFieldValue("latitude", lat);
+	            	m.setFieldValue("longitude", lng);
+	            	m.setTimestamp( System.currentTimeMillis() );
+	            	sendString(mVMFFormat.store(set, null, null, null, null));
+	            	SystemClock.sleep(100/*0*/);
+            	}
+			} catch (Exception e) {
+	            Log.e(LOGTAG, "Exception: " + e.getMessage());
+			} finally {
+	            Log.i(LOGTAG, "STOP streaming fake locations");
+				mIsVMFStreamming = false;
+				try {
+					if(mSocket != null) {
+						mSocket.close();
+						mSocket = null;
+					}
+				} catch (IOException e1) {
+					Log.e(LOGTAG, "Error closing VMF client socket: " + e1.getMessage());
+				}
+        	}
+		}};
+
+		protected Thread mVmfListeningTread = null;
+		protected Runnable mVmfListening = new Runnable() {
+			@Override
+			public void run() {
+	            Log.i(LOGTAG, "Starting streaming VMF metadata");
+	            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+	    		int VmfPort = Integer.parseInt( prefs.getString("vmf_port", "4321") );
+
+				try {
+					mServerSocket = new ServerSocket(VmfPort);
+				} catch (IOException e) {
+					final String msg = "Error creating ServerSocket("+VmfPort+"): " + e.getMessage();
+					Log.e(LOGTAG, msg);
+					runOnUiThread(new Runnable() {
+					    public void run() {
+					    	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+					    }
+					});
+				}
+
+				while(mServerSocket != null) {
+	    		try {
+	    			Log.d(LOGTAG, "Waiting for VMF Metadata connection on port " + VmfPort);
+		            mSocket = mServerSocket.accept();
+		            Log.i(LOGTAG, "Connection accepted!");
+		            mSockOut = new DataOutputStream(mSocket.getOutputStream());
+		            mSockIn  = new DataInputStream (mSocket.getInputStream());
+		            
+		            boolean useXML = prefs.getString("format", "1").equals("2");
+		            Log.d(LOGTAG, "useXML="+(useXML?"yes":"no"));
+		            boolean useEncryption = prefs.getBoolean("encryption", false);
+		            Log.d(LOGTAG, "useEncryption="+(useEncryption?"yes":"no"));
+		            boolean useCompression = prefs.getBoolean("compression", false);
+		            Log.d(LOGTAG, "useCompression="+(useCompression?"yes":"no"));
+		            
+		            mVMFFormat = useXML ? new FormatXML() : new FormatJSON();
+		            mVMFFormat = useCompression ? new FormatCompressed(mVMFFormat, Compressor.BUILTIN_ZLIB) : mVMFFormat;
+		            mVMFFormat = useEncryption ? new FormatEncrypted(mVMFFormat, new EncryptorDefault("VMF Demo passphrase!")) : mVMFFormat;
+
+		            // handshake
+		            Log.i(LOGTAG, "Starting handshake (VMF/VMF, (JSON|XML)/OK)");
+		            // VMF/VMF
+		            sendString("VMF"); 
+		            byte[] buff = new byte[3];
+		            Log.d(LOGTAG, "Waiting for 'VMF'...");
+		            mSockIn.read(buff);
+		            String s = new String(buff);
+		            Log.d(LOGTAG, "Got " + s);
+		            if( !s.equalsIgnoreCase("VMF") )
+		            	throw new IOException("Invalid response ('VMF' expected): " + s);
+		            // (JSON|XML)/OK
+		            if(useXML) sendString("XML");
+		            else sendString("JSON");
+		            buff = new byte[2];
+		            Log.d(LOGTAG, "Waiting for 'OK'");
+		            mSockIn.read(buff);
+		            s = new String(buff);
+		            Log.d(LOGTAG, "Got " + s);
+		            if( !s.equalsIgnoreCase("OK") )
+		            	throw new IOException("Invalid response ('OK' expected): " + s);
+
+		            Log.i(LOGTAG, "Sending VMF VideoSegment");
+	            	String VSegString = mVMFFormat.store(
+	            			null,
+	            			null, 
+            				new MetadataStream.VideoSegment[]{new MetadataStream.VideoSegment("Android", 15, System.currentTimeMillis())},
+            				null,
+            				null); 
+		            sendString(VSegString);
+
+		            Log.i(LOGTAG, "Sending VMF schema");
+	            	String StdSchemaString = mVMFFormat.store(
+	            			null,
+	            			new MetadataSchema[]{MetadataSchema.getStdSchema()},
+	            			null,
+	            			null,
+	            			null);
+		            sendString(StdSchemaString);
+
+		            Log.i(LOGTAG, "Ready to stream VMF medatada");
+		            mIsVMFStreamming = true;
+		            
+		            mUseGpsEmulation = prefs.getBoolean("gps_emulation", true);
+
+		            if(mUseGpsEmulation) {
+			            if(mGpsEmulationTread != null) {
+			            	mGpsEmulationTread.interrupt();
+			            	mGpsEmulationTread = null;
+			            }
+						mGpsEmulationTread = new Thread(mGpsEmulation);
+						mGpsEmulationTread.start();
+		            }
+				} catch (Exception e) {
+					Log.e(LOGTAG, "Error initializing VMF metadata streaming: " + e.getMessage());
+		            Log.i(LOGTAG, "STOP streaming fake locations");
+					mIsVMFStreamming = false;
+					if(mGpsEmulationTread != null) {
+		            	mGpsEmulationTread.interrupt();
+		            	mGpsEmulationTread = null;
+		            }
+					try {
+						if(mSocket != null) {
+							mSocket.close();
+							mSocket = null;
+						}
+					} catch (IOException e1) {
+						Log.e(LOGTAG, "Error closing VMF client socket: " + e1.getMessage());
+					}
+	        	}
+				}
+		}};
 
 	private RtspServer.CallbackListener mRtspCallbackListener = new RtspServer.CallbackListener() {
 
@@ -109,122 +274,9 @@ public class MainActivity extends Activity implements  LocationListener {
 				    }
 				});
 
-				new Thread("Init VMF Metadata Streaming") {
-
-					public void run() {
-			            Log.i(LOGTAG, "Starting streaming VMF metadata");
-
-			    		int VmfPort = 4321;
-			    				/*Integer.parseInt(
-			    						PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-			    					.getString("vmfPort", "4321") );*/
-
-						try {
-							mServerSocket = new ServerSocket(VmfPort);
-						} catch (IOException e) {
-							final String msg = "Error creating ServerSocket("+VmfPort+"): " + e.getMessage();
-							Log.e(LOGTAG, msg);
-							runOnUiThread(new Runnable() {
-							    public void run() {
-							    	Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
-							    }
-							});
-						}
-
-						while(!mIsVMFStreamming && mServerSocket != null) {
-			    		try {
-			    			Log.d(LOGTAG, "Waiting for VMF Metadata connection...");
-				            mSocket = mServerSocket.accept();
-				            Log.i(LOGTAG, "Connection accepted!");
-				            mSockOut = new DataOutputStream(mSocket.getOutputStream());
-				            mSockIn  = new DataInputStream (mSocket.getInputStream());
-
-				            // handshake
-				            Log.i(LOGTAG, "Starting handshake (VMF/VMF, XML/OK)");
-				            // VMF/VMF
-				            sendString("VMF"); 
-				            byte[] buff = new byte[3];
-				            Log.d(LOGTAG, "Waiting for 'VMF'...");
-				            mSockIn.read(buff);
-				            String s = new String(buff);
-				            Log.d(LOGTAG, "Got " + s);
-				            if( !s.equalsIgnoreCase("VMF") )
-				            	throw new IOException("Invalid response ('VMF' expected): " + s);
-				            // XML/OK
-				            sendString("XML");
-				            buff = new byte[2];
-				            Log.d(LOGTAG, "Waiting for 'OK'");
-				            mSockIn.read(buff);
-				            s = new String(buff);
-				            Log.d(LOGTAG, "Got " + s);
-				            if( !s.equalsIgnoreCase("OK") )
-				            	throw new IOException("Invalid response ('OK' expected): " + s);
-
-				            Log.i(LOGTAG, "Sending VMF VideoSegment");
-				            if(mVSegString == null) {
-				            	mVSegString = mVMFFormat.store(
-				            			null,
-				            			null, 
-			            				new MetadataStream.VideoSegment[]{new MetadataStream.VideoSegment("Android", 15, 1)}, 
-			            				null); 
-				            }
-				            sendString(mVSegString);
-
-				            Log.i(LOGTAG, "Sending VMF schema");
-				            if(mStdSchemaString == null) {
-				            	mStdSchemaString = mVMFFormat.store(
-				            			null,
-				            			new MetadataSchema[]{MetadataSchema.getStdSchema()},
-				            			null,
-				            			null);
-				            }
-				            sendString(mStdSchemaString);
-
-				            Log.i(LOGTAG, "Ready to stream VMF medatada");
-				            mIsVMFStreamming = true;
-
-				            // TODO: if useFakeLocations
-				            // fake locations generation
-			            	MetadataSchema schema = MetadataSchema.getStdSchema();
-			            	MetadataStream ms = new MetadataStream();
-			            	ms.addSchema(schema);
-			            	double stepAndgle = Math.PI / 20.;
-			            	double stepRadius = 0;
-			            	double angle = Math.PI * 2, radius = 0.;
-			            	Variant lat = new Variant(), lng = new Variant();
-			            	while(true) {
-			            		angle -= stepAndgle;
-			            		angle = angle < 0 ? angle + Math.PI * 2 : angle;
-			            		if(radius > 0.1) stepRadius = -stepRadius;
-			            		else if(radius < 1e4) stepRadius = Math.random() * 5e-4 + 1e-4;
-			            		radius += stepRadius;
-			            		lat.setTo(37.388305 + radius * Math.cos(angle));
-			            		lng.setTo(-121.96463 + radius * Math.sin(angle));
-
-				            	Metadata m = new Metadata(schema.findMetadataDesc("location"));
-				            	m.setFieldValue("latitude", lat);
-				            	m.setFieldValue("longitude", lng);
-				            	ms.add(m);
-				            	MetadataSet set = ms.getAll();
-				            	sendString(mVMFFormat.store(set, null, null, null));
-				            	ms.remove(set);
-
-				            	SystemClock.sleep(1500);
-			            	}
-						} catch (Exception e) {
-							Log.e(LOGTAG, "Error initializing VMF metadata streaming: " + e.getMessage());
-							mIsVMFStreamming = false;
-							try {
-								if(mSocket != null) {
-									mSocket.close();
-									mSocket = null;
-								}
-							} catch (IOException e1) {
-								Log.e(LOGTAG, "Error closing VMF client socket: " + e1.getMessage());
-							}
-			        	}
-						}
-				}}.start();
+				//assert(mVmfListeningTread == null);
+				mVmfListeningTread = new Thread(mVmfListening);
+				mVmfListeningTread.start();
 
 			} else if (message==RtspServer.MESSAGE_STREAMING_STOPPED) {
 				Log.i(LOGTAG, "MESSAGE_STREAMING_STOPPED");
@@ -237,6 +289,10 @@ public class MainActivity extends Activity implements  LocationListener {
 
 				Log.i(LOGTAG, "Stop VMF metadata streaming");
 				mIsVMFStreamming = false;
+				if(mGpsEmulationTread != null) {
+	            	mGpsEmulationTread.interrupt();
+	            	mGpsEmulationTread = null;
+	            }
 				mSockOut = null;
 				mSockIn  = null;
 				try {
@@ -250,6 +306,9 @@ public class MainActivity extends Activity implements  LocationListener {
 					}
 				} catch (IOException e) {
 					Log.e(LOGTAG, "Error closing VMF sockets: " + e.getMessage());
+				}
+				finally {
+					mVmfListeningTread = null;
 				}
 			}
 		}
@@ -280,10 +339,13 @@ public class MainActivity extends Activity implements  LocationListener {
 		        .setPreviewOrientation(0)
 		        .setContext(getApplicationContext())
 		        .setAudioEncoder(SessionBuilder.AUDIO_NONE)
-		        .setVideoEncoder(SessionBuilder.VIDEO_H263)
+		        .setVideoEncoder(SessionBuilder.VIDEO_H264)
 		        .setVideoQuality(new VideoQuality(640,480,15,2000000));
 
 		startService(new Intent(this, RtspServer.class));
+		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    	set.clear();
+        set.push_back(m);
     }
 
 	@Override
@@ -322,17 +384,29 @@ public class MainActivity extends Activity implements  LocationListener {
     	mTextURL.setText("Connecting to RTSPServer... ");
 		bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
 
-		//TODO: mLocationManager...
+		//TODO: if !emulate
+		try {
+			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
+		} catch (Exception e) {
+			Log.e(LOGTAG, "Network location service provider not available!");
+		}
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
 	}
 
 	protected void stopStreaming() {
 		if(mRtspServer != null)
 			mRtspServer.stop();
 		// TODO: sync required
+		
+		if(mGpsEmulationTread != null) {
+        	mGpsEmulationTread.interrupt();
+        	mGpsEmulationTread = null;
+        }
+		
 		unbindService(mRtspServiceConnection);
 		mRtspServer = null;
 
-		//TODO: mLocationManager.removeUpdates(this);
+		mLocationManager.removeUpdates(this);
 	}
 
 	protected synchronized void sendString(String msg) throws IOException  {
@@ -345,8 +419,19 @@ public class MainActivity extends Activity implements  LocationListener {
     }
 
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO: NYI
+	public void onLocationChanged(Location loc) {
+		lat.setTo(loc.getLatitude());
+		lng.setTo(loc.getLongitude());
+    	m.setFieldValue("latitude", lat);
+    	m.setFieldValue("longitude", lng);
+    	m.setTimestamp( System.currentTimeMillis() );
+    	if(mIsVMFStreamming && !mUseGpsEmulation) {
+	    	try {
+				sendString(mVMFFormat.store(set, null, null, null, null));
+			} catch (IOException e) {
+				Log.e(LOGTAG, "Error sending location:" + e.getMessage());
+			}
+    	}
 	}
 
 	@Override
@@ -361,4 +446,17 @@ public class MainActivity extends Activity implements  LocationListener {
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 	}
 
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if(e.getAction() == MotionEvent.ACTION_DOWN) {
+        	//startActivity( new Intent(getApplicationContext(), VmfPreferenceActivity.class) );
+        	
+        	getFragmentManager()
+			.beginTransaction()
+			.replace(android.R.id.content, new VmfPreferenceFragment())
+			.addToBackStack(null)
+			.commit();
+        }
+        return super.onTouchEvent(e);
+    }
 }
