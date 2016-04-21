@@ -507,14 +507,16 @@ void MetadataProvider::updateLocations()
         return (a->getId() < b->getId());
     });
 
-    m_locations.clear();
+    QList<Location*> newLocations;
     for(std::shared_ptr<vmf::Metadata> md : ms)
     {
         Location* loc = new Location();
         loc->setLatitude( getFieldValue(md, latFieldName));
         loc->setLongitude(getFieldValue(md, lngFieldName));
-        m_locations.append(loc);
+        newLocations.append(loc);
     }
+
+    m_locations = newLocations;
 
     //update statistics: doRescan + doWait
     std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
