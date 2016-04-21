@@ -98,6 +98,7 @@ MetadataProvider::MetadataProvider(QObject *parent)
     , m_wrappingInfo(new WrappingInfo())
     , m_statInfo(new StatInfo())
     , m_deviceId("")
+    , m_lastTimestamp(0)
 {
     vmf::Log::setVerbosityLevel(vmf::LogLevel::LOG_ERROR);
 }
@@ -473,6 +474,12 @@ QString MetadataProvider::deviceId()
     return m_deviceId;
 }
 
+double MetadataProvider::lastTimestamp()
+{
+    std::unique_lock< std::mutex > lock( m_lock );
+    return m_lastTimestamp;
+}
+
 double MetadataProvider::getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name)
 {
     try
@@ -518,5 +525,8 @@ void MetadataProvider::updateLocations()
     m_statInfo->setMinLat(stat->getField(minStatName).getValue());
     m_statInfo->setAvgLat(stat->getField(avgStatName).getValue());
     m_statInfo->setLastLat(stat->getField(lastStatName).getValue());
+
+    //set last timestamp
+    m_lastTimestamp = ms.back()->getTime();
 }
 

@@ -14,6 +14,7 @@ Rectangle {
     property string deviceId
     property bool playing : false
     property double invAspectRatio : 1.0
+    property double drawnTimestamp : 0.0
     signal trajectoryChanged(variant trajectory)
     signal started()
     signal stopped()
@@ -299,17 +300,23 @@ Rectangle {
                 id: mdProvider;
                 onMetadataAdded: {
                     console.debug("onMetadataAdded()")
-                    invAspectRatio = vlcPlayer.video.height/vlcPlayer.video.width
-                    deviceIdlabel.text      = mdProvider.deviceId
-                    compressorIdLabel.text  = mdProvider.wrappingInfo.compressionID
-                    encryptionPwdLabel.text = mdProvider.wrappingInfo.passphrase
-                    countLabel.text   = mdProvider.statInfo.count
-                    minLatLabel.text  = mdProvider.statInfo.minLat
-                    avgLatLabel.text  = mdProvider.statInfo.avgLat
-                    lastLatLabel.text = mdProvider.statInfo.lastLat
+                    var diff = Math.abs(mdProvider.lastTimestamp - drawnTimestamp)
+                    if(diff > 1000)
+                    {
+                        drawnTimestamp = mdProvider.lastTimestamp
 
-                    videoMetaWidget.deviceId = mdProvider.deviceId
-                    trajectoryChanged(mdProvider.locations);
+                        invAspectRatio = vlcPlayer.video.height/vlcPlayer.video.width
+                        deviceIdlabel.text      = mdProvider.deviceId
+                        compressorIdLabel.text  = mdProvider.wrappingInfo.compressionID
+                        encryptionPwdLabel.text = mdProvider.wrappingInfo.passphrase
+                        countLabel.text   = mdProvider.statInfo.count
+                        minLatLabel.text  = mdProvider.statInfo.minLat
+                        avgLatLabel.text  = mdProvider.statInfo.avgLat
+                        lastLatLabel.text = mdProvider.statInfo.lastLat
+
+                        videoMetaWidget.deviceId = mdProvider.deviceId
+                        trajectoryChanged(mdProvider.locations);
+                    }
                 }
             }
         }
