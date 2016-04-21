@@ -289,7 +289,7 @@ void MetadataProvider::execute()
             {
                 std::unique_lock< std::mutex > lock( m_lock );
                 m_wrappingInfo->setCompressionID("com.intel.vmf.compressor.zlib");
-                m_wrappingInfo->setPassphrase("thereisnospoon");
+                m_wrappingInfo->setPassphrase("VMF Demo passphrase!");
             }
 
             f = std::make_shared<vmf::FormatCompressed>(f, m_wrappingInfo->compressionID().toStdString());
