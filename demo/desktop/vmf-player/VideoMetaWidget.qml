@@ -76,6 +76,10 @@ Rectangle {
         console.debug("stop")
         videoLabel.text = "Stopped"
         vlcPlayer.stop()
+    }
+
+    function playerStopped()
+    {
         console.debug("vlcPlayer stopped")
         mdProvider.stop()
         console.debug("mdProvider stopped")
@@ -125,6 +129,14 @@ Rectangle {
             VlcPlayer {
                 id: vlcPlayer;
                 onMediaPlayerPlaying: playerStarted();
+                onMediaPlayerStopped: playerStopped();
+                onPlayingChanged: {
+                    console.debug("vlcPlayer: playing changed");
+                    if(!playing)
+                    {
+                        stop();
+                    }
+                }
             }
             VlcVideoSurface {
                 id: vlcSurface;
