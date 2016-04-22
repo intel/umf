@@ -45,24 +45,23 @@ static size_t sendMessage(int fd, const char* buf, size_t msgSize)
     return ::send(fd, buf, msgSize, 0);
 }
 
-static size_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
+static ssize_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
 {
     const int  flags = (doWait ? MSG_WAITALL : 0);
     uint32_t sz = 0;
-    size_t size = ::recv(fd, (char*)&sz, 4, flags);
+    ssize_t size = ::recv(fd, (char*)&sz, 4, flags);
     if ((size == 4) && ((sz = zzntohl(sz)) < bufSize))
     {
         size = ::recv(fd, buf, sz, flags);
         if (size == sz)
         {
             buf[sz] = 0;
-            return size;
         }
     }
-    return (size_t)0;
+    return size;
 }
 
-static size_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
+static ssize_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
 {
 #if defined(USE_SIZES_ON_HANDSHAKE)
     return receiveMessage(fd, buf, msgSize, true);
@@ -215,7 +214,7 @@ bool MetadataProvider::connect()
             char buf[40000];
 
             // VMF/VMF
-            size_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
+            ssize_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
             if ((size == 3) && (buf[0] == 'V') && (buf[1] == 'M') && (buf[2] == 'F'))
             {
                 size = sendMessage(m_sock, buf, 3);
@@ -344,7 +343,7 @@ void MetadataProvider::execute()
             {
                 char buf[bufSize];
 
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     //get actual compression and encryption status
@@ -370,7 +369,7 @@ void MetadataProvider::execute()
             {
                 char buf[bufSize];
 
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     //get actual compression and encryption status
@@ -414,7 +413,7 @@ void MetadataProvider::execute()
             while (!m_exiting)
             {
                 char buf[bufSize];
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     std::cerr << std::string(buf) << std::endl;
