@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements  LocationListener {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			Log.d(LOGTAG, "onServiceDisconnected");
+			mRtspServer = null;
 		}
 	};
 
@@ -329,10 +330,13 @@ public class MainActivity extends Activity implements  LocationListener {
 
 		// RTSP init
 
-		// Sets the port of the RTSP server to 1234
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		editor.putString(RtspServer.KEY_PORT, String.valueOf(1234));
-		editor.commit();
+		// Sets the RTSP server port to 1234 if not yet set
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if( !prefs.contains(RtspServer.KEY_PORT) ) {
+			Editor editor = prefs.edit();
+			editor.putString(RtspServer.KEY_PORT, String.valueOf(1234));
+			editor.commit();
+		}
 
 		SessionBuilder.getInstance()
 		        .setSurfaceView(mSurfaceView)
@@ -343,6 +347,7 @@ public class MainActivity extends Activity implements  LocationListener {
 		        .setVideoQuality(new VideoQuality(640,480,15,2000000));
 
 		startService(new Intent(this, RtspServer.class));
+		
 		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     	set.clear();
         set.push_back(m);
@@ -381,7 +386,8 @@ public class MainActivity extends Activity implements  LocationListener {
 	         }
 	    } catch (Exception e) {}
 
-    	mTextURL.setText("Connecting to RTSPServer... ");
+		mTextURL.setVisibility(View.VISIBLE);
+		mTextURL.setText("Connecting to RTSPServer... ");
 		bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
 
 		//TODO: if !emulate
@@ -404,7 +410,6 @@ public class MainActivity extends Activity implements  LocationListener {
         }
 		
 		unbindService(mRtspServiceConnection);
-		mRtspServer = null;
 
 		mLocationManager.removeUpdates(this);
 	}
@@ -449,8 +454,11 @@ public class MainActivity extends Activity implements  LocationListener {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if(e.getAction() == MotionEvent.ACTION_DOWN) {
-        	//startActivity( new Intent(getApplicationContext(), VmfPreferenceActivity.class) );
         	
+        	// Preference Screen as a separate Activity
+        	//startActivity( new Intent(getApplicationContext(), VmfPreferenceActivity.class) );
+        	// or
+        	// Preference Screen as a fragment not interrupting the RTSP/VMF sessions
         	getFragmentManager()
 			.beginTransaction()
 			.replace(android.R.id.content, new VmfPreferenceFragment())
