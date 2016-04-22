@@ -509,7 +509,7 @@ void MetadataProvider::updateLocations()
     });
 
     QList<Location*> newLocations;
-    for(std::shared_ptr<vmf::Metadata> md : ms)
+    for(const auto& md : ms)
     {
         Location* loc = new Location();
         loc->setLatitude( getFieldValue(md, latFieldName));
