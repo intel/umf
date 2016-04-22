@@ -4,12 +4,14 @@ How to build
    (e.g. `x86` and `armeabi-v7a`)
 2. copy (merge) `android-lib` dir-s from all builds of step 1
    into the dir containing this file
-3. clone the https://github.com/fyhertz/libstreaming git repo
+3. copy the `android-lib/libs` dir into `vmf-rstp-server` dir
+   to include these native lib-s into the application APK package
+4. clone the https://github.com/fyhertz/libstreaming git repo
    into the dir containing this file
-4. create new eclipse workspace
-5. import 'Existing Projects intoWorkspace':
+5. create new eclipse workspace
+6. import 'Existing Projects intoWorkspace':
    * vmf/demo/android/libstreaming
    * vmf/demo/android/android-lib
    * vmf/demo/android/vmf-rtsp-server
    wait eclipse to resolve and build these projects
-6. run `vmf-rstp-server` as Android app on Android 4+ device
+7. run `vmf-rstp-server` as Android app on Android 4+ device
