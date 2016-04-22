@@ -164,14 +164,14 @@ public class MainActivity extends Activity implements  LocationListener {
 		            Log.i(LOGTAG, "Connection accepted!");
 		            mSockOut = new DataOutputStream(mSocket.getOutputStream());
 		            mSockIn  = new DataInputStream (mSocket.getInputStream());
-		            
+
 		            boolean useXML = prefs.getString("format", "1").equals("2");
 		            Log.d(LOGTAG, "useXML="+(useXML?"yes":"no"));
 		            boolean useEncryption = prefs.getBoolean("encryption", false);
 		            Log.d(LOGTAG, "useEncryption="+(useEncryption?"yes":"no"));
 		            boolean useCompression = prefs.getBoolean("compression", false);
 		            Log.d(LOGTAG, "useCompression="+(useCompression?"yes":"no"));
-		            
+
 		            mVMFFormat = useXML ? new FormatXML() : new FormatJSON();
 		            mVMFFormat = useCompression ? new FormatCompressed(mVMFFormat, Compressor.BUILTIN_ZLIB) : mVMFFormat;
 		            mVMFFormat = useEncryption ? new FormatEncrypted(mVMFFormat, new EncryptorDefault("VMF Demo passphrase!")) : mVMFFormat;
@@ -218,7 +218,7 @@ public class MainActivity extends Activity implements  LocationListener {
 
 		            Log.i(LOGTAG, "Ready to stream VMF medatada");
 		            mIsVMFStreamming = true;
-		            
+
 		            mUseGpsEmulation = prefs.getBoolean("gps_emulation", true);
 
 		            if(mUseGpsEmulation) {
@@ -281,9 +281,11 @@ public class MainActivity extends Activity implements  LocationListener {
 
 			} else if (message==RtspServer.MESSAGE_STREAMING_STOPPED) {
 				Log.i(LOGTAG, "MESSAGE_STREAMING_STOPPED");
+				final String rtstAddr = "rtsp://" + mIPString + ":" + mRtspServer.getPort();
 				runOnUiThread(new Runnable() {
 				    public void run() {
 				    	mTextURL.setVisibility(View.VISIBLE);
+				    	mTextURL.setText("Connect " + rtstAddr);
 				    	Toast.makeText(MainActivity.this, "STREAMING STOPPED", Toast.LENGTH_LONG).show();
 				    }
 				});
@@ -347,7 +349,7 @@ public class MainActivity extends Activity implements  LocationListener {
 		        .setVideoQuality(new VideoQuality(640,480,15,2000000));
 
 		startService(new Intent(this, RtspServer.class));
-		
+
 		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     	set.clear();
         set.push_back(m);
@@ -390,25 +392,26 @@ public class MainActivity extends Activity implements  LocationListener {
 		mTextURL.setText("Connecting to RTSPServer... ");
 		bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
 
-		//TODO: if !emulate
-		try {
-			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
-		} catch (Exception e) {
-			Log.e(LOGTAG, "Network location service provider not available!");
+		if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("gps_emulation", true)) {
+			try {
+				mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
+			} catch (Exception e) {
+				Log.e(LOGTAG, "Network location service provider not available!");
+			}
+			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
 		}
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 /*1s*/, 5 /*5m*/, this);
 	}
 
 	protected void stopStreaming() {
 		if(mRtspServer != null)
 			mRtspServer.stop();
 		// TODO: sync required
-		
+
 		if(mGpsEmulationTread != null) {
         	mGpsEmulationTread.interrupt();
         	mGpsEmulationTread = null;
         }
-		
+
 		unbindService(mRtspServiceConnection);
 
 		mLocationManager.removeUpdates(this);
@@ -454,7 +457,7 @@ public class MainActivity extends Activity implements  LocationListener {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if(e.getAction() == MotionEvent.ACTION_DOWN) {
-        	
+
         	// Preference Screen as a separate Activity
         	//startActivity( new Intent(getApplicationContext(), VmfPreferenceActivity.class) );
         	// or
