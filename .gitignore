@@ -2,4 +2,4 @@
 /android_libs*/
 *.user*
 .DS_Store/
-/demo/ios/.DS_Store
+/build*/

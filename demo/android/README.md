@@ -8,10 +8,11 @@ How to build
    to include these native lib-s into the application APK package
 4. clone the https://github.com/fyhertz/libstreaming git repo
    into the dir containing this file
-5. create new eclipse workspace
-6. import 'Existing Projects intoWorkspace':
+5. apply the `0001-libstreaming-fixes.patch` to it
+6. create new eclipse workspace
+7. import 'Existing Projects intoWorkspace':
    * vmf/demo/android/libstreaming
    * vmf/demo/android/android-lib
    * vmf/demo/android/vmf-rtsp-server
    wait eclipse to resolve and build these projects
-7. run `vmf-rstp-server` as Android app on Android 4+ device
+8. run `vmf-rstp-server` as Android app on Android 4+ device
