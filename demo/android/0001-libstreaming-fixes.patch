@@ -1,0 +1,63 @@
+From 975cc5c39f18cb190387687ef6dabea8415948bc Mon Sep 17 00:00:00 2001
+From: Andrey Pavlenko <andrey.pavlenko@itseez.com>
+Date: Fri, 22 Apr 2016 16:39:34 +0300
+Subject: [PATCH] a set of fixes:
+
+- fixing exception on RTSP URL without queries
+- randimizing RTP/RTCP ports to prevent conflicts
+- add missing notification on session end due to RTSP port change
+---
+ src/net/majorkernelpanic/streaming/SessionBuilder.java  | 4 ++--
+ src/net/majorkernelpanic/streaming/rtsp/RtspServer.java | 1 +
+ src/net/majorkernelpanic/streaming/rtsp/UriParser.java  | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/net/majorkernelpanic/streaming/SessionBuilder.java b/src/net/majorkernelpanic/streaming/SessionBuilder.java
+index 1ba39c4..76c6200 100644
+--- a/src/net/majorkernelpanic/streaming/SessionBuilder.java
++++ b/src/net/majorkernelpanic/streaming/SessionBuilder.java
+@@ -141,13 +141,13 @@ public class SessionBuilder {
+ 			video.setVideoQuality(mVideoQuality);
+ 			video.setSurfaceView(mSurfaceView);
+ 			video.setPreviewOrientation(mOrientation);
+-			video.setDestinationPorts(5006);
++			video.setDestinationPorts(5000 + (int)(Math.random()*1000));
+ 		}
+ 
+ 		if (session.getAudioTrack()!=null) {
+ 			AudioStream audio = session.getAudioTrack();
+ 			audio.setAudioQuality(mAudioQuality);
+-			audio.setDestinationPorts(5004);
++			audio.setDestinationPorts(6000 + (int)(Math.random()*1000));
+ 		}
+ 
+ 		return session;
+diff --git a/src/net/majorkernelpanic/streaming/rtsp/RtspServer.java b/src/net/majorkernelpanic/streaming/rtsp/RtspServer.java
+index 8d0dab1..069e6f9 100644
+--- a/src/net/majorkernelpanic/streaming/rtsp/RtspServer.java
++++ b/src/net/majorkernelpanic/streaming/rtsp/RtspServer.java
+@@ -198,6 +198,7 @@ public class RtspServer extends Service {
+ 			} catch (Exception e) {
+ 			} finally {
+ 				mListenerThread = null;
++				postMessage(MESSAGE_STREAMING_STOPPED);
+ 			}
+ 		}
+ 	}
+diff --git a/src/net/majorkernelpanic/streaming/rtsp/UriParser.java b/src/net/majorkernelpanic/streaming/rtsp/UriParser.java
+index e012f79..8169842 100644
+--- a/src/net/majorkernelpanic/streaming/rtsp/UriParser.java
++++ b/src/net/majorkernelpanic/streaming/rtsp/UriParser.java
+@@ -66,7 +66,8 @@ public class UriParser {
+ 		SessionBuilder builder = SessionBuilder.getInstance().clone();
+ 		byte audioApi = 0, videoApi = 0;
+ 
+-        String[] queryParams = URI.create(uri).getQuery().split("&");
++		String query = URI.create(uri).getQuery();
++		String[] queryParams = query == null ? new String[0] : query.split("&");
+         ContentValues params = new ContentValues();
+         for(String param:queryParams)
+         {
+-- 
+1.9.4.msysgit.0
+
