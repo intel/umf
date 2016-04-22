@@ -124,8 +124,8 @@ ApplicationWindow {
 
             VideoMetaWidget {
                 anchors.fill: parent
-                //ip: "192.168.10.190"
-                ip: "192.168.10.218"
+                //ip: "192.168.10.218"
+                ip: "192.168.10.94"
                 property bool noData : true
                 onTrajectoryChanged: {
                     if(noData && trajectory.length > 0)
