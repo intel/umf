@@ -477,7 +477,6 @@ QString MetadataProvider::deviceId()
 
 double MetadataProvider::lastTimestamp()
 {
-    std::unique_lock< std::mutex > lock( m_lock );
     return m_lastTimestamp;
 }
 

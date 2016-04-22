@@ -236,7 +236,7 @@ private:
     WrappingInfo* m_wrappingInfo;
     StatInfo* m_statInfo;
     QString m_deviceId;
-    double m_lastTimestamp;
+    std::atomic<double> m_lastTimestamp;
     mutable std::mutex m_lock;
 
     class ConnectionLock;
