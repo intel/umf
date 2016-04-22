@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements  LocationListener {
 	public static final String LOGTAG = "MainActivity";
 
 	protected SurfaceView mSurfaceView;
-	protected TextView mTextURL;
+	protected TextView mTextURL, mTextFormat, mTextGpsEmu, mTextCompress, mTextEncrypt;
 	protected String mIPString = "unknown";
 
 	private ServiceConnection mRtspServiceConnection = new ServiceConnection() {
@@ -165,12 +165,23 @@ public class MainActivity extends Activity implements  LocationListener {
 		            mSockOut = new DataOutputStream(mSocket.getOutputStream());
 		            mSockIn  = new DataInputStream (mSocket.getInputStream());
 
-		            boolean useXML = prefs.getString("format", "1").equals("2");
+		            final boolean useXML = prefs.getString("format", "1").equals("2");
 		            Log.d(LOGTAG, "useXML="+(useXML?"yes":"no"));
-		            boolean useEncryption = prefs.getBoolean("encryption", false);
+		            final boolean useGpsEmu = prefs.getBoolean("gps_emulation", true);
+		            final boolean useEncryption = prefs.getBoolean("encryption", false);
 		            Log.d(LOGTAG, "useEncryption="+(useEncryption?"yes":"no"));
-		            boolean useCompression = prefs.getBoolean("compression", false);
+		            final boolean useCompression = prefs.getBoolean("compression", false);
 		            Log.d(LOGTAG, "useCompression="+(useCompression?"yes":"no"));
+
+					runOnUiThread(new Runnable() {
+					    public void run() {
+					    	mTextFormat.setText("Format: " + (useXML ? "XML" : "JSON"));
+					    	mTextGpsEmu.setText("GPS emulation: " + (useGpsEmu ? "Yes" : "No"));
+					    	mTextCompress.setText("Compression: " + (useCompression ? "Yes" : "No"));
+					    	mTextEncrypt.setText("Encryption: " + (useEncryption ? "Yes" : "No"));
+					    }
+					});
+
 
 		            mVMFFormat = useXML ? new FormatXML() : new FormatJSON();
 		            mVMFFormat = useCompression ? new FormatCompressed(mVMFFormat, Compressor.BUILTIN_ZLIB) : mVMFFormat;
@@ -219,7 +230,7 @@ public class MainActivity extends Activity implements  LocationListener {
 		            Log.i(LOGTAG, "Ready to stream VMF medatada");
 		            mIsVMFStreamming = true;
 
-		            mUseGpsEmulation = prefs.getBoolean("gps_emulation", true);
+		            mUseGpsEmulation = useGpsEmu;
 
 		            if(mUseGpsEmulation) {
 			            if(mGpsEmulationTread != null) {
@@ -270,8 +281,12 @@ public class MainActivity extends Activity implements  LocationListener {
 				Log.i(LOGTAG, "MESSAGE_STREAMING_STARTED");
 				runOnUiThread(new Runnable() {
 				    public void run() {
-				    	mTextURL.setVisibility(View.INVISIBLE);
 				    	Toast.makeText(MainActivity.this, "STREAMING STARTED", Toast.LENGTH_LONG).show();
+				    	mTextURL.setVisibility(View.INVISIBLE);
+				    	mTextFormat.setVisibility(View.VISIBLE);
+				    	mTextGpsEmu.setVisibility(View.VISIBLE);
+				    	mTextCompress.setVisibility(View.VISIBLE);
+				    	mTextEncrypt.setVisibility(View.VISIBLE);
 				    }
 				});
 
@@ -284,9 +299,14 @@ public class MainActivity extends Activity implements  LocationListener {
 				final String rtstAddr = "rtsp://" + mIPString + ":" + mRtspServer.getPort();
 				runOnUiThread(new Runnable() {
 				    public void run() {
-				    	mTextURL.setVisibility(View.VISIBLE);
-				    	mTextURL.setText("Connect " + rtstAddr);
 				    	Toast.makeText(MainActivity.this, "STREAMING STOPPED", Toast.LENGTH_LONG).show();
+				    	mTextURL.setText("Connect " + rtstAddr);
+				    	mTextURL.setVisibility(View.VISIBLE);
+				    	mTextFormat.setVisibility(View.INVISIBLE);
+				    	mTextGpsEmu.setVisibility(View.INVISIBLE);
+				    	mTextCompress.setVisibility(View.INVISIBLE);
+				    	mTextEncrypt.setVisibility(View.INVISIBLE);
+
 				    }
 				});
 
@@ -327,8 +347,12 @@ public class MainActivity extends Activity implements  LocationListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		setContentView(R.layout.activity_main);
-		mTextURL = (TextView) findViewById(R.id.textURL);
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface_preview);
+		mTextURL = (TextView) findViewById(R.id.textURL);
+		mTextFormat = (TextView) findViewById(R.id.textFormat);
+		mTextGpsEmu = (TextView) findViewById(R.id.textGpsEmu);
+		mTextCompress = (TextView) findViewById(R.id.textCompress);
+		mTextEncrypt = (TextView) findViewById(R.id.textEncrypt);
 
 		// RTSP init
 

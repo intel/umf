@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    
+
+    <PreferenceCategory android:title="Note" >
+    	<Preference
+    		android:key="note"
+		    android:selectable="false"
+		    android:title=""
+		    android:summary="All the settings except 'RTSP port' are applied at the next client connection."/>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Streaming" >
         <EditTextPreference
                 android:key="rtsp_port"
@@ -17,7 +25,7 @@
                 android:maxLength="5"
                 android:defaultValue="4321" />
     </PreferenceCategory>
-    
+
     <PreferenceCategory android:title="Extra flags" >
 		<ListPreference
 		    android:title="Text Format"
@@ -42,5 +50,5 @@
             android:title="Encryption"
             android:defaultValue="false" />
     </PreferenceCategory>
-    
+
 </PreferenceScreen>
