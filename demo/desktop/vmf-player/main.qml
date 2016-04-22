@@ -19,10 +19,10 @@ ApplicationWindow {
     property variant legends : [legend0, legend1]
     property variant deviceIdLabels: [deviceIdLabel0, deviceIdLabel1]
 
-    function initializeMap(coord)
+    function centerMap(coord)
     {
         var script = "map.setCenter(new google.maps.LatLng(%1,%2));\n";
-        web.runJavaScript(script.arg(coord.lat).arg(coord.lng));
+        web.runJavaScript(script.arg(coord.latitude).arg(coord.longitude));
     }
 
     function getRotation(fromPt, toPt)
@@ -126,13 +126,20 @@ ApplicationWindow {
                 anchors.fill: parent
                 //ip: "192.168.10.190"
                 ip: "192.168.10.218"
+                property bool noData : true
                 onTrajectoryChanged: {
+                    if(noData && trajectory.length > 0)
+                    {
+                        centerMap(trajectory[0]); noData = false
+                    }
                     deviceIdLabels[0].text = deviceId
                     paths[0] = trajectory
                     drawRoute(0)
                     drawObject(0)
                 }
-                onStarted: { }
+                onStarted: {
+                    noData = true
+                }
                 onStopped: {
                     removeRoute(0); hideObject(0);
                 }
@@ -146,13 +153,20 @@ ApplicationWindow {
             VideoMetaWidget {
                 anchors.fill: parent
                 ip: "192.168.10.176"
+                property bool noData : true
                 onTrajectoryChanged: {
+                    if(noData && trajectory.length > 0)
+                    {
+                        centerMap(trajectory[0]); noData = false
+                    }
                     deviceIdLabels[1].text = deviceId
                     paths[1] = trajectory
                     drawRoute(1)
                     drawObject(1)
                 }
-                onStarted: { }
+                onStarted: {
+                    noData = true
+                }
                 onStopped: {
                     removeRoute(1); hideObject(1);
                 }
