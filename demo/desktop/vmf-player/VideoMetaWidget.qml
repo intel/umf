@@ -86,6 +86,7 @@ Rectangle {
         startStopButton.text = "Start"
 
         deviceIdlabel.text      = "(None)"
+        formatLabel.text        = "(None)"
         compressorIdLabel.text  = "(None)"
         encryptionPwdLabel.text = "(None)"
         countLabel.text   = "(None)"
@@ -242,6 +243,16 @@ Rectangle {
                 }
 
                 Text {
+                    text : "format:"
+                }
+
+                Text {
+                    id: formatLabel
+                    font.italic: true
+                    text : "(None)"
+                }
+
+                Text {
                     text: "compressor ID: "
                 }
 
@@ -319,6 +330,7 @@ Rectangle {
 
                         invAspectRatio = vlcPlayer.video.height/vlcPlayer.video.width
                         deviceIdlabel.text      = mdProvider.deviceId
+                        formatLabel.text        = mdProvider.wrappingInfo.format
                         compressorIdLabel.text  = mdProvider.wrappingInfo.compressionID
                         encryptionPwdLabel.text = mdProvider.wrappingInfo.passphrase
                         countLabel.text   = mdProvider.statInfo.count

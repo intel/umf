@@ -71,17 +71,19 @@ class WrappingInfo : public QObject
 
     Q_PROPERTY(QString compressionID READ compressionID WRITE setCompressionID)
     Q_PROPERTY(QString passphrase READ passphrase WRITE setPassphrase)
+    Q_PROPERTY(QString format READ format WRITE setFormat)
 
 public:
 
     explicit WrappingInfo(QObject* parent = 0) :
-        QObject(parent), m_compressionID(""), m_passphrase("")
+        QObject(parent), m_compressionID(""), m_passphrase(""), m_format("")
     { }
 
     WrappingInfo(const WrappingInfo& wi) :
         QObject(wi.parent()),
         m_compressionID(wi.m_compressionID),
-        m_passphrase(wi.m_passphrase)
+        m_passphrase(wi.m_passphrase),
+        m_format(wi.m_format)
     { }
 
     WrappingInfo& operator=(const WrappingInfo& wi)
@@ -89,6 +91,7 @@ public:
         //QObject::operator =(wi);
         m_compressionID = wi.m_compressionID;
         m_passphrase = wi.m_passphrase;
+        m_format = wi.m_format;
         return *this;
     }
 
@@ -101,10 +104,13 @@ public:
     QString passphrase() const { return m_passphrase; }
     void setPassphrase(const QString& pwd) { m_passphrase = pwd; }
 
+    QString format() const { return m_format; }
+    void setFormat(const QString& f) { m_format = f; }
+
 private:
     QString m_compressionID;
     QString m_passphrase;
-
+    QString m_format;
 };
 
 Q_DECLARE_METATYPE(WrappingInfo)

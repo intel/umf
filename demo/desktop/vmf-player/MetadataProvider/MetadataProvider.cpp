@@ -308,6 +308,7 @@ void MetadataProvider::setWrappingStatus(std::shared_ptr<vmf::Format> f,
     std::unique_lock< std::mutex > lock( m_lock );
     m_wrappingInfo->setCompressionID(QString::fromStdString(toSetCompressionId));
     m_wrappingInfo->setPassphrase(QString::fromStdString(toSetPassphrase));
+    m_wrappingInfo->setFormat(QString::fromStdString(m_useXml ? "XML" : "JSON"));
 }
 
 
