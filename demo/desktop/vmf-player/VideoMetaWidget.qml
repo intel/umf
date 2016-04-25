@@ -10,6 +10,7 @@ import vmf3.demo.metadata 1.0
 Rectangle {
     id: videoMetaWidget
 
+
     property string ip
     property string deviceId
     property bool playing : false
@@ -121,6 +122,7 @@ Rectangle {
     {
         anchors.fill: parent
         orientation: Qt.Vertical
+        anchors.margins: 3
 
         Rectangle {
             id: videoPanel
@@ -164,9 +166,9 @@ Rectangle {
             ColumnLayout
             {
                 anchors.fill: parent
-                spacing: 2
+                spacing: 3
                 RowLayout {
-                    spacing: 2
+                    spacing: 3
                     Layout.fillWidth: true
 
                     ComboBox {
@@ -196,7 +198,7 @@ Rectangle {
                 }
 
                 RowLayout {
-                    spacing: 2
+                    spacing: 3
                     Text {
                         text: "RTSP port:"
                     }
