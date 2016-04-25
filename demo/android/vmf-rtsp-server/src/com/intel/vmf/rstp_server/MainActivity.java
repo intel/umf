@@ -119,7 +119,7 @@ public class MainActivity extends Activity implements  LocationListener {
 	            	m.setFieldValue("longitude", lng);
 	            	m.setTimestamp( System.currentTimeMillis() );
 	            	sendString(mVMFFormat.store(set, null, null, null, null));
-	            	SystemClock.sleep(100/*0*/);
+	            	SystemClock.sleep(1000);
             	}
 			} catch (Exception e) {
 	            Log.e(LOGTAG, "Exception: " + e.getMessage());
