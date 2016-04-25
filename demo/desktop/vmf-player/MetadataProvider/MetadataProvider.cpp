@@ -208,8 +208,16 @@ bool MetadataProvider::connect()
     m_sock = ::socket(domain, type, protocol);
 
     //limit timeout to 5 secs
-    struct timeval tv; tv.tv_sec = 5; tv.tv_usec = 0;
-    ::setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(timeval));
+#ifdef WIN32
+    DWORD ms = 5000;
+    const char * ptv = (const char *)&ms;
+    int tvSize = sizeof(ms);
+#else
+    timeval tv = {5, 0};
+    timeval * ptv = &tv;
+    int tvSize = sizeof(tv);
+#endif
+    ::setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, ptv, tvSize);
 
     if (m_sock >= 0)
     {
