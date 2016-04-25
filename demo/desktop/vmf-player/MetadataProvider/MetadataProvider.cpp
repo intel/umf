@@ -187,12 +187,14 @@ void MetadataProvider::stop()
     std::cerr << "*** MetadataProvider::stop()" << std::endl;
     if (m_working)
     {
-        std::cerr << "*** MetadataProvider::stop() : stop worker" << std::endl;
+        std::cerr << "*** MetadataProvider::stop() : stopping worker..." << std::endl;
         m_exiting = true;
         m_worker.waitForFinished();
+        std::cerr << "*** MetadataProvider::stop() : worker stopped" << std::endl;
         m_working = false;
         m_ms.clear();
         m_locations.clear();
+        std::cerr << "*** MetadataProvider::stop() : disconnecting..." << std::endl;
         disconnect();
     }
 }
