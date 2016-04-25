@@ -206,6 +206,11 @@ bool MetadataProvider::connect()
     const int protocol = 0;
 
     m_sock = ::socket(domain, type, protocol);
+
+    //limit timeout to 5 secs
+    struct timeval tv; tv.tv_sec = 5; tv.tv_usec = 0;
+    ::setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(timeval));
+
     if (m_sock >= 0)
     {
         struct sockaddr_in server;
