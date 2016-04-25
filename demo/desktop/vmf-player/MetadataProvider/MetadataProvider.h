@@ -8,6 +8,8 @@
 #include <QString>
 #include <QQmlListProperty>
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <atomic>
 #include <mutex>
 #include <thread>
@@ -225,7 +227,7 @@ private:
                            std::shared_ptr<vmf::Encryptor> e,
                            std::string buf);
 
-    std::thread m_worker;
+    QFuture<void> m_worker;
     std::atomic<bool> m_working;
     std::atomic<bool> m_exiting;
     int m_sock;

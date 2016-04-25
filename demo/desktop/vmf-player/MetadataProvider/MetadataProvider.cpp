@@ -178,7 +178,7 @@ void MetadataProvider::start()
     {
         std::cerr << "*** MetadataProvider::start() : start worker" << std::endl;
         m_exiting = false;
-        m_worker = std::thread(&MetadataProvider::execute, this);
+        m_worker = QtConcurrent::run(this, &MetadataProvider::execute);
     }
 }
 
@@ -189,7 +189,7 @@ void MetadataProvider::stop()
     {
         std::cerr << "*** MetadataProvider::stop() : stop worker" << std::endl;
         m_exiting = true;
-        m_worker.join();
+        m_worker.waitForFinished();
         m_working = false;
         m_ms.clear();
         m_locations.clear();
