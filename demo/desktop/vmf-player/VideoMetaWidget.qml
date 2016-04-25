@@ -255,7 +255,7 @@ Rectangle {
                 }
 
                 Text {
-                    text : "format:"
+                    text : "serialization format:"
                 }
 
                 Text {
