@@ -27,3 +27,8 @@ Run the script, it should generate correct 'libvlc.lib' for the build.
 2. build VMF library ('install target')
 3. Open vmf-player.pro in QtCreator, setup the project (use Qt 5.6+) and update path to VMF includes and libs in the '.pro' file
 4. run the build
+5. to run the application on Windows make sure the following folders are in `PATH`:
+** Qt 5.6 binary dir (e.g. `C:\Qt\Qt5.6.0\5.6\msvc2013_64\bin`), can be downloaded from http://download.qt.io/archive/qt/5.6/5.6.0/
+** OpenSSL 1.0 dir (e.g. `C:\OpenSSL-Win64`), can be downloaded from http://openssl.org
+** VMF 3.0 dll dir (e.g. `W:\Dev\git\VMF\vmf3-build-x64-vc12-dyn\install\x64\vc12\bin`), should be built from sources
+** VLC player 2.2.1+ dir (e.g. `W:\Apps\vlc-2.2.2`), can be downloaded from http://download.videolan.org/pub/videolan/vlc/2.2.2/
