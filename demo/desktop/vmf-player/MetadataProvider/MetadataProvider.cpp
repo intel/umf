@@ -45,9 +45,9 @@ static const std::string streamPassphrase = "VMF Demo passphrase!";
 # define zzntohl(_sz) ntohl(_sz)
 #endif
 
-static size_t sendMessage(int fd, const char* buf, size_t msgSize)
+static ssize_t sendMessage(int fd, const char* buf, size_t msgSize)
 {
-    return ::send(fd, buf, msgSize, 0);
+    return ::send(fd, buf, (int)msgSize, 0);
 }
 
 static ssize_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
@@ -109,9 +109,9 @@ MetadataProvider::MetadataProvider(QObject *parent)
 
 MetadataProvider::~MetadataProvider()
 {
+    stop();
     delete m_wrappingInfo;
     delete m_statInfo;
-    stop();
 }
 
 QString MetadataProvider::address()
@@ -344,10 +344,10 @@ void MetadataProvider::execute()
             vmf::Format::AttribMap attribs;
             vmf::Format::ParseCounters c;
 
+            char buf[bufSize];
+
             if (!m_exiting)
             {
-                char buf[bufSize];
-
                 ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
@@ -372,8 +372,6 @@ void MetadataProvider::execute()
 
             if (!m_exiting)
             {
-                char buf[bufSize];
-
                 ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
@@ -417,7 +415,6 @@ void MetadataProvider::execute()
 
             while (!m_exiting)
             {
-                char buf[bufSize];
                 ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
@@ -495,7 +492,7 @@ double MetadataProvider::getFieldValue(std::shared_ptr<vmf::Metadata> md, const 
         else
             return 0;
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
         return 0;
     }
