@@ -10,6 +10,11 @@
 # include <unistd.h>
 #endif
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 #include <stdlib.h>
 
 #include <iostream>
@@ -29,35 +34,39 @@ static const std::string avgStatName = "avgLat";
 static const std::string lastStatName = "lastLat";
 static const std::string statName = "stat";
 
+static const size_t bufSize = 1 << 20;
+
+static const std::string streamCompressionId = "com.intel.vmf.compressor.zlib";
+static const std::string streamPassphrase = "VMF Demo passphrase!";
+
 #if defined(USE_NATIVE_ENDIAN)
 # define zzntohl(_sz) (_sz)
 #else
 # define zzntohl(_sz) ntohl(_sz)
 #endif
 
-static size_t sendMessage(int fd, const char* buf, size_t msgSize)
+static ssize_t sendMessage(int fd, const char* buf, size_t msgSize)
 {
-    return ::send(fd, buf, msgSize, 0);
+    return ::send(fd, buf, (int)msgSize, 0);
 }
 
-static size_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
+static ssize_t receiveMessage(int fd, char* buf, size_t bufSize, bool doWait = false)
 {
     const int  flags = (doWait ? MSG_WAITALL : 0);
     uint32_t sz = 0;
-    size_t size = ::recv(fd, (char*)&sz, 4, flags);
+    ssize_t size = ::recv(fd, (char*)&sz, 4, flags);
     if ((size == 4) && ((sz = zzntohl(sz)) < bufSize))
     {
         size = ::recv(fd, buf, sz, flags);
         if (size == sz)
         {
             buf[sz] = 0;
-            return size;
         }
     }
-    return (size_t)-1;
+    return size;
 }
 
-static size_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
+static ssize_t receiveMessageRaw(int fd, char* buf, size_t msgSize)
 {
 #if defined(USE_SIZES_ON_HANDSHAKE)
     return receiveMessage(fd, buf, msgSize, true);
@@ -89,18 +98,20 @@ MetadataProvider::MetadataProvider(QObject *parent)
     , m_working(false)
     , m_exiting(false)
     , m_sock(-1)
+    , m_useXml(true)
     , m_wrappingInfo(new WrappingInfo())
     , m_statInfo(new StatInfo())
     , m_deviceId("")
+    , m_lastTimestamp(0)
 {
     vmf::Log::setVerbosityLevel(vmf::LogLevel::LOG_ERROR);
 }
 
 MetadataProvider::~MetadataProvider()
 {
+    stop();
     delete m_wrappingInfo;
     delete m_statInfo;
-    stop();
 }
 
 QString MetadataProvider::address()
@@ -167,7 +178,7 @@ void MetadataProvider::start()
     {
         std::cerr << "*** MetadataProvider::start() : start worker" << std::endl;
         m_exiting = false;
-        m_worker = std::thread(&MetadataProvider::execute, this);
+        m_worker = QtConcurrent::run(this, &MetadataProvider::execute);
     }
 }
 
@@ -176,12 +187,14 @@ void MetadataProvider::stop()
     std::cerr << "*** MetadataProvider::stop()" << std::endl;
     if (m_working)
     {
-        std::cerr << "*** MetadataProvider::stop() : stop worker" << std::endl;
+        std::cerr << "*** MetadataProvider::stop() : stopping worker..." << std::endl;
         m_exiting = true;
-        m_worker.join();
+        m_worker.waitForFinished();
+        std::cerr << "*** MetadataProvider::stop() : worker stopped" << std::endl;
         m_working = false;
         m_ms.clear();
         m_locations.clear();
+        std::cerr << "*** MetadataProvider::stop() : disconnecting..." << std::endl;
         disconnect();
     }
 }
@@ -193,6 +206,19 @@ bool MetadataProvider::connect()
     const int protocol = 0;
 
     m_sock = ::socket(domain, type, protocol);
+
+    //limit timeout to 5 secs
+#ifdef WIN32
+    DWORD ms = 5000;
+    const char * ptv = (const char *)&ms;
+    int tvSize = sizeof(ms);
+#else
+    timeval tv = {5, 0};
+    timeval * ptv = &tv;
+    int tvSize = sizeof(tv);
+#endif
+    ::setsockopt(m_sock, SOL_SOCKET, SO_RCVTIMEO, ptv, tvSize);
+
     if (m_sock >= 0)
     {
         struct sockaddr_in server;
@@ -208,15 +234,19 @@ bool MetadataProvider::connect()
             char buf[40000];
 
             // VMF/VMF
-            size_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
+            ssize_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
             if ((size == 3) && (buf[0] == 'V') && (buf[1] == 'M') && (buf[2] == 'F'))
             {
                 size = sendMessage(m_sock, buf, 3);
 
-                // XML/OK
+                // XML or JSON/OK
                 size = receiveMessageRaw(m_sock, buf, sizeof(buf));
-                if ((size == 3) && (buf[0] == 'X') && (buf[1] == 'M') && (buf[2] == 'L'))
+                bool isXml  = (size == 3) && (buf[0] == 'X') && (buf[1] == 'M') && (buf[2] == 'L');
+                bool isJson = (size == 4) && (buf[0] == 'J') && (buf[1] == 'S') && (buf[2] == 'O') && (buf[3] == 'N');
+                if (isXml || isJson)
                 {
+                    m_useXml = isXml;
+
                     buf[0] = 'O';
                     buf[1] = 'K';
                     size = sendMessage(m_sock, buf, 2);
@@ -252,8 +282,50 @@ void MetadataProvider::disconnect()
         ::close(m_sock);
 #endif
         m_sock = -1;
+
+        std::cerr << "Socket closed" << std::endl;
     }
 }
+
+
+void MetadataProvider::setWrappingStatus(std::shared_ptr<vmf::Format> f,
+                                         std::shared_ptr<vmf::Encryptor> e,
+                                         std::string buf)
+{
+    //this parser should be transparent for encryption
+    //it shows existence (or absence) of compression schema in input data
+    vmf::FormatEncrypted compressionDetector(f, e);
+
+    std::vector<vmf::MetadataInternal> tmpMetadata;
+    std::vector<std::shared_ptr<vmf::MetadataSchema>> tmpSchemas;
+    std::vector<std::shared_ptr<vmf::MetadataStream::VideoSegment>> tmpSegments;
+    std::vector<std::shared_ptr<vmf::Stat>> tmpStats;
+    vmf::Format::AttribMap tmpAttribs;
+    vmf::Format::ParseCounters tmpCounter;
+
+    std::string toSetCompressionId, toSetPassphrase;
+    //check encryption status
+    tmpCounter = f->parse(buf, tmpMetadata, tmpSchemas, tmpSegments,
+                          tmpStats, tmpAttribs);
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.encrypted-metadata")
+    {
+        toSetPassphrase = streamPassphrase;
+    }
+    //check compression status
+    tmpSchemas.clear();
+    tmpCounter = compressionDetector.parse(buf, tmpMetadata, tmpSchemas,
+                                           tmpSegments, tmpStats, tmpAttribs);
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.compressed-metadata")
+    {
+        toSetCompressionId = streamCompressionId;
+    }
+
+    std::unique_lock< std::mutex > lock( m_lock );
+    m_wrappingInfo->setCompressionID(QString::fromStdString(toSetCompressionId));
+    m_wrappingInfo->setPassphrase(QString::fromStdString(toSetPassphrase));
+    m_wrappingInfo->setFormat(QString::fromStdString(m_useXml ? "XML" : "JSON"));
+}
+
 
 void MetadataProvider::execute()
 {
@@ -267,19 +339,19 @@ void MetadataProvider::execute()
         std::cerr << "*** MetadataProvider::execute() : connect : " << (connection.isSuccessful() ? "SUCC" : "FAIL") << std::endl;
         if (connection.isSuccessful())
         {
-            std::shared_ptr<vmf::Format> f = std::make_shared<vmf::FormatXML>();
-
-            //actual compressor ID will be recognized at parse() call, but should be the following
-            //TODO: specify actual Encryptor and passphrase
+            std::shared_ptr<vmf::Format> f;
+            if(m_useXml)
             {
-                std::unique_lock< std::mutex > lock( m_lock );
-                m_wrappingInfo->setCompressionID("com.intel.vmf.compressor.zlib");
-                m_wrappingInfo->setPassphrase("thereisnospoon");
+                f = std::make_shared<vmf::FormatXML>();
+            }
+            else
+            {
+                f = std::make_shared<vmf::FormatJSON>();
             }
 
-            f = std::make_shared<vmf::FormatCompressed>(f, m_wrappingInfo->compressionID().toStdString());
-            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(m_wrappingInfo->passphrase().toStdString());
-            vmf::FormatEncrypted parser(f, e);
+            std::shared_ptr<vmf::Format> cf = std::make_shared<vmf::FormatCompressed>(f, streamCompressionId);
+            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(streamPassphrase);
+            vmf::FormatEncrypted parser(cf, e);
 
             std::vector<vmf::MetadataInternal> metadata;
             std::vector<std::shared_ptr<vmf::MetadataSchema>> schemas;
@@ -288,13 +360,16 @@ void MetadataProvider::execute()
             vmf::Format::AttribMap attribs;
             vmf::Format::ParseCounters c;
 
-            char buf[10240];
+            char buf[bufSize];
 
             if (!m_exiting)
             {
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
+
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
                     if (!(c.segments > 0))
                         throw std::runtime_error("expected video segment(s) not sent by server");
@@ -313,9 +388,12 @@ void MetadataProvider::execute()
 
             if (!m_exiting)
             {
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
+
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
                     if (!(c.schemas > 0))
                         throw std::runtime_error("expected video schema(s) not sent by server");
@@ -353,10 +431,13 @@ void MetadataProvider::execute()
 
             while (!m_exiting)
             {
-                size_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
+                ssize_t size = receiveMessage(m_sock, buf, sizeof(buf), true);
                 if (size > 0)
                 {
                     std::cerr << std::string(buf) << std::endl;
+
+                    //get actual compression and encryption status
+                    setWrappingStatus(f, e, std::string(buf));
 
                     metadata.clear();
                     c = parser.parse(std::string(buf), metadata, schemas, segments, stats, attribs);
@@ -412,6 +493,11 @@ QString MetadataProvider::deviceId()
     return m_deviceId;
 }
 
+double MetadataProvider::lastTimestamp()
+{
+    return m_lastTimestamp;
+}
+
 double MetadataProvider::getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name)
 {
     try
@@ -422,7 +508,7 @@ double MetadataProvider::getFieldValue(std::shared_ptr<vmf::Metadata> md, const 
         else
             return 0;
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
         return 0;
     }
@@ -439,14 +525,16 @@ void MetadataProvider::updateLocations()
         return (a->getId() < b->getId());
     });
 
-    m_locations.clear();
-    for(std::shared_ptr<vmf::Metadata> md : ms)
+    QList<Location*> newLocations;
+    for(const auto& md : ms)
     {
         Location* loc = new Location();
         loc->setLatitude( getFieldValue(md, latFieldName));
         loc->setLongitude(getFieldValue(md, lngFieldName));
-        m_locations.append(loc);
+        newLocations.append(loc);
     }
+
+    m_locations = newLocations;
 
     //update statistics: doRescan + doWait
     std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
@@ -457,5 +545,10 @@ void MetadataProvider::updateLocations()
     m_statInfo->setMinLat(stat->getField(minStatName).getValue());
     m_statInfo->setAvgLat(stat->getField(avgStatName).getValue());
     m_statInfo->setLastLat(stat->getField(lastStatName).getValue());
+
+    //set last timestamp
+    m_lastTimestamp = ms.back()->getTime();
+
+    std::cerr << "*** MetadataProvider::updateLocations() ***" << std::endl;
 }
 

@@ -8,6 +8,8 @@
 #include <QString>
 #include <QQmlListProperty>
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <atomic>
 #include <mutex>
 #include <thread>
@@ -69,17 +71,19 @@ class WrappingInfo : public QObject
 
     Q_PROPERTY(QString compressionID READ compressionID WRITE setCompressionID)
     Q_PROPERTY(QString passphrase READ passphrase WRITE setPassphrase)
+    Q_PROPERTY(QString format READ format WRITE setFormat)
 
 public:
 
     explicit WrappingInfo(QObject* parent = 0) :
-        QObject(parent), m_compressionID(""), m_passphrase("")
+        QObject(parent), m_compressionID(""), m_passphrase(""), m_format("")
     { }
 
     WrappingInfo(const WrappingInfo& wi) :
         QObject(wi.parent()),
         m_compressionID(wi.m_compressionID),
-        m_passphrase(wi.m_passphrase)
+        m_passphrase(wi.m_passphrase),
+        m_format(wi.m_format)
     { }
 
     WrappingInfo& operator=(const WrappingInfo& wi)
@@ -87,6 +91,7 @@ public:
         //QObject::operator =(wi);
         m_compressionID = wi.m_compressionID;
         m_passphrase = wi.m_passphrase;
+        m_format = wi.m_format;
         return *this;
     }
 
@@ -99,10 +104,13 @@ public:
     QString passphrase() const { return m_passphrase; }
     void setPassphrase(const QString& pwd) { m_passphrase = pwd; }
 
+    QString format() const { return m_format; }
+    void setFormat(const QString& f) { m_format = f; }
+
 private:
     QString m_compressionID;
     QString m_passphrase;
-
+    QString m_format;
 };
 
 Q_DECLARE_METATYPE(WrappingInfo)
@@ -180,6 +188,7 @@ class MetadataProvider : public QObject
     Q_PROPERTY(WrappingInfo* wrappingInfo READ wrappingInfo)
     Q_PROPERTY(StatInfo* statInfo READ statInfo)
     Q_PROPERTY(QString deviceId READ deviceId)
+    Q_PROPERTY(double lastTimestamp READ lastTimestamp)
 
 public:
     explicit MetadataProvider(QObject *parent = 0);
@@ -195,6 +204,8 @@ public:
     StatInfo* statInfo();
 
     QString deviceId();
+
+    double lastTimestamp();
 
 signals:
     void addressChanged();
@@ -218,17 +229,22 @@ private:
 
     void updateLocations();
     static double getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name);
+    void setWrappingStatus(std::shared_ptr<vmf::Format> f,
+                           std::shared_ptr<vmf::Encryptor> e,
+                           std::string buf);
 
-    std::thread m_worker;
+    QFuture<void> m_worker;
     std::atomic<bool> m_working;
     std::atomic<bool> m_exiting;
     int m_sock;
+    bool m_useXml;
 
     vmf::MetadataStream m_ms;
     QList<Location*> m_locations;
     WrappingInfo* m_wrappingInfo;
     StatInfo* m_statInfo;
     QString m_deviceId;
+    std::atomic<double> m_lastTimestamp;
     mutable std::mutex m_lock;
 
     class ConnectionLock;

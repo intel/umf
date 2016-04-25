@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets webengine
+QT += qml quick widgets webengine concurrent
 
 include(3dparty/QmlVlc/QmlVlc.pri)
 INCLUDEPATH += 3dparty
@@ -19,6 +19,16 @@ CONFIG(debug, debug|release) {
     LIBS += -lvmfd
 } else {
     LIBS += -lvmf
+}
+
+# increase stack size on Windows from default 1MB to 4MB
+# visual studio
+win32-msvc*:{
+    QMAKE_LFLAGS += /STACK:4194304
+}
+#mingw
+win32-g++:{
+    QMAKE_LFLAGS += -Wl,--stack,4194304
 }
 #==
 

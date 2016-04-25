@@ -10,10 +10,12 @@ import vmf3.demo.metadata 1.0
 Rectangle {
     id: videoMetaWidget
 
+
     property string ip
     property string deviceId
     property bool playing : false
     property double invAspectRatio : 1.0
+    property double drawnTimestamp : 0.0
     signal trajectoryChanged(variant trajectory)
     signal started()
     signal stopped()
@@ -75,12 +77,17 @@ Rectangle {
         console.debug("stop")
         videoLabel.text = "Stopped"
         vlcPlayer.stop()
+    }
+
+    function playerStopped()
+    {
         console.debug("vlcPlayer stopped")
         mdProvider.stop()
         console.debug("mdProvider stopped")
         startStopButton.text = "Start"
 
         deviceIdlabel.text      = "(None)"
+        formatLabel.text        = "(None)"
         compressorIdLabel.text  = "(None)"
         encryptionPwdLabel.text = "(None)"
         countLabel.text   = "(None)"
@@ -94,7 +101,17 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        ipCombo.model.append({text: ip})
+        //ipCombo isn't filled with default components yet
+        //so let's fill it now
+        ipCombo.model.append({ text: "192.168.10.94" })
+        ipCombo.model.append({ text: "192.168.10.218"})
+        ipCombo.model.append({ text: "192.168.10.176"})
+
+        if (ipCombo.find(ip) === -1)
+        {
+            ipCombo.model.append({text: ip})
+        }
+        ipCombo.currentIndex = ipCombo.find(ip)
     }
 
     onInvAspectRatioChanged: {
@@ -105,6 +122,7 @@ Rectangle {
     {
         anchors.fill: parent
         orientation: Qt.Vertical
+        anchors.margins: 3
 
         Rectangle {
             id: videoPanel
@@ -124,6 +142,14 @@ Rectangle {
             VlcPlayer {
                 id: vlcPlayer;
                 onMediaPlayerPlaying: playerStarted();
+                onMediaPlayerStopped: playerStopped();
+                onPlayingChanged: {
+                    console.debug("vlcPlayer: playing changed");
+                    if(!playing)
+                    {
+                        stop();
+                    }
+                }
             }
             VlcVideoSurface {
                 id: vlcSurface;
@@ -140,16 +166,16 @@ Rectangle {
             ColumnLayout
             {
                 anchors.fill: parent
-                spacing: 2
+                spacing: 3
                 RowLayout {
-                    spacing: 2
+                    spacing: 3
                     Layout.fillWidth: true
 
                     ComboBox {
                         id: ipCombo
                         editable: true
                         Layout.fillWidth: true
-                        model: ListModel { }
+                        model: ListModel { } //filled at loading
                         onAccepted: {
                             console.debug("onAccepted")
                             if (find(currentText) === -1) {
@@ -172,7 +198,7 @@ Rectangle {
                 }
 
                 RowLayout {
-                    spacing: 2
+                    spacing: 3
                     Text {
                         text: "RTSP port:"
                     }
@@ -226,6 +252,16 @@ Rectangle {
                     id: deviceIdlabel
                     font.italic: true
                     text: "(None)"
+                }
+
+                Text {
+                    text : "serialization format:"
+                }
+
+                Text {
+                    id: formatLabel
+                    font.italic: true
+                    text : "(None)"
                 }
 
                 Text {
@@ -299,17 +335,24 @@ Rectangle {
                 id: mdProvider;
                 onMetadataAdded: {
                     console.debug("onMetadataAdded()")
-                    invAspectRatio = vlcPlayer.video.height/vlcPlayer.video.width
-                    deviceIdlabel.text      = mdProvider.deviceId
-                    compressorIdLabel.text  = mdProvider.wrappingInfo.compressionID
-                    encryptionPwdLabel.text = mdProvider.wrappingInfo.passphrase
-                    countLabel.text   = mdProvider.statInfo.count
-                    minLatLabel.text  = mdProvider.statInfo.minLat
-                    avgLatLabel.text  = mdProvider.statInfo.avgLat
-                    lastLatLabel.text = mdProvider.statInfo.lastLat
+                    var diff = Math.abs(mdProvider.lastTimestamp - drawnTimestamp)
+                    if(diff > 1000)
+                    {
+                        drawnTimestamp = mdProvider.lastTimestamp
 
-                    videoMetaWidget.deviceId = mdProvider.deviceId
-                    trajectoryChanged(mdProvider.locations);
+                        invAspectRatio = vlcPlayer.video.height/vlcPlayer.video.width
+                        deviceIdlabel.text      = mdProvider.deviceId
+                        formatLabel.text        = mdProvider.wrappingInfo.format
+                        compressorIdLabel.text  = mdProvider.wrappingInfo.compressionID
+                        encryptionPwdLabel.text = mdProvider.wrappingInfo.passphrase
+                        countLabel.text   = mdProvider.statInfo.count
+                        minLatLabel.text  = mdProvider.statInfo.minLat
+                        avgLatLabel.text  = mdProvider.statInfo.avgLat
+                        lastLatLabel.text = mdProvider.statInfo.lastLat
+
+                        videoMetaWidget.deviceId = mdProvider.deviceId
+                        trajectoryChanged(mdProvider.locations);
+                    }
                 }
             }
         }
