@@ -100,7 +100,17 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        ipCombo.model.append({text: ip})
+        //ipCombo isn't filled with default components yet
+        //so let's fill it now
+        ipCombo.model.append({ text: "192.168.10.94" })
+        ipCombo.model.append({ text: "192.168.10.218"})
+        ipCombo.model.append({ text: "192.168.10.176"})
+
+        if (ipCombo.find(ip) === -1)
+        {
+            ipCombo.model.append({text: ip})
+        }
+        ipCombo.currentIndex = ipCombo.find(ip)
     }
 
     onInvAspectRatioChanged: {
@@ -163,7 +173,7 @@ Rectangle {
                         id: ipCombo
                         editable: true
                         Layout.fillWidth: true
-                        model: ListModel { }
+                        model: ListModel { } //filled at loading
                         onAccepted: {
                             console.debug("onAccepted")
                             if (find(currentText) === -1) {
