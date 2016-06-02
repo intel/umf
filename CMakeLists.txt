@@ -62,7 +62,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # The version number.
 set(VMF_VERSION_MAJOR "3")
 set(VMF_VERSION_MINOR "0")
-set(VMF_VERSION_TYPE  "beta") # dev, alpha, beta
+set(VMF_VERSION_TYPE  "RC1") # dev, alpha, beta
 
 # adding git info to the version if possible
 if(NOT COMMAND find_host_package)
