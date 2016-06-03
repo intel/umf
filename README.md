@@ -6,7 +6,7 @@
 Video Metadata Framework
 ------------------------
 
-Video Metadata Framework (VMF) is a C++ library providing functionality for creating, editing and embedding of metadata into video files.
+The Video Metadata Framework (VMF) is a C++ library providing functionality for creating, editing and embedding of metadata into video files.
 VMF allows developers to define and create metadata of any form, and about any resource type.
 VMF embeds metadata within the host video file or video stream, so that no additional files are needed to store the metadata.
 
