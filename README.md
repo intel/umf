@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/01org/vmf.svg?branch=master)](https://travis-ci.org/01org/vmf)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/01org/vmf?branch=master&svg=true)](https://ci.appveyor.com/api/github/webhook?id=r5j9ocr4basnm7yj)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/01org/vmf?branch=master&svg=true)](https://ci.appveyor.com/api/projects/status/r5j9ocr4basnm7yj/branch/master?svg=true)
 [![Coverage Status](https://coveralls.io/repos/github/01org/vmf/badge.svg?branch=master)](https://coveralls.io/github/01org/vmf?branch=master)
 [![codecov.io](https://codecov.io/github/01org/vmf/coverage.svg?branch=master)](https://codecov.io/github/01org/vmf?branch=master)
 
