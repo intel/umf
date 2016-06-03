@@ -29,61 +29,68 @@ class XMPMetadataSource
 {
 public:
     explicit XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta);
-    void saveSchema(const vmf::MetaString& schemaName, const vmf::MetadataStream& stream);
-    void loadSchema(const vmf::MetaString& schemaName, vmf::MetadataStream& stream);
-    void loadProperty(const vmf::MetaString& schemaName, const vmf::MetaString& metadataName, vmf::MetadataStream& stream);
+    void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const vmf::MetadataSet& mdSet);
+    void loadSchema(const vmf::vmf_string& schemaName, vmf::MetadataStream& stream);
+    void loadProperty(const vmf::vmf_string& schemaName, const vmf::vmf_string& metadataName, vmf::MetadataStream& stream);
     void remove(const std::vector<vmf::IdType>& removedIds);
     void clear();
 private:
     struct InternalPath {
-        vmf::MetaString schema;
-        vmf::MetaString metadata;
-        vmf::MetaString path;
+        vmf::vmf_string schema;
+        vmf::vmf_string metadata;
+        vmf::vmf_string path;
     };
 
     typedef std::map<vmf::IdType, InternalPath> IdMap;
 
-    void loadPropertyByPath(const vmf::MetaString& pathToProperty, const vmf::MetaString& schemaName, vmf::MetadataStream& stream);
-    void saveProperty(const vmf::MetadataSet& property, const vmf::MetaString& pathToSchema, const vmf::MetaString& propertyName);
+    void loadPropertyByPath(const vmf::vmf_string& pathToProperty, const vmf::vmf_string& schemaName, vmf::MetadataStream& stream);
+    void saveProperty(const vmf::MetadataSet& property, const vmf::vmf_string& pathToSchema, const vmf::vmf_string& propertyName);
 
-    void loadMetadata(const vmf::MetaString& pathToCurrentMetadata, const std::shared_ptr<MetadataDesc>& description, vmf::MetadataStream& stream);
-    void saveMetadata(const std::shared_ptr<vmf::Metadata>& md, const vmf::MetaString& thisPropertySetPath);
+    void loadMetadata(const vmf::vmf_string& pathToCurrentMetadata, const std::shared_ptr<MetadataDesc>& description, vmf::MetadataStream& stream);
+    void saveMetadata(const std::shared_ptr<vmf::Metadata>& md, const vmf::vmf_string& thisPropertySetPath);
 
-    void loadSchemaName(const vmf::MetaString& pathToSchema, vmf::MetaString& schemaName);
-    void loadReference(const vmf::MetaString& thisRefPath, const std::shared_ptr<vmf::Metadata>& md, vmf::MetadataStream& stream);
+    void loadSchemaName(const vmf::vmf_string& pathToSchema, vmf::vmf_string& schemaName);
+    void loadReference(const vmf::vmf_string& thisRefPath, const std::shared_ptr<vmf::Metadata>& md, vmf::MetadataStream& stream);
 
-    void loadField(const vmf::MetaString& fieldPath, const std::shared_ptr<vmf::Metadata>& md, const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
-    void saveField(const vmf::MetaString& fieldName, const vmf::Variant& value, const vmf::MetaString& fieldsPath);
+    void loadField(const vmf::vmf_string& fieldPath, const std::shared_ptr<vmf::Metadata>& md,
+                   const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
+    void saveField(const vmf::vmf_string& fieldName, const vmf::Variant& value, const bool isEncrypted,
+                   const vmf::vmf_string& encryptedData, const vmf::vmf_string& fieldsPath);
 
     void loadIds();
-    void loadIds(const vmf::MetaString& pathToSchema);
+    void loadIds(const vmf::vmf_string& pathToSchema);
 
-    void loadMetadataId(const vmf::MetaString& pathToMetadata, vmf::IdType& id);
-    void saveMetadataId(const vmf::MetaString& pathToMetadata, const vmf::IdType& id);
+    void loadMetadataId(const vmf::vmf_string& pathToMetadata, vmf::IdType& id);
+    void saveMetadataId(const vmf::vmf_string& pathToMetadata, const vmf::IdType& id);
 
-    void loadMetadataFrameIndex(const vmf::MetaString& pathToMetadata, long long& frameIndex);
-    void saveMetadataFrameIndex(const vmf::MetaString& pathToProperty, const long long& frameIndex);
+    void loadMetadataFrameIndex(const vmf::vmf_string& pathToMetadata, long long& frameIndex);
+    void saveMetadataFrameIndex(const vmf::vmf_string& pathToProperty, const long long& frameIndex);
 
-    void loadMetadataNumOfFrames(const vmf::MetaString& pathToProperty, long long& num);
-    void saveMetadataNumOfFrames(const vmf::MetaString& pathToProperty, const long long& numOfFrames);
+    void loadMetadataNumOfFrames(const vmf::vmf_string& pathToProperty, long long& num);
+    void saveMetadataNumOfFrames(const vmf::vmf_string& pathToProperty, const long long& numOfFrames);
 
-    void loadMetadataTime(const vmf::MetaString& pathToProperty, long long& timestamp);
-    void saveMetadataTime(const vmf::MetaString& pathToProperty, const long long& timestamp);
+    void loadMetadataTime(const vmf::vmf_string& pathToProperty, long long& timestamp);
+    void saveMetadataTime(const vmf::vmf_string& pathToProperty, const long long& timestamp);
 
-    void loadMetadataDuration(const vmf::MetaString& pathToProperty, long long& duration);
-    void saveMetadataDuration(const vmf::MetaString& pathToProperty, const long long& duration);
+    void loadMetadataEncrypted(const vmf::vmf_string& pathToProperty, bool &isEncrypted,
+                               vmf::vmf_string& encryptedData);
+    void saveMetadataEncrypted(const vmf::vmf_string& pathToProperty, bool isEncrypted,
+                               const vmf::vmf_string& encryptedData);
 
-    void loadPropertyName(const vmf::MetaString& pathToMetadata, vmf::MetaString& metadataName);
-    void savePropertyName(const vmf::MetaString& pathToProperty, const MetaString &name);
+    void loadMetadataDuration(const vmf::vmf_string& pathToProperty, long long& duration);
+    void saveMetadataDuration(const vmf::vmf_string& pathToProperty, const long long& duration);
 
-    void saveMetadataFields(const vmf::MetaString& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
+    void loadPropertyName(const vmf::vmf_string& pathToMetadata, vmf::vmf_string& metadataName);
+    void savePropertyName(const vmf::vmf_string& pathToProperty, const vmf_string &name);
 
-    void saveMetadataReferences(const vmf::MetaString& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
+    void saveMetadataFields(const vmf::vmf_string& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
 
-    MetaString appendProperty(const vmf::MetaString& pathToSchema);
-    MetaString findSchema(const vmf::MetaString& name);
-    MetaString findProperty(const vmf::MetaString& pathToSchema, const vmf::MetaString& name);
-    MetaString findId(const InternalPath& internalPath, const vmf::IdType& id);
+    void saveMetadataReferences(const vmf::vmf_string& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
+
+    vmf_string appendProperty(const vmf::vmf_string& pathToSchema);
+    vmf_string findSchema(const vmf::vmf_string& name);
+    vmf_string findProperty(const vmf::vmf_string& pathToSchema, const vmf::vmf_string& name);
+    vmf_string findId(const InternalPath& internalPath, const vmf::IdType& id);
 
     XMPMetadataSource();
     XMPMetadataSource(const vmf::XMPMetadataSource& origin);

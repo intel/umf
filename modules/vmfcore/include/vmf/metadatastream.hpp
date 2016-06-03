@@ -27,11 +27,15 @@
 #pragma warning(disable: 4251)
 #endif
 
-#include "global.hpp"
-#include "metadatainternal.hpp"
-#include "metadataset.hpp"
-#include "metadataschema.hpp"
-#include "iquery.hpp"
+#include "vmf/global.hpp"
+#include "vmf/metadatainternal.hpp"
+#include "vmf/metadataset.hpp"
+#include "vmf/metadataschema.hpp"
+#include "vmf/compressor.hpp"
+#include "vmf/encryptor.hpp"
+#include "vmf/iquery.hpp"
+#include "vmf/statistics.hpp"
+
 #include <map>
 #include <memory>
 #include <vector>
@@ -43,6 +47,7 @@ namespace vmf
 class IDataSource;
 class IReader;
 class IWriter;
+class Format;
 
 /*!
 * \class MetadataStream
@@ -53,21 +58,39 @@ class VMF_EXPORT MetadataStream : public IQuery
 {
 public:
     /*!
-    * \brief File open mode enumeration
+    * \brief File open mode flags
     */
-    enum OpenMode
+    enum OpenModeFlags
     {
-        InMemory, /**< Stream data are in-memory */
-        ReadOnly, /**< Open file for read only */
-        ReadWrite, /**< Open file for read and write */
-
+        InMemory  = 0, /**< Stream data are in-memory */
+        ReadOnly  = 1, /**< Open file for read only */
+        Update = 2, /**< Open file for read and write */
+        IgnoreUnknownCompressor = 4, /**< Represent compressed data as VMF metadata if decompressor is unknown*/
+        IgnoreUnknownEncryptor = 8 /**< Represent encrypted data as VMF metadata if decryptor is unknown*/
     };
+    typedef int OpenMode;
 
+    /*!
+     * \class VideoSegment
+     * \brief The class representing a video segment
+     */
     class VMF_EXPORT VideoSegment
     {
     public:
+        /*!
+         * \brief Default constructor
+         */
         VideoSegment();
 
+        /*!
+         * \brief Constructor with all fields
+         * \param title
+         * \param fps
+         * \param timeStart
+         * \param duration
+         * \param width
+         * \param height
+         */
         VideoSegment( const std::string& title, double fps, long long timeStart,
                       long long duration = 0, long width = 0, long height = 0 );
 
@@ -141,18 +164,21 @@ public:
 
     /*!
     * \brief Save loaded data to media file
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return Save operation result
     */
-    bool save();
+    bool save(const vmf_string& compressorId = vmf_string());
 
 
     /*!
     * \brief Save the in-memory metadata to a different video file.
     * \param sFilePath the path of the new file.
+    * \param compressorId String identifying compression to be used at saving
+    * (empty string means no compression)
     * \return true if succeed.
     */
-    bool saveTo( const std::string& sFilePath );
-
+    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string() );
 
     /*!
     * \brief Close previously opened media file
@@ -172,16 +198,16 @@ public:
     * \return identifier of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     */
-    IdType add( std::shared_ptr< Metadata >& spMetadata);
+    IdType add( std::shared_ptr< Metadata > spMetadata);
 
     /*!
     * \brief Add new metadata item
-    * \param spMetadataInternal [in] pointer to metadataInternal object
-    * \return identifier of added metadata object
+    * \param mdi [in] reference to a MetadataInternal object
+    * \return ID of added metadata object
     * \throw ValidateException if metadata is not valid to selected scheme or description
     * \throw IncorrectParamException if metadata with such id is already exists
     */
-    IdType add( std::shared_ptr< MetadataInternal >& spMetadataInternal);
+    IdType add(MetadataInternal& mdi);
 
     /*!
     * \brief Remove metadata by their id
@@ -199,7 +225,7 @@ public:
     /*!
     * \brief Remove schema and all objects in it.
     */
-    void remove( const std::shared_ptr< MetadataSchema >& schema );
+    void remove( std::shared_ptr< MetadataSchema > schema );
 
     /*!
     * \brief Remove all metadata.
@@ -212,12 +238,17 @@ public:
     * \throw IncorrectParamException if schema name is empty or
     * schema already exists
     */
-    void addSchema( std::shared_ptr< MetadataSchema >& spSchema );
+    void addSchema( std::shared_ptr< MetadataSchema > spSchema );
 
+    /*!
+    * \brief Alias for %addSchema
+    */
+    void add(std::shared_ptr< MetadataSchema > spSchema)
+    { addSchema(spSchema); }
     /*!
     * \brief Get metadata schema by its name
     * \param sSchemaName [in] schema name
-    * \return pointer to schema o9bject or null if schema not found
+    * \return pointer to schema object or null if schema not found
     */
     const std::shared_ptr< MetadataSchema > getSchema( const std::string& sSchemaName ) const;
 
@@ -279,12 +310,12 @@ public:
     /*
     * \brief serialized stream in std::string in selected format
     */
-    std::string serialize(IWriter& formater);
+    std::string serialize(Format& format);
 
     /*
     * \brief deserialized stream from std::string in selected format
     */
-    void deserialize(const std::string& text, IReader& formater);
+    void deserialize(const std::string& text, Format& format);
 
     /*!
     * \brief Compute MD5 digest of media part of the opened file
@@ -316,7 +347,13 @@ public:
     * \brief Add new video segment
     * \throw IncorrectParamException when input segment intersected with anyone of already created segments.
     */
-    void addVideoSegment(const std::shared_ptr<VideoSegment>& newSegment);
+    void addVideoSegment(std::shared_ptr<VideoSegment> newSegment);
+
+    /*!
+    * \brief Alias for %addVideoSegment
+    */
+    void add(std::shared_ptr<VideoSegment> newSegment)
+    { addVideoSegment(newSegment); }
 
     /*!
     * \brief Get vector of video segments that were set for the video
@@ -337,11 +374,75 @@ public:
         long long frameIndex, long long numOfFrames,
         long long& timestamp, long long& duration );
 
+    /*!
+     * \brief Check if the encryption of the whole metadata is enabled or not
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables the encryption of the whole data at saving or
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
+
+    /*!
+     * \brief Gets the Encryptor instance to be used at saving or serialization
+     * \return the instance of Encryptor
+     */
+    std::shared_ptr<Encryptor> getEncryptor() const;
+
+    /*!
+     * \brief Sets the instance of Encryptor to be used at saving or serialization
+     * \param encryptor
+     */
+    void setEncryptor(std::shared_ptr<Encryptor> encryptor);
+
+    /*!
+    * \brief Add new statistics object (copy semantics).
+    * \param stat [in] statistics object to add
+    * \throw IncorrectParamException if such statistics object already exist
+    */
+    void addStat(std::shared_ptr<Stat> stat);
+
+    /*!
+    * \brief Alias for %addStat
+    */
+    void add(std::shared_ptr<Stat> stat)
+    { addStat(stat); }
+
+    /*!
+    * \brief Get statistics object by its name
+    * \param name [in] statistics object name
+    * \return Statistics object (reference to)
+    * \throw NotFoundException if such statistics object not exist
+    */
+    std::shared_ptr<Stat> getStat(const std::string& name) const;
+
+    /*!
+    * \brief Get names of all statistics objects
+    * \return Statistics object names (vector of)
+    */
+    std::vector< std::string > getAllStatNames() const;
+
+    /*!
+    * \brief Clear statistics and re-calculates it again using all the existing metadata items
+    */
+    void recalcStat();
+
 protected:
+    /*!
+    * \brief Notify statistics object(s) about statistics-related events
+    * \param action [in] action
+    * \param spMetadata [in] pointer to metadata object
+    */
+    void notifyStat(std::shared_ptr< Metadata > spMetadata, Stat::Action::Type action = Stat::Action::Add);
     void dataSourceCheck();
     std::shared_ptr<Metadata> import( MetadataStream& srcStream, std::shared_ptr< Metadata >& spMetadata, std::map< IdType, IdType >& mapIds, 
         long long nTarFrameIndex, long long nSrcFrameIndex, long long nNumOfFrames = FRAME_COUNT_ALL );
     void internalAdd(const std::shared_ptr< Metadata >& spMetadata);
+    void decrypt();
+    void encrypt();
 
 private:
     OpenMode m_eMode;
@@ -357,6 +458,10 @@ private:
     std::shared_ptr<IDataSource> dataSource;
     vmf::IdType nextId;
     std::string m_sChecksumMedia;
+    bool m_useEncryption;
+    std::shared_ptr<Encryptor> m_encryptor;
+    std::string m_hintEncryption;
+    std::vector< std::shared_ptr<Stat> > m_stats;
 };
 
 }

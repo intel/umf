@@ -21,5 +21,7 @@
 
 #include "gtest/gtest.h"
 #include "vmf/vmf.hpp"
+#include "fake_compressor.hpp"
+#include "weak_encryptor.hpp"
 
 #endif //_TEST_PRECOMP_HPP

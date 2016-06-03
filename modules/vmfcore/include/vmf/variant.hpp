@@ -46,8 +46,7 @@ namespace vmf
         */
         enum Type
         {
-            type_unknown = 0,
-            type_char,
+            type_empty = 0,
             type_integer,
             type_real,
             type_string,
@@ -55,7 +54,6 @@ namespace vmf
             type_vec3d,
             type_vec4d,
             type_rawbuffer,
-            type_char_vector,
             type_integer_vector,
             type_real_vector,
             type_string_vector,
@@ -92,7 +90,6 @@ namespace vmf
     const vmf_##T& get_##T() const; \
     operator const vmf_##T& () const;
 
-        DECLARE_VMF_TYPE( char )
         DECLARE_VMF_TYPE( integer )
         DECLARE_VMF_TYPE( real )
         DECLARE_VMF_TYPE( string)
@@ -107,7 +104,6 @@ namespace vmf
     const std::vector<vmf_##T>& get_##T##_vector() const; \
     operator const std::vector<vmf_##T>& () const;
 
-        DECLARE_VECTOR_VMF_TYPE( char )
         DECLARE_VECTOR_VMF_TYPE( integer )
         DECLARE_VECTOR_VMF_TYPE( real )
         DECLARE_VECTOR_VMF_TYPE( string )
@@ -120,6 +116,7 @@ namespace vmf
         * \param [in] value The source value to be used to construct the object.
         */
         Variant(const int& value);
+        Variant(const unsigned int& value);
 
         /*!
         * \brief Constructor
@@ -132,6 +129,7 @@ namespace vmf
         * \param [in] value The source value to be used to construct the object.
         */
         Variant& operator = (const int& value);
+        Variant& operator = (const unsigned int& value);
 
         /*!
         * \brief Copy operator
@@ -209,9 +207,8 @@ namespace vmf
         /*!
         * \brief Return the string representation of the value.
         * \return The string description of the value.
-        * \details The string returned from this routine does not contain information of the data type.
         */
-        std::string toString() const;
+        std::string toString(bool withType = false) const;
 
         /*!
         * \brief Assign value by a string.
@@ -222,6 +219,13 @@ namespace vmf
         void fromString(Type eType, const std::string& sValue);
 
         /*!
+        * \brief Assign value by a string.
+        * \param [in] value The string that contains the value. This is typically the value returned from toString().
+        * \details This function should be used with toString(true), it uses the type from the string.
+        */
+        void fromString(const std::string& value);
+
+        /*!
         * \brief Return the type of the value stored.
         * \return The type of the internal value.
         */
@@ -229,7 +233,7 @@ namespace vmf
 
         /*!
         * \brief Check if a value is stored in the object.
-        * \return 'true' if no value is tored in the object (i.e. its type is 'type_unknown').
+        * \return 'true' if no value is tored in the object (i.e. its type is 'type_empty').
         */
         bool isEmpty() const;
 
@@ -291,13 +295,10 @@ namespace vmf
             switch (eType)
             {
             default:
-            case vmf::Variant::type_unknown:
+            case vmf::Variant::type_empty:
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
-            case vmf::Variant::type_char:
-                limit = (T)std::numeric_limits<vmf::vmf_char>::lowest();
-                break;
             case vmf::Variant::type_integer:
                 limit = (T)std::numeric_limits<vmf::vmf_integer>::lowest();
                 break;
@@ -322,13 +323,10 @@ namespace vmf
             switch( eType )
             {
             default:
-            case vmf::Variant::type_unknown:
+            case vmf::Variant::type_empty:
             case vmf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
-            case vmf::Variant::type_char:
-                limit = (T)std::numeric_limits<vmf::vmf_char>::max();
-                break;
             case vmf::Variant::type_integer:
                 limit = (T)std::numeric_limits<vmf::vmf_integer>::max();
                 break;
@@ -352,7 +350,7 @@ namespace vmf
         */
         static vmf_rawbuffer base64decode(const std::string& base64Str);
 
-    private:
+    protected:
         /*!
         * \brief Release internal memory.
         */

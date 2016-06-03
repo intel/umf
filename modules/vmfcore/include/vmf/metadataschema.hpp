@@ -47,9 +47,19 @@ public:
     * \brief Class constructor. Create new schema with specified name
     * \param sName [in] schema name
     * \param sAuthor [in] author of the schema
+    * \param isEncrypted [in] whether to encrypt the whole schema or not
     * \throw IncorrectParamException if schema name is empty
     */
-    MetadataSchema( const std::string& sName, const std::string& sAuthor = "" );
+    MetadataSchema( const std::string& sName, const std::string& sAuthor = "",
+                    bool isEncrypted = false);
+
+    /*!
+    * \brief Class constructor. Create new schema with specified name
+    * \param sName [in] schema name
+    * \param isEncrypted [in] whether to encrypt the whole schema or not
+    * \throw IncorrectParamException if schema name is empty
+    */
+    MetadataSchema( const std::string& sName, bool isEncrypted);
 
     /*!
     * \brief Class destructor
@@ -67,6 +77,19 @@ public:
     * \return the author of metadata schema
     */
     std::string getAuthor() const;
+
+    /*!
+     * \brief Check if metadata records of this schema should be encrypted
+     * at saving or serialization
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enables or disables encryption
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
 
     /*!
     * \brief Get count of schema items
@@ -116,6 +139,7 @@ protected:
 private:
     std::string m_sName;
     std::string m_sAuthor;
+    bool        m_useEncryption;
 };
 
 
@@ -128,11 +152,6 @@ private:
     auto desc = std::make_shared< vmf::MetadataDesc >( _name, fields ); \
     schema->add( desc );\
 };
-
-#define VMF_FIELD_CHAR_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_char, isOptional ));
-#define VMF_FIELD_CHAR( name ) VMF_FIELD_CHAR_( name, false )
-#define VMF_FIELD_CHAR_OPT( name ) VMF_FIELD_CHAR_( name, true )
 
 #define VMF_FIELD_STR_( name, isOptional ) \
     fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_string, isOptional ));
@@ -163,6 +182,11 @@ private:
     fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_vector4d, isOptional ));
 #define VMF_FIELD_VEC4D( name ) VMF_FIELD_VEC4D_( name, false )
 #define VMF_FIELD_VEC4D_OPT( name ) VMF_FIELD_VEC4D_( name, true )
+
+#define VMF_FIELD_RAW_( name, isOptional ) \
+    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_rawbuffer, isOptional ));
+#define VMF_FIELD_RAW( name ) VMF_FIELD_RAW_( name, false )
+#define VMF_FIELD_RAW_OPT( name ) VMF_FIELD_RAW_( name, true )
 
 } // namespace vmf
 

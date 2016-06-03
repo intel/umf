@@ -15,12 +15,17 @@ limitations under the License.*/
 #ifndef __VMF_DATASOURCE_HPP__
 #define __VMF_DATASOURCE_HPP__
 
-#include <config.hpp>
+#include "config.hpp"
 
 namespace vmf {
-
+/*!
+ * \brief Prepares VMF internal objects for work
+ */
 void VMF_EXPORT initialize();
 
+/*!
+ * \brief Destroys VMF internal objects
+ */
 void VMF_EXPORT terminate();
 
 } // namespace vmf

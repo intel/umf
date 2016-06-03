@@ -18,6 +18,7 @@
 #define __TEST_UTILS_HPP__
 
 #include <string>
+#include "weak_encryptor.hpp"
 
 extern std::string workingPath;
 #define VIDEO_FILE (workingPath + "/BlueSquare.avi")

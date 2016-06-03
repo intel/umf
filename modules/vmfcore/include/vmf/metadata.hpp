@@ -19,6 +19,7 @@
 * \brief %Metadata class header file
 */
 
+#pragma once
 #ifndef __VMF_METADATA_H__
 #define __VMF_METADATA_H__
 
@@ -33,9 +34,9 @@
 #include <map>
 #include <stdexcept>
 #include <limits>
-#include "fieldvalue.hpp"
-#include "metadatadesc.hpp"
-#include "metadatareference.hpp"
+#include "vmf/fieldvalue.hpp"
+#include "vmf/metadatadesc.hpp"
+#include "vmf/metadatareference.hpp"
 
 namespace vmf
 {
@@ -58,9 +59,11 @@ public:
     /*!
     * \brief Class constructor
     * \param spDescription [in] metadata item description
+    * \param useEncryption [in] Specifies whether this metadata record should be encrypted
+    *  at saving or serialization
     * \throw NullPointerException if metadata description pointer is null
     */
-    Metadata( const std::shared_ptr< MetadataDesc >& spDescription );
+    Metadata(const std::shared_ptr< MetadataDesc >& spDescription, bool useEncryption = false );
 
     /*!
     * \brief Class copy constructor
@@ -146,7 +149,7 @@ public:
     * \note For missing optional fields returns an empty Variant value
     *       that can be checked via 'Variant::isEmpty()' call.
     */
-    vmf::Variant getFieldValue( const std::string& sName ) const;
+    vmf::Variant getFieldValue( const std::string& sName = std::string()) const;
 
     /*!
     * \brief Find field by name
@@ -205,6 +208,7 @@ public:
     * \brief Check that metadata object with specified id has been added as
     * reference
     * \param id [in] metadata object identifier
+    * \param refName [in] name of the reference
     * \return Checking result
     */
     bool isReference(const IdType& id, const std::string& refName = "") const;
@@ -214,15 +218,15 @@ public:
     /*!
     * \brief Add reference to othe metadata object
     * \throw IncorrectParamException if reference is not unique
-    * \param sRefName [in] name of reference
+    * \param refName [in] name of reference
     * \param spMetadata [in] pointer to metadata object
-    * \param bEnsureUnique [in] flag to check that reference is unique
     */
     void addReference(const std::shared_ptr<Metadata>& spMetadata, const std::string& refName = "");
 
     /*!
     * \brief Remove reference to metadata item with specified identifier
     * \param id [in] identifier of referenced metadata object
+    * \param refName [in] name of the reference
     */
     void removeReference(const IdType& id, const std::string& refName = "");
 
@@ -266,6 +270,30 @@ public:
     */
     bool isValid() const;
 
+    /*!
+     * \brief Check if this metadata record should be encrypted at saving or serialization
+     * \return encryption status
+     */
+    bool getUseEncryption() const;
+
+    /*!
+     * \brief Enable or disable enrcryption at saving or serialization
+     * \param useEncryption
+     */
+    void setUseEncryption(bool useEncryption);
+
+    /*!
+     * \brief Get base64-encoded string containing encrypted data (if any)
+     * \return encryptedData
+     */
+    const std::string& getEncryptedData() const;
+
+    /*!
+     * \brief Sets a string containing encrypted data
+     * \param encData
+     */
+    void setEncryptedData(const std::string& encData);
+
     enum {
         UNDEFINED_FRAME_INDEX = -1, UNDEFINED_FRAMES_NUMBER = 0,
         UNDEFINED_TIMESTAMP = -1, UNDEFINED_DURATION = 0,
@@ -282,13 +310,15 @@ protected:
     void setStreamRef(const MetadataStream* streamPtr);
 
 private:
-    IdType			m_Id;
-    long long		m_nFrameIndex;
-    long long		m_nNumOfFrames;
-    long long		m_nTimestamp;
-    long long		m_nDuration;
-    std::string		m_sName;
-    std::string		m_sSchemaName;
+    IdType          m_Id;
+    long long       m_nFrameIndex;
+    long long       m_nNumOfFrames;
+    long long       m_nTimestamp;
+    long long       m_nDuration;
+    std::string     m_sName;
+    std::string     m_sSchemaName;
+    bool            m_useEncryption;
+    std::string     m_encryptedData;
 
     std::vector<Reference> m_vReferences;
     std::shared_ptr< MetadataDesc >	m_spDesc;

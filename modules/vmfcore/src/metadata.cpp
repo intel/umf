@@ -20,7 +20,7 @@
 
 namespace vmf
 {
-Metadata::Metadata( const std::shared_ptr< MetadataDesc >& spDescription )
+Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool useEncryption)
     : m_Id( INVALID_ID )
     , m_nFrameIndex(UNDEFINED_FRAME_INDEX)
     , m_nNumOfFrames(UNDEFINED_FRAMES_NUMBER)
@@ -28,6 +28,8 @@ Metadata::Metadata( const std::shared_ptr< MetadataDesc >& spDescription )
     , m_nDuration(UNDEFINED_DURATION)
     , m_sName( "" )
     , m_sSchemaName( "" )
+    , m_useEncryption(useEncryption)
+    , m_encryptedData("")
     , m_spDesc( spDescription )
     , m_pStream(nullptr)
 {
@@ -70,12 +72,12 @@ void Metadata::setFrameIndex( long long nFrameIndex, long long nNumOfFrames )
 {
     if(nFrameIndex < 0 && nFrameIndex != UNDEFINED_FRAME_INDEX)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value: " + to_string(nFrameIndex));
     }
 
     if(nNumOfFrames < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value: " + to_string(nNumOfFrames));
     }
 
     m_nFrameIndex = nFrameIndex;
@@ -86,12 +88,12 @@ void Metadata::setTimestamp(long long timestamp, long long duration)
 {
     if(timestamp < 0 && timestamp != UNDEFINED_TIMESTAMP)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value: " + to_string(timestamp));
     }
 
     if(duration < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value");
+        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value: " + to_string(duration));
     }
 
     m_nTimestamp = timestamp;
@@ -171,11 +173,6 @@ std::vector< std::string > Metadata::getFieldNames() const
 
 vmf::Variant Metadata::getFieldValue( const std::string& sName ) const
 {
-    if( sName.empty() )
-    {
-        VMF_EXCEPTION(IncorrectParamException, "Field name not specified!");
-    }
-
     const_iterator it = const_cast<vmf::Metadata*>(this)->findField( sName );
     if( it != this->end() )
         return *it;
@@ -360,18 +357,8 @@ void Metadata::addReference(const std::shared_ptr<Metadata>& md, const std::stri
         {
             m_vReferences.emplace_back(Reference(spRefDesc, md));
         }
-        else if (itemsExist == 1)
-        {
-            std::for_each(m_vReferences.begin(), m_vReferences.end(), [&](Reference& item)
-            {
-                auto desc = item.getReferenceDescription();
-                
-                if ((desc != NULL) && (desc->name == refName))
-                    item.setReferenceMetadata(md);
-            });
-        }
         else
-            VMF_EXCEPTION(IncorrectParamException, "More than one UNIQUE reference already exist.");
+            VMF_EXCEPTION(IncorrectParamException, "Unique reference with this name already exists");
     }
     else
     {
@@ -470,7 +457,7 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
         }
         else
         {
-            this->emplace_back( FieldValue( sFieldName, value ) );
+            this->emplace_back(sFieldName, value);
         }
     }
     // If the field type is not the same, try to convert it to the right type
@@ -494,9 +481,9 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
 void Metadata::validate() const
 {
     size_t nNumOfValues = this->size();
-    if( nNumOfValues < 1 )
+    if( nNumOfValues < 1 && this->getEncryptedData().empty())
     {
-        VMF_EXCEPTION(ValidateException, "The metadata contains no value" );
+        VMF_EXCEPTION(ValidateException, "The metadata contains neither value nor encrypted data" );
     }
 
     if ( (m_nFrameIndex < 0 && m_nFrameIndex != UNDEFINED_FRAME_INDEX) || m_nNumOfFrames < 0 )
@@ -512,10 +499,14 @@ void Metadata::validate() const
     if( this->m_spDesc == nullptr )
         throw std::runtime_error( "Descriptor object was not found!" );
 
-    auto fields = this->getDesc()->getFields();
-    for(auto f = fields.begin(); f != fields.end(); f++)
-        if( !f->optional && findField(f->name) == end() )
-            VMF_EXCEPTION(ValidateException, "All non-optional fields in a structure need to have not-empty field value!" );
+    if(this->getEncryptedData().empty())
+    {
+        auto fields = this->getDesc()->getFields();
+        for(auto f = fields.begin(); f != fields.end(); f++)
+            if( !f->optional && findField(f->name) == end() )
+                VMF_EXCEPTION(ValidateException,
+                              "All non-optional fields in a structure need to have not-empty field value!" );
+    }
 
     if( nNumOfValues > 0 )
     {
@@ -539,7 +530,7 @@ void Metadata::validate() const
                 throw std::runtime_error( "A structure cannot have duplicate field names!" );
 
             // Check field names and field types against field description property.
-            std::for_each( vUniqueNames.begin(), vUniqueNames.end(), [&]( const std::string& sFieldName )
+            for (const auto& sFieldName : vUniqueNames)
             {
                 FieldDesc field;
                 if( false == m_spDesc->getFieldDesc( field, sFieldName ))
@@ -550,9 +541,9 @@ void Metadata::validate() const
                 vmf::Variant varValue = this->getFieldValue( sFieldName );
                 if( field.type != varValue.getType() )
                 {
-                    VMF_EXCEPTION(ValidateException, "Field type does not match with file defined in descriptor!" );
+                    VMF_EXCEPTION(ValidateException, "Field type does not match with the descriptor!" );
                 }
-            });
+            }
 
         }
         // Array and single item value
@@ -588,6 +579,26 @@ void Metadata::validate() const
 void Metadata::setId( const IdType& id )
 {
     m_Id = id;
+}
+
+bool Metadata::getUseEncryption() const
+{
+    return m_useEncryption;
+}
+
+void Metadata::setUseEncryption(bool useEncryption)
+{
+    m_useEncryption = useEncryption;
+}
+
+const std::string& Metadata::getEncryptedData() const
+{
+    return m_encryptedData;
+}
+
+void Metadata::setEncryptedData(const std::string &encData)
+{
+    m_encryptedData = encData;
 }
 
 bool Metadata::isValid() const

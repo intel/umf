@@ -33,47 +33,59 @@
 namespace vmf
 {
 /*!
-* class MetadataInternal
-* \brief %MetadataInternal is a %Metadata sub-class intended for incremental Metadata items deserialization (streaming case).
-* Unlike the %Metadata parent it allows setting internal item ID and keeps unresolved yet references (when the object isn't in a stream).
-* Please don't use %MetadataInternal objects unless you develop custom %IReader implementation, use %Metadata instances.
+* struct MetadataInternal
+* \brief %MetadataInternal is an intermediate stage of %Metadata used for incremental Metadata items deserialization (streaming case).
+* Unlike the %Metadata it keeps justparsed non-validated data and is transformed to %Metadata at adding to MetadataStream time.
+* Please don't use %MetadataInternal unless you develop custom %Format implementation.
 */
-class VMF_EXPORT MetadataInternal : public Metadata
+struct VMF_EXPORT MetadataInternal
 {
-public:
-    /*!
-    * \brief Class constructor
-    * \param spDescription [in] metadata item description
-    * \throw NullPointerException if metadata description pointer is null
-    */
-    MetadataInternal( const std::shared_ptr< MetadataDesc >& spDescription );
+    struct VMF_EXPORT FieldInternal
+    {
+        FieldInternal() :
+            value(), useEncryption(false), encryptedData()
+        { }
 
-    /*!
-    * \brief Class copy constructor
-    * \param that [in] MetadataInternal object
-    */
-    MetadataInternal( const MetadataInternal& that );
+        std::string value;
+        bool        useEncryption;
+        std::string encryptedData;
+    };
 
-    /*!
-    * \brief Class constructor
-    * \param base [in] Metadata object
-    */
-    MetadataInternal( const Metadata& base );
+    MetadataInternal(const std::string& descName, const std::string& schemaName) :
+        id(-1), descName(descName), schemaName(schemaName),
+        frameIndex(Metadata::UNDEFINED_FRAME_INDEX), frameNum(Metadata::UNDEFINED_FRAMES_NUMBER),
+        timestamp(Metadata::UNDEFINED_TIMESTAMP), duration(Metadata::UNDEFINED_DURATION),
+        fields(), refs(),
+        useEncryption(false), encryptedData()
+    {}
 
-    /*!
-    * \brief Class destructor
-    */
-    virtual ~MetadataInternal();
+    MetadataInternal(const MetadataInternal& mdi) :
+        id(mdi.id), descName(mdi.descName), schemaName(mdi.schemaName),
+        frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
+        timestamp(mdi.timestamp), duration(mdi.duration),
+        fields(mdi.fields), refs(mdi.refs),
+        useEncryption(mdi.useEncryption), encryptedData(mdi.encryptedData)
+    {}
 
-    /*!
-    * \brief Making internal ID setter public
-    */
-    using Metadata::setId;
+    MetadataInternal(MetadataInternal&& mdi) :
+        id(std::move(mdi.id)), descName(std::move(mdi.descName)), schemaName(std::move(mdi.schemaName)),
+        frameIndex(mdi.frameIndex), frameNum(mdi.frameNum),
+        timestamp(mdi.timestamp), duration(mdi.duration),
+        fields(std::move(mdi.fields)), refs(std::move(mdi.refs)),
+        useEncryption(mdi.useEncryption), encryptedData(std::move(mdi.encryptedData))
+    {}
 
-    /*!
-    * \brief vector of references of the object
-    */
-    std::vector<std::pair<IdType, std::string>> vRefs;
+    IdType      id;
+    std::string descName;
+    std::string schemaName;
+    long long   frameIndex;
+    long long   frameNum;
+    long long   timestamp;
+    long long   duration;
+    std::map<std::string, FieldInternal> fields;
+    std::vector<std::pair<IdType, std::string>> refs;
+    bool        useEncryption;
+    std::string encryptedData;
 };
 
 }//vmf

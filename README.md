@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/01org/vmf.svg?branch=master)](https://travis-ci.org/01org/vmf)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/01org/vmf?branch=master&svg=true)](https://ci.appveyor.com/project/01org/vmf/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/01org/vmf/badge.svg?branch=master)](https://coveralls.io/github/01org/vmf?branch=master)
+[![codecov.io](https://codecov.io/github/01org/vmf/coverage.svg?branch=master)](https://codecov.io/github/01org/vmf?branch=master)
 
 Video Metadata Framework
 ------------------------
@@ -10,18 +13,20 @@ VMF embeds metadata within the host video file or video stream, so that no addit
 VMF SDK is developed as a platform-independent C++ library. It is tested on the following operating system:
 * MS Windows 7, 8, and 10
 * GNU Linux (Ubuntu 14)
-* Google Android 4.x
+* Google Android 4.x, 5.x
 
 VMF SDK and the samples code uses the following C++ 11 features:
 * `auto`
 * `nullptr`
 * rvalue references and move semantics
 * lambda expressions
+* range `for`
+* `std::thread`
 
 The following C++ compilers are known to compile the VMF code successfully:
 * MS VC++ 2013 and newer
 * Intel C++ compiler 12.1 and newer
-* GNU GCC 4.6 and newer
+* GNU GCC 4.7 and newer
 
 
 The library uses the following 3rd party components:

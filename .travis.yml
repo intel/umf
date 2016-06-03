@@ -1,23 +1,74 @@
 # .travis.yml
 sudo: false
-language: cpp
-os: linux
-compiler: gcc #TODO + clang
+git:
+  depth : 5
+branches:
+  only:
+    - vmf-3.0
+language: android
+matrix:
+  include:
+    - os: linux
+      env:
+        - CC=gcc-4.8
+        - CXX=g++-4.8
+        - VMF_SHARED=ON
+        - VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'
+    - os: linux
+      env:
+         - CC=clang-3.7
+         - CXX=clang++-3.7
+         - VMF_SHARED=OFF
+    - os: linux
+      env:
+        - VMF_ANDROID_BUILD=ON
+        - VMF_CPU_ARCH=armeabi-v7a # x86 isn't supported by Travis yet :(
+        - VMF_API_LEVEL=android-15
+    - os: osx
+      env:
+        - CC=clang
+        - CXX=clang++
+        - VMF_SHARED=ON
+    - os: osx
+      env:
+        - VMF_IOS_BUILD=ON
 addons:
   apt:
-    sources: ['ubuntu-toolchain-r-test', 'kalakris-cmake'] #TODO + 'llvm-toolchain-precise-3.7'
-    packages: ['g++-4.8', 'cmake'] #TODO + 'clang-3.7'
+    sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+    packages: ['cmake', 'cmake-data', 'g++-4.8', 'clang-3.7']
+before_install:
+  - env
+  - if [ $TRAVIS_OS_NAME == linux ]; then cat /proc/cpuinfo; fi
+# coverage
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then pip install --user cpp-coveralls; pip install --user codecov; fi
+# android
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then time git clone --depth=1 https://github.com/apavlenko/android-ndk.git $HOME/android-ndk; export ANDROID_NDK=$HOME/android-ndk; fi
+  #- if [ "$VMF_ANDROID_BUILD" != "" ]; then android list; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then android-update-sdk --components=sys-img-${VMF_CPU_ARCH}-${VMF_API_LEVEL}; fi
 before_script:
   - mkdir ../build
   - cd ../build
 script:
-  - export CC=gcc-4.8
-  - export CXX=g++-4.8
-  - ldd --version
-  - cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=OFF ../vmf
-  - make
-  - cd ./bin/
-  - ./unit-tests
-  - ./unit-tests-ds
+  - if [ $TRAVIS_OS_NAME == linux ]; then ldd --version; fi
+# desktop build
+  - if [ "$VMF_ANDROID_BUILD" == "" ] && [ "$VMF_IOS_BUILD" == "" ]; then cmake -DBUILD_TESTS=ON -DBUILD_SAMPLES=ON -DBUILD_SHARED_LIBS=$VMF_SHARED $VMF_GCOV_OPTS ../vmf && time make -j3; fi
+  - if [ "$VMF_ANDROID_BUILD" == "" ] && [ "$VMF_IOS_BUILD" == "" ]; then cd ./bin/; ./unit-tests && ./unit-tests-ds; fi
+  - if [ -f vmf_java.jar ]; then java -Djava.library.path=../lib -cp vmf_java.jar:vmf_java_test.jar:junit-4.11.jar org.junit.runner.JUnitCore VmfTestSuite; fi
+# iOS
+  - if [ "$VMF_IOS_BUILD" != "" ]; then mkdir ios; cd ios; python ../../vmf/platforms/ios/build_ios_framework.py $(pwd); fi
+# android
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then mkdir build_android; cd build_android; cmake -DCMAKE_TOOLCHAIN_FILE=../../vmf/cmake/android.toolchain.cmake -DANDROID_ABI=$VMF_CPU_ARCH -DANDROID_NATIVE_API_LEVEL=$VMF_API_LEVEL -DANDROID_STL=gnustl_static -DBUILD_SHARED_LIBS=OFF ../../vmf && time make -j3 all; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then echo no | android create avd --force -n avd-test -t ${VMF_API_LEVEL} --abi $VMF_CPU_ARCH; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then ( emulator -avd avd-test -no-audio -no-window & ); timeout 200 android-wait-for-emulator; adb devices; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/BlueSquare.avi /data/local/tmp/; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests /data/local/tmp/ && adb shell "cd /data/local/tmp/ && chmod 777 unit-tests && ./unit-tests" | tee "unit-tests.log" && LAST_LINE=`tail -1 "unit-tests.log"` && if [[ $LAST_LINE == *"FAILED"* ]]; then $(exit 1); fi; fi
+  - if [ "$VMF_ANDROID_BUILD" != "" ]; then adb push bin/unit-tests-ds /data/local/tmp/ && adb shell "cd /data/local/tmp/ && chmod 777 unit-tests-ds && ./unit-tests-ds" | tee "unit-tests-ds.log" && LAST_LINE_DS=`tail -1 "unit-tests-ds.log"` && if [[ $LAST_LINE_DS == *"FAILED"* ]]; then $(exit 1); fi; fi
+after_success:
+  - cd $TRAVIS_BUILD_DIR/../build && pwd
+# coverage
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then coveralls --exclude build/CMakeFiles --exclude vmf/3rdparty --exclude vmf/modules/vmfcore/test --exclude vmf/modules/vmdatasource/test --gcov-options '\-lp' --gcov gcov-4.8 --root .. --build-root . > /dev/null; fi
+  - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8 > /dev/null; fi
 notifications:
   email: false
+  webhooks: https://coveralls.io/webhook?repo_token=Ps8FqtEiCuzF419zxLpqfqPjeQ5phoqk5
+

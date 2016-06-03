@@ -1,2 +1,5 @@
 /to_be_installed*/
 /android_libs*/
+*.user*
+.DS_Store/
+/build*/

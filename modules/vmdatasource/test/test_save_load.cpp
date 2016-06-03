@@ -36,7 +36,7 @@ TEST(TestSaveLoadMetadataTyped, String)
     const vmf::vmf_string atom(TEST_VALUE);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     {
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -47,7 +47,7 @@ TEST(TestSaveLoadMetadataTyped, String)
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
@@ -64,17 +64,17 @@ TEST(TestSaveLoadMetadataTyped, String)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(1, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
         ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, TwoStrings)
@@ -84,7 +84,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     const vmf::vmf_string atom(TEST_VALUE);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     {
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
@@ -95,7 +95,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
         stream.addSchema(schema);
 
@@ -113,17 +113,17 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(1, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
         ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 #define DECLARE_INT_TEST(subname, Type, testValue)\
@@ -133,7 +133,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     const vmf::vmf_string atom(TEST_PROPERTY_NAME);\
     const vmf::vmf_string atom(TEST_FIELD_NAME);\
     const vmf::vmf_##Type TEST_VALUE(testValue);\
-    vmf::initialize();\
+    \
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));\
     std::vector<vmf::FieldDesc> fields;\
     fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME,vmf::Variant::type_##Type));\
@@ -142,7 +142,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
 {\
     copyFile(TEST_FILE_SRC, TEST_FILE);\
     vmf::MetadataStream stream;\
-    stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);\
+    stream.open(TEST_FILE, vmf::MetadataStream::Update);\
     stream.addSchema(schema);\
     std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));\
     md->setFieldValue(TEST_FIELD_NAME, TEST_VALUE);\
@@ -156,21 +156,20 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     stream.load(TEST_SCHEMA_NAME);\
     stream.close();\
     vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);\
-    ASSERT_EQ(1, schema.size());\
+    ASSERT_EQ(1u, schema.size());\
     vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);\
-    ASSERT_EQ(1, property.size());\
+    ASSERT_EQ(1u, property.size());\
     std::shared_ptr<vmf::Metadata> md = property.at(0);\
-    ASSERT_EQ(1, md->getFieldNames().size());\
+    ASSERT_EQ(1u, md->getFieldNames().size());\
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);\
     ASSERT_EQ(vmf::Variant::type_##Type, value.getType());\
     ASSERT_EQ(TEST_VALUE, (vmf::vmf_##Type) value);\
 }\
-    vmf::terminate();\
+\
 }
 
 DECLARE_INT_TEST(Max_integer, integer, (vmf::vmf_integer) 0x7FFFFFFFFFFFFFFF)
 DECLARE_INT_TEST(Min_integer, integer, (vmf::vmf_integer) 0xFFFFFFFFFFFFFFFF)
-DECLARE_INT_TEST(Char, char, (vmf::vmf_char) 'X')
 
 
 TEST(TestSaveLoadMetadataTyped, DoublePos)
@@ -180,7 +179,7 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
     const vmf::vmf_real TEST_VALUE(100.500);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -191,7 +190,7 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
@@ -209,17 +208,17 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(1, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_real, value.getType());
         ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, DoubleNeg)
@@ -229,7 +228,7 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
     const vmf::vmf_real TEST_VALUE(-100.500);
     const vmf::vmf_string atom(TEST_FIELD_NAME);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -240,7 +239,7 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
@@ -258,17 +257,17 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(1, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_real, value.getType());
         ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, Rawbuffer)
@@ -279,7 +278,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 
     const vmf::vmf_rawbuffer TEST_VALUE("Raw <buffer \0 content>\n&", 25);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
     std::vector<vmf::FieldDesc> fields;
@@ -290,7 +289,7 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
@@ -308,28 +307,22 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(1, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_rawbuffer, value.getType());
-        bool result = TEST_VALUE == (vmf::vmf_rawbuffer) value;
+        bool result = TEST_VALUE == value.get_rawbuffer();
         ASSERT_TRUE(result);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(TestSaveLoadMetadataTyped, Vectors)
 {
-    std::vector<vmf::vmf_char> test_char_value;
-    test_char_value.push_back('t');
-    test_char_value.push_back('e');
-    test_char_value.push_back('s');
-    test_char_value.push_back('t');
-
     std::vector<vmf::vmf_integer> test_integer_value;
     test_integer_value.push_back(42);
     test_integer_value.push_back(24);
@@ -362,11 +355,10 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
     test_vec4d_value.push_back(vmf::vmf_vec4d(33.33, 57.75, 99.12, 45.14));
     test_vec4d_value.push_back(vmf::vmf_vec4d(-72, 15.67, 0, 16.79));
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema("test_schema"));
     std::vector<vmf::FieldDesc> fields;
-    fields.push_back(vmf::FieldDesc("test_char", vmf::Variant::type_char_vector));
     fields.push_back(vmf::FieldDesc("test_integer", vmf::Variant::type_integer_vector));
     fields.push_back(vmf::FieldDesc("test_real", vmf::Variant::type_real_vector));
     fields.push_back(vmf::FieldDesc("test_string", vmf::Variant::type_string_vector));
@@ -379,11 +371,10 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
-        md->setFieldValue("test_char", test_char_value);
         md->setFieldValue("test_integer", test_integer_value);
         md->setFieldValue("test_real", test_real_value);
         md->setFieldValue("test_string", test_string_value);
@@ -403,16 +394,14 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         stream.close();
 
         vmf::MetadataSet schema = stream.queryBySchema("test_schema");
-        ASSERT_EQ(1, schema.size());
+        ASSERT_EQ(1u, schema.size());
         vmf::MetadataSet property = schema.queryByName("test_desc");
-        ASSERT_EQ(1, property.size());
+        ASSERT_EQ(1u, property.size());
         std::shared_ptr<vmf::Metadata> md = property.at(0);
-        ASSERT_EQ(7, md->getFieldNames().size());
+        ASSERT_EQ(6u, md->getFieldNames().size());
 
-        vmf::Variant value = md->getFieldValue("test_char");
-        ASSERT_EQ(vmf::Variant::type_char_vector, value.getType());
-        bool result = std::equal(test_char_value.begin(), test_char_value.end(), value.get_char_vector().begin());
-        ASSERT_TRUE(result);
+        vmf::Variant value;
+        bool result;
 
         value = md->getFieldValue("test_integer");
         ASSERT_EQ(vmf::Variant::type_integer_vector, value.getType());
@@ -446,7 +435,7 @@ TEST(TestSaveLoadMetadataTyped, Vectors)
         ASSERT_TRUE(result);
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 class TestSaveLoadMetadataTypeVec : public ::testing::Test
@@ -461,7 +450,7 @@ protected:
         TEST_FIELD_NAME_4D = "TEST_FIELD_NAME_4D";
         TEST_VALUE = vmf::vmf_vec4d(42.42, 24.24, 42.24, 24.42);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
         std::vector<vmf::FieldDesc> fields;
@@ -475,7 +464,7 @@ protected:
             copyFile(TEST_FILE_SRC, TEST_FILE);
 
             vmf::MetadataStream stream;
-            stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+            stream.open(TEST_FILE, vmf::MetadataStream::Update);
             stream.addSchema(schema);
 
             std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
@@ -491,7 +480,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     vmf::vmf_string TEST_SCHEMA_NAME;
@@ -511,11 +500,11 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec2D)
     stream.close();
 
     vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-    ASSERT_EQ(1, schema.size());
+    ASSERT_EQ(1u, schema.size());
     vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-    ASSERT_EQ(1, property.size());
+    ASSERT_EQ(1u, property.size());
     std::shared_ptr<vmf::Metadata> md = property.at(0);
-    ASSERT_EQ(3, md->getFieldNames().size());
+    ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_2D);
     ASSERT_EQ(vmf::Variant::type_vec2d, value.getType());
     bool result = (vmf::vmf_vec2d)TEST_VALUE == (vmf::vmf_vec2d)value;
@@ -530,11 +519,11 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec3D)
     stream.close();
 
     vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-    ASSERT_EQ(1, schema.size());
+    ASSERT_EQ(1u, schema.size());
     vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-    ASSERT_EQ(1, property.size());
+    ASSERT_EQ(1u, property.size());
     std::shared_ptr<vmf::Metadata> md = property.at(0);
-    ASSERT_EQ(3, md->getFieldNames().size());
+    ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_3D);
     ASSERT_EQ(vmf::Variant::type_vec3d, value.getType());
     bool result = (vmf::vmf_vec3d)TEST_VALUE == (vmf::vmf_vec3d)value;
@@ -549,11 +538,11 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec4D)
     stream.close();
 
     vmf::MetadataSet schema = stream.queryBySchema(TEST_SCHEMA_NAME);
-    ASSERT_EQ(1, schema.size());
+    ASSERT_EQ(1u, schema.size());
     vmf::MetadataSet property = schema.queryByName(TEST_PROPERTY_NAME);
-    ASSERT_EQ(1, property.size());
+    ASSERT_EQ(1u, property.size());
     std::shared_ptr<vmf::Metadata> md = property.at(0);
-    ASSERT_EQ(3, md->getFieldNames().size());
+    ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_4D);
     ASSERT_EQ(vmf::Variant::type_vec4d, value.getType());
     bool result = TEST_VALUE == (vmf::vmf_vec4d)value;
@@ -572,7 +561,7 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        vmf::initialize();
+        //vmf::initialize();
 
         schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
         desc = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME, vmf::Variant::type_string));
@@ -581,7 +570,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema;
@@ -596,7 +585,7 @@ protected:
 TEST_F(TestSaveLoadMetadata, AddMetadataBeforeAddingSchema)
 {
     vmf::MetadataStream stream;
-    stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
     std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
     md->addValue(vmf::Variant(TEST_VALUE_1));
@@ -612,7 +601,7 @@ TEST_F(TestSaveLoadMetadata, SimpleProperty)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
         md->addValue(vmf::Variant(TEST_VALUE_1));
@@ -628,11 +617,11 @@ TEST_F(TestSaveLoadMetadata, SimpleProperty)
         stream.close();
 
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schemaSet.size());
+        ASSERT_EQ(1u, schemaSet.size());
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(1, descSet.size());
+        ASSERT_EQ(1u, descSet.size());
         std::shared_ptr<vmf::Metadata> md = descSet.at(0);
-        ASSERT_EQ(0, md->getFieldNames().size());
+        ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
         ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value);
@@ -643,7 +632,7 @@ TEST_F(TestSaveLoadMetadata, Array)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
@@ -662,11 +651,11 @@ TEST_F(TestSaveLoadMetadata, Array)
         stream.close();
 
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schemaSet.size());
+        ASSERT_EQ(1u, schemaSet.size());
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(1, descSet.size());
+        ASSERT_EQ(1u, descSet.size());
         std::shared_ptr<vmf::Metadata> md = descSet.at(0);
-        ASSERT_EQ(0, md->getFieldNames().size());
+        ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value1 = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value1.getType());
         ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value1);
@@ -680,7 +669,7 @@ TEST_F(TestSaveLoadMetadata, DeleteItem)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
         md->addValue(vmf::Variant(TEST_VALUE_1));
@@ -692,12 +681,12 @@ TEST_F(TestSaveLoadMetadata, DeleteItem)
 
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME);
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
         std::shared_ptr<vmf::Metadata> md = descSet.at(0);
-        ASSERT_EQ(2, md->size());
+        ASSERT_EQ(2u, md->size());
         md->pop_back();
         stream.save();
         stream.close();
@@ -709,12 +698,12 @@ TEST_F(TestSaveLoadMetadata, DeleteItem)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schemaSet.size());
+        ASSERT_EQ(1u, schemaSet.size());
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(1, descSet.size());
+        ASSERT_EQ(1u, descSet.size());
         std::shared_ptr<vmf::Metadata> md = descSet.at(0);
-        ASSERT_EQ(1, md->size());
-        ASSERT_EQ(0, md->getFieldNames().size());
+        ASSERT_EQ(1u, md->size());
+        ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value1 = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value1.getType());
         ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value1);
@@ -729,7 +718,7 @@ TEST_F(TestSaveLoadMetadata, DeleteProperty)
         schema->add(anotherDesc);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
@@ -745,12 +734,12 @@ TEST_F(TestSaveLoadMetadata, DeleteProperty)
 
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME);
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(2, schemaSet.size());
+        ASSERT_EQ(2u, schemaSet.size());
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(1, descSet.size());
+        ASSERT_EQ(1u, descSet.size());
         stream.remove(descSet);
         ASSERT_TRUE(stream.save());
         stream.close();
@@ -763,9 +752,9 @@ TEST_F(TestSaveLoadMetadata, DeleteProperty)
         stream.close();
 
         vmf::MetadataSet schemaSet = stream.queryBySchema(TEST_SCHEMA_NAME);
-        ASSERT_EQ(1, schemaSet.size());
+        ASSERT_EQ(1u, schemaSet.size());
         vmf::MetadataSet descSet = schemaSet.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(0, descSet.size());
+        ASSERT_EQ(0u, descSet.size());
     }
 }
 
@@ -776,7 +765,7 @@ TEST_F(TestSaveLoadMetadata, FrameIndex)
 
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
@@ -826,7 +815,7 @@ TEST_F(TestSaveLoadMetadata, FrameIndex)
         stream.close();
 
         vmf::MetadataSet descSet = stream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(6, descSet.size());
+        ASSERT_EQ(6u, descSet.size());
 
         ASSERT_EQ(TEST_FRAME_INDEX, descSet.at(0)->getFrameIndex());
         ASSERT_EQ(TEST_NUMBER_OF_FRAMES, descSet.at(0)->getNumOfFrames());
@@ -851,12 +840,14 @@ TEST_F(TestSaveLoadMetadata, FrameIndex)
 TEST_F(TestSaveLoadMetadata, Timestamp)
 {
     const long long TEST_TIME = vmf::getTimestamp();
+    ASSERT_GT(TEST_TIME, 0);
     const long long TEST_TIME_2 = vmf::getTimestamp(1970, 1, 2, 0, 0, 1);
+    ASSERT_GT(TEST_TIME_2, 0);
     const long long TEST_DURATION = 1000;
 
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
@@ -906,7 +897,7 @@ TEST_F(TestSaveLoadMetadata, Timestamp)
         stream.close();
 
         vmf::MetadataSet descSet = stream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(6, descSet.size());
+        ASSERT_EQ(6u, descSet.size());
 
         ASSERT_EQ(TEST_TIME, descSet.at(0)->getTime());
         ASSERT_EQ(TEST_DURATION, descSet.at(0)->getDuration());
@@ -926,8 +917,8 @@ TEST_F(TestSaveLoadMetadata, Timestamp)
         ASSERT_EQ(vmf::Metadata::UNDEFINED_TIMESTAMP, descSet.at(5)->getTime());
         ASSERT_EQ(vmf::Metadata::UNDEFINED_DURATION, descSet.at(5)->getDuration());
 
-        ASSERT_EQ(descSet.queryByTime(0, TEST_TIME + TEST_DURATION).size(), 2);
-        ASSERT_EQ(descSet.queryByTime(0, TEST_TIME_2 + TEST_DURATION).size(), 1);
+        ASSERT_EQ(descSet.queryByTime(0, TEST_TIME + TEST_DURATION).size(), 2u);
+        ASSERT_EQ(descSet.queryByTime(0, TEST_TIME_2 + TEST_DURATION).size(), 1u);
     }
 }
 
@@ -940,7 +931,7 @@ TEST_F(TestSaveLoadMetadata, LoadByProperty)
         schema->add(desc1);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         auto md1 = std::make_shared<vmf::Metadata>(desc);
         auto md2 = std::make_shared<vmf::Metadata>(desc1);
         md1->addValue(TEST_VALUE_1);
@@ -957,7 +948,7 @@ TEST_F(TestSaveLoadMetadata, LoadByProperty)
         stream.load(TEST_SCHEMA_NAME, TEST_DESC_NAME);
         auto descSet0 = stream.queryByName(TEST_DESC_NAME);
         auto descSet1 = stream.queryByName(TEST_DESC_NAME_1);
-        ASSERT_EQ(1, descSet0.size());
+        ASSERT_EQ(1u, descSet0.size());
         ASSERT_TRUE(descSet1.empty());
         stream.close();
     }
@@ -968,7 +959,7 @@ TEST_F(TestSaveLoadMetadata, LoadByProperty)
         auto descSet0 = stream.queryByName(TEST_DESC_NAME);
         auto descSet1 = stream.queryByName(TEST_DESC_NAME_1);
         ASSERT_TRUE(descSet0.empty());
-        ASSERT_EQ(1, descSet1.size());
+        ASSERT_EQ(1u, descSet1.size());
         stream.close();
     }
 }
@@ -977,7 +968,7 @@ TEST_F(TestSaveLoadMetadata, TwoMetadata)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         auto meta1 = std::make_shared<vmf::Metadata>(desc);
         meta1->addValue(TEST_VALUE_1);
@@ -994,7 +985,7 @@ TEST_F(TestSaveLoadMetadata, TwoMetadata)
         stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
         stream.load();
         vmf::MetadataSet metaSet = stream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(2, metaSet.size());
+        ASSERT_EQ(2u, metaSet.size());
         stream.close();
     }
 }
@@ -1011,7 +1002,7 @@ TEST_F(TestSaveLoadMetadata, EmptyFields)
         schema->add(desc);
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
@@ -1032,7 +1023,7 @@ TEST_F(TestSaveLoadMetadata, EmptyFields)
 
         stream2.load();
         auto all = stream2.getAll();
-        ASSERT_EQ(2, all.size());
+        ASSERT_EQ(2u, all.size());
         stream2.close();
     }
 }
@@ -1042,7 +1033,7 @@ TEST_F(TestSaveLoadMetadata, RemoveFromOneProperty)
     vmf::IdType idToRemove;
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         auto meta1 = std::make_shared<vmf::Metadata>(desc);
         meta1->addValue(TEST_VALUE_1);
@@ -1056,24 +1047,24 @@ TEST_F(TestSaveLoadMetadata, RemoveFromOneProperty)
     }
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load();
         std::shared_ptr<vmf::Metadata> md = stream.getById(idToRemove);
         ASSERT_TRUE(md != nullptr);
         vmf::MetadataSet descSet = stream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(2, descSet.size());
+        ASSERT_EQ(2u, descSet.size());
         stream.remove(idToRemove);
         stream.save();
         stream.close();
     }
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.load();
         std::shared_ptr<vmf::Metadata> md = stream.getById(idToRemove);
         ASSERT_TRUE(md == nullptr);
         vmf::MetadataSet descSet = stream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(1, descSet.size());
+        ASSERT_EQ(1u, descSet.size());
         ASSERT_EQ(TEST_VALUE_2, (vmf::vmf_string) descSet.at(0)->at(0));
         stream.close();
     }
@@ -1082,7 +1073,7 @@ TEST_F(TestSaveLoadMetadata, shift)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         auto meta1 = std::make_shared<vmf::Metadata>(desc);
         meta1->setFrameIndex(4, 8);
@@ -1093,8 +1084,11 @@ TEST_F(TestSaveLoadMetadata, shift)
         stream.add(meta1);
         stream.add(meta2);
 
+        meta1->addReference(meta2);
+        meta2->addReference(meta1);
+
         vmf::MetadataSet set = stream.queryByFrameIndex(6);
-        ASSERT_EQ(set.size(), 2);
+        ASSERT_EQ(set.size(), 2u);
 
         set.shift(25, 6, 2);
 
@@ -1102,6 +1096,13 @@ TEST_F(TestSaveLoadMetadata, shift)
         ASSERT_EQ(meta1->getNumOfFrames(), 2);
         ASSERT_EQ(meta2->getFrameIndex(), 25);
         ASSERT_EQ(meta2->getNumOfFrames(), 2);
+
+        vmf::MetadataSet newSet;
+        auto newMd = std::make_shared<vmf::Metadata>(desc);
+        newSet.push_back(newMd);
+        ASSERT_EQ(1, newSet.shift(3, 2, 2));
+        newMd->setFrameIndex(0, 0);
+        ASSERT_EQ(0, newSet.shift(2, -1, 2));
     }
 }
 
@@ -1109,7 +1110,7 @@ TEST_F(TestSaveLoadMetadata, Import)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         auto meta1 = std::make_shared<vmf::Metadata>(desc);
         meta1->setFrameIndex(4, 8);
@@ -1123,14 +1124,14 @@ TEST_F(TestSaveLoadMetadata, Import)
 
         copyFile(TEST_FILE_SRC, TEST_FILE2);
         vmf::MetadataStream importStream;
-        importStream.open(TEST_FILE2, vmf::MetadataStream::ReadWrite);
+        importStream.open(TEST_FILE2, vmf::MetadataStream::Update);
         importStream.import(stream, set, 6, 2, 3);
 
         stream.close();
         stream.clear();
 
         vmf::MetadataSet importSet = importStream.queryByName(TEST_DESC_NAME);
-        ASSERT_EQ(importSet.size(), 1);
+        ASSERT_EQ(importSet.size(), 1u);
         ASSERT_EQ((std::string) importSet[0]->at(0), TEST_VALUE_1);
 
         auto importedSchema = importStream.getSchema(TEST_SCHEMA_NAME);
@@ -1153,7 +1154,7 @@ TEST_F(TestSaveLoadMetadata, Structure)
         schema->add(desc);
 
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         stream.addSchema(schema);
         auto meta = std::make_shared<vmf::Metadata>(desc);
         meta->setFieldValue("name", "Dmitry");
@@ -1182,7 +1183,7 @@ class TestSaveLoadFields : public ::testing::Test
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        //vmf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_DESC_NAME = "TEST_DESC_NAME";
@@ -1203,7 +1204,7 @@ protected:
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
         vmf::MetadataStream stream;
-        if(!stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite))
+        if(!stream.open(TEST_FILE, vmf::MetadataStream::Update))
             std::cout << "Can't open stream!" << std::endl;
 
         stream.addSchema(schema);
@@ -1214,7 +1215,7 @@ protected:
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 
     std::shared_ptr<vmf::MetadataSchema> schema;
@@ -1230,7 +1231,7 @@ protected:
 TEST_F(TestSaveLoadFields, EmptyNonOptionalFields)
 {
     vmf::MetadataStream stream;
-    stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
     std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
     md->setFieldValue(TEST_FIELD_NAME, "Konstantin");
@@ -1243,7 +1244,7 @@ TEST_F(TestSaveLoadFields, EmptyNonOptionalFields)
 TEST_F(TestSaveLoadFields, EmptyOptionalFields)
 {
     vmf::MetadataStream stream;
-    stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
     std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
     md->setFieldValue(TEST_FIELD_NAME, "Konstantin");
@@ -1258,7 +1259,7 @@ TEST_F(TestSaveLoadFields, Attributes)
 {
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
 
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc));
         md->setFieldValue(TEST_FIELD_NAME, "Konstantin");
@@ -1282,14 +1283,14 @@ TEST_F(TestSaveLoadFields, Attributes)
 
         auto people = stream.queryByName(TEST_DESC_NAME);
 
-        ASSERT_EQ(2, people.size());
+        ASSERT_EQ(2u, people.size());
         ASSERT_TRUE(people[0]->hasField(TEST_FIELD_NAME));
         ASSERT_EQ("Konstantin", (vmf::vmf_string)people[0]->getFieldValue(TEST_FIELD_NAME));
         ASSERT_EQ(22, (vmf::vmf_integer)people[0]->getFieldValue(TEST_FIELD_AGE));
         vmf::Variant addressValue;
         ASSERT_FALSE(people[0]->hasField(TEST_FIELD_ADDRESS));
         ASSERT_NO_THROW(addressValue = people[0]->getFieldValue(TEST_FIELD_ADDRESS));
-        ASSERT_EQ(vmf::Variant::type_unknown, addressValue.getType());
+        ASSERT_EQ(vmf::Variant::type_empty, addressValue.getType());
         ASSERT_TRUE(addressValue.isEmpty());
 
         ASSERT_EQ("Vasya Pupkin", (vmf::vmf_string)people[1]->getFieldValue(TEST_FIELD_NAME) );
@@ -1306,12 +1307,12 @@ protected:
     void SetUp()
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        vmf::initialize();
+        //vmf::initialize();
     }
 
     void TearDown()
     {
-        vmf::terminate();
+        //vmf::terminate();
     }
 };
 
@@ -1323,7 +1324,7 @@ TEST_F(TestSaveLoadUtils, Checksum)
 
         ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
 
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         checksum1 = stream.computeChecksum();
         stream.setChecksum(checksum1);
         stream.save();
@@ -1332,11 +1333,603 @@ TEST_F(TestSaveLoadUtils, Checksum)
 
     {
         vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
         checksum2 = stream.getChecksum();
         stream.close();
     }
 
     ASSERT_EQ(checksum1, checksum2);
 }
+
+
+//Bad compressor that increases the size of input data
+class BloatingCompressor : public vmf::Compressor
+{
+public:
+    static const int factor = 5;
+
+    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output)
+    {
+        output.clear();
+        for(auto it = input.begin(); it != input.end(); ++it)
+        {
+            for(int i = 0; i < factor; i++)
+                output.push_back(*it);
+        }
+    }
+
+    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output)
+    {
+        output.clear();
+        for(auto it = input.begin(); it != input.end();)
+        {
+            char c = *it++;
+            for(int i = 1; i < factor; i++)
+            {
+                char cc = *it++;
+                if(cc != c)
+                {
+                    throw std::runtime_error("Incorrect input to bloating compressor");
+                }
+            }
+            output.push_back(c);
+        }
+    }
+
+    std::shared_ptr<Compressor> createNewInstance() const
+    {
+        return std::shared_ptr<Compressor>(new BloatingCompressor);
+    }
+
+    virtual vmf::vmf_string getId()
+    {
+        return "com.intel.vmf.compressor.test.bloating";
+    }
+};
+
+
+class TestSaveLoadCompressionEncryption : public ::testing::TestWithParam< std::tuple<std::string,
+                                                                                      vmf::CryptAlgo> >
+{
+protected:
+    void SetUp()
+    {
+        copyFile(TEST_FILE_SRC, TEST_FILE);
+        //vmf::initialize();
+        //register bloating compressor
+        std::shared_ptr<vmf::Compressor> bloating = std::make_shared<BloatingCompressor>();
+        vmf::Compressor::registerNew(bloating);
+    }
+
+    void TearDown()
+    {
+        vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+        //vmf::terminate();
+    }
+};
+
+
+TEST_P(TestSaveLoadCompressionEncryption, Checksum)
+{
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
+
+    std::string checksum1, checksum2;
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(true);
+
+        ASSERT_THROW(stream.computeChecksum(), vmf::InternalErrorException);
+
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        checksum1 = stream.computeChecksum();
+        stream.setChecksum(checksum1);
+        if(name == "unregistered")
+        {
+            ASSERT_FALSE(stream.save(name));
+        }
+        else
+        {
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
+        }
+        stream.close();
+    }
+
+    if(name != "unregistered")
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update));
+        checksum2 = stream.getChecksum();
+        stream.close();
+
+        ASSERT_EQ(checksum1, checksum2);
+    }
+}
+
+
+TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
+{
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
+
+    if(name == "com.intel.vmf.compressor.test.bloating")
+    {
+        {
+            vmf::MetadataStream stream;
+            stream.setEncryptor(encryptor);
+            stream.setUseEncryption(true);
+
+            stream.open(TEST_FILE, vmf::MetadataStream::Update);
+
+            //arbitrary content
+            std::string checksum1 = stream.computeChecksum();
+            stream.setChecksum(checksum1);
+
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
+            stream.close();
+        }
+
+        vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+
+        {
+            vmf::MetadataStream stream;
+            stream.setEncryptor(encryptor);
+            ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly |
+                                               vmf::MetadataStream::IgnoreUnknownCompressor));
+            std::vector<std::string> schemaNames = stream.getAllSchemaNames();
+            ASSERT_EQ(schemaNames.size(), 1u);
+            ASSERT_EQ(schemaNames[0], "com.intel.vmf.compressed-metadata");
+        }
+
+        //restore as it was before
+        std::shared_ptr<vmf::Compressor> bloating = std::make_shared<BloatingCompressor>();
+        vmf::Compressor::registerNew(bloating);
+    }
+}
+
+
+TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
+{
+    std::string name = std::get<0>(GetParam());
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(std::get<1>(GetParam()));
+
+    std::string checksum1, checksum2;
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(true);
+
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        checksum1 = stream.computeChecksum();
+        stream.setChecksum(checksum1);
+        if(name == "unregistered")
+        {
+            ASSERT_FALSE(stream.save(name));
+        }
+        else
+        {
+            if(encryptor)
+            {
+                ASSERT_TRUE(stream.save(name));
+            }
+            else
+            {
+                ASSERT_FALSE(stream.save(name));
+                stream.setUseEncryption(false);
+                ASSERT_TRUE(stream.save(name));
+            }
+        }
+        stream.close();
+    }
+
+    if(name != "unregistered" && encryptor)
+    {
+        vmf::MetadataStream stream;
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::Update |
+                                           vmf::MetadataStream::IgnoreUnknownEncryptor));
+        std::vector<std::string> schemaNames = stream.getAllSchemaNames();
+        ASSERT_EQ(schemaNames.size(), 1);
+        ASSERT_EQ(schemaNames[0], "com.intel.vmf.encrypted-metadata");
+        ASSERT_TRUE(stream.load(schemaNames[0]));
+        vmf::MetadataSet eSet = stream.queryBySchema(schemaNames[0]);
+        ASSERT_FALSE(eSet.empty());
+        std::shared_ptr<vmf::Metadata> eItem = eSet[0];
+        ASSERT_EQ((vmf::vmf_string)eItem->getFieldValue("hint"), encryptor->getHint());
+    }
+}
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompressionEncryption,
+                        ::testing::Combine(
+                            ::testing::Values(vmf::Compressor::builtinId(),
+                                              "unregistered",
+                                              "com.intel.vmf.compressor.test.bloating"),
+                            ::testing::Values(vmf::CryptAlgo::DEFAULT, vmf::CryptAlgo::WEAK, vmf::CryptAlgo::NONE)
+                            ));
+
+
+class TestSaveLoadEncryptionSubsets : public ::testing::TestWithParam<vmf::CryptAlgo>
+{
+protected:
+    void SetUp()
+    {
+        copyFile(TEST_FILE_SRC, TEST_FILE);
+        vmf::initialize();
+        TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
+        TEST_DESC_NAME = "TEST_DESC_NAME";
+        TEST_FIELD_NAME = "name";
+        TEST_VALUE_NAME = "Sherlock";
+        TEST_FIELD_AGE = "age";
+        TEST_VALUE_AGE = 33;
+        TEST_FIELD_ADDRESS = "address";
+        TEST_VALUE_ADDRESS = "221b Baker St, London NW1 6XE, UK";
+    }
+
+    void TearDown()
+    {
+        vmf::terminate();
+    }
+
+    vmf::vmf_string  TEST_SCHEMA_NAME;
+    vmf::vmf_string  TEST_DESC_NAME;
+    vmf::vmf_string  TEST_FIELD_NAME;
+    vmf::vmf_string  TEST_VALUE_NAME;
+    vmf::vmf_string  TEST_FIELD_AGE;
+    vmf::vmf_integer TEST_VALUE_AGE;
+    vmf::vmf_string  TEST_FIELD_ADDRESS;
+    vmf::vmf_string  TEST_VALUE_ADDRESS;
+};
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, OneField)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->findField(TEST_FIELD_ADDRESS)->setUseEncryption(true);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            address->findField(TEST_FIELD_ADDRESS)->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
+
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+
+        ASSERT_EQ(mSet[0]->findField(TEST_FIELD_ADDRESS)->getUseEncryption(), (bool)encryptor);
+
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+        address->setUseEncryption(true);
+
+        stream.add(address);
+
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            address->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+
+        ASSERT_EQ(mSet[0]->getUseEncryption(), (bool)encryptor);
+
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            desc->getFieldDesc(TEST_FIELD_ADDRESS).useEncryption = false;
+            ASSERT_TRUE(stream.save());
+        }
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        vmf::FieldDesc& field = desc->getFieldDesc(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(field.useEncryption, (bool)encryptor);
+
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields, true);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            desc->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        ASSERT_EQ(desc->getUseEncryption(), (bool)encryptor);
+
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+TEST_P(TestSaveLoadEncryptionSubsets, Schema)
+{
+    std::shared_ptr<vmf::Encryptor> encryptor = vmf::getEncryptor(GetParam());
+
+    {
+        vmf::MetadataStream stream;
+        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.setEncryptor(encryptor);
+        stream.setUseEncryption(false);
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+        std::shared_ptr<vmf::MetadataDesc> desc;
+
+        schema = std::make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME, true);
+
+        std::vector<vmf::FieldDesc> fields;
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME, vmf::Variant::type_string));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_AGE, vmf::Variant::type_integer));
+        fields.push_back(vmf::FieldDesc(TEST_FIELD_ADDRESS, vmf::Variant::type_string, true));
+        desc = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME, fields);
+
+        schema->add(desc);
+        stream.addSchema(schema);
+
+        std::shared_ptr<vmf::Metadata> address(new vmf::Metadata(desc));
+        address->setFieldValue(TEST_FIELD_NAME, TEST_VALUE_NAME);
+        address->setFieldValue(TEST_FIELD_AGE, TEST_VALUE_AGE);
+        address->setFieldValue(TEST_FIELD_ADDRESS, TEST_VALUE_ADDRESS);
+        address->setTimestamp(vmf::getTimestamp());
+
+        stream.add(address);
+
+        if(encryptor)
+        {
+            ASSERT_TRUE(stream.save());
+        }
+        else
+        {
+            ASSERT_FALSE(stream.save());
+            schema->setUseEncryption(false);
+            ASSERT_TRUE(stream.save());
+        }
+        stream.close();
+    }
+
+    {
+        vmf::MetadataStream stream;
+        stream.setEncryptor(encryptor);
+
+        ASSERT_TRUE(stream.open(TEST_FILE, vmf::MetadataStream::OpenModeFlags::ReadOnly));
+
+        std::shared_ptr<vmf::MetadataSchema> schema;
+
+        schema = stream.getSchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(schema->getUseEncryption(), (bool)encryptor);
+
+        ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
+        vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
+        ASSERT_EQ(mSet.size(), 1);
+        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
+    }
+}
+
+
+INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadEncryptionSubsets,
+                        ::testing::Values(vmf::CryptAlgo::DEFAULT, vmf::CryptAlgo::WEAK, vmf::CryptAlgo::NONE));
+
 

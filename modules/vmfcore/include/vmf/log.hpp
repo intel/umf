@@ -57,13 +57,13 @@ public:
      * \brief Build message and write it to the file or to the console
      * \param[in] level Logging level. There is three possible values of this parameter: 
      * LOG_INFO, LOG_WARNING, LOG_ERROR
-     * \param[in] msg A format string that follows the same specifications as format in printf
+     * \param[in] _msg A format string that follows the same specifications as format in printf
      * \param[in] func Function where method was called
      * \param[in] file File where method was called
      * \param[in] line Line where method was called
      * \param[in] ... Parameters for the format string msg
      */
-    static void log(LogLevel level, const std::string &msg, const std::string &func, const std::string &file, int line, ...);
+    static void log(LogLevel level, const std::string &_msg, const std::string &func, const std::string &file, int line, ...);
 
     /*!
      * \brief Redirect log messages to the file

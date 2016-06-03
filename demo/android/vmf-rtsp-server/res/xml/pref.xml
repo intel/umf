@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Note" >
+    	<Preference
+    		android:key="note"
+		    android:selectable="false"
+		    android:title=""
+		    android:summary="All the settings except 'RTSP port' are applied at the next client connection."/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Streaming" >
+        <EditTextPreference
+                android:key="rtsp_port"
+                android:summary="Port to listen for RTSP connection"
+                android:title="RTSP port"
+                android:numeric="integer"
+                android:maxLength="5"
+                android:defaultValue="1234" />
+        <EditTextPreference
+                android:key="vmf_port"
+                android:summary="Port to listen for VMF metadata connection (TCP)"
+                android:title="VMF metadata streaming port"
+                android:numeric="integer"
+                android:maxLength="5"
+                android:defaultValue="4321" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Extra flags" >
+		<ListPreference
+		    android:title="Text Format"
+            android:summary="Select the text format for metadata transfering"
+            android:key="format"
+            android:defaultValue="1"
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues" />
+		<CheckBoxPreference
+            android:key="gps_emulation"
+            android:summary="Generate fake GPS locations"
+            android:title="Emulate GPS location"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="compression"
+            android:summary="Use VMF metadata compression"
+            android:title="Compression"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="encryption"
+            android:summary="Use VMF metadata encryption"
+            android:title="Encryption"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

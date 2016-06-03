@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		527904731CB52DDC005BE7AB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 527904721CB52DDC005BE7AB /* CoreLocation.framework */; };
+		527904751CB67C86005BE7AB /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = 527904741CB67C86005BE7AB /* button.png */; };
+		52FDBC9D1CBEAEF500F41BB2 /* vmf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52FDBC9C1CBEAEF500F41BB2 /* vmf.framework */; };
+		52FDBCA91CBEB10000F41BB2 /* AccessoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBC9F1CBEB10000F41BB2 /* AccessoryViewController.m */; };
+		52FDBCAA1CBEB10000F41BB2 /* AVEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCA11CBEB10000F41BB2 /* AVEncoder.mm */; };
+		52FDBCAB1CBEB10000F41BB2 /* CameraServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCA31CBEB10000F41BB2 /* CameraServer.m */; };
+		52FDBCAC1CBEB10000F41BB2 /* Checkbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCA51CBEB10000F41BB2 /* Checkbox.m */; };
+		52FDBCAD1CBEB10000F41BB2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCA61CBEB10000F41BB2 /* Default-568h@2x.png */; };
+		52FDBCAE1CBEB10000F41BB2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCA71CBEB10000F41BB2 /* Default.png */; };
+		52FDBCAF1CBEB10000F41BB2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCA81CBEB10000F41BB2 /* Default@2x.png */; };
+		52FDBCC81CBEB14B00F41BB2 /* EncoderDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCB11CBEB14B00F41BB2 /* EncoderDemoAppDelegate.m */; };
+		52FDBCC91CBEB14B00F41BB2 /* EncoderDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCB31CBEB14B00F41BB2 /* EncoderDemoViewController.m */; };
+		52FDBCCA1CBEB14B00F41BB2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCB41CBEB14B00F41BB2 /* Images.xcassets */; };
+		52FDBCCB1CBEB14B00F41BB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCB61CBEB14B00F41BB2 /* main.m */; };
+		52FDBCCC1CBEB14B00F41BB2 /* MP4Atom.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCB81CBEB14B00F41BB2 /* MP4Atom.m */; };
+		52FDBCCD1CBEB14B00F41BB2 /* NALUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCB91CBEB14B00F41BB2 /* NALUnit.cpp */; };
+		52FDBCCE1CBEB14B00F41BB2 /* RTSPClientConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCBC1CBEB14B00F41BB2 /* RTSPClientConnection.mm */; };
+		52FDBCCF1CBEB14B00F41BB2 /* RTSPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCBE1CBEB14B00F41BB2 /* RTSPMessage.m */; };
+		52FDBCD01CBEB14B00F41BB2 /* RTSPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCC01CBEB14B00F41BB2 /* RTSPServer.m */; };
+		52FDBCD11CBEB14B00F41BB2 /* TableData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCC11CBEB14B00F41BB2 /* TableData.plist */; };
+		52FDBCD21CBEB14B00F41BB2 /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCC31CBEB14B00F41BB2 /* VideoEncoder.m */; };
+		52FDBCD31CBEB14B00F41BB2 /* VMF-RTSP-Server-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 52FDBCC41CBEB14B00F41BB2 /* VMF-RTSP-Server-Info.plist */; };
+		52FDBCD41CBEB14B00F41BB2 /* VmfClientConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52FDBCC71CBEB14B00F41BB2 /* VmfClientConnection.mm */; };
+		841255A116A035E3001749D9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A016A035E3001749D9 /* UIKit.framework */; };
+		841255A316A035E3001749D9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A216A035E3001749D9 /* Foundation.framework */; };
+		841255A516A035E3001749D9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255A416A035E3001749D9 /* CoreGraphics.framework */; };
+		841255AB16A035E3001749D9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 841255A916A035E3001749D9 /* InfoPlist.strings */; };
+		841255BA16A035E3001749D9 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841255B816A035E3001749D9 /* MainStoryboard_iPhone.storyboard */; };
+		841255C716A035F1001749D9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255C616A035F1001749D9 /* AVFoundation.framework */; };
+		841255C916A035F9001749D9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255C816A035F9001749D9 /* CoreMedia.framework */; };
+		841255CB16A09114001749D9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841255CA16A09114001749D9 /* CoreVideo.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		527904721CB52DDC005BE7AB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		527904741CB67C86005BE7AB /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = classes/button.png; sourceTree = SOURCE_ROOT; };
+		52FDBC9C1CBEAEF500F41BB2 /* vmf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = vmf.framework; sourceTree = "<group>"; };
+		52FDBC9E1CBEB10000F41BB2 /* AccessoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccessoryViewController.h; path = "classes/AccessoryViewController.h"; sourceTree = SOURCE_ROOT; };
+		52FDBC9F1CBEB10000F41BB2 /* AccessoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccessoryViewController.m; path = "classes/AccessoryViewController.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCA01CBEB10000F41BB2 /* AVEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVEncoder.h; path = "classes/AVEncoder.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCA11CBEB10000F41BB2 /* AVEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AVEncoder.mm; path = "classes/AVEncoder.mm"; sourceTree = SOURCE_ROOT; };
+		52FDBCA21CBEB10000F41BB2 /* CameraServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CameraServer.h; path = "classes/CameraServer.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCA31CBEB10000F41BB2 /* CameraServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CameraServer.m; path = "classes/CameraServer.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCA41CBEB10000F41BB2 /* Checkbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Checkbox.h; path = "classes/Checkbox.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCA51CBEB10000F41BB2 /* Checkbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Checkbox.m; path = "classes/Checkbox.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCA61CBEB10000F41BB2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "classes/Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
+		52FDBCA71CBEB10000F41BB2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = "classes/Default.png"; sourceTree = SOURCE_ROOT; };
+		52FDBCA81CBEB10000F41BB2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "classes/Default@2x.png"; sourceTree = SOURCE_ROOT; };
+		52FDBCB01CBEB14B00F41BB2 /* EncoderDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EncoderDemoAppDelegate.h; path = "classes/EncoderDemoAppDelegate.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCB11CBEB14B00F41BB2 /* EncoderDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EncoderDemoAppDelegate.m; path = "classes/EncoderDemoAppDelegate.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCB21CBEB14B00F41BB2 /* EncoderDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EncoderDemoViewController.h; path = "classes/EncoderDemoViewController.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCB31CBEB14B00F41BB2 /* EncoderDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EncoderDemoViewController.m; path = "classes/EncoderDemoViewController.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCB41CBEB14B00F41BB2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "classes/Images.xcassets"; sourceTree = SOURCE_ROOT; };
+		52FDBCB51CBEB14B00F41BB2 /* LocationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationData.h; path = "classes/LocationData.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCB61CBEB14B00F41BB2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "classes/main.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCB71CBEB14B00F41BB2 /* MP4Atom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4Atom.h; path = "classes/MP4Atom.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCB81CBEB14B00F41BB2 /* MP4Atom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MP4Atom.m; path = "classes/MP4Atom.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCB91CBEB14B00F41BB2 /* NALUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NALUnit.cpp; path = "classes/NALUnit.cpp"; sourceTree = SOURCE_ROOT; };
+		52FDBCBA1CBEB14B00F41BB2 /* NALUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NALUnit.h; path = "classes/NALUnit.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCBB1CBEB14B00F41BB2 /* RTSPClientConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTSPClientConnection.h; path = "classes/RTSPClientConnection.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCBC1CBEB14B00F41BB2 /* RTSPClientConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = RTSPClientConnection.mm; path = "classes/RTSPClientConnection.mm"; sourceTree = SOURCE_ROOT; };
+		52FDBCBD1CBEB14B00F41BB2 /* RTSPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTSPMessage.h; path = "classes/RTSPMessage.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCBE1CBEB14B00F41BB2 /* RTSPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RTSPMessage.m; path = "classes/RTSPMessage.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCBF1CBEB14B00F41BB2 /* RTSPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTSPServer.h; path = "classes/RTSPServer.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCC01CBEB14B00F41BB2 /* RTSPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RTSPServer.m; path = "classes/RTSPServer.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCC11CBEB14B00F41BB2 /* TableData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = TableData.plist; path = "classes/TableData.plist"; sourceTree = SOURCE_ROOT; };
+		52FDBCC21CBEB14B00F41BB2 /* VideoEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoEncoder.h; path = "classes/VideoEncoder.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCC31CBEB14B00F41BB2 /* VideoEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoEncoder.m; path = "classes/VideoEncoder.m"; sourceTree = SOURCE_ROOT; };
+		52FDBCC41CBEB14B00F41BB2 /* VMF-RTSP-Server-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "VMF-RTSP-Server-Info.plist"; path = "classes/VMF-RTSP-Server-Info.plist"; sourceTree = SOURCE_ROOT; };
+		52FDBCC51CBEB14B00F41BB2 /* VMF-RTSP-Server-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "VMF-RTSP-Server-Prefix.pch"; path = "classes/VMF-RTSP-Server-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		52FDBCC61CBEB14B00F41BB2 /* VmfClientConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VmfClientConnection.h; path = "classes/VmfClientConnection.h"; sourceTree = SOURCE_ROOT; };
+		52FDBCC71CBEB14B00F41BB2 /* VmfClientConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = VmfClientConnection.mm; path = "classes/VmfClientConnection.mm"; sourceTree = SOURCE_ROOT; };
+		8412559C16A035E3001749D9 /* VMF-RTSP-Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VMF-RTSP-Server.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		841255A016A035E3001749D9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		841255A216A035E3001749D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		841255A416A035E3001749D9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		841255AA16A035E3001749D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		841255B916A035E3001749D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		841255C616A035F1001749D9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		841255C816A035F9001749D9 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		841255CA16A09114001749D9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8412559916A035E3001749D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				527904731CB52DDC005BE7AB /* CoreLocation.framework in Frameworks */,
+				841255CB16A09114001749D9 /* CoreVideo.framework in Frameworks */,
+				841255C916A035F9001749D9 /* CoreMedia.framework in Frameworks */,
+				841255C716A035F1001749D9 /* AVFoundation.framework in Frameworks */,
+				841255A116A035E3001749D9 /* UIKit.framework in Frameworks */,
+				841255A316A035E3001749D9 /* Foundation.framework in Frameworks */,
+				841255A516A035E3001749D9 /* CoreGraphics.framework in Frameworks */,
+				52FDBC9D1CBEAEF500F41BB2 /* vmf.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8412559116A035E3001749D9 = {
+			isa = PBXGroup;
+			children = (
+				841255A616A035E3001749D9 /* VMF-RTSP-Server */,
+				841255CA16A09114001749D9 /* CoreVideo.framework */,
+				841255C816A035F9001749D9 /* CoreMedia.framework */,
+				841255C616A035F1001749D9 /* AVFoundation.framework */,
+				8412559F16A035E3001749D9 /* Frameworks */,
+				8412559D16A035E3001749D9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8412559D16A035E3001749D9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8412559C16A035E3001749D9 /* VMF-RTSP-Server.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8412559F16A035E3001749D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				52FDBC9C1CBEAEF500F41BB2 /* vmf.framework */,
+				527904721CB52DDC005BE7AB /* CoreLocation.framework */,
+				841255A016A035E3001749D9 /* UIKit.framework */,
+				841255A216A035E3001749D9 /* Foundation.framework */,
+				841255A416A035E3001749D9 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		841255A616A035E3001749D9 /* VMF-RTSP-Server */ = {
+			isa = PBXGroup;
+			children = (
+				52FDBC9E1CBEB10000F41BB2 /* AccessoryViewController.h */,
+				52FDBC9F1CBEB10000F41BB2 /* AccessoryViewController.m */,
+				52FDBCA21CBEB10000F41BB2 /* CameraServer.h */,
+				52FDBCA31CBEB10000F41BB2 /* CameraServer.m */,
+				52FDBCA41CBEB10000F41BB2 /* Checkbox.h */,
+				52FDBCA51CBEB10000F41BB2 /* Checkbox.m */,
+				52FDBCB01CBEB14B00F41BB2 /* EncoderDemoAppDelegate.h */,
+				52FDBCB11CBEB14B00F41BB2 /* EncoderDemoAppDelegate.m */,
+				52FDBCB21CBEB14B00F41BB2 /* EncoderDemoViewController.h */,
+				52FDBCB31CBEB14B00F41BB2 /* EncoderDemoViewController.m */,
+				52FDBCB51CBEB14B00F41BB2 /* LocationData.h */,
+				52FDBCC61CBEB14B00F41BB2 /* VmfClientConnection.h */,
+				52FDBCC71CBEB14B00F41BB2 /* VmfClientConnection.mm */,
+				841255B816A035E3001749D9 /* MainStoryboard_iPhone.storyboard */,
+				841255DD16A85477001749D9 /* RTSP */,
+				841255D316A57847001749D9 /* AVEncoder */,
+				841255A716A035E3001749D9 /* Supporting Files */,
+			);
+			path = "classes";
+			sourceTree = "<group>";
+		};
+		841255A716A035E3001749D9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				52FDBCB41CBEB14B00F41BB2 /* Images.xcassets */,
+				52FDBCC11CBEB14B00F41BB2 /* TableData.plist */,
+				527904741CB67C86005BE7AB /* button.png */,
+				52FDBCC41CBEB14B00F41BB2 /* VMF-RTSP-Server-Info.plist */,
+				841255A916A035E3001749D9 /* InfoPlist.strings */,
+				52FDBCB61CBEB14B00F41BB2 /* main.m */,
+				52FDBCC51CBEB14B00F41BB2 /* VMF-RTSP-Server-Prefix.pch */,
+				52FDBCA61CBEB10000F41BB2 /* Default-568h@2x.png */,
+				52FDBCA71CBEB10000F41BB2 /* Default.png */,
+				52FDBCA81CBEB10000F41BB2 /* Default@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		841255D316A57847001749D9 /* AVEncoder */ = {
+			isa = PBXGroup;
+			children = (
+				52FDBCA01CBEB10000F41BB2 /* AVEncoder.h */,
+				52FDBCA11CBEB10000F41BB2 /* AVEncoder.mm */,
+				52FDBCB71CBEB14B00F41BB2 /* MP4Atom.h */,
+				52FDBCB81CBEB14B00F41BB2 /* MP4Atom.m */,
+				52FDBCB91CBEB14B00F41BB2 /* NALUnit.cpp */,
+				52FDBCBA1CBEB14B00F41BB2 /* NALUnit.h */,
+				52FDBCC21CBEB14B00F41BB2 /* VideoEncoder.h */,
+				52FDBCC31CBEB14B00F41BB2 /* VideoEncoder.m */,
+			);
+			name = AVEncoder;
+			sourceTree = "<group>";
+		};
+		841255DD16A85477001749D9 /* RTSP */ = {
+			isa = PBXGroup;
+			children = (
+				52FDBCBB1CBEB14B00F41BB2 /* RTSPClientConnection.h */,
+				52FDBCBC1CBEB14B00F41BB2 /* RTSPClientConnection.mm */,
+				52FDBCBD1CBEB14B00F41BB2 /* RTSPMessage.h */,
+				52FDBCBE1CBEB14B00F41BB2 /* RTSPMessage.m */,
+				52FDBCBF1CBEB14B00F41BB2 /* RTSPServer.h */,
+				52FDBCC01CBEB14B00F41BB2 /* RTSPServer.m */,
+			);
+			name = RTSP;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8412559B16A035E3001749D9 /* VMF-RTSP-Server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 841255C316A035E3001749D9 /* Build configuration list for PBXNativeTarget "VMF-RTSP-Server" */;
+			buildPhases = (
+				8412559816A035E3001749D9 /* Sources */,
+				8412559916A035E3001749D9 /* Frameworks */,
+				8412559A16A035E3001749D9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VMF-RTSP-Server";
+			productName = "VMF-RTSP-Server";
+			productReference = 8412559C16A035E3001749D9 /* VMF-RTSP-Server.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8412559316A035E3001749D9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = EncoderDemo;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Geraint Davies";
+			};
+			buildConfigurationList = 8412559616A035E3001749D9 /* Build configuration list for PBXProject "VMF-RTSP-Server" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 8412559116A035E3001749D9;
+			productRefGroup = 8412559D16A035E3001749D9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8412559B16A035E3001749D9 /* VMF-RTSP-Server */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8412559A16A035E3001749D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				841255AB16A035E3001749D9 /* InfoPlist.strings in Resources */,
+				52FDBCAD1CBEB10000F41BB2 /* Default-568h@2x.png in Resources */,
+				527904751CB67C86005BE7AB /* button.png in Resources */,
+				52FDBCAF1CBEB10000F41BB2 /* Default@2x.png in Resources */,
+				52FDBCD31CBEB14B00F41BB2 /* VMF-RTSP-Server-Info.plist in Resources */,
+				52FDBCCA1CBEB14B00F41BB2 /* Images.xcassets in Resources */,
+				841255BA16A035E3001749D9 /* MainStoryboard_iPhone.storyboard in Resources */,
+				52FDBCD11CBEB14B00F41BB2 /* TableData.plist in Resources */,
+				52FDBCAE1CBEB10000F41BB2 /* Default.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8412559816A035E3001749D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52FDBCCC1CBEB14B00F41BB2 /* MP4Atom.m in Sources */,
+				52FDBCC81CBEB14B00F41BB2 /* EncoderDemoAppDelegate.m in Sources */,
+				52FDBCCE1CBEB14B00F41BB2 /* RTSPClientConnection.mm in Sources */,
+				52FDBCCD1CBEB14B00F41BB2 /* NALUnit.cpp in Sources */,
+				52FDBCCB1CBEB14B00F41BB2 /* main.m in Sources */,
+				52FDBCC91CBEB14B00F41BB2 /* EncoderDemoViewController.m in Sources */,
+				52FDBCD41CBEB14B00F41BB2 /* VmfClientConnection.mm in Sources */,
+				52FDBCD01CBEB14B00F41BB2 /* RTSPServer.m in Sources */,
+				52FDBCCF1CBEB14B00F41BB2 /* RTSPMessage.m in Sources */,
+				52FDBCAB1CBEB10000F41BB2 /* CameraServer.m in Sources */,
+				52FDBCD21CBEB14B00F41BB2 /* VideoEncoder.m in Sources */,
+				52FDBCAA1CBEB10000F41BB2 /* AVEncoder.mm in Sources */,
+				52FDBCA91CBEB10000F41BB2 /* AccessoryViewController.m in Sources */,
+				52FDBCAC1CBEB10000F41BB2 /* Checkbox.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		841255A916A035E3001749D9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				841255AA16A035E3001749D9 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		841255B816A035E3001749D9 /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				841255B916A035E3001749D9 /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		841255C116A035E3001749D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		841255C216A035E3001749D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		841255C416A035E3001749D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "classes/VMF-RTSP-Server-Prefix.pch";
+				INFOPLIST_FILE = "classes/VMF-RTSP-Server-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.gdcl.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "VMF-RTSP-Server";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		841255C516A035E3001749D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "classes/VMF-RTSP-Server-Prefix.pch";
+				INFOPLIST_FILE = "classes/VMF-RTSP-Server-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.gdcl.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "VMF-RTSP-Server";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8412559616A035E3001749D9 /* Build configuration list for PBXProject "VMF-RTSP-Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				841255C116A035E3001749D9 /* Debug */,
+				841255C216A035E3001749D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		841255C316A035E3001749D9 /* Build configuration list for PBXNativeTarget "VMF-RTSP-Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				841255C416A035E3001749D9 /* Debug */,
+				841255C516A035E3001749D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8412559316A035E3001749D9 /* Project object */;
+}

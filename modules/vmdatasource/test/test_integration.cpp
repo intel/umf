@@ -32,7 +32,7 @@ TEST(Integration, InitializeAndTerminate)
 TEST(Integration, fullFunctionality_1)
 {
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     const vmf::vmf_string atom(TEST_SCHEMA_NAME_0);
     const vmf::vmf_string atom(TEST_SCHEMA_NAME_1);
     const vmf::vmf_string atom(TEST_PROPERTY_NAME_0);
@@ -61,10 +61,10 @@ TEST(Integration, fullFunctionality_1)
         ASSERT_NO_THROW(schema[1]->add(desc[2]));
         ASSERT_NO_THROW(schema[1]->add(desc[3]));
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         ASSERT_NO_THROW(s.addSchema(schema[0]));
         ASSERT_NO_THROW(s.addSchema(schema[1]));
-        s.save();
+        ASSERT_TRUE(s.save());
         ASSERT_NO_THROW(s.close());
     }
 
@@ -80,7 +80,7 @@ TEST(Integration, fullFunctionality_1)
 
     {
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         std::shared_ptr<vmf::MetadataSchema> schema[2];
         schema[0] = s.getSchema(TEST_SCHEMA_NAME_0);
         ASSERT_TRUE(schema[0] != NULL);
@@ -102,13 +102,13 @@ TEST(Integration, fullFunctionality_1)
         metadata[3]->setFieldValue(TEST_FIELD_NAME_1, TEST_INT32_VALUE_5);
         metadata[3]->setFieldValue(TEST_FIELD_NAME_2, TEST_STRING_VALUE_3);
         for(int i = 0; i < 4; ++i) s.add(metadata[i]);
-        s.save();
+        ASSERT_TRUE(s.save());
         s.close();
     }
 
     {
         vmf::MetadataStream s;
-        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite));
+        ASSERT_TRUE(s.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update));
         vmf::MetadataSet schema[2];
         s.load(TEST_SCHEMA_NAME_0);
         s.load(TEST_SCHEMA_NAME_1);
@@ -165,18 +165,18 @@ TEST(Integration, fullFunctionality_1)
         s.close();
     }
 
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, Hongwu1)
 {
     const vmf::vmf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         std::shared_ptr< vmf::MetadataDesc > spEventDesc ( new vmf::MetadataDesc( "event", vmf::Variant::type_string ));
         spSchema->add( spEventDesc );
         std::shared_ptr< vmf::Metadata > spBirthday( new vmf::Metadata( spEventDesc ));
@@ -190,28 +190,28 @@ TEST(Integration, Hongwu1)
     }
     {
         vmf::MetadataStream stream;
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("event");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> birthday = set.at(0);
         ASSERT_EQ(4001, birthday->getFrameIndex());
         ASSERT_EQ(2500, birthday->getNumOfFrames());
         ASSERT_EQ("Birthday", (vmf::vmf_string) birthday->at(0));
     }
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, Hongwu2)
 {
     const vmf::vmf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
-    vmf::initialize();
+    //vmf::initialize();
     {
         vmf::MetadataStream stream;
         std::shared_ptr<vmf::MetadataSchema> spSchema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
-        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+        stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
         std::shared_ptr< vmf::MetadataDesc > spNumbersDesc ( new vmf::MetadataDesc( "ints", vmf::Variant::type_integer ));
         spSchema->add( spNumbersDesc );
         std::shared_ptr< vmf::Metadata > spNumbers( new vmf::Metadata( spNumbersDesc ));
@@ -231,20 +231,20 @@ TEST(Integration, Hongwu2)
         stream.load(TEST_SCHEMA_NAME);
         stream.close();
         vmf::MetadataSet set = stream.queryByName("ints");
-        ASSERT_EQ(1, set.size());
+        ASSERT_EQ(1u, set.size());
         std::shared_ptr<vmf::Metadata> numbers = set.at(0);
-        ASSERT_EQ(5, numbers->size());
+        ASSERT_EQ(5u, numbers->size());
         for(int i = 0; i < 5; ++i)
             ASSERT_EQ(i+1, (vmf::vmf_integer) numbers->at(i));
     }
-    vmf::terminate();
+    //vmf::terminate();
 }
 
 TEST(Integration, structuresForDoc)
 {
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
 
-    vmf::initialize();
+    //vmf::initialize();
 
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema("my schema"));
     std::vector<vmf::FieldDesc> fields;
@@ -255,7 +255,7 @@ TEST(Integration, structuresForDoc)
     schema->add(desc);
 
     vmf::MetadataStream stream;
-    stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::ReadWrite);
+    stream.open(INTEGRATION_TEST_FILE, vmf::MetadataStream::Update);
     stream.addSchema(schema);
     std::shared_ptr<vmf::Metadata> dima(new vmf::Metadata(desc)), vasya(new vmf::Metadata(desc));
     dima->setFieldValue("name", "Dmitry");
@@ -271,5 +271,5 @@ TEST(Integration, structuresForDoc)
     stream.save();
     stream.close();
 
-    vmf::terminate();
+    //vmf::terminate();
 }

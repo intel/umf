@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <cassert>
 
@@ -34,12 +35,20 @@ string workingPath;
 
 #define VIDEO_FILE (workingPath + "BlueSquare.avi")
 
-void copyFile(const string& srcName, const char *dstName);
+void copyFile(const string& srcName, const char *dstName)
+{
+    ifstream src(srcName, ios::binary);
+    ofstream dst(dstName, ios::binary);
+    if (src && dst)
+        dst << src.rdbuf();
+    else
+        VMF_EXCEPTION(IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+    //src.close();
+    //dst.close();
+}
 
 int main(int argc, char *argv[])
 {
-    initialize();
-
     string appPath = argv[0];
 #ifdef WIN32
     char delim = '\\';
@@ -74,7 +83,7 @@ int main(int argc, char *argv[])
 
     // Open metadata stream
     MetadataStream mdStream;
-    if (!mdStream.open(FILE_NAME, MetadataStream::ReadWrite))
+    if (!mdStream.open(FILE_NAME, MetadataStream::Update))
     {
         cerr << "Can't open file " << FILE_NAME << endl;
         exit(1);
@@ -148,7 +157,7 @@ int main(int argc, char *argv[])
 
     cout << "Loading metadata..." << endl;
     cout << "Opening file name '" << FILE_NAME << "'" << endl;
-    
+
     // Open new metadata stream to load and print saved metadata
     MetadataStream loadStream;
     if (!loadStream.open(FILE_NAME, MetadataStream::ReadOnly))
@@ -182,9 +191,6 @@ int main(int argc, char *argv[])
 
     // Close metadata stream
     loadStream.close();
-
-    // Uninitialize VMF library to free allocated resources
-    vmf::terminate();
 
     return 0;
 }
