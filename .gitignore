@@ -3,3 +3,5 @@
 *.user*
 .DS_Store/
 /build*/
+/.travis.yml.swp
+/coveralls.yml~
