@@ -10,8 +10,8 @@ matrix:
   include:
     - os: linux
       env:
-        - CC=gcc
-        - CXX=g++
+        - CC=gcc-4.8
+        - CXX=g++-4.8
         - VMF_SHARED=ON
         - VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'
     - os: linux
@@ -35,9 +35,9 @@ matrix:
 
 addons:
   apt:
-    sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test']
+    sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm']
     #sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-    packages: ['cmake', 'cmake-data', 'g++', 'clang']
+    packages: ['cmake', 'cmake-data', 'g++-4.8', 'clang']
     #packages: ['cmake', 'cmake-data', 'g++-4.8', 'clang-3.7']
 before_install:
   - env
