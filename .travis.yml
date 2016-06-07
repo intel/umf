@@ -70,5 +70,5 @@ after_success:
   - if [ "$VMF_GCOV_OPTS" != "" ]; then codecov --root .. --gcov-exec gcov-4.8 > /dev/null; fi
 notifications:
   email: false
-  webhooks: https://coveralls.io/webhook?repo_token=Ps8FqtEiCuzF419zxLpqfqPjeQ5phoqk5
+  webhooks: https://coveralls.io/webhook?repo_token=jEvkHdxBatpMEmiw1Mo0r2vmUG5vwepAF
 
