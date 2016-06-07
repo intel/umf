@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/01org/vmf.svg?branch=master)](https://travis-ci.org/01org/vmf)
 [![Build status](https://ci.appveyor.com/api/projects/status/r5j9ocr4basnm7yj?svg=true)](https://ci.appveyor.com/project/eaniemey/vmf)
-[![Coverage Status](https://coveralls.io/repos/github/01org/vmf/badge.svg?branch=master)](https://coveralls.io/repos/github/01org/vmf/badge.svg?branch=master)
+[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_79.svg)](https://coveralls.io/repos/github/01org/vmf/badge.svg?branch=master)
 [![codecov.io](https://codecov.io/github/01org/vmf/coverage.svg?branch=master)](https://codecov.io/github/01org/vmf?branch=master)
 
 Video Metadata Framework
