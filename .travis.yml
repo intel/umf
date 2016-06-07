@@ -1,5 +1,5 @@
 # .travis.yml
-sudo: false
+sudo: true
 git:
   depth : 5
 branches:
@@ -10,14 +10,14 @@ matrix:
   include:
     - os: linux
       env:
-        - CC=gcc-4.8
-        - CXX=g++-4.8
+        - CC=gcc
+        - CXX=g++
         - VMF_SHARED=ON
         - VMF_GCOV_OPTS='-DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON'
     - os: linux
       env:
-         - CC=clang-3.7
-         - CXX=clang++-3.7
+         - CC=clang
+         - CXX=clang++
          - VMF_SHARED=OFF
     - os: linux
       env:
