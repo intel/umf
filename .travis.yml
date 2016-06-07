@@ -32,6 +32,7 @@ matrix:
     - os: osx
       env:
         - VMF_IOS_BUILD=ON
+
 addons:
   apt:
     sources: ['george-edison55-precise-backports', 'ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
