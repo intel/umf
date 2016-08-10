@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
     vmf::MetadataStream stream;
     
-    if (!stream.open(videoFile, vmf::MetadataStream::ReadWrite))
+    if (!stream.open(videoFile, vmf::MetadataStream::Update))
     {
         std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
         exit(1);

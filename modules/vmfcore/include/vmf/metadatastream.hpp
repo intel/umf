@@ -70,6 +70,8 @@ public:
     };
     typedef int OpenMode;
 
+	//static vmf::MetadataStream::OpenMode ReadWrite;
+
     /*!
      * \class VideoSegment
      * \brief The class representing a video segment

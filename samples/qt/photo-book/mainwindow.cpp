@@ -283,7 +283,7 @@ void MainWindow::commitMarkup()
         markupModel.storeMarkup();
         markupModel.storeAssociations();
 
-        if (metadataHelper.openFile(vmf::MetadataStream::ReadWrite))
+        if (metadataHelper.openFile(vmf::MetadataStream::Update))
         {
             metadataHelper.saveMetadata();
         }

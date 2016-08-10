@@ -49,9 +49,9 @@ void VideoMetadataStream::openFile(const QString& filename)
     fileName = filename.toStdString();
     try
     {
-        if (!metaStream.open(fileName, vmf::MetadataStream::ReadWrite))
+        if (!metaStream.open(fileName, vmf::MetadataStream::Update))
         {
-            VMF_EXCEPTION(vmf::NotFoundException, "Not found");
+			VMF_EXCEPTION(vmf::NotFoundException, "Not found");
         }
 
         if (!metaStream.load(SKI_RESORT_SCHEMA))
@@ -304,7 +304,7 @@ void VideoMetadataStream::saveSpeed()
     currentFrame = currentFrame.clone();
     capture.release();
     
-    metaStream.reopen(vmf::MetadataStream::ReadWrite);
+    metaStream.reopen(vmf::MetadataStream::Update);
     metaStream.save();
     metaStream.close();
 

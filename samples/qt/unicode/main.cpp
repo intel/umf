@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         auto desc = make_shared<MetadataDesc>(STRING_METADATA, Variant::type_string);
         schema->add(desc);
         MetadataStream stream;
-        if (!stream.open(FILE_NAME, MetadataStream::ReadWrite))
+        if (!stream.open(FILE_NAME, MetadataStream::Update))
         {
             cerr << "Failed to open file " << FILE_NAME << endl;
             return -1;
