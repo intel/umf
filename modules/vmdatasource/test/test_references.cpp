@@ -309,12 +309,12 @@ protected:
     std::shared_ptr<vmf::MetadataDesc> desc[2];
     vmf::IdType id[2];
 
-    vmf::vmf_string TEST_SCHEMA_NAME_0;
-    vmf::vmf_string TEST_SCHEMA_NAME_1;
-    vmf::vmf_string TEST_DESC_NAME_0;
-    vmf::vmf_string TEST_DESC_NAME_1;
-    vmf::vmf_string TEST_STRING_VAL;
-    vmf::vmf_integer TEST_INTEGER_VAL;
+    vmf::umf_string TEST_SCHEMA_NAME_0;
+    vmf::umf_string TEST_SCHEMA_NAME_1;
+    vmf::umf_string TEST_DESC_NAME_0;
+    vmf::umf_string TEST_DESC_NAME_1;
+    vmf::umf_string TEST_STRING_VAL;
+    vmf::umf_integer TEST_INTEGER_VAL;
 };
 
 TEST_F(TestSaveLoadReference, SimpleReference)
@@ -456,8 +456,8 @@ TEST_F(TestSaveLoadReference, ToItselfReference)
 
 TEST_F(TestSaveLoadReference, InsideOnePropertyReference)
 {
-    const vmf::vmf_integer TEST_INTEGER_VAL_0(0xDEADBEEF);
-    const vmf::vmf_integer TEST_INTEGER_VAL_1(0xC0FFEE);
+    const vmf::umf_integer TEST_INTEGER_VAL_0(0xDEADBEEF);
+    const vmf::umf_integer TEST_INTEGER_VAL_1(0xC0FFEE);
     {
         std::shared_ptr<vmf::Metadata> metadata[2];
         metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
@@ -545,8 +545,8 @@ TEST_F(TestSaveLoadReference, SeveralReferences)
 
 TEST_F(TestSaveLoadReference, OneToOneReference)
 {
-    const vmf::vmf_string atom(TEST_STRING_VAL_1);
-    const vmf::vmf_string atom(TEST_STRING_VAL_2);
+    const vmf::umf_string atom(TEST_STRING_VAL_1);
+    const vmf::umf_string atom(TEST_STRING_VAL_2);
     {
         schema[0]->add(desc[1]);
 
@@ -595,7 +595,7 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
 
 TEST_F(TestSaveLoadReference, CheckReferenceStream)
 {
-    const vmf::vmf_string atom(TEST_STRING_VAL_1);
+    const vmf::umf_string atom(TEST_STRING_VAL_1);
     {
         std::shared_ptr<vmf::Metadata> metadata[2];
         metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));

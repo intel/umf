@@ -28,16 +28,16 @@ namespace vmf
 class FakeCompressor : public Compressor
 {
 public:
-    virtual void compress(const vmf_string& input, vmf_rawbuffer& output)
+    virtual void compress(const umf_string& input, umf_rawbuffer& output)
     {
         //copies input to another buffer and writes result
-        output = vmf_rawbuffer(input.c_str(), input.size());
+        output = umf_rawbuffer(input.c_str(), input.size());
     }
 
-    virtual void decompress(const vmf_rawbuffer& input, vmf_string &output)
+    virtual void decompress(const umf_rawbuffer& input, umf_string &output)
     {
         //copies code to another buffer and writes result
-        output = vmf_string(input.data(), input.size());
+        output = umf_string(input.data(), input.size());
     }
 
     std::shared_ptr<Compressor> createNewInstance() const
@@ -47,18 +47,18 @@ public:
         return ptr;
     }
 
-    virtual vmf::vmf_string getId()
+    virtual vmf::umf_string getId()
     {
         return id;
     }
 
-    void setId(vmf_string s)
+    void setId(umf_string s)
     {
         id = s;
     }
 
 private:
-    vmf_string id;
+    umf_string id;
 };
 
 } //vmf

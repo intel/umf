@@ -31,7 +31,7 @@ namespace vmf
 * class FormatXML
 * \brief FormatXML class is a %Format interface implementation for XML format representation
 */
-class VMF_EXPORT FormatXML : public Format
+class UMF_EXPORT FormatXML : public Format
 {
 public:
     /*!

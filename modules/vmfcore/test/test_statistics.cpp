@@ -235,27 +235,27 @@ protected:
             ASSERT_NE( flags & InputMask, 0 );
             if( flags & InputInt )
             {
-                val1 = vmf::Variant( (vmf::vmf_integer)131 );
-                val2 = vmf::Variant( (vmf::vmf_integer)-13 );
-                val3 = vmf::Variant( (vmf::vmf_integer) 75 );
-                bad = vmf::Variant( (vmf::vmf_real)77.13 );
+                val1 = vmf::Variant( (vmf::umf_integer)131 );
+                val2 = vmf::Variant( (vmf::umf_integer)-13 );
+                val3 = vmf::Variant( (vmf::umf_integer) 75 );
+                bad = vmf::Variant( (vmf::umf_real)77.13 );
                 if( flags & OutputSame )
                     outputType = vmf::Variant::type_integer; // depends on input type, fixed
             }
             else if( flags & InputReal )
             {
-                val1 = vmf::Variant( (vmf::vmf_real) 36.6 );
-                val2 = vmf::Variant( (vmf::vmf_real)307.1 );
-                val3 = vmf::Variant( (vmf::vmf_real)-3.14 );
-                bad = vmf::Variant( (vmf::vmf_integer)77 );
+                val1 = vmf::Variant( (vmf::umf_real) 36.6 );
+                val2 = vmf::Variant( (vmf::umf_real)307.1 );
+                val3 = vmf::Variant( (vmf::umf_real)-3.14 );
+                bad = vmf::Variant( (vmf::umf_integer)77 );
                 if( flags & OutputSame )
                     outputType = vmf::Variant::type_real; // depends on input type, fixed
             }
             else /*if( flags & InputAny )*/
             {
-                val1 = vmf::Variant( (vmf::vmf_integer) 352 );
-                val2 = vmf::Variant( (vmf::vmf_real)   13.7 );
-                val3 = vmf::Variant( (vmf::vmf_string)"any" );
+                val1 = vmf::Variant( (vmf::umf_integer) 352 );
+                val2 = vmf::Variant( (vmf::umf_real)   13.7 );
+                val3 = vmf::Variant( (vmf::umf_string)"any" );
                 bad = vmf::Variant(); // op accepts any type, so there's no bad
                 // output depends on input type of individual value, must be checked individually
             }
@@ -506,12 +506,12 @@ protected:
     void finalizeStatistics()
     {
         if( stGrowthAverageCount != 0 )
-            stGrowthAverage = (vmf::vmf_real)stGrowthAverageSum / (vmf::vmf_real)stGrowthAverageCount;
+            stGrowthAverage = (vmf::umf_real)stGrowthAverageSum / (vmf::umf_real)stGrowthAverageCount;
         else
             stGrowthAverage = 0.0;
     }
 
-    void addMetadata( vmf::MetadataStream& stream, const vmf::vmf_string& name, vmf::vmf_integer age, vmf::vmf_integer growth, vmf::vmf_integer salary, bool doStatistics )
+    void addMetadata( vmf::MetadataStream& stream, const vmf::umf_string& name, vmf::umf_integer age, vmf::umf_integer growth, vmf::umf_integer salary, bool doStatistics )
     {
         std::shared_ptr<vmf::Metadata> metadata = std::make_shared< vmf::Metadata >( scMetadataDesc );
 
@@ -616,12 +616,12 @@ protected:
     std::string scPersonGrowthAverage;
     std::string scPersonSalarySum;
 
-    vmf::vmf_integer stNameCount;
-    vmf::vmf_string stNameLast;
-    vmf::vmf_integer stAgeMin;
-    vmf::vmf_integer stAgeMax;
-    vmf::vmf_real stGrowthAverage; vmf::vmf_integer stGrowthAverageSum,stGrowthAverageCount;
-    vmf::vmf_integer stSalarySum;
+    vmf::umf_integer stNameCount;
+    vmf::umf_string stNameLast;
+    vmf::umf_integer stAgeMin;
+    vmf::umf_integer stAgeMax;
+    vmf::umf_real stGrowthAverage; vmf::umf_integer stGrowthAverageSum,stGrowthAverageCount;
+    vmf::umf_integer stSalarySum;
     bool stFirstTimeOnce;
 };
 

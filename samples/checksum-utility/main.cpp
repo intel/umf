@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
         stream.setChecksum(originalFileChecksum);
 
-        vmf::vmf_string TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
+        vmf::umf_string TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         shared_ptr<vmf::MetadataSchema> schema = make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
 
         VMF_METADATA_BEGIN("TEST_PROPERTY_NAME1")

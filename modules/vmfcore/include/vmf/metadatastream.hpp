@@ -54,7 +54,7 @@ class Format;
 * \brief %MetadataStream provides functionality to read/write
 * metadata to media file
 */
-class VMF_EXPORT MetadataStream : public IQuery
+class UMF_EXPORT MetadataStream : public IQuery
 {
 public:
     /*!
@@ -76,7 +76,7 @@ public:
      * \class VideoSegment
      * \brief The class representing a video segment
      */
-    class VMF_EXPORT VideoSegment
+    class UMF_EXPORT VideoSegment
     {
     public:
         /*!
@@ -170,7 +170,7 @@ public:
     * (empty string means no compression)
     * \return Save operation result
     */
-    bool save(const vmf_string& compressorId = vmf_string());
+    bool save(const umf_string& compressorId = umf_string());
 
 
     /*!
@@ -180,7 +180,7 @@ public:
     * (empty string means no compression)
     * \return true if succeed.
     */
-    bool saveTo(const std::string& sFilePath, const vmf_string& compressorId = vmf_string() );
+    bool saveTo(const std::string& sFilePath, const umf_string& compressorId = umf_string() );
 
     /*!
     * \brief Close previously opened media file

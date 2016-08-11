@@ -39,7 +39,7 @@ protected:
     std::vector< vmf::FieldDesc > vFields;
     std::shared_ptr< vmf::MetadataDesc > spDesc;
 
-    vmf::vmf_string SCHEMA_NAME;
+    vmf::umf_string SCHEMA_NAME;
 };
 
 TEST_F(TestMetadataSchema, AddSchema)
@@ -63,7 +63,7 @@ TEST_F(TestMetadataSchema, AddNullDesc)
 
 TEST_F(TestMetadataSchema, CreateSchemaEmptyName)
 {
-    EXPECT_THROW(spSchema = std::shared_ptr< vmf::MetadataSchema >( new vmf::MetadataSchema( vmf::vmf_string() )), vmf::IncorrectParamException);
+    EXPECT_THROW(spSchema = std::shared_ptr< vmf::MetadataSchema >( new vmf::MetadataSchema( vmf::umf_string() )), vmf::IncorrectParamException);
 }
 
 TEST_F(TestMetadataSchema, FindDesc)

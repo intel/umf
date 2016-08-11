@@ -25,7 +25,7 @@ class BloatingCompressor : public vmf::Compressor
 public:
     static const int factor = 5;
 
-    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output)
+    virtual void compress(const vmf::umf_string& input, vmf::umf_rawbuffer& output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end(); ++it)
@@ -35,7 +35,7 @@ public:
         }
     }
 
-    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output)
+    virtual void decompress(const vmf::umf_rawbuffer& input, vmf::umf_string &output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end();)
@@ -58,7 +58,7 @@ public:
         return std::shared_ptr<Compressor>(new BloatingCompressor);
     }
 
-    virtual vmf::vmf_string getId()
+    virtual vmf::umf_string getId()
     {
         return "com.intel.vmf.compressor.test.bloating";
     }
@@ -129,7 +129,7 @@ TEST_P(TestCompressor, LossesOnCompression)
         do
         {
             std::string data = generateData(nChars);
-            vmf_rawbuffer compressed;
+            umf_rawbuffer compressed;
             compressor->compress(data, compressed);
             std::string result;
             compressor->decompress(compressed, result);
@@ -148,7 +148,7 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
     if(name != "unregistered")
     {
         compressor = vmf::Compressor::create(name);
-        vmf_rawbuffer compressed;
+        umf_rawbuffer compressed;
         std::string result;
         ASSERT_NO_THROW(compressor->decompress(compressed, result));
         ASSERT_TRUE(result.empty());
@@ -158,9 +158,9 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 
 TEST_P(TestCompressor, CheckRegisteredIds)
 {
-    std::vector<vmf_string> regIds = vmf::Compressor::getRegisteredIds();
-    std::set<vmf_string> registeredIds(regIds.begin(), regIds.end());
-    std::set<vmf_string> knownIds = { Compressor::builtinId(),
+    std::vector<umf_string> regIds = vmf::Compressor::getRegisteredIds();
+    std::set<umf_string> registeredIds(regIds.begin(), regIds.end());
+    std::set<umf_string> knownIds = { Compressor::builtinId(),
                                       "com.intel.vmf.compressor.test.bloating" };
     ASSERT_EQ(registeredIds, knownIds);
 }

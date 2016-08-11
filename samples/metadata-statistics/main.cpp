@@ -74,7 +74,7 @@ public:
     virtual vmf::Variant value() const
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            return vmf::Variant( (vmf::vmf_string)m_value );
+            return vmf::Variant( (vmf::umf_string)m_value );
         }
 
 private:

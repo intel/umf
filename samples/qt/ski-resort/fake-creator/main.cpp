@@ -28,8 +28,8 @@ int main(int argc, char** argv)
     vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
     vmf::initialize();
 
-    vmf::vmf_string coordFile(argv[1]);
-    vmf::vmf_string videoFile(argv[2]);
+    vmf::umf_string coordFile(argv[1]);
+    vmf::umf_string videoFile(argv[2]);
 
     vmf::MetadataStream stream;
     
@@ -89,10 +89,10 @@ int main(int argc, char** argv)
 
     auto gpsDesc = schema->findMetadataDesc(SKI_RESORT_GPS_DESC);
 
-    vmf::vmf_integer frameTime = 0;
+    vmf::umf_integer frameTime = 0;
     while (true)
     {
-        vmf::vmf_real latitude, longitude;
+        vmf::umf_real latitude, longitude;
         coordinatesStream >> latitude >> longitude;
         if (coordinatesStream.eof())
             break;

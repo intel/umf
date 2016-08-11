@@ -9,7 +9,7 @@ using namespace CryptoPP;
 namespace vmf
 {
 
-void EncryptorDefault::encrypt(const vmf_string& input, vmf_rawbuffer& output)
+void EncryptorDefault::encrypt(const umf_string& input, umf_rawbuffer& output)
 {
     string outBuf;
     try
@@ -23,10 +23,10 @@ void EncryptorDefault::encrypt(const vmf_string& input, vmf_rawbuffer& output)
     {
         VMF_EXCEPTION(IncorrectParamException, "CryptoPP::Exception caught:" +string(e.what()));
     }
-    output = vmf_rawbuffer(outBuf.data(), outBuf.length());
+    output = umf_rawbuffer(outBuf.data(), outBuf.length());
 }
 
-void EncryptorDefault::decrypt(const vmf_rawbuffer& input, vmf_string& output)
+void EncryptorDefault::decrypt(const umf_rawbuffer& input, umf_string& output)
 {
     if(input.size() == 0)
     {

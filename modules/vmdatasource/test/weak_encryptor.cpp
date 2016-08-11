@@ -6,7 +6,7 @@ namespace vmf
 
 const char WeakEncryptor::magic = 109;
 
-void WeakEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
+void WeakEncryptor::encrypt(const umf_string &input, umf_rawbuffer &output)
 {
     output.clear();
     output.reserve(input.length()+1);
@@ -18,7 +18,7 @@ void WeakEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
 }
 
 
-void WeakEncryptor::decrypt(const vmf_rawbuffer &input, vmf_string &output)
+void WeakEncryptor::decrypt(const umf_rawbuffer &input, umf_string &output)
 {
     output.clear();
     if(!input.empty())

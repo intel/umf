@@ -89,11 +89,11 @@ protected:
     std::shared_ptr<vmf::MetadataDesc> descr1;
     std::shared_ptr<vmf::MetadataDesc> descr2;
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_PROPERTY_NAME1;
-    vmf::vmf_string TEST_PROPERTY_NAME2;
-    vmf::vmf_string TEST_FIELD_NAME;
-    vmf::vmf_string TEST_FIELD_NAME2;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_PROPERTY_NAME1;
+    vmf::umf_string TEST_PROPERTY_NAME2;
+    vmf::umf_string TEST_FIELD_NAME;
+    vmf::umf_string TEST_FIELD_NAME2;
 };
 
 TEST_F(TestQuery, QueryByNameAndValue)

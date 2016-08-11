@@ -94,7 +94,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Compressor_n_1compress(JNIEnv *env, j
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
         if (str == 0) VMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
-        vmf_rawbuffer rbuf;
+        umf_rawbuffer rbuf;
         (*obj)->compress(getJavaStirng(env, str), rbuf);
         return (jlong) new std::shared_ptr<Variant>( new Variant( rbuf ) );
     }

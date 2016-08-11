@@ -63,27 +63,27 @@ Variant::~Variant()
 }
 
 #define IMPLEMENT_VMF_TYPE( T )\
-Variant::Variant( const vmf_##T& value)\
+Variant::Variant( const umf_##T& value)\
 {\
     m_type = type_##T;\
-    data = new Data<vmf_##T>(value);\
+    data = new Data<umf_##T>(value);\
 }\
-Variant& Variant::operator = ( const vmf_##T& value )\
+Variant& Variant::operator = ( const umf_##T& value )\
 {\
     release();\
     m_type = type_##T;\
-    data = new Data<vmf_##T>(value);\
+    data = new Data<umf_##T>(value);\
     return *this;\
 }\
-const vmf_##T& Variant::get_##T() const\
+const umf_##T& Variant::get_##T() const\
 {\
     if( type_##T == m_type )\
     {\
-        return dynamic_cast<Data<vmf_##T>*>(data)->content;\
+        return dynamic_cast<Data<umf_##T>*>(data)->content;\
     }\
     VMF_EXCEPTION(TypeCastException, "bad cast");\
 }\
-Variant::operator const vmf_##T& () const\
+Variant::operator const umf_##T& () const\
 {\
     return get_##T();\
 }
@@ -97,27 +97,27 @@ IMPLEMENT_VMF_TYPE( vec4d )
 IMPLEMENT_VMF_TYPE( rawbuffer )
 
 #define IMPLEMENT_VECTOR_VMF_TYPE( T ) \
-Variant::Variant( const std::vector<vmf_##T>& value)\
+Variant::Variant( const std::vector<umf_##T>& value)\
 {\
     m_type = type_##T##_vector;\
-    data = new Data<std::vector<vmf_##T>>(value);\
+    data = new Data<std::vector<umf_##T>>(value);\
 }\
-Variant& Variant::operator = ( const std::vector<vmf_##T>& value )\
+Variant& Variant::operator = ( const std::vector<umf_##T>& value )\
 {\
     release();\
     m_type = type_##T##_vector;\
-    data = new Data<std::vector<vmf_##T>>(value);\
+    data = new Data<std::vector<umf_##T>>(value);\
     return *this;\
 }\
-const std::vector<vmf_##T>& Variant::get_##T##_vector() const\
+const std::vector<umf_##T>& Variant::get_##T##_vector() const\
 {\
     if( type_##T##_vector == m_type )\
     {\
-        return dynamic_cast<Data<std::vector<vmf_##T>>*>(data)->content;\
+        return dynamic_cast<Data<std::vector<umf_##T>>*>(data)->content;\
     }\
     VMF_EXCEPTION(TypeCastException, "bad cast");\
 }\
-Variant::operator const std::vector<vmf_##T>& () const\
+Variant::operator const std::vector<umf_##T>& () const\
 {\
     return get_##T##_vector();\
 }
@@ -129,17 +129,17 @@ IMPLEMENT_VECTOR_VMF_TYPE( vec2d )
 IMPLEMENT_VECTOR_VMF_TYPE( vec3d )
 IMPLEMENT_VECTOR_VMF_TYPE( vec4d )
 
-Variant::Variant(const int& value) : data(new Data<vmf_integer>(value)), m_type(type_integer) {}
-Variant::Variant(const unsigned int& value) : data(new Data<vmf_integer>(value)), m_type(type_integer) {}
+Variant::Variant(const int& value) : data(new Data<umf_integer>(value)), m_type(type_integer) {}
+Variant::Variant(const unsigned int& value) : data(new Data<umf_integer>(value)), m_type(type_integer) {}
 
-Variant::Variant(const float& value) : data(new Data<vmf_real>(value)), m_type(type_real) {}
+Variant::Variant(const float& value) : data(new Data<umf_real>(value)), m_type(type_real) {}
 
 Variant& Variant::operator = ( const int& value )
 {
     release();
 
     m_type = type_integer;
-    data = new Data<vmf_integer>(value);
+    data = new Data<umf_integer>(value);
     return *this;
 }
 
@@ -148,7 +148,7 @@ Variant& Variant::operator = (const unsigned int& value)
     release();
 
     m_type = type_integer;
-    data = new Data<vmf_integer>(value);
+    data = new Data<umf_integer>(value);
     return *this;
 }
 
@@ -157,18 +157,18 @@ Variant& Variant::operator = (const float& value)
     release();
 
     m_type = type_real;
-    data = new Data<vmf_real>(value);
+    data = new Data<umf_real>(value);
     return *this;
 }
 
 Variant::Variant( const std::vector<int>& value ) : m_type(type_integer_vector)
 {
-    data = new Data<std::vector<vmf_integer>>(std::vector<vmf_integer>(value.begin(), value.end()));
+    data = new Data<std::vector<umf_integer>>(std::vector<umf_integer>(value.begin(), value.end()));
 }
 
 Variant::Variant( const std::vector<float>& value ) :  m_type(type_real_vector)
 {
-    data = new Data<std::vector<vmf_real>>(std::vector<vmf_real>(value.begin(), value.end()));
+    data = new Data<std::vector<umf_real>>(std::vector<umf_real>(value.begin(), value.end()));
 }
 
 Variant& Variant::operator = ( const std::vector<int>& value )
@@ -176,7 +176,7 @@ Variant& Variant::operator = ( const std::vector<int>& value )
     release();
 
     m_type = type_integer_vector;
-    data = new Data<std::vector<vmf_integer>>(std::vector<vmf_integer>(value.begin(), value.end()));
+    data = new Data<std::vector<umf_integer>>(std::vector<umf_integer>(value.begin(), value.end()));
     return *this;
 }
 
@@ -185,18 +185,18 @@ Variant& Variant::operator = (const std::vector<float>& value)
     release();
 
     m_type = type_real_vector;
-    data = new Data<std::vector<vmf_real>>(std::vector<vmf_real>(value.begin(), value.end()));
+    data = new Data<std::vector<umf_real>>(std::vector<umf_real>(value.begin(), value.end()));
     return *this;
 }
 
-Variant::Variant(const char* pszString) : data(new Data<vmf_string>(std::string(pszString))), m_type(type_string) {}
+Variant::Variant(const char* pszString) : data(new Data<umf_string>(std::string(pszString))), m_type(type_string) {}
 
 Variant& Variant::operator = ( const char* pszString )
 {
     release();
 
     m_type = type_string;
-    data = new Data<vmf_string>(std::string(pszString));
+    data = new Data<umf_string>(std::string(pszString));
     return *this;
 }
 
@@ -229,13 +229,13 @@ Variant& Variant::operator = (Variant&& other)
 
 #define COMPARE_OBJECT(T) \
     case type_##T: \
-        bIsEqual = dynamic_cast<Data<vmf_##T>*>(data)->content == other.get_##T(); \
+        bIsEqual = dynamic_cast<Data<umf_##T>*>(data)->content == other.get_##T(); \
         break;
 
 #define COMPARE_VECTOR_OBJECT( T ) \
     case type_##T##_vector: \
     { \
-        auto content = dynamic_cast<Data<std::vector<vmf_##T>>*>(data)->content; \
+        auto content = dynamic_cast<Data<std::vector<umf_##T>>*>(data)->content; \
         if( content.size() == other.get_##T##_vector().size() ) \
             bIsEqual = std::equal( content.begin(), content.end(), other.get_##T##_vector().begin() ); \
     } \
@@ -270,7 +270,7 @@ bool Variant::operator == (const Variant& other) const
     {
         COMPARE_OBJECT( integer )
         case type_real:
-            bIsEqual = DOUBLE_EQ(dynamic_cast<Data<vmf_real>*>(data)->content, other.get_real());
+            bIsEqual = DOUBLE_EQ(dynamic_cast<Data<umf_real>*>(data)->content, other.get_real());
         break;
         COMPARE_OBJECT( string )
         COMPARE_OBJECT( vec2d )
@@ -280,7 +280,7 @@ bool Variant::operator == (const Variant& other) const
         COMPARE_VECTOR_OBJECT( integer )
         case type_real_vector:
         {
-            auto content = dynamic_cast<Data<std::vector<vmf_real>>*>(data)->content;
+            auto content = dynamic_cast<Data<std::vector<umf_real>>*>(data)->content;
             if( content.size() == other.get_real_vector().size() )
                 bIsEqual = std::equal( content.begin(), content.end(), other.get_real_vector().begin(), DOUBLE_EQ );
         }
@@ -325,7 +325,7 @@ bool Variant::operator != ( const Variant& other ) const
 
 #define VECTOR_TYPE_TO_STRING( T , OP ) \
 { \
-    auto content = dynamic_cast<Data<std::vector<vmf_##T>>*>(data)->content; \
+    auto content = dynamic_cast<Data<std::vector<umf_##T>>*>(data)->content; \
     const char * separator = ""; \
     for(auto it = content.begin(); it != content.end(); it++) \
     { \
@@ -348,25 +348,25 @@ std::string Variant::toString(bool withType) const
         ss << "<empty value>";
         break;
     case type_integer:
-        SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<vmf_integer>*>(data)->content)
+        SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<umf_integer>*>(data)->content)
         break;
     case type_real:
-        REAL_TYPE_TO_STRING(dynamic_cast<Data<vmf_real>*>(data)->content)
+        REAL_TYPE_TO_STRING(dynamic_cast<Data<umf_real>*>(data)->content)
             break;
     case type_string:
-        SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<vmf_string>*>(data)->content.c_str())
+        SIMPLE_TYPE_TO_STRING(dynamic_cast<Data<umf_string>*>(data)->content.c_str())
         break;
     case type_vec2d:
-        VEC2_TYPE_TO_STRING(dynamic_cast<Data<vmf_vec2d>*>(data)->content)
+        VEC2_TYPE_TO_STRING(dynamic_cast<Data<umf_vec2d>*>(data)->content)
         break;
     case type_vec3d:
-        VEC3_TYPE_TO_STRING(dynamic_cast<Data<vmf_vec3d>*>(data)->content)
+        VEC3_TYPE_TO_STRING(dynamic_cast<Data<umf_vec3d>*>(data)->content)
         break;
     case type_vec4d:
-        VEC4_TYPE_TO_STRING(dynamic_cast<Data<vmf_vec4d>*>(data)->content)
+        VEC4_TYPE_TO_STRING(dynamic_cast<Data<umf_vec4d>*>(data)->content)
         break;
     case type_rawbuffer:
-        ss << base64encode(dynamic_cast<Data<vmf_rawbuffer>*>(data)->content);
+        ss << base64encode(dynamic_cast<Data<umf_rawbuffer>*>(data)->content);
         break;
     case type_integer_vector:
         VECTOR_TYPE_TO_STRING(integer, SIMPLE_TYPE_TO_STRING)
@@ -376,12 +376,12 @@ std::string Variant::toString(bool withType) const
         break;
     case type_string_vector:
         {
-            auto content = dynamic_cast<Data<std::vector<vmf_string>>*>(data)->content;
+            auto content = dynamic_cast<Data<std::vector<umf_string>>*>(data)->content;
             const char * separator = "";
             for (auto it = content.begin(); it != content.end(); it++)
             {
                 ss << separator;
-                SIMPLE_TYPE_TO_STRING(base64encode(vmf_rawbuffer(it->c_str(), it->size() + 1)))
+                SIMPLE_TYPE_TO_STRING(base64encode(umf_rawbuffer(it->c_str(), it->size() + 1)))
                 separator = " ; ";
             }
         }
@@ -437,57 +437,57 @@ void Variant::fromString(Type eType, const std::string& sValue)
         break;
     case type_integer:
         {
-            vmf_integer temp_integer;
+            umf_integer temp_integer;
             ss >> temp_integer;
-            data = new Data<vmf_integer>(temp_integer);
+            data = new Data<umf_integer>(temp_integer);
         }
         break;
     case type_real:
         {
-            vmf_real temp_real;
+            umf_real temp_real;
             ss >> temp_real;
-            data = new Data<vmf_real>(temp_real);
+            data = new Data<umf_real>(temp_real);
         }
         break;
     case type_string:
-        data = new Data<vmf_string>(sValue);
+        data = new Data<umf_string>(sValue);
         break;
     case type_vec2d:
         {
-            vmf_real x, y;
+            umf_real x, y;
             ss >> x >> y;
-            data = new Data<vmf_vec2d>(vmf_vec2d(x, y));
+            data = new Data<umf_vec2d>(umf_vec2d(x, y));
         }
         break;
     case type_vec3d:
         {
-            vmf_real x, y, z;
+            umf_real x, y, z;
             ss >> x >> y >> z;
-            data = new Data<vmf_vec3d>(vmf_vec3d(x, y, z));
+            data = new Data<umf_vec3d>(umf_vec3d(x, y, z));
         }
         break;
     case type_vec4d:
         {
-            vmf_real x, y, z, w;
+            umf_real x, y, z, w;
             ss >> x >> y >> z >> w;
-            data = new Data<vmf_vec4d>(vmf_vec4d(x, y, z, w));
+            data = new Data<umf_vec4d>(umf_vec4d(x, y, z, w));
         }
         break;
     case type_rawbuffer:
         {
             std::string s;
             ss >> s;
-            data = new Data<vmf_rawbuffer>(vmf_rawbuffer(base64decode(s)));
+            data = new Data<umf_rawbuffer>(umf_rawbuffer(base64decode(s)));
             break;
         }
         break;
     case type_integer_vector:
         {
-            std::vector<vmf_integer> vec;
+            std::vector<umf_integer> vec;
             while(ss)
             {
-                vmf_integer temp;
-                vmf_char separator = ';';
+                umf_integer temp;
+                umf_char separator = ';';
                 ss >> temp;
                 vec.push_back(temp);
                 if(ss)
@@ -495,16 +495,16 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_integer>>(vec);
+            data = new Data<std::vector<umf_integer>>(vec);
         }
         break;
     case type_real_vector:
         {
-            std::vector<vmf_real> vec;
+            std::vector<umf_real> vec;
             while(ss)
             {
-                vmf_real temp;
-                vmf_char separator = ';';
+                umf_real temp;
+                umf_char separator = ';';
                 ss >> temp;
                 vec.push_back(temp);
                 if(ss)
@@ -512,16 +512,16 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_real>>(vec);
+            data = new Data<std::vector<umf_real>>(vec);
         }
         break;
     case type_string_vector:
         {
-            std::vector<vmf_string> vec;
+            std::vector<umf_string> vec;
             while(ss)
             {
-                vmf_string temp;
-                vmf_char separator = ';';
+                umf_string temp;
+                umf_char separator = ';';
                 ss >> temp;
                 vec.push_back( base64decode(temp).data() );
                 if(ss)
@@ -529,58 +529,58 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_string>>(vec);
+            data = new Data<std::vector<umf_string>>(vec);
         }
         break;
     case type_vec2d_vector:
         {
-            std::vector<vmf_vec2d> vec;
-            vmf_char separator = ';';
+            std::vector<umf_vec2d> vec;
+            umf_char separator = ';';
             while(ss)
             {
-                vmf_real x, y;
+                umf_real x, y;
                 ss >> x >> y;
-                vec.push_back( vmf_vec2d(x,y) );
+                vec.push_back( umf_vec2d(x,y) );
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_vec2d>>(vec);
+            data = new Data<std::vector<umf_vec2d>>(vec);
         }
         break;
     case type_vec3d_vector:
         {
-            std::vector<vmf_vec3d> vec;
-            vmf_char separator = ';';
+            std::vector<umf_vec3d> vec;
+            umf_char separator = ';';
             while(ss)
             {
-                vmf_real x, y, z;
+                umf_real x, y, z;
                 ss >> x >> y >> z;
-                vec.push_back( vmf_vec3d(x, y, z) );
+                vec.push_back( umf_vec3d(x, y, z) );
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_vec3d>>(vec);
+            data = new Data<std::vector<umf_vec3d>>(vec);
         }
         break;
     case type_vec4d_vector:
         {
-            std::vector<vmf_vec4d> vec;
-            vmf_char separator = ';';
+            std::vector<umf_vec4d> vec;
+            umf_char separator = ';';
             while(ss)
             {
-                vmf_real x, y, z, w;
+                umf_real x, y, z, w;
                 ss >> x >> y >> z >> w;
-                vec.push_back( vmf_vec4d(x, y, z, w) );
+                vec.push_back( umf_vec4d(x, y, z, w) );
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
                     VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
-            data = new Data<std::vector<vmf_vec4d>>(vec);
+            data = new Data<std::vector<umf_vec4d>>(vec);
         }
         break;
     default:
@@ -702,7 +702,7 @@ bool Variant::isConvertible(Type srcType, Type dstType)
     return false;
 }
 
-std::string Variant::base64encode(const vmf_rawbuffer& value)
+std::string Variant::base64encode(const umf_rawbuffer& value)
 {
     const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;
@@ -723,12 +723,12 @@ std::string Variant::base64encode(const vmf_rawbuffer& value)
     return result;
 }
 
-vmf_rawbuffer Variant::base64decode(const std::string& base64Str)
+umf_rawbuffer Variant::base64decode(const std::string& base64Str)
 {
     const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     if (base64Str.empty())
-        return vmf_rawbuffer();
+        return umf_rawbuffer();
 
     size_t size = base64Str.size();
     if (base64Str.size() % 4 != 0)
@@ -759,7 +759,7 @@ vmf_rawbuffer Variant::base64decode(const std::string& base64Str)
         if (i < res_size) result[i++] = (c[1] << 4) | (c[2] >> 2);
         if (i < res_size) result[i++] = ((c[2] & 0x3) << 6) | c[3];
     }
-    return vmf_rawbuffer(result.get(), res_size);
+    return umf_rawbuffer(result.get(), res_size);
 }
 
 void Variant::release()

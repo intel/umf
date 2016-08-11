@@ -38,7 +38,7 @@ TEST_F(TestMetadataDesc, CreateWithFields)
     auto descFields = spDesc->getFields();
     ASSERT_EQ(descFields.size(), vFields.size());
     ASSERT_EQ(spDesc->getMetadataName(), "people");
-    ASSERT_EQ(spDesc->getSchemaName(), vmf::vmf_string());
+    ASSERT_EQ(spDesc->getSchemaName(), vmf::umf_string());
 }
 
 TEST_F(TestMetadataDesc, CreateWithFieldsIncorrect)
@@ -52,7 +52,7 @@ TEST_F(TestMetadataDesc, CreateWithFieldsIncorrect)
 
 TEST_F(TestMetadataDesc, CreateWithFieldsEmptyName)
 {
-    EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( vmf::vmf_string(), vFields )), vmf::ValidateException);
+    EXPECT_THROW(spDesc = std::shared_ptr< vmf::MetadataDesc >(new vmf::MetadataDesc( vmf::umf_string(), vFields )), vmf::ValidateException);
 }
 
 TEST_F(TestMetadataDesc, FindDesc)
@@ -97,7 +97,7 @@ TEST_F(TestMetadataDesc, CreateEvent)
     spDesc = std::shared_ptr< vmf::MetadataDesc >( new vmf::MetadataDesc( "people", vmf::Variant::type_string ));
     std::vector<vmf::FieldDesc> fields = spDesc->getFields();
     ASSERT_EQ(fields.size(), (size_t) 1);
-    ASSERT_EQ(fields[0].name, vmf::vmf_string());
+    ASSERT_EQ(fields[0].name, vmf::umf_string());
     ASSERT_EQ(fields[0].type, vmf::Variant::type_string);
 }
 

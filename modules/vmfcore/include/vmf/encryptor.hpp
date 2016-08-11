@@ -32,7 +32,7 @@ namespace vmf
  * \class Encryptor
  * \brief Interface for all encryption algorithms
  */
-class VMF_EXPORT Encryptor
+class UMF_EXPORT Encryptor
 {
 public:
     /*!
@@ -40,19 +40,19 @@ public:
      * \param [in] input input text data
      * \param [out] output where to put binary encrypted data
      */
-    virtual void encrypt(const vmf_string& input, vmf_rawbuffer& output) = 0;
+    virtual void encrypt(const umf_string& input, umf_rawbuffer& output) = 0;
 
     /*!
      * \brief Decrypt data
      * \param [in] input binary encrypted input data
      * \param [out] output where to put decrypted text data
      */
-    virtual void decrypt(const vmf_rawbuffer& input, vmf_string& output) = 0;
+    virtual void decrypt(const umf_rawbuffer& input, umf_string& output) = 0;
 
     /*!
      * \brief Gets the hint for the algorithm (for example, the name of the algorithm)
      */
-    virtual vmf_string getHint() = 0;
+    virtual umf_string getHint() = 0;
 
     /*!
      * \brief Default destructor

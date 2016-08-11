@@ -48,7 +48,7 @@ TEST_P(TestEncryptor, LossesOnEncryption)
     do
     {
         std::string data = generateData(nChars);
-        vmf_rawbuffer encrypted;
+        umf_rawbuffer encrypted;
         encryptor->encrypt(data, encrypted);
         std::string result;
         encryptor->decrypt(encrypted, result);
@@ -63,7 +63,7 @@ TEST_P(TestEncryptor, DecryptEmpty)
 {
     std::shared_ptr<Encryptor> encryptor = getEncryptor(GetParam());
 
-    vmf_rawbuffer encrypted;
+    umf_rawbuffer encrypted;
     std::string result;
     ASSERT_NO_THROW(encryptor->decrypt(encrypted, result));
     ASSERT_TRUE(result.empty());
@@ -79,7 +79,7 @@ TEST_P(TestEncryptor, DecryptWrongPassword)
     do
     {
         std::string data = generateData(nChars);
-        vmf_rawbuffer encrypted;
+        umf_rawbuffer encrypted;
         rightEncryptor->encrypt(data, encrypted);
         std::string wrongResult;
         ASSERT_THROW(wrongEncryptor->decrypt(encrypted, wrongResult), IncorrectParamException);

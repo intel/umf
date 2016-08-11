@@ -179,9 +179,9 @@ public:
                 return m_value;
                 break;
             case Variant::type_integer:
-                return Variant( ((vmf_real) m_value.get_integer()) / m_count );
+                return Variant( ((umf_real) m_value.get_integer()) / m_count );
             case Variant::type_real:
-                return Variant( ((vmf_real) m_value.get_real()) / m_count );
+                return Variant( ((umf_real) m_value.get_real()) / m_count );
             default:
                 VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
             }
@@ -190,7 +190,7 @@ public:
 private:
     mutable std::mutex m_lock;
     Variant m_value;
-    vmf_integer m_count;
+    umf_integer m_count;
 
 public:
     static StatOpBase* createInstance()
@@ -221,12 +221,12 @@ public:
     virtual Variant value() const
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            return Variant( (vmf_integer)m_count );
+            return Variant( (umf_integer)m_count );
         }
 
 private:
     mutable std::mutex m_lock;
-    vmf_integer m_count;
+    umf_integer m_count;
 
 public:
     static StatOpBase* createInstance()

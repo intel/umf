@@ -34,10 +34,10 @@ namespace vmf
  * (currently this is TripleDES with HMAC/SHA-1)
  */
 
-class VMF_EXPORT EncryptorDefault : public Encryptor
+class UMF_EXPORT EncryptorDefault : public Encryptor
 {
 public:
-    EncryptorDefault(const vmf_string& _passphrase) : passphrase(_passphrase)
+    EncryptorDefault(const umf_string& _passphrase) : passphrase(_passphrase)
     { }
 
     /*!
@@ -45,19 +45,19 @@ public:
      * \param [in] input input text data
      * \param [out] output where to put binary encrypted data
      */
-    virtual void encrypt(const vmf_string& input, vmf_rawbuffer& output);
+    virtual void encrypt(const umf_string& input, umf_rawbuffer& output);
 
     /*!
      * \brief Decrypt data
      * \param [in] input binary encrypted input data
      * \param [out] output where to put decrypted text data
      */
-    virtual void decrypt(const vmf_rawbuffer& input, vmf_string& output);
+    virtual void decrypt(const umf_rawbuffer& input, umf_string& output);
 
     /*!
      * \brief Gets the hint for the algorithm (for example, the name of the algorithm)
      */
-    virtual vmf_string getHint()
+    virtual umf_string getHint()
     {
         return "Password-Based decryptor using TripleDES and HMAC/SHA-1";
     }
@@ -68,7 +68,7 @@ public:
     virtual ~EncryptorDefault() { }
 
 private:
-    vmf_string passphrase;
+    umf_string passphrase;
 };
 
 

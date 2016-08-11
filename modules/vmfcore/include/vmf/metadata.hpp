@@ -50,7 +50,7 @@ class Reference;
 * \class Metadata
 * \brief The class contains values of metadata items
 */
-class VMF_EXPORT Metadata : public std::vector< vmf::FieldValue >
+class UMF_EXPORT Metadata : public std::vector< vmf::FieldValue >
 {
     friend class MetadataSet;
     friend class MetadataStream;

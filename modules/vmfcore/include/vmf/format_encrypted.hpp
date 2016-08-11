@@ -34,7 +34,7 @@ namespace vmf
  * The class performs (de)serialization of the stream with encryption
  * based on provided instance of %Format and %Encryptor interfaces.
  */
-class VMF_EXPORT FormatEncrypted : public Format
+class UMF_EXPORT FormatEncrypted : public Format
 {
 public:
 

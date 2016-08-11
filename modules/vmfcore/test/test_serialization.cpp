@@ -28,7 +28,7 @@ enum SerializerType
 
 using namespace vmf;
 
-class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, vmf_string, CryptAlgo> >
+class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, umf_string, CryptAlgo> >
 {
 protected:
     void SetUp()
@@ -193,7 +193,7 @@ protected:
     std::vector<std::shared_ptr<ReferenceDesc>> vRefDescsPeople, vRefDescsFrames;
     std::vector< std::shared_ptr<MetadataStream::VideoSegment>> segments;
 
-    vmf_string n_schemaPeople, n_schemaFrames;
+    umf_string n_schemaPeople, n_schemaFrames;
 };
 
 
@@ -425,7 +425,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
 {
     auto param = GetParam();
 
-    vmf_string compressorId = "unknown_compressor";
+    umf_string compressorId = "unknown_compressor";
     std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
     vmf::Compressor::registerNew(fake);

@@ -35,13 +35,13 @@ class WeakEncryptor : public vmf::Encryptor
 public:
     WeakEncryptor(char _key) : key(_key) { }
 
-    virtual void encrypt(const vmf_string &input, vmf_rawbuffer &output);
+    virtual void encrypt(const umf_string &input, umf_rawbuffer &output);
 
-    virtual void decrypt(const vmf_rawbuffer &input, vmf_string &output);
+    virtual void decrypt(const umf_rawbuffer &input, umf_string &output);
 
-    virtual vmf_string getHint()
+    virtual umf_string getHint()
     {
-        return vmf_string("bad encryptor for tests");
+        return umf_string("bad encryptor for tests");
     }
 
     virtual ~WeakEncryptor() { }

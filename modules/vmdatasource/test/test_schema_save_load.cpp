@@ -51,11 +51,11 @@ protected:
     std::shared_ptr<vmf::MetadataSchema> schema;
     std::shared_ptr<vmf::MetadataDesc> desc;
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_DESC_NAME;
-    vmf::vmf_string TEST_FIELD_NAME;
-    vmf::vmf_string TEST_VALUE_1;
-    vmf::vmf_string TEST_VALUE_2;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_DESC_NAME;
+    vmf::umf_string TEST_FIELD_NAME;
+    vmf::umf_string TEST_VALUE_1;
+    vmf::umf_string TEST_VALUE_2;
 };
 
 TEST_F(TestSaveLoadSchema, OneField)
@@ -139,8 +139,8 @@ TEST_F(TestSaveLoadSchema, GetAllNames)
 
 TEST_F(TestSaveLoadSchema, SchemaAuthor)
 {
-    const vmf::vmf_string TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
-    const vmf::vmf_string TEST_AUTHOR_NAME = "< the \"Author\" >";
+    const vmf::umf_string TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
+    const vmf::umf_string TEST_AUTHOR_NAME = "< the \"Author\" >";
 
     {
         vmf::MetadataStream stream;

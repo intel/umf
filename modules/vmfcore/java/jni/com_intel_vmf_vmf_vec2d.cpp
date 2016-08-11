@@ -17,11 +17,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__(JNIEnv *en
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__(JNIEnv *env, jclass)
 {
-    static const char method_name[] = "vmf_vec2d::n_1vec2d__";
+    static const char method_name[] = "umf_vec2d::n_1vec2d__";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* obj = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d());
+        std::shared_ptr<umf_vec2d>* obj = new std::shared_ptr<umf_vec2d>(new umf_vec2d());
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -46,11 +46,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__DD(JNIEnv *
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__DD (JNIEnv *env, jclass, jdouble x, jdouble y)
 {
-    static const char method_name[] = "vmf_vec2d::n_1vec2d__DD";
+    static const char method_name[] = "umf_vec2d::n_1vec2d__DD";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* obj = new std::shared_ptr<vmf_vec2d>(new vmf_vec2d((double)x, (double)y));
+        std::shared_ptr<umf_vec2d>* obj = new std::shared_ptr<umf_vec2d>(new umf_vec2d((double)x, (double)y));
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -75,12 +75,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1vmf_1vec2d__DD (JNIEnv 
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
-    static const char method_name[] = "vmf_vec2d::n_1setTo";
+    static const char method_name[] = "umf_vec2d::n_1setTo";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* self = (std::shared_ptr<vmf_vec2d>*) selfAddr;
-        std::shared_ptr<vmf_vec2d>* other = (std::shared_ptr<vmf_vec2d>*) otherAddr;
+        std::shared_ptr<umf_vec2d>* self = (std::shared_ptr<umf_vec2d>*) selfAddr;
+        std::shared_ptr<umf_vec2d>* other = (std::shared_ptr<umf_vec2d>*) otherAddr;
 
         if ((self == NULL) || (self->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec2d is null pointer.");
@@ -110,11 +110,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getX(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getX (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec2d::n_1getX";
+    static const char method_name[] = "umf_vec2d::n_1getX";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+        std::shared_ptr<umf_vec2d>* obj = (std::shared_ptr<umf_vec2d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -143,11 +143,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getY(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1getY(JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec2d::n_1getY";
+    static const char method_name[] = "umf_vec2d::n_1getY";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+        std::shared_ptr<umf_vec2d>* obj = (std::shared_ptr<umf_vec2d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -176,11 +176,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1delete(JNIEnv *env, jcla
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec2d_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec2d::n_1delete";
+    static const char method_name[] = "umf_vec2d::n_1delete";
 
     try
     {
-        std::shared_ptr<vmf_vec2d>* obj = (std::shared_ptr<vmf_vec2d>*) self;
+        std::shared_ptr<umf_vec2d>* obj = (std::shared_ptr<umf_vec2d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec2d is null pointer.");

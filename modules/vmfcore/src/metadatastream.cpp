@@ -129,7 +129,7 @@ bool MetadataStream::load(const std::string& sSchemaName, const std::string& sMe
 }
 
 
-bool MetadataStream::save(const vmf_string &compressorId)
+bool MetadataStream::save(const umf_string &compressorId)
 {
     dataSourceCheck();
     try
@@ -224,7 +224,7 @@ bool MetadataStream::reopen( OpenMode eMode )
 }
 
 
-bool MetadataStream::saveTo(const std::string& sFilePath, const vmf_string& compressorId)
+bool MetadataStream::saveTo(const std::string& sFilePath, const umf_string& compressorId)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
         VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
@@ -827,7 +827,7 @@ void MetadataStream::encrypt()
             }
             std::string serialized = Variant(fvStrings).toString();
 
-            vmf_rawbuffer encryptedBuf;
+            umf_rawbuffer encryptedBuf;
             if(m_encryptor)
             {
                 m_encryptor->encrypt(serialized, encryptedBuf);
@@ -846,7 +846,7 @@ void MetadataStream::encrypt()
                 if(fv.getUseEncryption() ||
                    toEncrypt[SubsetKey(meta->getSchemaName(), meta->getName(), fv.getName())])
                 {
-                    vmf_rawbuffer encryptedBuf;
+                    umf_rawbuffer encryptedBuf;
                     if(m_encryptor)
                     {
                         m_encryptor->encrypt(fv.toString(), encryptedBuf);
@@ -888,7 +888,7 @@ void MetadataStream::decrypt()
             }
             else
             {
-                vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
+                umf_rawbuffer encBuf = Variant::base64decode(encryptedData);
                 std::string serialized;
                 try
                 {
@@ -952,7 +952,7 @@ void MetadataStream::decrypt()
                         }
                         else
                         {
-                            vmf_rawbuffer encBuf = Variant::base64decode(encryptedData);
+                            umf_rawbuffer encBuf = Variant::base64decode(encryptedData);
                             std::string decrypted;
                             try
                             {

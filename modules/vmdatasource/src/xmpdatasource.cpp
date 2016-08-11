@@ -109,7 +109,7 @@ XMPDataSource::~XMPDataSource()
 
 }
 
-void XMPDataSource::setCompressor(const vmf_string &id)
+void XMPDataSource::setCompressor(const umf_string &id)
 {
     if(!id.empty())
     {
@@ -150,7 +150,7 @@ void XMPDataSource::loadXMPstructs()
     {
         //load standard VMF metadata and decrypt them if there is a corresponding schema
         //or pass them further
-        std::map<vmf_string, std::shared_ptr<MetadataSchema> > eSchemas;
+        std::map<umf_string, std::shared_ptr<MetadataSchema> > eSchemas;
         tmpSchemaSource->load(eSchemas);
         auto itEncryption = eSchemas.find(ENCRYPTED_DATA_SCHEMA_NAME);
         if(itEncryption != eSchemas.end())
@@ -160,8 +160,8 @@ void XMPDataSource::loadXMPstructs()
             tmpMetaSource->loadSchema(ENCRYPTED_DATA_SCHEMA_NAME, eStream);
             MetadataSet eSet = eStream.queryBySchema(ENCRYPTED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> eItem = eSet[0];
-            vmf_string hint      = eItem->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
-            vmf_string encodedB64 = eItem->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
+            umf_string hint      = eItem->getFieldValue(ENCRYPTION_HINT_PROP_NAME);
+            umf_string encodedB64 = eItem->getFieldValue(ENCRYPTED_DATA_PROP_NAME);
             bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownEncryptor) != 0;
             if(!encryptor)
             {
@@ -175,7 +175,7 @@ void XMPDataSource::loadXMPstructs()
             {
                 string decodedFromB64;
                 XMPUtils::DecodeFromBase64(encodedB64.data(), encodedB64.length(), &decodedFromB64);
-                vmf_rawbuffer encrypted(decodedFromB64.c_str(), decodedFromB64.size());
+                umf_rawbuffer encrypted(decodedFromB64.c_str(), decodedFromB64.size());
                 string theData;
                 try
                 {
@@ -206,7 +206,7 @@ void XMPDataSource::loadXMPstructs()
 
         //load standard VMF metadata and decompress them if there is a corresponding schema
         //or pass them further
-        std::map<vmf_string, std::shared_ptr<MetadataSchema> > cSchemas;
+        std::map<umf_string, std::shared_ptr<MetadataSchema> > cSchemas;
         tmpSchemaSource->load(cSchemas);
         auto itCompression = cSchemas.find(COMPRESSED_DATA_SCHEMA_NAME);
         if(itCompression != cSchemas.end())
@@ -216,15 +216,15 @@ void XMPDataSource::loadXMPstructs()
             tmpMetaSource->loadSchema(COMPRESSED_DATA_SCHEMA_NAME, cStream);
             MetadataSet cSet = cStream.queryBySchema(COMPRESSED_DATA_SCHEMA_NAME);
             std::shared_ptr<Metadata> cItem = cSet[0];
-            vmf_string algo    = cItem->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
-            vmf_string encoded = cItem->getFieldValue(COMPRESSED_DATA_PROP_NAME);
+            umf_string algo    = cItem->getFieldValue(COMPRESSION_ALGO_PROP_NAME);
+            umf_string encoded = cItem->getFieldValue(COMPRESSED_DATA_PROP_NAME);
             bool ignoreBad = (openMode & MetadataStream::OpenModeFlags::IgnoreUnknownCompressor) != 0;
             try
             {
                 std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
                 string decoded;
                 XMPUtils::DecodeFromBase64(encoded.data(), encoded.length(), &decoded);
-                vmf_rawbuffer compressed(decoded.c_str(), decoded.size());
+                umf_rawbuffer compressed(decoded.c_str(), decoded.size());
                 string theData;
                 decompressor->decompress(compressed, theData);
                 //replace tmp XMP entities
@@ -285,7 +285,7 @@ void XMPDataSource::saveXMPstructs()
         string buffer;
         XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
         tmpXMP->SerializeToBuffer(&buffer, options, 0, NULL);
-        vmf_rawbuffer compressed;
+        umf_rawbuffer compressed;
         compressor->compress(buffer, compressed);
         string encoded;
         XMPUtils::EncodeToBase64 (compressed.data(), compressed.size(), &encoded);
@@ -332,7 +332,7 @@ void XMPDataSource::saveXMPstructs()
         string buffer;
         XMP_OptionBits options = kXMP_ReadOnlyPacket | kXMP_UseCompactFormat;
         tmpXMP->SerializeToBuffer(&buffer, options, 0, NULL);
-        vmf_rawbuffer encrypted;
+        umf_rawbuffer encrypted;
         encryptor->encrypt(buffer, encrypted);
         string encoded;
         XMPUtils::EncodeToBase64(encrypted.data(), encrypted.size(), &encoded);
@@ -384,7 +384,7 @@ void XMPDataSource::saveXMPstructs()
 }
 
 
-void XMPDataSource::openFile(const vmf_string& fileName, MetadataStream::OpenMode mode)
+void XMPDataSource::openFile(const umf_string& fileName, MetadataStream::OpenMode mode)
 {
     try
     {
@@ -447,7 +447,7 @@ void XMPDataSource::closeFile()
 }
 
 
-void XMPDataSource::loadSchema(const vmf_string& schemaName, MetadataStream& stream)
+void XMPDataSource::loadSchema(const umf_string& schemaName, MetadataStream& stream)
 {
     metadataSourceCheck();
     try
@@ -466,7 +466,7 @@ void XMPDataSource::loadSchema(const vmf_string& schemaName, MetadataStream& str
 
 
 
-void XMPDataSource::loadProperty(const vmf_string &schemaName, const vmf_string &propertyName, MetadataStream &stream)
+void XMPDataSource::loadProperty(const umf_string &schemaName, const umf_string &propertyName, MetadataStream &stream)
 {
     metadataSourceCheck();
     try
@@ -564,7 +564,7 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     }
 }
 
-void XMPDataSource::load(std::map<vmf_string, std::shared_ptr<MetadataSchema> >& schemas)
+void XMPDataSource::load(std::map<umf_string, std::shared_ptr<MetadataSchema> >& schemas)
 {
     schemaSourceCheck();
     try
@@ -685,7 +685,7 @@ void XMPDataSource::statSourceCheck()
     }
 }
 
-void XMPDataSource::removeSchema(const vmf_string &schemaName)
+void XMPDataSource::removeSchema(const umf_string &schemaName)
 {
     /* TODO:
      * Existing implementation requires metadata re-reading here,
@@ -703,7 +703,7 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
     {
         loadXMPstructs();
 
-        vmf_string checksum;
+        umf_string checksum;
         xmpFile.ComputeChecksum(&checksum, &XMPPacketSize, &XMPPacketOffset);
         return checksum;
     }
@@ -730,7 +730,7 @@ std::string XMPDataSource::loadChecksum()
     return checksum;
 }
 
-void XMPDataSource::saveChecksum(const vmf_string& checksum)
+void XMPDataSource::saveChecksum(const umf_string& checksum)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
 }
@@ -745,7 +745,7 @@ std::string XMPDataSource::loadHintEncryption()
 }
 
 
-void XMPDataSource::saveHintEncryption(const vmf_string& hint)
+void XMPDataSource::saveHintEncryption(const umf_string& hint)
 {
     xmp->SetProperty(VMF_NS, VMF_GLOBAL_HINT, hint.c_str());
 }
@@ -756,20 +756,20 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
     xmp->DeleteProperty(VMF_NS, VMF_INTERNAL);
     if (!segments.empty())
     {
-        vmf_string pathToInternalData;
+        umf_string pathToInternalData;
         xmp->AppendArrayItem(VMF_NS, VMF_INTERNAL, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
         SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
         xmp->SetStructField(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, nullptr, kXMP_PropValueIsArray);
 
         std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& segment)
         {
-            vmf_string pathToSegmentsArray;
+            umf_string pathToSegmentsArray;
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
             xmp->AppendArrayItem(VMF_NS, pathToSegmentsArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-            vmf_string pathToSegment;
+            umf_string pathToSegment;
             SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToSegmentsArray.c_str(), kXMP_ArrayLastItem, &pathToSegment);
 
-            vmf_string tmpPath;
+            umf_string tmpPath;
 
             if (segment->getTitle().empty() || segment->getFPS() <= 0 || segment->getTime() < 0)
                 VMF_EXCEPTION(DataStorageException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
@@ -805,17 +805,17 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
 
 void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
-    vmf_string pathToInternalData;
+    umf_string pathToInternalData;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
 
-    vmf_string pathToSegmentsArray;
+    umf_string pathToSegmentsArray;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
 
     SXMPIterator segmentsIter(*xmp, VMF_NS, pathToSegmentsArray.c_str(), kXMP_IterJustChildren);
-    vmf_string pathToSegment;
+    umf_string pathToSegment;
     while (segmentsIter.Next(nullptr, &pathToSegment))
     {
-	vmf_string tmpPath, segmentTitle;
+	umf_string tmpPath, segmentTitle;
 	double fps;
 	long long timestamp, duration;
 	XMP_Int32 width, height;

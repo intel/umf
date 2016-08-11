@@ -20,7 +20,7 @@ public:
     float getCurrentSpeed();
     int getCurrentPercentage();
     int getCurrentFrameNumber();
-    vmf::vmf_integer getFrameDelay();
+    vmf::umf_integer getFrameDelay();
     bool hasSpeed();
     bool isOpened();
     void next();
@@ -37,10 +37,10 @@ private:
     cv::VideoCapture capture;
     cv::Mat currentFrame;
     GpsCoordinates currentCoordinates;
-    vmf::vmf_integer currentTime;
+    vmf::umf_integer currentTime;
     float currentSpeed;
     double fps;
-    vmf::vmf_integer frameDelay;
+    vmf::umf_integer frameDelay;
     double duration;
     vmf::MetadataStream metaStream;
     size_t currentGpsCoordinateIndex;

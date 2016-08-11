@@ -38,13 +38,13 @@ TEST_F(TestMetadata, CreateFromDesc)
 {
     vmf::MetadataStream stream;
     spJessica->setFieldValue( "name", "Jessica" );
-    spJessica->setFieldValue( "age", (vmf::vmf_integer) 12 );
+    spJessica->setFieldValue( "age", (vmf::umf_integer) 12 );
     spJessica->setFieldValue( "sex", "F" );
     spJessica->setFieldValue( "email", "jessica@kidsmail.com" );
 
     EXPECT_NO_THROW(spJessica->validate());
     ASSERT_EQ(spJessica->getName(), "people");
-    ASSERT_EQ(spJessica->getSchemaName(), vmf::vmf_string());
+    ASSERT_EQ(spJessica->getSchemaName(), vmf::umf_string());
     ASSERT_EQ(spJessica->getId(), vmf::INVALID_ID);
 
     std::shared_ptr<vmf::MetadataSchema> nullSchema = nullptr;
@@ -59,7 +59,7 @@ TEST_F(TestMetadata, CreateNullPtr)
 TEST_F(TestMetadata, SetInvalidField)
 {
     spJessica->setFieldValue( "name", "Jessica" );
-    spJessica->setFieldValue( "age", (vmf::vmf_integer) 12 );
+    spJessica->setFieldValue( "age", (vmf::umf_integer) 12 );
     spJessica->setFieldValue( "sex", "F" );
     EXPECT_THROW(spJessica->setFieldValue( "position", "manager" ), vmf::IncorrectParamException);
 }
@@ -84,7 +84,7 @@ TEST_F(TestMetadata, AddValueIncorrectType)
 {
     spDesc = std::shared_ptr< vmf::MetadataDesc >( new vmf::MetadataDesc( "event", vmf::Variant::type_string ));
     std::shared_ptr< vmf::Metadata > spSki( new vmf::Metadata( spDesc ));
-    EXPECT_THROW(spSki->addValue((vmf::vmf_integer) 42), vmf::TypeCastException);
+    EXPECT_THROW(spSki->addValue((vmf::umf_integer) 42), vmf::TypeCastException);
 }
 
 TEST_F(TestMetadata, GetSingleFieldValue)

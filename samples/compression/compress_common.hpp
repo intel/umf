@@ -21,7 +21,7 @@
 #include "vmf/vmf.hpp"
 
 void generateMetadata(vmf::MetadataStream& mdStream);
-void readAndDumpMetadata(const vmf::vmf_string& videoFile);
+void readAndDumpMetadata(const vmf::umf_string& videoFile);
 
 int compress_builtin(const std::string& videoFile);
 int compress_custom(const std::string& videoFile);

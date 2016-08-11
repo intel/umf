@@ -28,7 +28,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_EncryptorDefault_n_1encrypt(JNIEnv *e
         std::shared_ptr<EncryptorDefault>* obj = (std::shared_ptr<EncryptorDefault>*) self;
         if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
         if (str == 0) VMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
-        vmf_rawbuffer rbuf;
+        umf_rawbuffer rbuf;
         (*obj)->encrypt(getJavaStirng(env, str), rbuf);
         return (jlong) new std::shared_ptr<Variant>(new Variant(rbuf));
     }

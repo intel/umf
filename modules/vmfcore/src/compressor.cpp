@@ -21,7 +21,7 @@
 
 namespace vmf {
 
-typedef std::map< vmf_string, std::shared_ptr<Compressor> > CompressorsMap;
+typedef std::map< umf_string, std::shared_ptr<Compressor> > CompressorsMap;
 enum CompressorType {BUILTIN=0, USER=1};
 
 /*static*/ std::string Compressor::builtinId()
@@ -43,9 +43,9 @@ CompressorsMap& getMapInstance(CompressorType type)
 }
 
 
-std::vector<vmf_string> Compressor::getRegisteredIds()
+std::vector<umf_string> Compressor::getRegisteredIds()
 {
-    std::vector<vmf_string> result;
+    std::vector<umf_string> result;
     for(CompressorType type: {BUILTIN, USER})
     {
         for(const auto& c : getMapInstance(type))
@@ -78,7 +78,7 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 }
 
 
-std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
+std::shared_ptr<Compressor> Compressor::create(const umf_string &id)
 {
     std::shared_ptr<Compressor> current;
     for(CompressorType type: {BUILTIN, USER})
@@ -102,7 +102,7 @@ std::shared_ptr<Compressor> Compressor::create(const vmf_string &id)
 }
 
 
-void Compressor::unregister(const vmf_string &id)
+void Compressor::unregister(const umf_string &id)
 {
     CompressorsMap& userMap    = getMapInstance(USER);
     CompressorsMap& builtinMap = getMapInstance(BUILTIN);

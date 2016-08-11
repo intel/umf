@@ -63,7 +63,7 @@ std::string FormatEncrypted::encrypt(const std::string &input)
 {
     if(encryptor)
     {
-        vmf_rawbuffer encryptedBuf;
+        umf_rawbuffer encryptedBuf;
         encryptor->encrypt(input, encryptedBuf);
         //Encrypted binary data should be represented in base64
         //because of \0 symbols
@@ -118,7 +118,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
     if(counters.schemas == 1 && schemas.size() == 1 && schemas[0]->getName() == ENCRYPTED_DATA_SCHEMA_NAME)
     {
         MetadataInternal& eMetadata = metadata[0];
-        vmf_string hint, data;
+        umf_string hint, data;
         auto hintIt = eMetadata.fields.find(ENCRYPTION_HINT_PROP_NAME);
         auto dataIt = eMetadata.fields.find(ENCRYPTED_DATA_PROP_NAME);
         if(hintIt != eMetadata.fields.end())
@@ -144,7 +144,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
                 std::string decrypted;
                 // Encrypted binary data should be represented in base64
                 // because of '\0' symbols
-                vmf_rawbuffer encrypted = Variant::base64decode(data);
+                umf_rawbuffer encrypted = Variant::base64decode(data);
                 encryptor->decrypt(encrypted, decrypted);
                 return decrypted;
             }

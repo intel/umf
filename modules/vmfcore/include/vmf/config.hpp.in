@@ -16,11 +16,11 @@
  */
 #pragma once
 
-#define VMF_VERSION_MAJOR @VMF_VERSION_MAJOR@
-#define VMF_VERSION_MINOR @VMF_VERSION_MINOR@
+#define UMF_VERSION_MAJOR @UMF_VERSION_MAJOR@
+#define UMF_VERSION_MINOR @UMF_VERSION_MINOR@
 
-#ifdef VMF_API_EXPORT
-  #define VMF_EXPORT __declspec(dllexport)
+#ifdef UMF_API_EXPORT
+  #define UMF_EXPORT __declspec(dllexport)
 #else
-  #define VMF_EXPORT
+  #define UMF_EXPORT
 #endif

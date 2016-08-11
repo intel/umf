@@ -112,7 +112,7 @@ void generateEncryptedMetadata(MetadataStream &mdStream, EncryptionScope scope)
 }
 
 
-void readAndDumpEncryptedMetadata(const vmf_string& videoFile, std::shared_ptr<Encryptor> encryptor)
+void readAndDumpEncryptedMetadata(const umf_string& videoFile, std::shared_ptr<Encryptor> encryptor)
 {
     cout << "Opening file name '" << videoFile << "'" << endl;
 

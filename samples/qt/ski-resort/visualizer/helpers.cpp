@@ -10,9 +10,9 @@
 using namespace std;
 using namespace vmf;
 
-vmf::vmf_integer calculateFrameDelay(double fps)
+vmf::umf_integer calculateFrameDelay(double fps)
 {
-    vmf::vmf_integer frameDelay = (vmf::vmf_integer) floor(1000.0 / fps);
+    vmf::umf_integer frameDelay = (vmf::umf_integer) floor(1000.0 / fps);
     return frameDelay;
 }
 

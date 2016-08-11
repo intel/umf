@@ -38,7 +38,7 @@ namespace vmf
 * \class MetadataSet
 * \brief %MetadataSet is container of filtered metadata objects
 */
-class VMF_EXPORT MetadataSet : public std::vector< std::shared_ptr< Metadata >>, public IQuery
+class UMF_EXPORT MetadataSet : public std::vector< std::shared_ptr< Metadata >>, public IQuery
 {
 public:
     /*!

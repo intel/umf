@@ -31,7 +31,7 @@ namespace vmf
 * class FormatJSON
 * \brief FormatJSON class is a %Format interface implementation for JSON format representation
 */
-class VMF_EXPORT FormatJSON : public Format
+class UMF_EXPORT FormatJSON : public Format
 {
 public:
     /*!

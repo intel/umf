@@ -29,14 +29,14 @@ public:
 
     virtual ~MyEncryptor() { }
 
-    virtual vmf::vmf_string getHint()
+    virtual vmf::umf_string getHint()
     {
         return "Simple PRNG-based XOR encryption";
     }
 
-    virtual void encrypt(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output);
+    virtual void encrypt(const vmf::umf_string& input, vmf::umf_rawbuffer& output);
 
-    virtual void decrypt(const vmf::vmf_rawbuffer& input, vmf::vmf_string& output);
+    virtual void decrypt(const vmf::umf_rawbuffer& input, vmf::umf_string& output);
 
 private:
     std::string passphrase;

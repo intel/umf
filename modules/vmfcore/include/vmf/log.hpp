@@ -50,7 +50,7 @@ enum LogLevel
  * \details Log builds message with using given parameters and writes them. 
  * You can choose a file or the console to write messages.
  */
-class VMF_EXPORT Log
+class UMF_EXPORT Log
 {
 public:
      /*!

@@ -39,7 +39,7 @@ class Metadata;
  * \class Reference
  * \brief The class representing a reference from one metadata record to another
  */
-class VMF_EXPORT Reference
+class UMF_EXPORT Reference
 {
 private:
     std::shared_ptr<ReferenceDesc> desc;

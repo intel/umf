@@ -44,108 +44,108 @@ namespace vmf
     /*!
     * \brief Character type. Equivalent of char type in C/C++
     */
-    typedef char vmf_char;
+    typedef char umf_char;
 
     /*!
     * \brief 64-bit integer type.
     */
-    typedef int64_t vmf_integer;
+    typedef int64_t umf_integer;
 
     /*!
     * \brief Double precesion floating point type.
     */
-    typedef double vmf_real;
+    typedef double umf_real;
 
     /*!
     * \brief String type.
     */
-    typedef std::string vmf_string;
+    typedef std::string umf_string;
 
     /*!
     * \brief floating point vector2D type.
     */
-    struct vmf_vec2d
+    struct umf_vec2d
     {
-	vmf_vec2d() : x(0), y(0) {}
-	vmf_vec2d(vmf_real _x, vmf_real _y) : x(_x), y(_y) {}
-	bool operator == (const vmf_vec2d& value) const
+	umf_vec2d() : x(0), y(0) {}
+	umf_vec2d(umf_real _x, umf_real _y) : x(_x), y(_y) {}
+	bool operator == (const umf_vec2d& value) const
 	{
 	    return DOUBLE_EQ(x, value.x) && DOUBLE_EQ(y, value.y);
 	}
-	vmf_real x;
-	vmf_real y;
+	umf_real x;
+	umf_real y;
     };
 
     /*!
     * \brief floating point vector3D type.
     */
-    struct vmf_vec3d : vmf_vec2d
+    struct umf_vec3d : umf_vec2d
     {
-	vmf_vec3d() : vmf_vec2d(), z(0){}
-	vmf_vec3d(vmf_real _x, vmf_real _y, vmf_real _z) : vmf_vec2d(_x, _y), z(_z) {}
-	bool operator == (const vmf_vec3d& value) const
+	umf_vec3d() : umf_vec2d(), z(0){}
+	umf_vec3d(umf_real _x, umf_real _y, umf_real _z) : umf_vec2d(_x, _y), z(_z) {}
+	bool operator == (const umf_vec3d& value) const
 	{
-	    return vmf_vec2d::operator==(value) && DOUBLE_EQ(z, value.z);
+	    return umf_vec2d::operator==(value) && DOUBLE_EQ(z, value.z);
 	}
-	vmf_real z;
+	umf_real z;
     };
 
     /*!
     * \brief floating point vector4D type.
     */
-    struct vmf_vec4d : vmf_vec3d
+    struct umf_vec4d : umf_vec3d
     {
-	vmf_vec4d() : vmf_vec3d(), w(0){}
-	vmf_vec4d(vmf_real _x, vmf_real _y, vmf_real _z, vmf_real _w) : vmf_vec3d(_x, _y, _z), w(_w) {}
-	bool operator == (const vmf_vec4d& value) const
+	umf_vec4d() : umf_vec3d(), w(0){}
+	umf_vec4d(umf_real _x, umf_real _y, umf_real _z, umf_real _w) : umf_vec3d(_x, _y, _z), w(_w) {}
+	bool operator == (const umf_vec4d& value) const
 	{
-	    return vmf_vec3d::operator==(value) && DOUBLE_EQ(w, value.w);
+	    return umf_vec3d::operator==(value) && DOUBLE_EQ(w, value.w);
 	}
-	vmf_real w;
+	umf_real w;
     };
 
     /*!
     * \brief binary buffer with arbitrary content
     */
-    struct vmf_rawbuffer : public std::vector<char>
+    struct umf_rawbuffer : public std::vector<char>
     {
     public:
-        vmf_rawbuffer() : std::vector<char>()
+        umf_rawbuffer() : std::vector<char>()
         { }
 
-        vmf_rawbuffer(const std::vector<char>& vec) : std::vector<char>(vec)
+        umf_rawbuffer(const std::vector<char>& vec) : std::vector<char>(vec)
         { }
 
-        vmf_rawbuffer(std::vector<char>&& rVec) : std::vector<char>(rVec)
+        umf_rawbuffer(std::vector<char>&& rVec) : std::vector<char>(rVec)
         { }
 
-        vmf_rawbuffer(const vmf_rawbuffer& other) : std::vector<char>(other)
+        umf_rawbuffer(const umf_rawbuffer& other) : std::vector<char>(other)
         { }
 
-        vmf_rawbuffer(vmf_rawbuffer&& other) : std::vector<char>(static_cast< std::vector<char> && >(other))
+        umf_rawbuffer(umf_rawbuffer&& other) : std::vector<char>(static_cast< std::vector<char> && >(other))
         { }
 
-        vmf_rawbuffer& operator=(const vmf_rawbuffer& other)
+        umf_rawbuffer& operator=(const umf_rawbuffer& other)
         {
             std::vector<char>::operator=( static_cast< const std::vector<char> & >(other) );
             return *this;
         }
 
-        vmf_rawbuffer& operator=(vmf_rawbuffer&& other)
+        umf_rawbuffer& operator=(umf_rawbuffer&& other)
         {
             std::vector<char>::operator=( static_cast< std::vector<char> && >(other) );
             return *this;
         }
 
-        vmf_rawbuffer(const char* ptr, const size_t len)
+        umf_rawbuffer(const char* ptr, const size_t len)
         {
-            *this = (ptr != nullptr) ? vmf_rawbuffer(ptr, ptr + len) : vmf_rawbuffer(len);
+            *this = (ptr != nullptr) ? umf_rawbuffer(ptr, ptr + len) : umf_rawbuffer(len);
         }
 
-        explicit vmf_rawbuffer(const size_t len) : std::vector<char>(len)
+        explicit umf_rawbuffer(const size_t len) : std::vector<char>(len)
         { }
 
-        vmf_rawbuffer(const char* ptrBegin, const char* ptrEnd) : std::vector<char>(ptrBegin, ptrEnd)
+        umf_rawbuffer(const char* ptrBegin, const char* ptrEnd) : std::vector<char>(ptrBegin, ptrEnd)
         { }
     };
 

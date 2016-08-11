@@ -48,20 +48,20 @@ void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
 {
     metadata->DeleteProperty(VMF_NS, VMF_STATISTICS);
 
-    vmf_string pathToStatData;
+    umf_string pathToStatData;
     metadata->AppendArrayItem(VMF_NS, VMF_STATISTICS, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_STATISTICS, kXMP_ArrayLastItem, &pathToStatData);
     metadata->SetStructField(VMF_NS, pathToStatData.c_str(), VMF_NS, VMF_STAT, nullptr, kXMP_PropValueIsArray);
 
     for( auto& stat : stats )
     {
-        vmf_string pathToStatArray;
+        umf_string pathToStatArray;
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStatData.c_str(), VMF_NS, VMF_STAT, &pathToStatArray);
         metadata->AppendArrayItem(VMF_NS, pathToStatArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-        vmf_string pathToStat;
+        umf_string pathToStat;
         SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToStatArray.c_str(), kXMP_ArrayLastItem, &pathToStat);
 
-        vmf_string tmpPath;
+        umf_string tmpPath;
 
         if (stat->getName().empty())
             VMF_EXCEPTION(DataStorageException, "Invalid stat object: name is invalid!");
@@ -74,10 +74,10 @@ void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
         {
             const StatField& field = stat->getField(fieldName);
 
-            vmf_string pathToFieldArray;
+            umf_string pathToFieldArray;
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_FIELD, &pathToFieldArray);
             metadata->AppendArrayItem(VMF_NS, pathToFieldArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-            vmf_string pathToField;
+            umf_string pathToField;
             SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToFieldArray.c_str(), kXMP_ArrayLastItem, &pathToField);
 
             if (field.getName().empty())
@@ -112,17 +112,17 @@ void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
 
 void XMPStatSource::load(std::vector< std::shared_ptr<Stat> >& stats)
 {
-    vmf_string pathToStatData;
+    umf_string pathToStatData;
     SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_STATISTICS, kXMP_ArrayLastItem, &pathToStatData);
 
-    vmf_string pathToStatArray;
+    umf_string pathToStatArray;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStatData.c_str(), VMF_NS, VMF_STAT, &pathToStatArray);
 
     SXMPIterator statsIter(*metadata, VMF_NS, pathToStatArray.c_str(), kXMP_IterJustChildren);
-    vmf_string pathToStat;
+    umf_string pathToStat;
     while (statsIter.Next(nullptr, &pathToStat))
     {
-        vmf_string tmpPath, statName, tmpStr;
+        umf_string tmpPath, statName, tmpStr;
         const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
@@ -131,14 +131,14 @@ void XMPStatSource::load(std::vector< std::shared_ptr<Stat> >& stats)
 
         std::vector< StatField > fields;
 
-        vmf_string pathToFieldArray;
+        umf_string pathToFieldArray;
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_FIELD, &pathToFieldArray);
 
         SXMPIterator fieldsIter(*metadata, VMF_NS, pathToFieldArray.c_str(), kXMP_IterJustChildren);
-        vmf_string pathToField;
+        umf_string pathToField;
         while (fieldsIter.Next(nullptr, &pathToField))
         {
-            vmf_string fieldName, schemaName, metadataName, metadataFieldName, opName;
+            umf_string fieldName, schemaName, metadataName, metadataFieldName, opName;
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &fieldName, 0) )

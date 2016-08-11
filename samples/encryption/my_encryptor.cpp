@@ -21,9 +21,9 @@
 using namespace std;
 using namespace vmf;
 
-const size_t nSize = sizeof(vmf_integer);
+const size_t nSize = sizeof(umf_integer);
 
-void MyEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
+void MyEncryptor::encrypt(const umf_string &input, umf_rawbuffer &output)
 {
     std::mt19937_64 gen(getTimestamp());
     size_t plen = passphrase.length();
@@ -33,14 +33,14 @@ void MyEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
         c = (char)gen();
     }
 
-    vmf_integer a = gen(), b = gen();
-    vector<vmf_integer> checkData(3);
+    umf_integer a = gen(), b = gen();
+    vector<umf_integer> checkData(3);
     checkData[0] = a;
     checkData[1] = b;
     checkData[2] = a*b;
     std::string checkStr((char*)checkData.data(), 3*nSize);
 
-    output = vmf_rawbuffer(plen + nSize*3 + input.size());
+    output = umf_rawbuffer(plen + nSize*3 + input.size());
     size_t offset = 0;
     //save tempKey
     for(size_t i = offset; i < plen; i++)
@@ -62,7 +62,7 @@ void MyEncryptor::encrypt(const vmf_string &input, vmf_rawbuffer &output)
 }
 
 
-void MyEncryptor::decrypt(const vmf_rawbuffer &input, vmf_string &output)
+void MyEncryptor::decrypt(const umf_rawbuffer &input, umf_string &output)
 {
     output.clear();
     if(!input.empty())
@@ -89,15 +89,15 @@ void MyEncryptor::decrypt(const vmf_rawbuffer &input, vmf_string &output)
         }
         offset += nSize*3;
 
-        vmf_integer* checkData = (vmf_integer*)checkStr.data();
-        vmf_integer a = checkData[0], b = checkData[1], c = checkData[2];
+        umf_integer* checkData = (umf_integer*)checkStr.data();
+        umf_integer a = checkData[0], b = checkData[1], c = checkData[2];
         if(a * b != c)
         {
             VMF_EXCEPTION(IncorrectParamException, "Failed to check the data!");
         }
 
         //decrypt the data
-        output = vmf_string(input.size() - offset, '\0');
+        output = umf_string(input.size() - offset, '\0');
         for(size_t i = offset; i < input.size(); i++)
         {
             output[i-offset] = input[i] ^ tempKey[i % plen];

@@ -76,7 +76,7 @@ void generateMetadata(MetadataStream& mdStream)
     cout << "\n\t" << nPoints << " items." << endl;
 }
 
-void readAndDumpMetadata(const vmf_string& videoFile)
+void readAndDumpMetadata(const umf_string& videoFile)
 {
     cout << "Opening file name '" << videoFile << "'" << endl;
 

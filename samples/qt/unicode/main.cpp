@@ -40,9 +40,9 @@ int main(int argc, char **argv)
 
     QFile::copy(VIDEO_FILE.c_str(), "global_test.avi");
 
-    const vmf_string FILE_NAME = "global_test.avi";
-    const vmf_string SCHEMA_NAME = "demo-unicode-schema";
-    const vmf_string STRING_METADATA = "unicode-string-metadata";
+    const umf_string FILE_NAME = "global_test.avi";
+    const umf_string SCHEMA_NAME = "demo-unicode-schema";
+    const umf_string STRING_METADATA = "unicode-string-metadata";
 
     {
         auto schema = make_shared<MetadataSchema>(SCHEMA_NAME);

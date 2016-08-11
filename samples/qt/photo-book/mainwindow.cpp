@@ -445,16 +445,16 @@ void MainWindow::personChanged(int index)
     try
     {
         auto metadata = itemSet[index];
-        vmf::vmf_integer age = metadata->getFieldValue(FieldNameConstants::AGE_FIELD);
+        vmf::umf_integer age = metadata->getFieldValue(FieldNameConstants::AGE_FIELD);
         ui->lblAge->setText(QString::number(age));
 
-        vmf::vmf_integer weight = metadata->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
+        vmf::umf_integer weight = metadata->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
         ui->lblWeight->setText(QString::number(weight));
 
-        vmf::vmf_integer height = metadata->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
+        vmf::umf_integer height = metadata->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
         ui->lblHeight->setText(QString::number(height));
 
-        vmf::vmf_integer sex = metadata->getFieldValue(FieldNameConstants::SEX_FIELD);
+        vmf::umf_integer sex = metadata->getFieldValue(FieldNameConstants::SEX_FIELD);
         ui->lblSex->setText(Utilities::sexEnum2String((PersonSex) sex));
 
         auto items = scene->selectedItems();

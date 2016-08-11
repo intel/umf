@@ -23,7 +23,7 @@ using namespace vmf;
 // Straightforward implementation of LZW algorithm
 // Based on this: http://rosettacode.org/wiki/LZW_compression#C.2B.2B
 
-void MyLZWCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
+void MyLZWCompressor::compress(const umf_string &input, umf_rawbuffer& output)
 {
     // Build the dictionary.
     int dictSize = 256;
@@ -57,14 +57,14 @@ void MyLZWCompressor::compress(const vmf_string &input, vmf_rawbuffer& output)
         codes.push_back(dictionary[w]); //*result++ = dictionary[w];
 
     //according to C++ standard, this should be correct way to convert vector to array
-    output = vmf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int));
+    output = umf_rawbuffer((const char*)codes.data(), codes.size()*sizeof(int));
 }
 
-void MyLZWCompressor::decompress(const vmf_rawbuffer& input, vmf_string& output)
+void MyLZWCompressor::decompress(const umf_rawbuffer& input, umf_string& output)
 {
     if(input.empty())
     {
-        output = vmf_string();
+        output = umf_string();
     }
     else
     {

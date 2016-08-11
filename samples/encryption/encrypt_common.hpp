@@ -31,7 +31,7 @@ enum EncryptionScope
 };
 
 void generateEncryptedMetadata(vmf::MetadataStream& mdStream, EncryptionScope scope);
-void readAndDumpEncryptedMetadata(const vmf::vmf_string& videoFile,
+void readAndDumpEncryptedMetadata(const vmf::umf_string& videoFile,
                                   std::shared_ptr<vmf::Encryptor> encryptor);
 
 int encrypt_builtin(const std::string& videoFile, EncryptionScope scope);

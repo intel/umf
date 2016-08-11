@@ -39,7 +39,7 @@ namespace vmf
 /*!
 * \brief The class provides functionality to create and manipulate metadata schema
 */
-class VMF_EXPORT MetadataSchema : protected std::vector< std::shared_ptr< MetadataDesc > >
+class UMF_EXPORT MetadataSchema : protected std::vector< std::shared_ptr< MetadataDesc > >
 {
 public:
 

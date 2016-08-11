@@ -94,10 +94,10 @@ protected:
     std::shared_ptr<vmf::MetadataDesc> descr1;
     std::shared_ptr<vmf::MetadataDesc> descr2;
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_PROPERTY_NAME1;
-    vmf::vmf_string TEST_PROPERTY_NAME2;
-    vmf::vmf_string TEST_FIELD_NAME;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_PROPERTY_NAME1;
+    vmf::umf_string TEST_PROPERTY_NAME2;
+    vmf::umf_string TEST_FIELD_NAME;
 };
 
 
@@ -129,7 +129,7 @@ TEST_F(TestRemoving, RemoveOne)
     ASSERT_EQ(set.size(), size1-1);
     auto query_result = set.query([&](const std::shared_ptr<vmf::Metadata> &spItem)->bool
     {
-        return (vmf::vmf_integer)spItem->getFieldValue(TEST_FIELD_NAME) == removed_item;
+        return (vmf::umf_integer)spItem->getFieldValue(TEST_FIELD_NAME) == removed_item;
     });
     ASSERT_EQ(query_result.size(), 0u);
 
@@ -137,7 +137,7 @@ TEST_F(TestRemoving, RemoveOne)
     ASSERT_EQ(set.size(), size2-1);
     query_result = set.query([&](const std::shared_ptr<vmf::Metadata> &spItem)->bool
     {
-        return (vmf::vmf_integer)spItem->getFieldValue(TEST_FIELD_NAME) == n + removed_item;
+        return (vmf::umf_integer)spItem->getFieldValue(TEST_FIELD_NAME) == n + removed_item;
     });
     ASSERT_EQ(query_result.size(), 0u);
     newStream2.close();
@@ -238,11 +238,11 @@ protected:
         newSchema->add(newDesc);
         stream.addSchema(newSchema);
         std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(newDesc));
-        md->setFieldValue("fields", (vmf::vmf_integer)4242);
+        md->setFieldValue("fields", (vmf::umf_integer)4242);
         stream.add(md);
     }
 
-    vmf::vmf_string TEST_SCHEMA_NAME_2;
+    vmf::umf_string TEST_SCHEMA_NAME_2;
 };
 
 

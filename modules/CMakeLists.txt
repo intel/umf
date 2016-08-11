@@ -116,7 +116,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 if(BUILD_SHARED_LIBS AND WIN32)
-    append_target_property(${VMF_LIBRARY_NAME} COMPILE_FLAGS "-DVMF_API_EXPORT")
+    append_target_property(${VMF_LIBRARY_NAME} COMPILE_FLAGS "-DUMF_API_EXPORT")
 endif()
 
 append_target_property(${VMF_LIBRARY_NAME} COMPILE_FLAGS "-DXMP_StaticBuild=1")

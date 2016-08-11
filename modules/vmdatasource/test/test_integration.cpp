@@ -33,15 +33,15 @@ TEST(Integration, fullFunctionality_1)
 {
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
     //vmf::initialize();
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME_0);
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME_1);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME_0);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME_1);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME_2);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME_3);
-    const vmf::vmf_string atom(TEST_FIELD_NAME_0);
-    const vmf::vmf_string atom(TEST_FIELD_NAME_1);
-    const vmf::vmf_string atom(TEST_FIELD_NAME_2);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME_0);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME_1);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME_0);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME_1);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME_2);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME_3);
+    const vmf::umf_string atom(TEST_FIELD_NAME_0);
+    const vmf::umf_string atom(TEST_FIELD_NAME_1);
+    const vmf::umf_string atom(TEST_FIELD_NAME_2);
     
     {
         std::shared_ptr<vmf::MetadataSchema> schema[2];
@@ -68,15 +68,15 @@ TEST(Integration, fullFunctionality_1)
         ASSERT_NO_THROW(s.close());
     }
 
-    const vmf::vmf_integer TEST_INT32_VALUE_1 = 1;
-    const vmf::vmf_integer TEST_INT32_VALUE_2 = 2;
-    const vmf::vmf_integer TEST_INT32_VALUE_3 = 3;
-    const vmf::vmf_integer TEST_INT32_VALUE_4 = 4;
-    const vmf::vmf_integer TEST_INT32_VALUE_5 = 5;
-    const vmf::vmf_string atom(TEST_STRING_VALUE_1);
-    const vmf::vmf_string atom(TEST_STRING_VALUE_2);
-    const vmf::vmf_string atom(TEST_STRING_VALUE_3);
-    const vmf::vmf_string atom(TEST_STRING_VALUE_4);
+    const vmf::umf_integer TEST_INT32_VALUE_1 = 1;
+    const vmf::umf_integer TEST_INT32_VALUE_2 = 2;
+    const vmf::umf_integer TEST_INT32_VALUE_3 = 3;
+    const vmf::umf_integer TEST_INT32_VALUE_4 = 4;
+    const vmf::umf_integer TEST_INT32_VALUE_5 = 5;
+    const vmf::umf_string atom(TEST_STRING_VALUE_1);
+    const vmf::umf_string atom(TEST_STRING_VALUE_2);
+    const vmf::umf_string atom(TEST_STRING_VALUE_3);
+    const vmf::umf_string atom(TEST_STRING_VALUE_4);
 
     {
         vmf::MetadataStream s;
@@ -124,12 +124,12 @@ TEST(Integration, fullFunctionality_1)
         {
             ASSERT_NO_THROW(metadata[i] = prop[i].at(0));
         }
-        ASSERT_EQ(TEST_INT32_VALUE_1, (vmf::vmf_integer) metadata[0]->at(0));
-        ASSERT_EQ(TEST_INT32_VALUE_3, (vmf::vmf_integer) metadata[2]->at(0));
+        ASSERT_EQ(TEST_INT32_VALUE_1, (vmf::umf_integer) metadata[0]->at(0));
+        ASSERT_EQ(TEST_INT32_VALUE_3, (vmf::umf_integer) metadata[2]->at(0));
         metadata[0]->addValue(vmf::Variant(TEST_INT32_VALUE_2));
-        ASSERT_EQ(TEST_STRING_VALUE_1, (vmf::vmf_string) metadata[1]->getFieldValue(TEST_FIELD_NAME_0));
-        ASSERT_EQ(TEST_INT32_VALUE_5, (vmf::vmf_integer) metadata[3]->getFieldValue(TEST_FIELD_NAME_1));
-        ASSERT_EQ(TEST_STRING_VALUE_3, (vmf::vmf_string) metadata[3]->getFieldValue(TEST_FIELD_NAME_2));
+        ASSERT_EQ(TEST_STRING_VALUE_1, (vmf::umf_string) metadata[1]->getFieldValue(TEST_FIELD_NAME_0));
+        ASSERT_EQ(TEST_INT32_VALUE_5, (vmf::umf_integer) metadata[3]->getFieldValue(TEST_FIELD_NAME_1));
+        ASSERT_EQ(TEST_STRING_VALUE_3, (vmf::umf_string) metadata[3]->getFieldValue(TEST_FIELD_NAME_2));
         metadata[1]->setFieldValue(TEST_FIELD_NAME_0, TEST_STRING_VALUE_2);
         metadata[3]->setFieldValue(TEST_FIELD_NAME_1, TEST_INT32_VALUE_4);
         metadata[3]->setFieldValue(TEST_FIELD_NAME_2, TEST_STRING_VALUE_4);
@@ -156,12 +156,12 @@ TEST(Integration, fullFunctionality_1)
             ASSERT_NO_THROW(metadata[i] = prop[i].at(0));
         }
 
-        ASSERT_EQ(TEST_INT32_VALUE_1, (vmf::vmf_integer) metadata[0]->at(0));
-        ASSERT_EQ(TEST_INT32_VALUE_2, (vmf::vmf_integer) metadata[0]->at(1));
-        ASSERT_EQ(TEST_INT32_VALUE_3, (vmf::vmf_integer) metadata[2]->at(0));
-        ASSERT_EQ(TEST_STRING_VALUE_2, (vmf::vmf_string) metadata[1]->getFieldValue(TEST_FIELD_NAME_0));
-        ASSERT_EQ(TEST_INT32_VALUE_4, (vmf::vmf_integer) metadata[3]->getFieldValue(TEST_FIELD_NAME_1));
-        ASSERT_EQ(TEST_STRING_VALUE_4, (vmf::vmf_string) metadata[3]->getFieldValue(TEST_FIELD_NAME_2));
+        ASSERT_EQ(TEST_INT32_VALUE_1, (vmf::umf_integer) metadata[0]->at(0));
+        ASSERT_EQ(TEST_INT32_VALUE_2, (vmf::umf_integer) metadata[0]->at(1));
+        ASSERT_EQ(TEST_INT32_VALUE_3, (vmf::umf_integer) metadata[2]->at(0));
+        ASSERT_EQ(TEST_STRING_VALUE_2, (vmf::umf_string) metadata[1]->getFieldValue(TEST_FIELD_NAME_0));
+        ASSERT_EQ(TEST_INT32_VALUE_4, (vmf::umf_integer) metadata[3]->getFieldValue(TEST_FIELD_NAME_1));
+        ASSERT_EQ(TEST_STRING_VALUE_4, (vmf::umf_string) metadata[3]->getFieldValue(TEST_FIELD_NAME_2));
         s.close();
     }
 
@@ -170,7 +170,7 @@ TEST(Integration, fullFunctionality_1)
 
 TEST(Integration, Hongwu1)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
     //vmf::initialize();
     {
@@ -198,14 +198,14 @@ TEST(Integration, Hongwu1)
         std::shared_ptr<vmf::Metadata> birthday = set.at(0);
         ASSERT_EQ(4001, birthday->getFrameIndex());
         ASSERT_EQ(2500, birthday->getNumOfFrames());
-        ASSERT_EQ("Birthday", (vmf::vmf_string) birthday->at(0));
+        ASSERT_EQ("Birthday", (vmf::umf_string) birthday->at(0));
     }
     //vmf::terminate();
 }
 
 TEST(Integration, Hongwu2)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
     copyFile(VIDEO_FILE, INTEGRATION_TEST_FILE);
     //vmf::initialize();
     {
@@ -215,11 +215,11 @@ TEST(Integration, Hongwu2)
         std::shared_ptr< vmf::MetadataDesc > spNumbersDesc ( new vmf::MetadataDesc( "ints", vmf::Variant::type_integer ));
         spSchema->add( spNumbersDesc );
         std::shared_ptr< vmf::Metadata > spNumbers( new vmf::Metadata( spNumbersDesc ));
-        spNumbers->addValue( (vmf::vmf_integer) 1);
-        spNumbers->addValue( (vmf::vmf_integer) 2);
-        spNumbers->addValue( (vmf::vmf_integer) 3);
-        spNumbers->addValue( (vmf::vmf_integer) 4);
-        spNumbers->addValue( (vmf::vmf_integer) 5);
+        spNumbers->addValue( (vmf::umf_integer) 1);
+        spNumbers->addValue( (vmf::umf_integer) 2);
+        spNumbers->addValue( (vmf::umf_integer) 3);
+        spNumbers->addValue( (vmf::umf_integer) 4);
+        spNumbers->addValue( (vmf::umf_integer) 5);
         stream.addSchema(spSchema);
         stream.add( spNumbers );
         stream.save();
@@ -235,7 +235,7 @@ TEST(Integration, Hongwu2)
         std::shared_ptr<vmf::Metadata> numbers = set.at(0);
         ASSERT_EQ(5u, numbers->size());
         for(int i = 0; i < 5; ++i)
-            ASSERT_EQ(i+1, (vmf::vmf_integer) numbers->at(i));
+            ASSERT_EQ(i+1, (vmf::umf_integer) numbers->at(i));
     }
     //vmf::terminate();
 }
@@ -260,11 +260,11 @@ TEST(Integration, structuresForDoc)
     std::shared_ptr<vmf::Metadata> dima(new vmf::Metadata(desc)), vasya(new vmf::Metadata(desc));
     dima->setFieldValue("name", "Dmitry");
     dima->setFieldValue("last name", "Bogdanov");
-    dima->setFieldValue("age", (vmf::vmf_integer) 21);
+    dima->setFieldValue("age", (vmf::umf_integer) 21);
 
     vasya->setFieldValue("name", "Vasya");
     vasya->setFieldValue("last name", "Pupkin");
-    vasya->setFieldValue("age", (vmf::vmf_integer) 18);
+    vasya->setFieldValue("age", (vmf::umf_integer) 18);
 
     stream.add(dima);
     stream.add(vasya);

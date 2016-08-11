@@ -6,7 +6,7 @@
 #define KMS_IN_METER (1 / METERS_IN_KM)
 #define EARTH_RADIUS 6371.0f * METERS_IN_KM
 
-vmf::vmf_integer calculateFrameDelay(double fps);
+vmf::umf_integer calculateFrameDelay(double fps);
 
 float radians(float degrees);
 

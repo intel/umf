@@ -56,7 +56,7 @@ class StatField;
 * \class StatOpBase
 * \brief Base class (interface definition) for all statistics operations, builtin or user-defined
 */
-class VMF_EXPORT StatOpBase
+class UMF_EXPORT StatOpBase
 {
 public:
     StatOpBase() {}
@@ -91,7 +91,7 @@ public:
 * \class StatOpFactory
 * \brief Statistics operations factory, for both builtin or user-defined operations
 */
-class VMF_EXPORT StatOpFactory
+class UMF_EXPORT StatOpFactory
 {
 public:
     /*!
@@ -172,7 +172,7 @@ private:
 * \class StatField
 * \brief Statistics field
 */
-class VMF_EXPORT StatField
+class UMF_EXPORT StatField
 {
     friend class Stat; // setStream()
 
@@ -283,7 +283,7 @@ private:
 * \class Stat
 * \brief Statistics object
 */
-class VMF_EXPORT Stat
+class UMF_EXPORT Stat
 {
     friend class MetadataStream; // setStream()
     friend class StatWorker;     // handle()

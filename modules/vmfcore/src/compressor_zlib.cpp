@@ -21,11 +21,11 @@
 
 namespace vmf {
 
-static const size_t startingBlockSize = sizeof(vmf_integer);
+static const size_t startingBlockSize = sizeof(umf_integer);
 
-void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
+void CompressorZlib::compress(const umf_string &input, umf_rawbuffer& output)
 {
-    size_t srcLen = input.length()*sizeof(vmf_string::value_type);
+    size_t srcLen = input.length()*sizeof(umf_string::value_type);
     if(srcLen)
     {
         size_t destBound = compressBound((uLong)srcLen);
@@ -35,7 +35,7 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
         // for further decompression
         std::vector<std::uint8_t> destBuf(destBound + startingBlockSize);
 
-        *((vmf_integer*)destBuf.data()) = vmf_integer(srcLen);
+        *((umf_integer*)destBuf.data()) = umf_integer(srcLen);
         std::uint8_t* toCompress = destBuf.data() + startingBlockSize;
 
         //level should be default or from 0 to 9 (regulates speed/size ratio)
@@ -58,17 +58,17 @@ void CompressorZlib::compress(const vmf_string &input, vmf_rawbuffer& output)
             }
         }
 
-        output = vmf_rawbuffer((const char*)destBuf.data(), destLength);
+        output = umf_rawbuffer((const char*)destBuf.data(), destLength);
     }
     else
     {
         //buffer containing only size of data which is 0
-        output = vmf_rawbuffer(startingBlockSize);
+        output = umf_rawbuffer(startingBlockSize);
     }
 }
 
 
-void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
+void CompressorZlib::decompress(const umf_rawbuffer& input, umf_string& output)
 {
     if(input.size())
     {
@@ -76,7 +76,7 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
         //since zlib doesn't save it at compression time
         size_t  compressedSize = input.size() - startingBlockSize;
         std::uint8_t* compressedBuf = (std::uint8_t*)input.data();
-        size_t decompressedSize = size_t(*((vmf_integer*)compressedBuf));
+        size_t decompressedSize = size_t(*((umf_integer*)compressedBuf));
         if(decompressedSize)
         {
             compressedBuf += startingBlockSize;
@@ -104,16 +104,16 @@ void CompressorZlib::decompress(const vmf_rawbuffer& input, vmf_string& output)
                               "The size of decompressed data doesn't match to source size");
             }
 
-            output = vmf_string((const char*)decompressedBuf.data(), decompressedSize);
+            output = umf_string((const char*)decompressedBuf.data(), decompressedSize);
         }
         else
         {
-            output = vmf_string();
+            output = umf_string();
         }
     }
     else
     {
-        output = vmf_string();
+        output = umf_string();
     }
 }
 

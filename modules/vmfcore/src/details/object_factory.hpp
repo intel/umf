@@ -25,8 +25,8 @@ namespace vmf
 
 class IDataSourceFactory;
 
-VMF_EXPORT void Initialize(std::shared_ptr<IDataSourceFactory>& dataSourceFactory);
-VMF_EXPORT void Uninitialize();
+UMF_EXPORT void Initialize(std::shared_ptr<IDataSourceFactory>& dataSourceFactory);
+UMF_EXPORT void Uninitialize();
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -36,7 +36,7 @@ VMF_EXPORT void Uninitialize();
 class IDataSource;
 class IDataSourceFactory;
 
-class VMF_EXPORT ObjectFactory
+class UMF_EXPORT ObjectFactory
 {
 private:
     ObjectFactory();

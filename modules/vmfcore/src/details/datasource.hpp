@@ -37,7 +37,7 @@ class MetadataStream;
 /*! \class IDataSource
 * \brief Interface to interacting with meta data provider
 */
-class VMF_EXPORT IDataSource
+class UMF_EXPORT IDataSource
 {
 public:
     /*!
@@ -46,7 +46,7 @@ public:
      * \param [in] mode file open mode
      * \throw DataStorageException
      */
-    virtual void openFile(const vmf_string& fileName, MetadataStream::OpenMode mode) = 0;
+    virtual void openFile(const umf_string& fileName, MetadataStream::OpenMode mode) = 0;
 
     /*!
      * \brief Close previously opened file
@@ -60,7 +60,7 @@ public:
      * \param [out] stream stream to be filled by loaded metadata
      * \throw DataStorageException
      */
-    virtual void loadSchema(const vmf::vmf_string& schemaName, vmf::MetadataStream& stream) = 0;
+    virtual void loadSchema(const vmf::umf_string& schemaName, vmf::MetadataStream& stream) = 0;
 
     /*!
      * \brief Loads all metadata belonging to the specified property
@@ -69,7 +69,7 @@ public:
      * \param [out] stream stream to be filled by loaded metadata
      * \throw DataStorageException
      */
-    virtual void loadProperty(const vmf::vmf_string& schemaName, const vmf::vmf_string& propertyName, vmf::MetadataStream& stream) = 0;
+    virtual void loadProperty(const vmf::umf_string& schemaName, const vmf::umf_string& propertyName, vmf::MetadataStream& stream) = 0;
 
     /*!
      * \brief Saves all metadata belonging to the specified schema
@@ -90,7 +90,7 @@ public:
      * \brief Loads all MetadataSchemas described in current metafile
      * \param schemas [out] map to load schemas
      */
-    virtual void load(std::map< vmf_string, std::shared_ptr<MetadataSchema> >& schemas) = 0;
+    virtual void load(std::map< umf_string, std::shared_ptr<MetadataSchema> >& schemas) = 0;
 
     /*!
      * \brief Load saved next identifier for new VMF objects
@@ -118,7 +118,7 @@ public:
     /*!
      * \brief Removes Schema
      */
-    virtual void removeSchema(const vmf_string &schemaName) = 0;
+    virtual void removeSchema(const umf_string &schemaName) = 0;
 
     /*!
      * \brief Load checksum
@@ -130,7 +130,7 @@ public:
      * \brief Saves media checksum
      * \param checksum that will be saved
      */
-    virtual void saveChecksum(const vmf_string& checksum) = 0;
+    virtual void saveChecksum(const umf_string& checksum) = 0;
 
     /*!
     * \brief Computes chechsum for current media data in opened file
@@ -150,7 +150,7 @@ public:
     /*!
      * \brief Sets registered compressor for compression operations at saving
      */
-    virtual void setCompressor(const vmf_string& id) = 0;
+    virtual void setCompressor(const umf_string& id) = 0;
 
     /*!
      * \brief Sets encryption algorithm implementation for reading/writing encrypted data
@@ -167,7 +167,7 @@ public:
      * \brief Saves a human-readable hint for encryption
      * \param hint String containing hint
      */
-    virtual void saveHintEncryption(const vmf_string& hint) = 0;
+    virtual void saveHintEncryption(const umf_string& hint) = 0;
 
     /*!
      *\brief Commits saved changes to file

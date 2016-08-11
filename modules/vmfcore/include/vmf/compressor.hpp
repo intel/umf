@@ -31,7 +31,7 @@ namespace vmf
 /*! \class Compressor
  * \brief Interface for all compression algorithms
  */
-class VMF_EXPORT Compressor
+class UMF_EXPORT Compressor
 {
 public:
     /*!
@@ -39,14 +39,14 @@ public:
      * \param [in] input input text data
      * \param [out] output where to put binary compressed data
      */
-    virtual void compress(const vmf_string& input, vmf_rawbuffer& output) = 0;
+    virtual void compress(const umf_string& input, umf_rawbuffer& output) = 0;
 
     /*!
      * \brief Decompresses data
      * \param [in] input binary compressed input data
      * \param [out] output where to put decompressed text data
      */
-    virtual void decompress(const vmf_rawbuffer& input, vmf_string& output) = 0;
+    virtual void decompress(const umf_rawbuffer& input, umf_string& output) = 0;
 
     /*!
      * \brief Creates a new instance of the compressor
@@ -57,7 +57,7 @@ public:
     /*!
      * \brief Gets the ID of current algorithm
      */
-    virtual vmf_string getId() = 0;
+    virtual umf_string getId() = 0;
 
     /*!
      * \brief Default destructor
@@ -76,7 +76,7 @@ public:
      * \param id String ID of the compression algorithm
      * \throw IncorrectParamException is thrown for unknown or built-in IDs
      */
-    static void unregister(const vmf_string& id);
+    static void unregister(const umf_string& id);
 
     /*!
      * \brief Creates new instance of previously registered compressor identified by ID
@@ -84,14 +84,14 @@ public:
      * \return Smart pointer to Compressor instance
      * \throw IncorrectParamException is thrown for unknown (not built-in and not-registered) IDs
      */
-    static std::shared_ptr<Compressor> create(const vmf_string& id);
+    static std::shared_ptr<Compressor> create(const umf_string& id);
 
     /*!
      * \brief Returns a list of currently registered compressors,
      * both built-in ones or user-defined
      * \return A list of registered compressors IDs
      */
-    static std::vector<vmf_string> getRegisteredIds();
+    static std::vector<umf_string> getRegisteredIds();
 
     /*!
     * \brief Returns an ID of the builtin (pre-registered) compressor

@@ -233,7 +233,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JLjava_lang_String_2
 
         const char* tmp = env->GetStringUTFChars(str, NULL);
         std::string value(tmp);
-        (**obj) = (vmf_string)value;
+        (**obj) = (umf_string)value;
 
         env->ReleaseStringUTFChars(str, tmp);
     }
@@ -267,7 +267,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JD(JNIEnv *env, jcla
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        (**obj) = (vmf_real)value;
+        (**obj) = (umf_real)value;
     }
     catch (const std::exception &e)
     {
@@ -298,7 +298,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__JJ(JNIEnv *env, jcla
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        (**obj) = (vmf_integer)value;
+        (**obj) = (umf_integer)value;
     }
     catch (const std::exception &e)
     {
@@ -329,7 +329,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector<vmf_string> stringVector;
+        std::vector<umf_string> stringVector;
 
         int stringCount = env->GetArrayLength(stringArray);
 
@@ -337,7 +337,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3Ljava_lang_String
         {
             jstring string = (jstring)env->GetObjectArrayElement(stringArray, i);
             const char* rawString = env->GetStringUTFChars(string, NULL);
-            vmf_string tmp(rawString);
+            umf_string tmp(rawString);
 
             env->ReleaseStringUTFChars(string, rawString);
             stringVector.push_back(tmp);
@@ -374,13 +374,13 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3D(JNIEnv *env, jc
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector <vmf_real> vecValues;
+        std::vector <umf_real> vecValues;
         jdouble* array = env->GetDoubleArrayElements(values, 0);
         jsize len = env->GetArrayLength(values);
 
         for (int i = 0; i < len; i++)
         {
-            vmf_real elem = (vmf_real)array[i];
+            umf_real elem = (umf_real)array[i];
             vecValues.push_back(elem);
         }
 
@@ -416,13 +416,13 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3J (JNIEnv *env, j
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector <vmf_integer> vecValues;
+        std::vector <umf_integer> vecValues;
         jlong* cArray = env->GetLongArrayElements (values, 0);
         jsize len = env->GetArrayLength(values);
 
         for (int i = 0; i < len; i++)
         {
-            vmf_integer elem = (vmf_integer)cArray[i];
+            umf_integer elem = (umf_integer)cArray[i];
             vecValues.push_back(elem);
         }
 
@@ -460,7 +460,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setTo__J_3B(JNIEnv *env, jc
 
         const char* array = (char*)env->GetByteArrayElements(buffer, 0);
         jsize len = env->GetArrayLength(buffer);
-        vmf_rawbuffer rb(array, (size_t)len);
+        umf_rawbuffer rb(array, (size_t)len);
         env->ReleaseByteArrayElements(buffer, (jbyte*)array, 0);
         (**obj) = rb;
     }
@@ -489,7 +489,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2d (JNIEnv *env, jc
     try
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
-        std::shared_ptr <vmf_vec2d>* vec2d = (std::shared_ptr <vmf_vec2d>*) vec2dAddr;
+        std::shared_ptr <umf_vec2d>* vec2d = (std::shared_ptr <umf_vec2d>*) vec2dAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
@@ -524,7 +524,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3d (JNIEnv *env, jc
     try
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
-        std::shared_ptr <vmf_vec3d>* vec3d = (std::shared_ptr <vmf_vec3d>*) vec3dAddr;
+        std::shared_ptr <umf_vec3d>* vec3d = (std::shared_ptr <umf_vec3d>*) vec3dAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
@@ -559,7 +559,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4d (JNIEnv *env, jc
     try
     {
         std::shared_ptr <Variant>* obj = (std::shared_ptr <Variant>*)self;
-        std::shared_ptr <vmf_vec4d>* vec4d = (std::shared_ptr <vmf_vec4d>*) vec4dAddr;
+        std::shared_ptr <umf_vec4d>* vec4d = (std::shared_ptr <umf_vec4d>*) vec4dAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
@@ -598,14 +598,14 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec2dArray (JNIEnv *en
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector<vmf_vec2d> vec;
+        std::vector<umf_vec2d> vec;
 
         jlong* nativeAddrs = env->GetLongArrayElements(vec2dArray, 0);
         jsize len = env->GetArrayLength(vec2dArray);
 
         for (int i = 0; i < len; i++)
         {
-            std::shared_ptr<vmf_vec2d>* p = (std::shared_ptr<vmf_vec2d>*)nativeAddrs[i];
+            std::shared_ptr<umf_vec2d>* p = (std::shared_ptr<umf_vec2d>*)nativeAddrs[i];
             vec.push_back(**p);
         }
 
@@ -641,14 +641,14 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec3dArray (JNIEnv *en
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector<vmf_vec3d> vec;
+        std::vector<umf_vec3d> vec;
 
         jlong* nativeAddrs = env->GetLongArrayElements(vec3dArray, 0);
         jsize len = env->GetArrayLength(vec3dArray);
 
         for (int i = 0; i < len; i++)
         {
-            std::shared_ptr<vmf_vec3d>* p = (std::shared_ptr<vmf_vec3d>*)nativeAddrs[i];
+            std::shared_ptr<umf_vec3d>* p = (std::shared_ptr<umf_vec3d>*)nativeAddrs[i];
             vec.push_back(**p);
         }
 
@@ -684,14 +684,14 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Variant_n_1setToVec4dArray (JNIEnv *en
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
-        std::vector<vmf_vec4d> vec;
+        std::vector<umf_vec4d> vec;
 
         jlong* nativeAddrs = env->GetLongArrayElements(vec4dArray, 0);
         jsize len = env->GetArrayLength(vec4dArray);
 
         for (int i = 0; i < len; i++)
         {
-            std::shared_ptr<vmf_vec4d>* p = (std::shared_ptr<vmf_vec4d>*)nativeAddrs[i];
+            std::shared_ptr<umf_vec4d>* p = (std::shared_ptr<umf_vec4d>*)nativeAddrs[i];
             vec.push_back(**p);
         }
 
@@ -1134,7 +1134,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Variant_n_1base64Encode (JNIEnv *en
     try 
     {
         char* cArray = (char*) env->GetByteArrayElements (buf, 0);
-        vmf_rawbuffer rb(cArray, (size_t)length);
+        umf_rawbuffer rb(cArray, (size_t)length);
 
         std::string str = Variant::base64encode(rb);
 
@@ -1168,7 +1168,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_intel_vmf_Variant_n_1base64Decode (JNIEnv 
     {
         const char* tmp = env->GetStringUTFChars(src, NULL);
         std::string str (tmp);
-        vmf_rawbuffer buf = Variant::base64decode (str);
+        umf_rawbuffer buf = Variant::base64decode (str);
         jsize size = (jsize)(buf.size());
         jbyteArray byteArray = env->NewByteArray (size);
         jbyte* cArray = env->GetByteArrayElements (byteArray, 0);

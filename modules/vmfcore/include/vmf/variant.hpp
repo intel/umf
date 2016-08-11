@@ -37,7 +37,7 @@ namespace vmf
     * Variant objects are used as the base class of FieldValue, which is the building block class
     * for all metadata items.
     */
-    class VMF_EXPORT Variant
+    class UMF_EXPORT Variant
     {
     public:
 
@@ -85,10 +85,10 @@ namespace vmf
         ~Variant();
 
 #define DECLARE_VMF_TYPE( T ) \
-    Variant( const vmf_##T& v); \
-    Variant& operator = ( const vmf_##T& v ); \
-    const vmf_##T& get_##T() const; \
-    operator const vmf_##T& () const;
+    Variant( const umf_##T& v); \
+    Variant& operator = ( const umf_##T& v ); \
+    const umf_##T& get_##T() const; \
+    operator const umf_##T& () const;
 
         DECLARE_VMF_TYPE( integer )
         DECLARE_VMF_TYPE( real )
@@ -99,10 +99,10 @@ namespace vmf
         DECLARE_VMF_TYPE( rawbuffer )
 
 #define DECLARE_VECTOR_VMF_TYPE( T ) \
-    Variant( const std::vector<vmf_##T>& v); \
-    Variant& operator = ( const std::vector<vmf_##T>& v ); \
-    const std::vector<vmf_##T>& get_##T##_vector() const; \
-    operator const std::vector<vmf_##T>& () const;
+    Variant( const std::vector<umf_##T>& v); \
+    Variant& operator = ( const std::vector<umf_##T>& v ); \
+    const std::vector<umf_##T>& get_##T##_vector() const; \
+    operator const std::vector<umf_##T>& () const;
 
         DECLARE_VECTOR_VMF_TYPE( integer )
         DECLARE_VECTOR_VMF_TYPE( real )
@@ -300,10 +300,10 @@ namespace vmf
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
             case vmf::Variant::type_integer:
-                limit = (T)std::numeric_limits<vmf::vmf_integer>::lowest();
+                limit = (T)std::numeric_limits<vmf::umf_integer>::lowest();
                 break;
             case type_real:
-                limit = (T)std::numeric_limits<vmf::vmf_real>::lowest();
+                limit = (T)std::numeric_limits<vmf::umf_real>::lowest();
                 break;
             }
 
@@ -328,10 +328,10 @@ namespace vmf
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
             case vmf::Variant::type_integer:
-                limit = (T)std::numeric_limits<vmf::vmf_integer>::max();
+                limit = (T)std::numeric_limits<vmf::umf_integer>::max();
                 break;
             case type_real:
-                limit = (T)std::numeric_limits<vmf::vmf_real>::max();
+                limit = (T)std::numeric_limits<vmf::umf_real>::max();
                 break;
             }
 
@@ -342,13 +342,13 @@ namespace vmf
         * \brief Applies base64 encoding algo to input raw_buffer value
         * \return encoded raw_buffer value as std::string
         */
-        static std::string base64encode(const vmf_rawbuffer& value);
+        static std::string base64encode(const umf_rawbuffer& value);
 
         /*!
         * \brief Applies base64 decoding algo to input std::string
         * \return decoded raw_buffer value from input std::string
         */
-        static vmf_rawbuffer base64decode(const std::string& base64Str);
+        static umf_rawbuffer base64decode(const std::string& base64Str);
 
     protected:
         /*!

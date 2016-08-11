@@ -28,7 +28,7 @@
 #include "vmf/compressor.hpp"
 #include "vmf/encryptor.hpp"
 
-#define TXMP_STRING_TYPE vmf::vmf_string
+#define TXMP_STRING_TYPE vmf::umf_string
 #define XMP_INCLUDE_XMPFILES 1
 #include <XMP.incl_cpp>
 #include <XMP.hpp>
@@ -51,19 +51,19 @@ class XMPStatSource;
  * \class XMPDataSource
  * \brief Class implements IDataSource interface with usage of XMP
  */
-class VMF_EXPORT XMPDataSource: public IDataSource {
+class UMF_EXPORT XMPDataSource: public IDataSource {
 public:
     XMPDataSource();
 
     ~XMPDataSource();
 
-    virtual void openFile(const vmf::vmf_string& fileName, vmf::MetadataStream::OpenMode mode);
+    virtual void openFile(const vmf::umf_string& fileName, vmf::MetadataStream::OpenMode mode);
 
     virtual void closeFile();
 
-    virtual void loadSchema(const vmf::vmf_string& schemaName, vmf::MetadataStream& stream);
+    virtual void loadSchema(const vmf::umf_string& schemaName, vmf::MetadataStream& stream);
 
-    virtual void loadProperty(const vmf::vmf_string &schemaName, const vmf::vmf_string &propertyName, MetadataStream &stream);
+    virtual void loadProperty(const vmf::umf_string &schemaName, const vmf::umf_string &propertyName, MetadataStream &stream);
 
     virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet);
 
@@ -71,7 +71,7 @@ public:
 
     virtual void remove(const std::vector<vmf::IdType>& ids);
 
-    virtual void load(std::map<vmf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
+    virtual void load(std::map<umf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
 
     virtual void clear();
 
@@ -79,9 +79,9 @@ public:
 
     virtual vmf::IdType loadId();
 
-    virtual void removeSchema(const vmf_string &schemaName);
+    virtual void removeSchema(const umf_string &schemaName);
 
-    virtual void saveChecksum(const vmf_string& checksum);
+    virtual void saveChecksum(const umf_string& checksum);
 
     virtual std::string loadChecksum();
 
@@ -91,13 +91,13 @@ public:
 
     virtual void loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments);
 
-    virtual void setCompressor(const vmf_string& id);
+    virtual void setCompressor(const umf_string& id);
 
     virtual void setEncryptor(std::shared_ptr<Encryptor> _encryptor);
 
     virtual std::string loadHintEncryption();
 
-    virtual void saveHintEncryption(const vmf_string& hint);
+    virtual void saveHintEncryption(const umf_string& hint);
 
     virtual void pushChanges();
 
@@ -134,7 +134,7 @@ private:
     std::shared_ptr<XMPMetadataSource> metadataSource;
     std::shared_ptr<XMPSchemaSource> schemaSource;
     std::shared_ptr<XMPStatSource> statSource;
-    vmf::vmf_string metaFileName;
+    vmf::umf_string metaFileName;
     vmf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
     std::shared_ptr<Encryptor>  encryptor;

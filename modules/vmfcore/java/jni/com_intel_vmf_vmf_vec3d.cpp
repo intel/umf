@@ -17,11 +17,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__(JNIEnv *en
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__(JNIEnv *env, jclass)
 {
-    static const char method_name[] = "vmf_vec3d::n_1vec3d__";
+    static const char method_name[] = "umf_vec3d::n_1vec3d__";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d());
+        std::shared_ptr<umf_vec3d>* obj = new std::shared_ptr<umf_vec3d>(new umf_vec3d());
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -46,11 +46,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD(JNIEnv 
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD (JNIEnv *env, jclass, jdouble x, jdouble y, jdouble z)
 {
-    static const char method_name[] = "vmf_vec3d::n_1vec3d__DDD";
+    static const char method_name[] = "umf_vec3d::n_1vec3d__DDD";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = new std::shared_ptr<vmf_vec3d>(new vmf_vec3d((double)x, (double)y, (double)z));
+        std::shared_ptr<umf_vec3d>* obj = new std::shared_ptr<umf_vec3d>(new umf_vec3d((double)x, (double)y, (double)z));
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -75,12 +75,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1vmf_1vec3d__DDD (JNIEnv
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
-    static const char method_name[] = "vmf_vec3d::n_1setTo";
+    static const char method_name[] = "umf_vec3d::n_1setTo";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* self = (std::shared_ptr<vmf_vec3d>*) selfAddr;
-        std::shared_ptr<vmf_vec3d>* other = (std::shared_ptr<vmf_vec3d>*) otherAddr;
+        std::shared_ptr<umf_vec3d>* self = (std::shared_ptr<umf_vec3d>*) selfAddr;
+        std::shared_ptr<umf_vec3d>* other = (std::shared_ptr<umf_vec3d>*) otherAddr;
 
         if ((self == NULL) || (self->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec3d is null pointer.");
@@ -110,11 +110,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getX(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getX(JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec3d::n_1getX";
+    static const char method_name[] = "umf_vec3d::n_1getX";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        std::shared_ptr<umf_vec3d>* obj = (std::shared_ptr<umf_vec3d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -143,11 +143,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getY(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getY(JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec3d::n_1getY";
+    static const char method_name[] = "umf_vec3d::n_1getY";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        std::shared_ptr<umf_vec3d>* obj = (std::shared_ptr<umf_vec3d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -176,11 +176,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getZ(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1getZ (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec3d::n_1getZ";
+    static const char method_name[] = "umf_vec3d::n_1getZ";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        std::shared_ptr<umf_vec3d>* obj = (std::shared_ptr<umf_vec3d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -209,11 +209,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1delete(JNIEnv *env, jcla
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec3d_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec3d::n_1delete";
+    static const char method_name[] = "umf_vec3d::n_1delete";
 
     try
     {
-        std::shared_ptr<vmf_vec3d>* obj = (std::shared_ptr<vmf_vec3d>*) self;
+        std::shared_ptr<umf_vec3d>* obj = (std::shared_ptr<umf_vec3d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec3d is null pointer.");

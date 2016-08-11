@@ -97,7 +97,7 @@ typedef struct ReferenceDesc
 * \class MetadataDesc
 * \brief The class describe metadata content
 */
-class VMF_EXPORT MetadataDesc
+class UMF_EXPORT MetadataDesc
 {
     friend class MetadataSchema;
 

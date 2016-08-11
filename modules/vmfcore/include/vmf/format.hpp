@@ -40,7 +40,7 @@ namespace vmf
 * \class Format
 * \brief %Format is an interface for metadata and schemas serialization/deserialization to various string formats.
 */
-class VMF_EXPORT Format
+class UMF_EXPORT Format
 {
 public:
     Format()

@@ -24,16 +24,16 @@
 class MyLZWCompressor : public vmf::Compressor
 {
 public:
-    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output);
+    virtual void compress(const vmf::umf_string& input, vmf::umf_rawbuffer& output);
 
-    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output);
+    virtual void decompress(const vmf::umf_rawbuffer& input, vmf::umf_string &output);
 
     std::shared_ptr<Compressor> createNewInstance() const
     {
         return std::shared_ptr<Compressor>(new MyLZWCompressor);
     }
 
-    virtual vmf::vmf_string getId()
+    virtual vmf::umf_string getId()
     {
         return "com.intel.vmf.compressor.example.my_lzw";
     }

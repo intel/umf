@@ -160,13 +160,13 @@ bool EditWindow::checkInputData(std::shared_ptr<vmf::Metadata>& newInfo)
     if (listIndex != -1)
     {
         PersonSex ps = (PersonSex) ui->cmbSex->itemData(listIndex).toInt();
-        newInfo->setFieldValue(FieldNameConstants::SEX_FIELD, (vmf::vmf_integer) ps);
+        newInfo->setFieldValue(FieldNameConstants::SEX_FIELD, (vmf::umf_integer) ps);
     }
 
     cursor = ui->txtAge->textCursor();
 
     bool ok;
-    vmf::vmf_integer result = cursor.document()->toPlainText().toUShort(&ok);
+    vmf::umf_integer result = cursor.document()->toPlainText().toUShort(&ok);
 
     if (!ok)
     {
@@ -260,19 +260,19 @@ void EditWindow::fillInfo()
             std::string name = item->getFieldValue(FieldNameConstants::NAME_FIELD);
             ui->txtName->textCursor().document()->setPlainText(QString::fromStdString(name));
 
-            vmf::vmf_integer age = item->getFieldValue(FieldNameConstants::AGE_FIELD);
+            vmf::umf_integer age = item->getFieldValue(FieldNameConstants::AGE_FIELD);
             QString str = QString::number(age);
             ui->txtAge->textCursor().document()->setPlainText(str);
 
-            vmf::vmf_integer weight = item->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
+            vmf::umf_integer weight = item->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
             str = QString::number(weight);
             ui->txtWeight->textCursor().document()->setPlainText(str);
 
-            vmf::vmf_integer height = item->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
+            vmf::umf_integer height = item->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
             str = QString::number(height);
             ui->txtHeight->textCursor().document()->setPlainText(str);
 
-            vmf::vmf_integer sex = item->getFieldValue(FieldNameConstants::SEX_FIELD);
+            vmf::umf_integer sex = item->getFieldValue(FieldNameConstants::SEX_FIELD);
             int dataIndex = ui->cmbSex->findData((qlonglong) sex);
 
             if (dataIndex != -1)

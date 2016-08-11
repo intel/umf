@@ -31,7 +31,7 @@ namespace vmf
 * \class FormatCompressed
 * \brief FormatCompressed class is a %Format interface extension for %Compressor use
 */
-class VMF_EXPORT FormatCompressed : public Format
+class UMF_EXPORT FormatCompressed : public Format
 {
 public:
     /*!

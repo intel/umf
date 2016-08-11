@@ -39,7 +39,7 @@ class MetadataSet;
     * \class IQuery
     * \brief %IQuery is an interface for build different queries on metadata.
     */
-class VMF_EXPORT IQuery
+class UMF_EXPORT IQuery
 {
 public:
     /*!

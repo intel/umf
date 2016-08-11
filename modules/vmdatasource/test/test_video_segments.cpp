@@ -91,7 +91,7 @@ protected:
     std::shared_ptr< MetadataDesc > spDesc;
     std::vector< FieldDesc > vFields;
     std::vector< std::shared_ptr<MetadataStream::VideoSegment> > segments;
-    vmf_string n_schema;
+    umf_string n_schema;
 };
 
 TEST_F(TestVideoSegments, SaveLoad)

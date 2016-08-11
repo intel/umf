@@ -17,11 +17,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__(JNIEnv *en
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__ (JNIEnv *env, jclass)
 {
-    static const char method_name[] = "vmf_vec4d::n_1vec4d__";
+    static const char method_name[] = "umf_vec4d::n_1vec4d__";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = new std::shared_ptr<vmf_vec4d>(new vmf_vec4d());
+        std::shared_ptr<umf_vec4d>* obj = new std::shared_ptr<umf_vec4d>(new umf_vec4d());
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -46,11 +46,11 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD(JNIEnv
 
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD (JNIEnv *env, jclass, jdouble x, jdouble y, jdouble z, jdouble w)
 {
-    static const char method_name[] = "vmf_vec4d::n_1vec4d__DDDD";
+    static const char method_name[] = "umf_vec4d::n_1vec4d__DDDD";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = new std::shared_ptr<vmf_vec4d>(new vmf_vec4d((double)x, (double)y, (double)z, (double)w));
+        std::shared_ptr<umf_vec4d>* obj = new std::shared_ptr<umf_vec4d>(new umf_vec4d((double)x, (double)y, (double)z, (double)w));
         return (jlong)obj;
     }
     catch (const std::exception &e)
@@ -75,12 +75,12 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1vmf_1vec4d__DDDD (JNIEn
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1setTo (JNIEnv *env, jclass, jlong selfAddr, jlong otherAddr)
 {
-    static const char method_name[] = "vmf_vec4d::n_1setTo";
+    static const char method_name[] = "umf_vec4d::n_1setTo";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* self = (std::shared_ptr<vmf_vec4d>*) selfAddr;
-        std::shared_ptr<vmf_vec4d>* other = (std::shared_ptr<vmf_vec4d>*) otherAddr;
+        std::shared_ptr<umf_vec4d>* self = (std::shared_ptr<umf_vec4d>*) selfAddr;
+        std::shared_ptr<umf_vec4d>* other = (std::shared_ptr<umf_vec4d>*) otherAddr;
 
         if ((self == NULL) || (self->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec4d is null pointer.");
@@ -111,11 +111,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getX (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec4d::n_1getX";
+    static const char method_name[] = "umf_vec4d::n_1getX";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
+        std::shared_ptr<umf_vec4d>* obj = (std::shared_ptr<umf_vec4d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -144,11 +144,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getY (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec4d::n_1getY";
+    static const char method_name[] = "umf_vec4d::n_1getY";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
+        std::shared_ptr<umf_vec4d>* obj = (std::shared_ptr<umf_vec4d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -177,11 +177,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ(JNIEnv *env, jcl
 
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getZ (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec4d::n_1getZ";
+    static const char method_name[] = "umf_vec4d::n_1getZ";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
+        std::shared_ptr<umf_vec4d>* obj = (std::shared_ptr<umf_vec4d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -211,11 +211,11 @@ JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW(JNIEnv *env, jcl
 JNIEXPORT jdouble JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1getW (JNIEnv *env, jclass, jlong self)
 {
 
-    static const char method_name[] = "vmf_vec4d::n_1getW";
+    static const char method_name[] = "umf_vec4d::n_1getW";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
+        std::shared_ptr<umf_vec4d>* obj = (std::shared_ptr<umf_vec4d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             return 0;
@@ -244,11 +244,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete(JNIEnv *env, jcla
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_vmf_1vec4d_n_1delete (JNIEnv *env, jclass, jlong self)
 {
-    static const char method_name[] = "vmf_vec4d::n_1delete";
+    static const char method_name[] = "umf_vec4d::n_1delete";
 
     try
     {
-        std::shared_ptr<vmf_vec4d>* obj = (std::shared_ptr<vmf_vec4d>*) self;
+        std::shared_ptr<umf_vec4d>* obj = (std::shared_ptr<umf_vec4d>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
             VMF_EXCEPTION(NullPointerException, "Vec4d is null pointer.");

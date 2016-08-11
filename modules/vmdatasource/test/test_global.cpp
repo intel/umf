@@ -78,7 +78,7 @@ TEST_F(TestGlobal, Reopen)
     auto meta = std::make_shared<vmf::Metadata>(desc);
     meta->setFieldValue("name", "Dmitry");
     meta->setFieldValue("last name", "Bogdanov");
-    meta->setFieldValue("age", (vmf::vmf_integer) 21);
+    meta->setFieldValue("age", (vmf::umf_integer) 21);
     stream.add(meta);
     ASSERT_TRUE(stream.save());
     stream.close();
@@ -114,7 +114,7 @@ TEST_F(TestGlobal, SaveTo)
         vmf::MetadataSet all = stream.getAll();
         ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> metadata = all.front();
-        ASSERT_EQ("test value for another file", (vmf::vmf_string) metadata->front());
+        ASSERT_EQ("test value for another file", (vmf::umf_string) metadata->front());
         ASSERT_EQ("schema for another file", metadata->getSchemaName());
         ASSERT_EQ("property for another file", metadata->getName());
         stream.clear();
@@ -126,7 +126,7 @@ TEST_F(TestGlobal, SaveTo)
         auto meta = std::make_shared<vmf::Metadata>(desc);
         meta->setFieldValue("name", "Dmitry");
         meta->setFieldValue("last name", "Bogdanov");
-        meta->setFieldValue("age", (vmf::vmf_integer) 21);
+        meta->setFieldValue("age", (vmf::umf_integer) 21);
         stream.add(meta);
         stream.saveTo(ANOTHER_TEST_FILE);
         stream.clear();
@@ -137,9 +137,9 @@ TEST_F(TestGlobal, SaveTo)
         vmf::MetadataSet all = stream.getAll();
         ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> me = all.front();
-        ASSERT_EQ("Dmitry", (vmf::vmf_string) me->getFieldValue("name"));
-        ASSERT_EQ("Bogdanov", (vmf::vmf_string) me->getFieldValue("last name"));
-        ASSERT_EQ(21, (vmf::vmf_integer) me->getFieldValue("age"));
+        ASSERT_EQ("Dmitry", (vmf::umf_string) me->getFieldValue("name"));
+        ASSERT_EQ("Bogdanov", (vmf::umf_string) me->getFieldValue("last name"));
+        ASSERT_EQ(21, (vmf::umf_integer) me->getFieldValue("age"));
     }
 }
 
@@ -150,7 +150,7 @@ TEST_F(TestGlobal, AddBeforeOpen)
         auto meta = std::make_shared<vmf::Metadata>(desc);
         meta->setFieldValue("name", "Dmitry");
         meta->setFieldValue("last name", "Bogdanov");
-        meta->setFieldValue("age", (vmf::vmf_integer) 21);
+        meta->setFieldValue("age", (vmf::umf_integer) 21);
         stream.add(meta);
         stream.saveTo(TEST_FILE);
         stream.clear();
@@ -162,9 +162,9 @@ TEST_F(TestGlobal, AddBeforeOpen)
         ASSERT_EQ(1u, all.size());
         std::shared_ptr<vmf::Metadata> metadata = all.front();
         ASSERT_NE(vmf::INVALID_ID, metadata->getId());
-        ASSERT_EQ("Dmitry", (vmf::vmf_string) metadata->getFieldValue("name"));
-        ASSERT_EQ("Bogdanov", (vmf::vmf_string) metadata->getFieldValue("last name"));
-        ASSERT_EQ(21, (vmf::vmf_integer) metadata->getFieldValue("age"));
+        ASSERT_EQ("Dmitry", (vmf::umf_string) metadata->getFieldValue("name"));
+        ASSERT_EQ("Bogdanov", (vmf::umf_string) metadata->getFieldValue("last name"));
+        ASSERT_EQ(21, (vmf::umf_integer) metadata->getFieldValue("age"));
     }
 }
 
@@ -174,7 +174,7 @@ TEST_F(TestGlobal, Clear)
     auto metadata = std::make_shared<vmf::Metadata>(desc);
     metadata->setFieldValue("name", "Dmitry");
     metadata->setFieldValue("last name", "Bogdanov");
-    metadata->setFieldValue("age", (vmf::vmf_integer) 21);
+    metadata->setFieldValue("age", (vmf::umf_integer) 21);
     stream.add(metadata);
 
     ASSERT_EQ(1u, stream.getAll().size());
@@ -193,14 +193,14 @@ TEST_F(TestGlobal, NoDestinationReference)
     auto metadata1 = std::make_shared<vmf::Metadata>(desc);
     metadata1->setFieldValue("name", "Dmitry");
     metadata1->setFieldValue("last name", "Bogdanov");
-    metadata1->setFieldValue("age", (vmf::vmf_integer) 21);
+    metadata1->setFieldValue("age", (vmf::umf_integer) 21);
     stream.add(metadata1);
 
     {
         auto metadata2 = std::make_shared<vmf::Metadata>(desc);
         metadata2->setFieldValue("name", "Konstantin");
         metadata2->setFieldValue("last name", "Matskevich");
-        metadata2->setFieldValue("age", (vmf::vmf_integer) 22);
+        metadata2->setFieldValue("age", (vmf::umf_integer) 22);
         EXPECT_THROW(metadata1->addReference(metadata2), vmf::IncorrectParamException);
     }
     EXPECT_TRUE(stream.saveTo(TEST_FILE));
@@ -211,7 +211,7 @@ TEST_F(TestGlobal, NoDestinationReference)
     vmf::MetadataSet all = stream2.getAll();
     ASSERT_EQ(1u, all.size());
     auto metadata3 = all.at(0);
-    ASSERT_EQ("Dmitry", (vmf::vmf_string) metadata3->getFieldValue("name"));
-    ASSERT_EQ("Bogdanov", (vmf::vmf_string) metadata3->getFieldValue("last name"));
-    ASSERT_EQ(21, (vmf::vmf_integer) metadata3->getFieldValue("age"));
+    ASSERT_EQ("Dmitry", (vmf::umf_string) metadata3->getFieldValue("name"));
+    ASSERT_EQ("Bogdanov", (vmf::umf_string) metadata3->getFieldValue("last name"));
+    ASSERT_EQ(21, (vmf::umf_integer) metadata3->getFieldValue("age"));
 }

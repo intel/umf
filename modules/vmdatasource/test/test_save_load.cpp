@@ -31,10 +31,10 @@ extern std::string tempPath;
 
 TEST(TestSaveLoadMetadataTyped, String)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);
-    const vmf::vmf_string atom(TEST_VALUE);
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);
+    const vmf::umf_string atom(TEST_VALUE);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
 
     //vmf::initialize();
 
@@ -71,7 +71,7 @@ TEST(TestSaveLoadMetadataTyped, String)
         ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
-        ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
+        ASSERT_EQ(TEST_VALUE, (vmf::umf_string) value);
     }
 
     //vmf::terminate();
@@ -79,10 +79,10 @@ TEST(TestSaveLoadMetadataTyped, String)
 
 TEST(TestSaveLoadMetadataTyped, TwoStrings)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);
-    const vmf::vmf_string atom(TEST_VALUE);
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);
+    const vmf::umf_string atom(TEST_VALUE);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
 
     //vmf::initialize();
 
@@ -120,7 +120,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
         ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
-        ASSERT_EQ(TEST_VALUE, (vmf::vmf_string) value);
+        ASSERT_EQ(TEST_VALUE, (vmf::umf_string) value);
     }
 
     //vmf::terminate();
@@ -129,9 +129,9 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
 #define DECLARE_INT_TEST(subname, Type, testValue)\
     TEST(TestSaveLoadMetadataTyped, subname)\
 {\
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);\
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);\
-    const vmf::vmf_string atom(TEST_FIELD_NAME);\
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);\
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);\
+    const vmf::umf_string atom(TEST_FIELD_NAME);\
     const vmf::vmf_##Type TEST_VALUE(testValue);\
     \
     std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(TEST_SCHEMA_NAME));\
@@ -168,16 +168,16 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
 \
 }
 
-DECLARE_INT_TEST(Max_integer, integer, (vmf::vmf_integer) 0x7FFFFFFFFFFFFFFF)
-DECLARE_INT_TEST(Min_integer, integer, (vmf::vmf_integer) 0xFFFFFFFFFFFFFFFF)
+DECLARE_INT_TEST(Max_integer, integer, (vmf::umf_integer) 0x7FFFFFFFFFFFFFFF)
+DECLARE_INT_TEST(Min_integer, integer, (vmf::umf_integer) 0xFFFFFFFFFFFFFFFF)
 
 
 TEST(TestSaveLoadMetadataTyped, DoublePos)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);
-    const vmf::vmf_real TEST_VALUE(100.500);
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);
+    const vmf::umf_real TEST_VALUE(100.500);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
 
     //vmf::initialize();
 
@@ -215,7 +215,7 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
         ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_real, value.getType());
-        ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
+        ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::umf_real) value);
     }
 
     //vmf::terminate();
@@ -223,10 +223,10 @@ TEST(TestSaveLoadMetadataTyped, DoublePos)
 
 TEST(TestSaveLoadMetadataTyped, DoubleNeg)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);
-    const vmf::vmf_real TEST_VALUE(-100.500);
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);
+    const vmf::umf_real TEST_VALUE(-100.500);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
 
     //vmf::initialize();
 
@@ -264,7 +264,7 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
         ASSERT_EQ(1u, md->getFieldNames().size());
         vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME);
         ASSERT_EQ(vmf::Variant::type_real, value.getType());
-        ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::vmf_real) value);
+        ASSERT_DOUBLE_EQ(TEST_VALUE, (vmf::umf_real) value);
     }
 
     //vmf::terminate();
@@ -272,11 +272,11 @@ TEST(TestSaveLoadMetadataTyped, DoubleNeg)
 
 TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 {
-    const vmf::vmf_string atom(TEST_SCHEMA_NAME);
-    const vmf::vmf_string atom(TEST_PROPERTY_NAME);
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_SCHEMA_NAME);
+    const vmf::umf_string atom(TEST_PROPERTY_NAME);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
 
-    const vmf::vmf_rawbuffer TEST_VALUE("Raw <buffer \0 content>\n&", 25);
+    const vmf::umf_rawbuffer TEST_VALUE("Raw <buffer \0 content>\n&", 25);
 
     //vmf::initialize();
 
@@ -323,37 +323,37 @@ TEST(TestSaveLoadMetadataTyped, Rawbuffer)
 
 TEST(TestSaveLoadMetadataTyped, Vectors)
 {
-    std::vector<vmf::vmf_integer> test_integer_value;
+    std::vector<vmf::umf_integer> test_integer_value;
     test_integer_value.push_back(42);
     test_integer_value.push_back(24);
     test_integer_value.push_back(1024);
     test_integer_value.push_back(-1024);
 
-    std::vector<vmf::vmf_real> test_real_value;
+    std::vector<vmf::umf_real> test_real_value;
     test_real_value.push_back(42.42);
     test_real_value.push_back(24.24);
     test_real_value.push_back(1024.1024);
     test_real_value.push_back(-1024.6725);
 
-    std::vector<vmf::vmf_string> test_string_value;
+    std::vector<vmf::umf_string> test_string_value;
     test_string_value.push_back("test");
     test_string_value.push_back("string");
     test_string_value.push_back("value");
 
-    std::vector<vmf::vmf_vec2d> test_vec2d_value;
-    test_vec2d_value.push_back(vmf::vmf_vec2d(42, 42));
-    test_vec2d_value.push_back(vmf::vmf_vec2d(33.33, 57.75));
-    test_vec2d_value.push_back(vmf::vmf_vec2d(-72, 15.67));
+    std::vector<vmf::umf_vec2d> test_vec2d_value;
+    test_vec2d_value.push_back(vmf::umf_vec2d(42, 42));
+    test_vec2d_value.push_back(vmf::umf_vec2d(33.33, 57.75));
+    test_vec2d_value.push_back(vmf::umf_vec2d(-72, 15.67));
 
-    std::vector<vmf::vmf_vec3d> test_vec3d_value;
-    test_vec3d_value.push_back(vmf::vmf_vec3d(42, 42, 42));
-    test_vec3d_value.push_back(vmf::vmf_vec3d(33.33, 57.75, 99.12));
-    test_vec3d_value.push_back(vmf::vmf_vec3d(-72, 15.67, 0));
+    std::vector<vmf::umf_vec3d> test_vec3d_value;
+    test_vec3d_value.push_back(vmf::umf_vec3d(42, 42, 42));
+    test_vec3d_value.push_back(vmf::umf_vec3d(33.33, 57.75, 99.12));
+    test_vec3d_value.push_back(vmf::umf_vec3d(-72, 15.67, 0));
 
-    std::vector<vmf::vmf_vec4d> test_vec4d_value;
-    test_vec4d_value.push_back(vmf::vmf_vec4d(42, 42, 42, 42));
-    test_vec4d_value.push_back(vmf::vmf_vec4d(33.33, 57.75, 99.12, 45.14));
-    test_vec4d_value.push_back(vmf::vmf_vec4d(-72, 15.67, 0, 16.79));
+    std::vector<vmf::umf_vec4d> test_vec4d_value;
+    test_vec4d_value.push_back(vmf::umf_vec4d(42, 42, 42, 42));
+    test_vec4d_value.push_back(vmf::umf_vec4d(33.33, 57.75, 99.12, 45.14));
+    test_vec4d_value.push_back(vmf::umf_vec4d(-72, 15.67, 0, 16.79));
 
     //vmf::initialize();
 
@@ -448,7 +448,7 @@ protected:
         TEST_FIELD_NAME_2D = "TEST_FIELD_NAME_2D";
         TEST_FIELD_NAME_3D = "TEST_FIELD_NAME_3D";
         TEST_FIELD_NAME_4D = "TEST_FIELD_NAME_4D";
-        TEST_VALUE = vmf::vmf_vec4d(42.42, 24.24, 42.24, 24.42);
+        TEST_VALUE = vmf::umf_vec4d(42.42, 24.24, 42.24, 24.42);
 
         //vmf::initialize();
 
@@ -468,8 +468,8 @@ protected:
             stream.addSchema(schema);
 
             std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(descr));
-            md->setFieldValue(TEST_FIELD_NAME_2D, (vmf::vmf_vec2d)TEST_VALUE);
-            md->setFieldValue(TEST_FIELD_NAME_3D, (vmf::vmf_vec3d)TEST_VALUE);
+            md->setFieldValue(TEST_FIELD_NAME_2D, (vmf::umf_vec2d)TEST_VALUE);
+            md->setFieldValue(TEST_FIELD_NAME_3D, (vmf::umf_vec3d)TEST_VALUE);
             md->setFieldValue(TEST_FIELD_NAME_4D, TEST_VALUE);
             stream.add(md);
 
@@ -483,12 +483,12 @@ protected:
         //vmf::terminate();
     }
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_PROPERTY_NAME;
-    vmf::vmf_string TEST_FIELD_NAME_2D;
-    vmf::vmf_string TEST_FIELD_NAME_3D;
-    vmf::vmf_string TEST_FIELD_NAME_4D;
-    vmf::vmf_vec4d TEST_VALUE;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_PROPERTY_NAME;
+    vmf::umf_string TEST_FIELD_NAME_2D;
+    vmf::umf_string TEST_FIELD_NAME_3D;
+    vmf::umf_string TEST_FIELD_NAME_4D;
+    vmf::umf_vec4d TEST_VALUE;
 
 };
 
@@ -507,7 +507,7 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec2D)
     ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_2D);
     ASSERT_EQ(vmf::Variant::type_vec2d, value.getType());
-    bool result = (vmf::vmf_vec2d)TEST_VALUE == (vmf::vmf_vec2d)value;
+    bool result = (vmf::umf_vec2d)TEST_VALUE == (vmf::umf_vec2d)value;
     ASSERT_TRUE(result);
 }
 
@@ -526,7 +526,7 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec3D)
     ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_3D);
     ASSERT_EQ(vmf::Variant::type_vec3d, value.getType());
-    bool result = (vmf::vmf_vec3d)TEST_VALUE == (vmf::vmf_vec3d)value;
+    bool result = (vmf::umf_vec3d)TEST_VALUE == (vmf::umf_vec3d)value;
     ASSERT_TRUE(result);
 }
 
@@ -545,7 +545,7 @@ TEST_F(TestSaveLoadMetadataTypeVec, Vec4D)
     ASSERT_EQ(3u, md->getFieldNames().size());
     vmf::Variant value = md->getFieldValue(TEST_FIELD_NAME_4D);
     ASSERT_EQ(vmf::Variant::type_vec4d, value.getType());
-    bool result = TEST_VALUE == (vmf::vmf_vec4d)value;
+    bool result = TEST_VALUE == (vmf::umf_vec4d)value;
     ASSERT_TRUE(result);
 }
 
@@ -576,10 +576,10 @@ protected:
     std::shared_ptr<vmf::MetadataSchema> schema;
     std::shared_ptr<vmf::MetadataDesc> desc;
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_DESC_NAME;
-    vmf::vmf_string TEST_VALUE_1;
-    vmf::vmf_string TEST_VALUE_2;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_DESC_NAME;
+    vmf::umf_string TEST_VALUE_1;
+    vmf::umf_string TEST_VALUE_2;
 };
 
 TEST_F(TestSaveLoadMetadata, AddMetadataBeforeAddingSchema)
@@ -624,7 +624,7 @@ TEST_F(TestSaveLoadMetadata, SimpleProperty)
         ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value.getType());
-        ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value);
+        ASSERT_EQ(TEST_VALUE_1, (vmf::umf_string) value);
     }
 }
 
@@ -658,10 +658,10 @@ TEST_F(TestSaveLoadMetadata, Array)
         ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value1 = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value1.getType());
-        ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value1);
+        ASSERT_EQ(TEST_VALUE_1, (vmf::umf_string) value1);
         vmf::Variant value2 = md->at(1);
         ASSERT_EQ(vmf::Variant::type_string, value2.getType());
-        ASSERT_EQ(TEST_VALUE_2, (vmf::vmf_string) value2);
+        ASSERT_EQ(TEST_VALUE_2, (vmf::umf_string) value2);
     }
 }
 
@@ -706,13 +706,13 @@ TEST_F(TestSaveLoadMetadata, DeleteItem)
         ASSERT_EQ(0u, md->getFieldNames().size());
         vmf::Variant value1 = md->at(0);
         ASSERT_EQ(vmf::Variant::type_string, value1.getType());
-        ASSERT_EQ(TEST_VALUE_1, (vmf::vmf_string) value1);
+        ASSERT_EQ(TEST_VALUE_1, (vmf::umf_string) value1);
     }
 }
 
 TEST_F(TestSaveLoadMetadata, DeleteProperty)
 {
-    const vmf::vmf_string atom(ANOTHER_TEST_DESC_NAME);
+    const vmf::umf_string atom(ANOTHER_TEST_DESC_NAME);
     {
         std::shared_ptr<vmf::MetadataDesc> anotherDesc(new vmf::MetadataDesc(ANOTHER_TEST_DESC_NAME, vmf::Variant::type_string));
         schema->add(anotherDesc);
@@ -924,7 +924,7 @@ TEST_F(TestSaveLoadMetadata, Timestamp)
 
 TEST_F(TestSaveLoadMetadata, LoadByProperty)
 {
-    const vmf::vmf_string atom(TEST_DESC_NAME_1);
+    const vmf::umf_string atom(TEST_DESC_NAME_1);
     {
         std::shared_ptr<vmf::MetadataDesc> desc1;
         desc1 = std::make_shared<vmf::MetadataDesc>(TEST_DESC_NAME_1, vmf::Variant::type_string);
@@ -992,7 +992,7 @@ TEST_F(TestSaveLoadMetadata, TwoMetadata)
 
 TEST_F(TestSaveLoadMetadata, EmptyFields)
 {
-    const vmf::vmf_string atom(TEST_FIELD_NAME);
+    const vmf::umf_string atom(TEST_FIELD_NAME);
     {
         vmf::MetadataStream stream;
         std::vector<vmf::FieldDesc> fields;
@@ -1065,7 +1065,7 @@ TEST_F(TestSaveLoadMetadata, RemoveFromOneProperty)
         ASSERT_TRUE(md == nullptr);
         vmf::MetadataSet descSet = stream.queryByName(TEST_DESC_NAME);
         ASSERT_EQ(1u, descSet.size());
-        ASSERT_EQ(TEST_VALUE_2, (vmf::vmf_string) descSet.at(0)->at(0));
+        ASSERT_EQ(TEST_VALUE_2, (vmf::umf_string) descSet.at(0)->at(0));
         stream.close();
     }
 }
@@ -1159,7 +1159,7 @@ TEST_F(TestSaveLoadMetadata, Structure)
         auto meta = std::make_shared<vmf::Metadata>(desc);
         meta->setFieldValue("name", "Dmitry");
         meta->setFieldValue("last name", "Bogdanov");
-        meta->setFieldValue("age", (vmf::vmf_integer) 21);
+        meta->setFieldValue("age", (vmf::umf_integer) 21);
         stream.add(meta);
         stream.save();
         stream.close();
@@ -1171,9 +1171,9 @@ TEST_F(TestSaveLoadMetadata, Structure)
         stream.close();
         vmf::MetadataSet people = stream.queryByName("people");
         std::shared_ptr<vmf::Metadata> me = people.at(0);
-        ASSERT_EQ("Dmitry", (vmf::vmf_string) me->getFieldValue("name"));
-        ASSERT_EQ("Bogdanov", (vmf::vmf_string) me->getFieldValue("last name"));
-        ASSERT_EQ(21, (vmf::vmf_integer) me->getFieldValue("age"));
+        ASSERT_EQ("Dmitry", (vmf::umf_string) me->getFieldValue("name"));
+        ASSERT_EQ("Bogdanov", (vmf::umf_string) me->getFieldValue("last name"));
+        ASSERT_EQ(21, (vmf::umf_integer) me->getFieldValue("age"));
     }
 }
 
@@ -1221,11 +1221,11 @@ protected:
     std::shared_ptr<vmf::MetadataSchema> schema;
     std::shared_ptr<vmf::MetadataDesc> desc;
 
-    vmf::vmf_string TEST_SCHEMA_NAME;
-    vmf::vmf_string TEST_DESC_NAME;
-    vmf::vmf_string TEST_FIELD_NAME;
-    vmf::vmf_string TEST_FIELD_AGE;
-    vmf::vmf_string TEST_FIELD_ADDRESS;
+    vmf::umf_string TEST_SCHEMA_NAME;
+    vmf::umf_string TEST_DESC_NAME;
+    vmf::umf_string TEST_FIELD_NAME;
+    vmf::umf_string TEST_FIELD_AGE;
+    vmf::umf_string TEST_FIELD_ADDRESS;
 };
 
 TEST_F(TestSaveLoadFields, EmptyNonOptionalFields)
@@ -1285,17 +1285,17 @@ TEST_F(TestSaveLoadFields, Attributes)
 
         ASSERT_EQ(2u, people.size());
         ASSERT_TRUE(people[0]->hasField(TEST_FIELD_NAME));
-        ASSERT_EQ("Konstantin", (vmf::vmf_string)people[0]->getFieldValue(TEST_FIELD_NAME));
-        ASSERT_EQ(22, (vmf::vmf_integer)people[0]->getFieldValue(TEST_FIELD_AGE));
+        ASSERT_EQ("Konstantin", (vmf::umf_string)people[0]->getFieldValue(TEST_FIELD_NAME));
+        ASSERT_EQ(22, (vmf::umf_integer)people[0]->getFieldValue(TEST_FIELD_AGE));
         vmf::Variant addressValue;
         ASSERT_FALSE(people[0]->hasField(TEST_FIELD_ADDRESS));
         ASSERT_NO_THROW(addressValue = people[0]->getFieldValue(TEST_FIELD_ADDRESS));
         ASSERT_EQ(vmf::Variant::type_empty, addressValue.getType());
         ASSERT_TRUE(addressValue.isEmpty());
 
-        ASSERT_EQ("Vasya Pupkin", (vmf::vmf_string)people[1]->getFieldValue(TEST_FIELD_NAME) );
-        ASSERT_EQ(33, (vmf::vmf_integer)people[1]->getFieldValue(TEST_FIELD_AGE));
-        ASSERT_EQ("Karaganda", (vmf::vmf_string)people[1]->getFieldValue(TEST_FIELD_ADDRESS) );
+        ASSERT_EQ("Vasya Pupkin", (vmf::umf_string)people[1]->getFieldValue(TEST_FIELD_NAME) );
+        ASSERT_EQ(33, (vmf::umf_integer)people[1]->getFieldValue(TEST_FIELD_AGE));
+        ASSERT_EQ("Karaganda", (vmf::umf_string)people[1]->getFieldValue(TEST_FIELD_ADDRESS) );
 
         stream.close();
     }
@@ -1348,7 +1348,7 @@ class BloatingCompressor : public vmf::Compressor
 public:
     static const int factor = 5;
 
-    virtual void compress(const vmf::vmf_string& input, vmf::vmf_rawbuffer& output)
+    virtual void compress(const vmf::umf_string& input, vmf::umf_rawbuffer& output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end(); ++it)
@@ -1358,7 +1358,7 @@ public:
         }
     }
 
-    virtual void decompress(const vmf::vmf_rawbuffer& input, vmf::vmf_string &output)
+    virtual void decompress(const vmf::umf_rawbuffer& input, vmf::umf_string &output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end();)
@@ -1381,7 +1381,7 @@ public:
         return std::shared_ptr<Compressor>(new BloatingCompressor);
     }
 
-    virtual vmf::vmf_string getId()
+    virtual vmf::umf_string getId()
     {
         return "com.intel.vmf.compressor.test.bloating";
     }
@@ -1556,7 +1556,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
         vmf::MetadataSet eSet = stream.queryBySchema(schemaNames[0]);
         ASSERT_FALSE(eSet.empty());
         std::shared_ptr<vmf::Metadata> eItem = eSet[0];
-        ASSERT_EQ((vmf::vmf_string)eItem->getFieldValue("hint"), encryptor->getHint());
+        ASSERT_EQ((vmf::umf_string)eItem->getFieldValue("hint"), encryptor->getHint());
     }
 }
 
@@ -1591,14 +1591,14 @@ protected:
         vmf::terminate();
     }
 
-    vmf::vmf_string  TEST_SCHEMA_NAME;
-    vmf::vmf_string  TEST_DESC_NAME;
-    vmf::vmf_string  TEST_FIELD_NAME;
-    vmf::vmf_string  TEST_VALUE_NAME;
-    vmf::vmf_string  TEST_FIELD_AGE;
-    vmf::vmf_integer TEST_VALUE_AGE;
-    vmf::vmf_string  TEST_FIELD_ADDRESS;
-    vmf::vmf_string  TEST_VALUE_ADDRESS;
+    vmf::umf_string  TEST_SCHEMA_NAME;
+    vmf::umf_string  TEST_DESC_NAME;
+    vmf::umf_string  TEST_FIELD_NAME;
+    vmf::umf_string  TEST_VALUE_NAME;
+    vmf::umf_string  TEST_FIELD_AGE;
+    vmf::umf_integer TEST_VALUE_AGE;
+    vmf::umf_string  TEST_FIELD_ADDRESS;
+    vmf::umf_string  TEST_VALUE_ADDRESS;
 };
 
 
@@ -1660,7 +1660,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneField)
 
         ASSERT_EQ(mSet[0]->findField(TEST_FIELD_ADDRESS)->getUseEncryption(), (bool)encryptor);
 
-        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        vmf::umf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
 }
@@ -1723,7 +1723,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, OneRecord)
 
         ASSERT_EQ(mSet[0]->getUseEncryption(), (bool)encryptor);
 
-        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        vmf::umf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
 }
@@ -1791,7 +1791,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, FieldDesc)
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
-        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        vmf::umf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
 }
@@ -1858,7 +1858,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, MetaDesc)
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
-        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        vmf::umf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
 }
@@ -1923,7 +1923,7 @@ TEST_P(TestSaveLoadEncryptionSubsets, Schema)
         ASSERT_TRUE(stream.load(TEST_SCHEMA_NAME));
         vmf::MetadataSet mSet = stream.queryBySchema(TEST_SCHEMA_NAME);
         ASSERT_EQ(mSet.size(), 1);
-        vmf::vmf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
+        vmf::umf_string gotAddress = mSet[0]->getFieldValue(TEST_FIELD_ADDRESS);
         ASSERT_EQ(gotAddress, TEST_VALUE_ADDRESS);
     }
 }

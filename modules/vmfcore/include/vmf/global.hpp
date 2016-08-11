@@ -109,12 +109,12 @@ inline double from_string(const std::string& str) {
 /*!
 * \brief returns VMF build info string
 */
-VMF_EXPORT std::string getBuildInfo();
+UMF_EXPORT std::string getBuildInfo();
 
 /*! 
 * \brief returns current time in milliseconds since "clock's epoch" (midnight 1 Jan 1970 UTC)
 */
-VMF_EXPORT long long getTimestamp();
+UMF_EXPORT long long getTimestamp();
 
 /*! 
 * \brief converts the specified data + time (in local timezone) to the 'timestamp'
@@ -128,7 +128,7 @@ VMF_EXPORT long long getTimestamp();
 * \throw an 'IncorrectParamException' in case of error.
 * \return milliseconds since "clock's epoch"
 */
-VMF_EXPORT long long getTimestamp(int year, int month, int day, int hours = 0, int minutes = 0, int seconds = 0, int ms = 0);
+UMF_EXPORT long long getTimestamp(int year, int month, int day, int hours = 0, int minutes = 0, int seconds = 0, int ms = 0);
 
 /*! 
 * \typedef IdType
@@ -162,7 +162,7 @@ template<typename P> struct select2nd
 * \brief Initialize Video Metadata Framework
 * \details This function should be called before any call of VMF functions
 */
-VMF_EXPORT extern void initialize();
+UMF_EXPORT extern void initialize();
 
 /*!
 * \brief Clear resources allocated by Video Metadata Framework
@@ -171,7 +171,7 @@ VMF_EXPORT extern void initialize();
 * \details This function should be called when program stop works with
 * VMF.
 */
-VMF_EXPORT extern void terminate();
+UMF_EXPORT extern void terminate();
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif

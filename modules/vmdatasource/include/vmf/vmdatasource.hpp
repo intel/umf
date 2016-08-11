@@ -21,12 +21,12 @@ namespace vmf {
 /*!
  * \brief Prepares VMF internal objects for work
  */
-void VMF_EXPORT initialize();
+void UMF_EXPORT initialize();
 
 /*!
  * \brief Destroys VMF internal objects
  */
-void VMF_EXPORT terminate();
+void UMF_EXPORT terminate();
 
 } // namespace vmf
 

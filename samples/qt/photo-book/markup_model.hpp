@@ -28,7 +28,7 @@ class MarkupModel : public QObject
 public:
     typedef std::vector<FaceRect> RegionList;
     typedef std::vector<AssociatedRect> AssociatedRegionList;
-    typedef vmf::vmf_integer FrameIndex;
+    typedef vmf::umf_integer FrameIndex;
     typedef std::map<FrameIndex, RegionList> UnassociatedRList;
     typedef std::map<FrameIndex, AssociatedRegionList> AssociatedRList;
 

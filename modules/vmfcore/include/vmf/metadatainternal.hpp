@@ -38,9 +38,9 @@ namespace vmf
 * Unlike the %Metadata it keeps justparsed non-validated data and is transformed to %Metadata at adding to MetadataStream time.
 * Please don't use %MetadataInternal unless you develop custom %Format implementation.
 */
-struct VMF_EXPORT MetadataInternal
+struct UMF_EXPORT MetadataInternal
 {
-    struct VMF_EXPORT FieldInternal
+    struct UMF_EXPORT FieldInternal
     {
         FieldInternal() :
             value(), useEncryption(false), encryptedData()

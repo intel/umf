@@ -82,7 +82,7 @@ std::string FormatCompressed::compress(const std::string& input)
     if(!compressorId.empty())
     {
         std::shared_ptr<Compressor> compressor = Compressor::create(compressorId);
-        vmf_rawbuffer compressedBuf;
+        umf_rawbuffer compressedBuf;
         compressor->compress(input, compressedBuf);
         // Compressed binary data should be represented in base64
         // because of '\0' symbols
@@ -139,8 +139,8 @@ std::string FormatCompressed::decompress(const std::string& input)
         auto algoIter = metadata[0].fields.find(COMPRESSION_ALGO_PROP_NAME),
              dataIter = metadata[0].fields.find(COMPRESSED_DATA_PROP_NAME),
              mapEnd   = metadata[0].fields.end();
-        vmf_string algo = algoIter == mapEnd ? "" : algoIter->second.value;
-        vmf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
+        umf_string algo = algoIter == mapEnd ? "" : algoIter->second.value;
+        umf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
 
         if(algo.empty())
             VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");
@@ -151,7 +151,7 @@ std::string FormatCompressed::decompress(const std::string& input)
             std::shared_ptr<Compressor> decompressor = Compressor::create(algo);
             // Compressed binary data should be represented in base64
             // because of '\0' symbols
-            vmf_rawbuffer compressed = Variant::base64decode(data);
+            umf_rawbuffer compressed = Variant::base64decode(data);
             decompressor->decompress(compressed, decompressed);
             return decompressed;
         }

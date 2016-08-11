@@ -29,7 +29,7 @@ namespace vmf
  * \brief The class that keeps the data containing in the field
  * as well as its name and other atrributes
  */
-class VMF_EXPORT FieldValue : public vmf::Variant
+class UMF_EXPORT FieldValue : public vmf::Variant
 {
 public:
     /*!
@@ -149,7 +149,7 @@ private:
     /*!
      * \brief m_name Field name
      */
-    vmf_string m_name;
+    umf_string m_name;
 
     /*!
      * \brief m_useEncryption Flag specifying whether to use separate encryption
@@ -161,7 +161,7 @@ private:
      * \brief m_encryptedData While the field value isn't decrypted yet,
      * this field contains the encrypted string representation of the value
      */
-    vmf_string m_encryptedData;
+    umf_string m_encryptedData;
 };
 }
 
