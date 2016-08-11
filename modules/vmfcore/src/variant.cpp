@@ -62,7 +62,7 @@ Variant::~Variant()
     release();
 }
 
-#define IMPLEMENT_VMF_TYPE( T )\
+#define IMPLEMENT_UMF_TYPE( T )\
 Variant::Variant( const umf_##T& value)\
 {\
     m_type = type_##T;\
@@ -88,15 +88,15 @@ Variant::operator const umf_##T& () const\
     return get_##T();\
 }
 
-IMPLEMENT_VMF_TYPE( integer )
-IMPLEMENT_VMF_TYPE( real )
-IMPLEMENT_VMF_TYPE( string )
-IMPLEMENT_VMF_TYPE( vec2d )
-IMPLEMENT_VMF_TYPE( vec3d )
-IMPLEMENT_VMF_TYPE( vec4d )
-IMPLEMENT_VMF_TYPE( rawbuffer )
+IMPLEMENT_UMF_TYPE( integer )
+IMPLEMENT_UMF_TYPE( real )
+IMPLEMENT_UMF_TYPE( string )
+IMPLEMENT_UMF_TYPE( vec2d )
+IMPLEMENT_UMF_TYPE( vec3d )
+IMPLEMENT_UMF_TYPE( vec4d )
+IMPLEMENT_UMF_TYPE( rawbuffer )
 
-#define IMPLEMENT_VECTOR_VMF_TYPE( T ) \
+#define IMPLEMENT_VECTOR_UMF_TYPE( T ) \
 Variant::Variant( const std::vector<umf_##T>& value)\
 {\
     m_type = type_##T##_vector;\
@@ -122,12 +122,12 @@ Variant::operator const std::vector<umf_##T>& () const\
     return get_##T##_vector();\
 }
 
-IMPLEMENT_VECTOR_VMF_TYPE( integer )
-IMPLEMENT_VECTOR_VMF_TYPE( real )
-IMPLEMENT_VECTOR_VMF_TYPE( string )
-IMPLEMENT_VECTOR_VMF_TYPE( vec2d )
-IMPLEMENT_VECTOR_VMF_TYPE( vec3d )
-IMPLEMENT_VECTOR_VMF_TYPE( vec4d )
+IMPLEMENT_VECTOR_UMF_TYPE( integer )
+IMPLEMENT_VECTOR_UMF_TYPE( real )
+IMPLEMENT_VECTOR_UMF_TYPE( string )
+IMPLEMENT_VECTOR_UMF_TYPE( vec2d )
+IMPLEMENT_VECTOR_UMF_TYPE( vec3d )
+IMPLEMENT_VECTOR_UMF_TYPE( vec4d )
 
 Variant::Variant(const int& value) : data(new Data<umf_integer>(value)), m_type(type_integer) {}
 Variant::Variant(const unsigned int& value) : data(new Data<umf_integer>(value)), m_type(type_integer) {}

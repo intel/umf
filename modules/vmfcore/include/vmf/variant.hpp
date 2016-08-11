@@ -84,32 +84,32 @@ namespace vmf
         */
         ~Variant();
 
-#define DECLARE_VMF_TYPE( T ) \
+#define DECLARE_UMF_TYPE( T ) \
     Variant( const umf_##T& v); \
     Variant& operator = ( const umf_##T& v ); \
     const umf_##T& get_##T() const; \
     operator const umf_##T& () const;
 
-        DECLARE_VMF_TYPE( integer )
-        DECLARE_VMF_TYPE( real )
-        DECLARE_VMF_TYPE( string)
-        DECLARE_VMF_TYPE( vec2d )
-        DECLARE_VMF_TYPE( vec3d )
-        DECLARE_VMF_TYPE( vec4d )
-        DECLARE_VMF_TYPE( rawbuffer )
+        DECLARE_UMF_TYPE( integer )
+        DECLARE_UMF_TYPE( real )
+        DECLARE_UMF_TYPE( string)
+        DECLARE_UMF_TYPE( vec2d )
+        DECLARE_UMF_TYPE( vec3d )
+        DECLARE_UMF_TYPE( vec4d )
+        DECLARE_UMF_TYPE( rawbuffer )
 
-#define DECLARE_VECTOR_VMF_TYPE( T ) \
+#define DECLARE_VECTOR_UMF_TYPE( T ) \
     Variant( const std::vector<umf_##T>& v); \
     Variant& operator = ( const std::vector<umf_##T>& v ); \
     const std::vector<umf_##T>& get_##T##_vector() const; \
     operator const std::vector<umf_##T>& () const;
 
-        DECLARE_VECTOR_VMF_TYPE( integer )
-        DECLARE_VECTOR_VMF_TYPE( real )
-        DECLARE_VECTOR_VMF_TYPE( string )
-        DECLARE_VECTOR_VMF_TYPE( vec2d )
-        DECLARE_VECTOR_VMF_TYPE( vec3d )
-        DECLARE_VECTOR_VMF_TYPE( vec4d )
+        DECLARE_VECTOR_UMF_TYPE( integer )
+        DECLARE_VECTOR_UMF_TYPE( real )
+        DECLARE_VECTOR_UMF_TYPE( string )
+        DECLARE_VECTOR_UMF_TYPE( vec2d )
+        DECLARE_VECTOR_UMF_TYPE( vec3d )
+        DECLARE_VECTOR_UMF_TYPE( vec4d )
 
         /*!
         * \brief Constructor
