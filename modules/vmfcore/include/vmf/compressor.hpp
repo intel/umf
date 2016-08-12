@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef VMF_COMPRESSOR_HPP
-#define VMF_COMPRESSOR_HPP
+#ifndef UMF_COMPRESSOR_HPP
+#define UMF_COMPRESSOR_HPP
 
 /*!
 * \file compressor.hpp
@@ -102,4 +102,4 @@ public:
 
 } /* umf */
 
-#endif /* VMF_COMPRESSOR_HPP */
+#endif /* UMF_COMPRESSOR_HPP */
