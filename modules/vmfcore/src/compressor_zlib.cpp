@@ -48,11 +48,11 @@ void CompressorZlib::compress(const umf_string &input, umf_rawbuffer& output)
         {
             if(rcode == Z_MEM_ERROR)
             {
-                VMF_EXCEPTION(InternalErrorException, "Out of memory");
+                UMF_EXCEPTION(InternalErrorException, "Out of memory");
             }
             else
             {
-                VMF_EXCEPTION(InternalErrorException, "Compressing error occured");
+                UMF_EXCEPTION(InternalErrorException, "Compressing error occured");
                 //Z_BUF_ERROR if there was not enough room in the output buffer,
                 //Z_STREAM_ERROR if the level parameter is invalid.
             }
@@ -88,11 +88,11 @@ void CompressorZlib::decompress(const umf_rawbuffer& input, umf_string& output)
             {
                 if(rcode == Z_MEM_ERROR)
                 {
-                    VMF_EXCEPTION(InternalErrorException, "Out of memory");
+                    UMF_EXCEPTION(InternalErrorException, "Out of memory");
                 }
                 else
                 {
-                    VMF_EXCEPTION(InternalErrorException, "Decompressing error occured");
+                    UMF_EXCEPTION(InternalErrorException, "Decompressing error occured");
                     //Z_BUF_ERROR if there was not enough room in the output buffer,
                     //Z_DATA_ERROR if the input data was corrupted or incomplete
                 }
@@ -100,7 +100,7 @@ void CompressorZlib::decompress(const umf_rawbuffer& input, umf_string& output)
 
             if(gotDecompressedSize != decompressedSize)
             {
-                VMF_EXCEPTION(InternalErrorException,
+                UMF_EXCEPTION(InternalErrorException,
                               "The size of decompressed data doesn't match to source size");
             }
 

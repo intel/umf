@@ -47,7 +47,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatJSON_n_1store(JNIEnv *env, jc
     {
         std::shared_ptr<FormatJSON>* obj = (std::shared_ptr<FormatJSON>*) self;
         if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'self' is null.");
+            UMF_EXCEPTION(NullPointerException, "'self' is null.");
 
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
@@ -157,14 +157,14 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatJSON_n_1parse(JNIEnv *env,
     {
         std::shared_ptr<FormatJSON>* obj = (std::shared_ptr<FormatJSON>*) self;
         if (!obj || !*obj)
-            VMF_EXCEPTION(NullPointerException, "'self' is null");
+            UMF_EXCEPTION(NullPointerException, "'self' is null");
 
         if (!text)
-            VMF_EXCEPTION(NullPointerException, "Input text is null");
+            UMF_EXCEPTION(NullPointerException, "Input text is null");
 
         const char* textStr = env->GetStringUTFChars(text, 0);
         if (!textStr)
-            VMF_EXCEPTION(InternalErrorException, "Error accessing input text");
+            UMF_EXCEPTION(InternalErrorException, "Error accessing input text");
 
         std::vector<MetadataInternal> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;
@@ -236,7 +236,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FormatJSON_n_1delete(JNIEnv *env, jcla
     try
     {
         std::shared_ptr<FormatJSON>* obj = (std::shared_ptr<FormatJSON>*) self;
-        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'this' is null.");
+        if (!obj || !*obj) UMF_EXCEPTION(NullPointerException, "'this' is null.");
         delete obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }

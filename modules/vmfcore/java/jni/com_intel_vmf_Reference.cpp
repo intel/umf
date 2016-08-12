@@ -123,10 +123,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Reference_n_1setMetadata (JNIEnv *env,
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*) mdAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
 
         if ((md == NULL) || (md->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setReferenceMetadata ((*md));
     }
@@ -190,7 +190,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Reference_n_1delete (JNIEnv *env, jcla
         std::shared_ptr<Reference>* obj = (std::shared_ptr<Reference>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Reference is null pointer.");
 
         delete obj;
     }

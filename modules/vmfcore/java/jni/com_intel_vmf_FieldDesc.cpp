@@ -227,7 +227,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldDesc_n_1delete (JNIEnv *env, jcla
         std::shared_ptr<FieldDesc>* obj = (std::shared_ptr<FieldDesc>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
 
         delete obj;
     }

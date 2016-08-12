@@ -47,7 +47,7 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         dataSource = ObjectFactory::getInstance()->getDataSource();
         if (!dataSource)
         {
-            VMF_EXCEPTION(InternalErrorException, "Failed to get datasource instance. Possible, call of umf::initialize is missed");
+            UMF_EXCEPTION(InternalErrorException, "Failed to get datasource instance. Possible, call of umf::initialize is missed");
         }
         //don't call clear(), reset exactly the things needed to be reset
         m_oMetadataSet.clear();
@@ -148,7 +148,7 @@ bool MetadataStream::save(const umf_string &compressorId)
             //dataSource should know nothing about that
             if(m_useEncryption && !m_encryptor)
             {
-                VMF_EXCEPTION(umf::IncorrectParamException, "No encryptor provided while encryption is needed");
+                UMF_EXCEPTION(umf::IncorrectParamException, "No encryptor provided while encryption is needed");
             }
             dataSource->setEncryptor(m_useEncryption ? m_encryptor : nullptr);
 
@@ -206,10 +206,10 @@ bool MetadataStream::reopen( OpenMode eMode )
 {
     dataSourceCheck();
     if((m_eMode & ReadOnly) || (m_eMode & Update))
-        VMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
+        UMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
 
     if( m_sFilePath.empty())
-        VMF_EXCEPTION(umf::IncorrectParamException, "The file path is emtpy!");
+        UMF_EXCEPTION(umf::IncorrectParamException, "The file path is emtpy!");
     try
     {
         dataSource->openFile(m_sFilePath, eMode);
@@ -227,7 +227,7 @@ bool MetadataStream::reopen( OpenMode eMode )
 bool MetadataStream::saveTo(const std::string& sFilePath, const umf_string& compressorId)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
-        VMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
+        UMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
 
     try
     {
@@ -291,7 +291,7 @@ std::shared_ptr< Metadata > MetadataStream::getById( const IdType& id ) const
 IdType MetadataStream::add( std::shared_ptr< Metadata > spMetadata )
 {
     if( !this->getSchema(spMetadata->getDesc()->getSchemaName()) )
-        VMF_EXCEPTION(umf::NotFoundException, "Metadata schema is not in the stream");
+        UMF_EXCEPTION(umf::NotFoundException, "Metadata schema is not in the stream");
 
     IdType id = nextId++;
     spMetadata->setId(id);
@@ -303,14 +303,14 @@ IdType MetadataStream::add( std::shared_ptr< Metadata > spMetadata )
 IdType MetadataStream::add(MetadataInternal& mdi)
 {
     auto schema = getSchema(mdi.schemaName);
-    if (!schema) VMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
+    if (!schema) UMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
 
     auto desc = schema->findMetadataDesc(mdi.descName);
-    if (!desc) VMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Description: " + mdi.descName);
+    if (!desc) UMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Description: " + mdi.descName);
 
     if (mdi.id != INVALID_ID)
         if (!getById(mdi.id)) nextId = std::max(nextId, mdi.id + 1);
-        else VMF_EXCEPTION(IncorrectParamException, "Duplicated Metadata ID: " + to_string(mdi.id));
+        else UMF_EXCEPTION(IncorrectParamException, "Duplicated Metadata ID: " + to_string(mdi.id));
     else
         mdi.id = nextId++;
 
@@ -329,7 +329,7 @@ IdType MetadataStream::add(MetadataInternal& mdi)
             fieldIt->setEncryptedData(f.second.encryptedData);
         }
         else
-            VMF_EXCEPTION(IncorrectParamException, "Unknown Metadat field name: " + f.first);
+            UMF_EXCEPTION(IncorrectParamException, "Unknown Metadat field name: " + f.first);
     }
     spMd->setFrameIndex(mdi.frameIndex, mdi.frameNum);
     spMd->setTimestamp(mdi.timestamp, mdi.duration);
@@ -369,7 +369,7 @@ void MetadataStream::internalAdd(const std::shared_ptr<Metadata>& spMetadata)
     for (auto& spRef : vRefSet)
     {
         if(spRef.getReferenceMetadata().lock()->m_pStream != this)
-            VMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream.");
+            UMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream.");
     }
     m_oMetadataSet.push_back(spMetadata);
 
@@ -432,19 +432,19 @@ void MetadataStream::remove(std::shared_ptr< MetadataSchema > spSchema)
 {
     if( spSchema == nullptr )
     {
-        VMF_EXCEPTION(NullPointerException, "Metadata Schema is null." );
+        UMF_EXCEPTION(NullPointerException, "Metadata Schema is null." );
     }
 
     std::string sSchemaName = spSchema->getName();
     if( sSchemaName.empty() )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata Schema name cannot be empty!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata Schema name cannot be empty!" );
     }
 
     auto it = m_mapSchemas.find( sSchemaName );
     if( it == m_mapSchemas.end())
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata Schema doesn't exist!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata Schema doesn't exist!" );
     }
 
     auto items = this->queryBySchema(sSchemaName);
@@ -470,19 +470,19 @@ void MetadataStream::addSchema( std::shared_ptr< MetadataSchema > spSchema )
 {
     if( spSchema == nullptr )
     {
-        VMF_EXCEPTION(NullPointerException, "Metadata Schema is null." );
+        UMF_EXCEPTION(NullPointerException, "Metadata Schema is null." );
     }
 
     std::string sSchemaName = spSchema->getName();
     if( sSchemaName.empty() )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata Schema name cannot be empty!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata Schema name cannot be empty!" );
     }
 
     auto it = m_mapSchemas.find( sSchemaName );
     if( it != m_mapSchemas.end())
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata Schema already exists!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata Schema already exists!" );
     }
 
     m_mapSchemas[ sSchemaName ] = spSchema;
@@ -516,7 +516,7 @@ std::shared_ptr<Metadata> MetadataStream::import( MetadataStream& srcStream, std
     // Check to make sure the metadata belongs to the source stream
     if( nSrcMetadataId < 0 || srcStream.getById( nSrcMetadataId ) != spMetadata )
     {
-        VMF_EXCEPTION(IncorrectParamException, "The input metadata does not belong to the source stream!" );
+        UMF_EXCEPTION(IncorrectParamException, "The input metadata does not belong to the source stream!" );
     }
 
     // Skip if it has already been imported
@@ -525,7 +525,7 @@ std::shared_ptr<Metadata> MetadataStream::import( MetadataStream& srcStream, std
         auto spNewMetadata = this->getById( mapIds[ nSrcMetadataId ] );
         if( spNewMetadata == nullptr )
         {
-            VMF_EXCEPTION(InternalErrorException, "Unexpected exception!" );
+            UMF_EXCEPTION(InternalErrorException, "Unexpected exception!" );
         }
 
         return spNewMetadata;
@@ -546,7 +546,7 @@ std::shared_ptr<Metadata> MetadataStream::import( MetadataStream& srcStream, std
     auto spNewDescriptor = spNewSchema == nullptr ? nullptr : spNewSchema->findMetadataDesc( spMetadata->getName() );
     if( spNewDescriptor == nullptr )
     {
-        VMF_EXCEPTION(InternalErrorException, "Metadata schema or description was not found!" );
+        UMF_EXCEPTION(InternalErrorException, "Metadata schema or description was not found!" );
     }
     spNewMetadata->setDescriptor( spNewDescriptor );
 
@@ -590,7 +590,7 @@ bool MetadataStream::import( MetadataStream& srcStream, MetadataSet& srcSet, lon
                 this->addSchema( it->second );
             else
             {
-                VMF_EXCEPTION(InternalErrorException, "Metadata schema missing in the source stream!" );
+                UMF_EXCEPTION(InternalErrorException, "Metadata schema missing in the source stream!" );
             }
         }
     });
@@ -630,7 +630,7 @@ void MetadataStream::dataSourceCheck()
 {
     if (!dataSource)
     {
-        VMF_EXCEPTION(InternalErrorException, "No files has been assosiated with this stream");
+        UMF_EXCEPTION(InternalErrorException, "No files has been assosiated with this stream");
     }
 }
 
@@ -834,7 +834,7 @@ void MetadataStream::encrypt()
             }
             else
             {
-                VMF_EXCEPTION(IncorrectParamException, "No encryptor provided while encryption is needed");
+                UMF_EXCEPTION(IncorrectParamException, "No encryptor provided while encryption is needed");
             }
             meta->setEncryptedData(Variant::base64encode(encryptedBuf));
         }
@@ -853,7 +853,7 @@ void MetadataStream::encrypt()
                     }
                     else
                     {
-                        VMF_EXCEPTION(IncorrectParamException,
+                        UMF_EXCEPTION(IncorrectParamException,
                                       "No encryptor provided while encryption is needed");
                     }
                     std::string encoded = Variant::base64encode(encryptedBuf);
@@ -882,7 +882,7 @@ void MetadataStream::decrypt()
             {
                 if(!ignoreBad)
                 {
-                    VMF_EXCEPTION(IncorrectParamException,
+                    UMF_EXCEPTION(IncorrectParamException,
                                   "No decryption algorithm provided for encrypted data");
                 }
             }
@@ -902,7 +902,7 @@ void MetadataStream::decrypt()
                     {
                         std::string message = "Decryption failed: " + std::string(ee.what()) +
                                               ", hint: " + m_encryptor->getHint();
-                        VMF_EXCEPTION(IncorrectParamException, message);
+                        UMF_EXCEPTION(IncorrectParamException, message);
                     }
                 }
                 Variant varStrings; varStrings.fromString(Variant::type_string_vector, serialized);
@@ -932,7 +932,7 @@ void MetadataStream::decrypt()
         {
             if(meta->getUseEncryption())
             {
-                VMF_EXCEPTION(IncorrectParamException, "No encrypted metadata presented while the flag is on");
+                UMF_EXCEPTION(IncorrectParamException, "No encrypted metadata presented while the flag is on");
             }
             else
             {
@@ -946,7 +946,7 @@ void MetadataStream::decrypt()
                         {
                             if(!ignoreBad)
                             {
-                                VMF_EXCEPTION(IncorrectParamException,
+                                UMF_EXCEPTION(IncorrectParamException,
                                               "No decryption algorithm provided for encrypted data");
                             }
                         }
@@ -966,7 +966,7 @@ void MetadataStream::decrypt()
                                 {
                                     std::string message = "Decryption failed: " + std::string(ee.what()) +
                                                           ", hint: " + m_encryptor->getHint();
-                                    VMF_EXCEPTION(IncorrectParamException, message);
+                                    UMF_EXCEPTION(IncorrectParamException, message);
                                 }
                             }
                             Variant v; v.fromString(fv.getType(), decrypted);
@@ -978,7 +978,7 @@ void MetadataStream::decrypt()
                     {
                         if(fv.getUseEncryption())
                         {
-                            VMF_EXCEPTION(IncorrectParamException,
+                            UMF_EXCEPTION(IncorrectParamException,
                                           "No encrypted field data provided while the flag is on");
                         }
                     }
@@ -994,25 +994,25 @@ void MetadataStream::decrypt()
 void MetadataStream::addVideoSegment(std::shared_ptr<VideoSegment> newSegment)
 {
     if (!newSegment)
-        VMF_EXCEPTION(NullPointerException, "Pointer to new segment is NULL");
+        UMF_EXCEPTION(NullPointerException, "Pointer to new segment is NULL");
 
     if (newSegment->getTitle().empty())
-        VMF_EXCEPTION(IncorrectParamException, "Segment contains empty 'title' value");
+        UMF_EXCEPTION(IncorrectParamException, "Segment contains empty 'title' value");
 
     if (newSegment->getDuration() < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'duration' value");
+        UMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'duration' value");
 
     if (newSegment->getTime() < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'timeStart' value");
+        UMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'timeStart' value");
 
     if (newSegment->getFPS() <= 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'FPS' value");
+        UMF_EXCEPTION(IncorrectParamException, "Segment contains invalid 'FPS' value");
 
     long height = 0, width = 0;
     newSegment->getResolution(height, width);
 
     if ((height < 0) || (width < 0))
-        VMF_EXCEPTION(IncorrectParamException, "Segment contains invalid resolution");
+        UMF_EXCEPTION(IncorrectParamException, "Segment contains invalid resolution");
 
     std::for_each(videoSegments.begin(), videoSegments.end(), [&](const std::shared_ptr<VideoSegment>& segment)
     {   
@@ -1020,7 +1020,7 @@ void MetadataStream::addVideoSegment(std::shared_ptr<VideoSegment> newSegment)
 	    
         if (((segmentTime <= newTime) && ((segmentTime + segment->getDuration() - 1) >= newTime)) ||
 		    ((newTime <= segmentTime) && ((newTime + newSegment->getDuration() - 1) >= segmentTime)))
-		    VMF_EXCEPTION(IncorrectParamException, "Input segment intersects a one of the already created segments");
+		    UMF_EXCEPTION(IncorrectParamException, "Input segment intersects a one of the already created segments");
     });
 
     videoSegments.push_back(newSegment);
@@ -1041,15 +1041,15 @@ MetadataStream::VideoSegment::VideoSegment(
     title(_title), fps(_fps), timeStart(_timeStart), duration(_duration), width(_width), height(_height)
 {
     if (_title.empty())
-        VMF_EXCEPTION(IncorrectParamException, "Segment title can't be empty");
+        UMF_EXCEPTION(IncorrectParamException, "Segment title can't be empty");
     if (_fps <= 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment fps must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment fps must be positive");
     if (_timeStart < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment start time must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment start time must be positive");
     if (_duration < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment duration must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment duration must be positive");
     if (_width < 0 || _height < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment resoulution width and height must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment resoulution width and height must be positive");
 }
 
 MetadataStream::VideoSegment::~VideoSegment() {}
@@ -1059,7 +1059,7 @@ std::string MetadataStream::VideoSegment::getTitle() const { return title; }
 void MetadataStream::VideoSegment::setTitle(const std::string& _title)
 {
     if(_title.empty())
-        VMF_EXCEPTION(IncorrectParamException, "Segment title can't be empty");
+        UMF_EXCEPTION(IncorrectParamException, "Segment title can't be empty");
     title = _title;
 }
 
@@ -1068,7 +1068,7 @@ double MetadataStream::VideoSegment::getFPS() const { return fps; }
 void MetadataStream::VideoSegment::setFPS(double _fps)
 {
     if(_fps <= 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment fps must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment fps must be positive");
     fps = _fps;
 }
 
@@ -1077,7 +1077,7 @@ long long MetadataStream::VideoSegment::getDuration() const { return duration; }
 void MetadataStream::VideoSegment::setDuration(long long _duration)
 {
     if(_duration <= 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment duration must positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment duration must positive");
     duration = _duration;
 }
 
@@ -1086,7 +1086,7 @@ long long MetadataStream::VideoSegment::getTime() const { return timeStart; }
 void MetadataStream::VideoSegment::setTime(long long _timeStart)
 {
     if(_timeStart < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment start time must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment start time must be positive");
     timeStart = _timeStart;
 }
 
@@ -1095,7 +1095,7 @@ void MetadataStream::VideoSegment::getResolution(long& _width, long& _height) co
 void MetadataStream::VideoSegment::setResolution(long _width, long _height)
 {
     if(_width <= 0 || _height <= 0)
-        VMF_EXCEPTION(IncorrectParamException, "Segment resoulution width and height must be positive");
+        UMF_EXCEPTION(IncorrectParamException, "Segment resoulution width and height must be positive");
     width = _width;
     height = _height;
 }
@@ -1170,14 +1170,14 @@ void MetadataStream::addStat(std::shared_ptr<Stat> stat)
 {
     const std::string& name = stat->getName();
     auto it = std::find_if(m_stats.begin(), m_stats.end(), [&name](std::shared_ptr<Stat> s){return s->getName() == name; });
-    if (it != m_stats.end()) VMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: " + name);
+    if (it != m_stats.end()) UMF_EXCEPTION(IncorrectParamException, "Statistics object already exists: " + name);
     m_stats.push_back(stat);
 }
 
 std::shared_ptr<Stat> MetadataStream::getStat(const std::string& name) const
 {
     auto it = std::find_if(m_stats.begin(), m_stats.end(), [&name](std::shared_ptr<Stat> s){return s->getName() == name; });
-    if (it == m_stats.end()) VMF_EXCEPTION(umf::NotFoundException, "Statistics object not found: " + name);
+    if (it == m_stats.end()) UMF_EXCEPTION(umf::NotFoundException, "Statistics object not found: " + name);
     return *it;
 }
 

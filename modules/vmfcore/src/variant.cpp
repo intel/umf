@@ -81,7 +81,7 @@ const umf_##T& Variant::get_##T() const\
     {\
         return dynamic_cast<Data<umf_##T>*>(data)->content;\
     }\
-    VMF_EXCEPTION(TypeCastException, "bad cast");\
+    UMF_EXCEPTION(TypeCastException, "bad cast");\
 }\
 Variant::operator const umf_##T& () const\
 {\
@@ -115,7 +115,7 @@ const std::vector<umf_##T>& Variant::get_##T##_vector() const\
     {\
         return dynamic_cast<Data<std::vector<umf_##T>>*>(data)->content;\
     }\
-    VMF_EXCEPTION(TypeCastException, "bad cast");\
+    UMF_EXCEPTION(TypeCastException, "bad cast");\
 }\
 Variant::operator const std::vector<umf_##T>& () const\
 {\
@@ -261,7 +261,7 @@ bool Variant::operator == (const Variant& other) const
         }
         else
         {
-            VMF_EXCEPTION(IncorrectParamException, "Can't compare Variant objects with incompatible types");
+            UMF_EXCEPTION(IncorrectParamException, "Can't compare Variant objects with incompatible types");
         }
     }
 
@@ -293,7 +293,7 @@ bool Variant::operator == (const Variant& other) const
             bIsEqual = true;
             break;
         default:
-        VMF_EXCEPTION(IncorrectParamException, "unknown type.");
+        UMF_EXCEPTION(IncorrectParamException, "unknown type.");
         break;
     }
 
@@ -415,7 +415,7 @@ void Variant::fromString(const std::string& value)
             return;
         }
     }
-    VMF_EXCEPTION(IncorrectParamException, "Error decoding value string: " + value);
+    UMF_EXCEPTION(IncorrectParamException, "Error decoding value string: " + value);
 }
 
 void Variant::fromString(Type eType, const std::string& sValue)
@@ -493,7 +493,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_integer>>(vec);
         }
@@ -510,7 +510,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_real>>(vec);
         }
@@ -527,7 +527,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_string>>(vec);
         }
@@ -544,7 +544,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec2d>>(vec);
         }
@@ -561,7 +561,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec3d>>(vec);
         }
@@ -578,13 +578,13 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec4d>>(vec);
         }
         break;
     default:
-        VMF_EXCEPTION(IncorrectParamException, "unexpected type");
+        UMF_EXCEPTION(IncorrectParamException, "unexpected type");
     }
 }
 
@@ -612,7 +612,7 @@ void Variant::convertTo(Type type)
     // Check if the types are convertible
     if (!isConvertible(m_type, type))
     {
-        VMF_EXCEPTION(TypeCastException, "Cannot convert value to the target type!" );
+        UMF_EXCEPTION(TypeCastException, "Cannot convert value to the target type!" );
     }
 
     // Convert value to double, and check to see if the value is out of range of what the new type can represent.
@@ -623,7 +623,7 @@ void Variant::convertTo(Type type)
 
     if (fValue < minLimit<double>(type) || fValue > maxLimit<double>(type))
     {
-        VMF_EXCEPTION(OutOfRangeException, "Cannot convert value exceeds limit!" );
+        UMF_EXCEPTION(OutOfRangeException, "Cannot convert value exceeds limit!" );
     }
 
     // Now convert the value to the new type
@@ -682,7 +682,7 @@ Variant::Type Variant::typeFromString(const std::string& sFieldType)
     TYPE_FROM_STRING(vec3d_vector, vec3d[]);
     TYPE_FROM_STRING(vec4d_vector, vec4d[]);
 
-    VMF_EXCEPTION(IncorrectParamException, std::string("Invalid type string: ") + sFieldType);
+    UMF_EXCEPTION(IncorrectParamException, std::string("Invalid type string: ") + sFieldType);
 }
 
 bool Variant::isConvertible(Type srcType, Type dstType)
@@ -732,13 +732,13 @@ umf_rawbuffer Variant::base64decode(const std::string& base64Str)
 
     size_t size = base64Str.size();
     if (base64Str.size() % 4 != 0)
-        VMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string size (isn't multiple of 4)");
+        UMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string size (isn't multiple of 4)");
 
     size_t i = 0;
     auto rit = base64Str.rbegin();
     while (rit != base64Str.rend() && *rit++ == '=') ++i;
     if (i > 2)
-        VMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string: more than 2 trailing '=' symbols");
+        UMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string: more than 2 trailing '=' symbols");
 
     size_t  res_size = size / 4 * 3 - i;
     std::unique_ptr<char[]> result(new char[res_size]);
@@ -752,7 +752,7 @@ umf_rawbuffer Variant::base64decode(const std::string& base64Str)
         {
             c[j] = (char)base64_chars.find(*in++);
             if (c[j] < 0 && i + j <= res_size)
-                VMF_EXCEPTION(umf::IncorrectParamException, "Input base64 string contains invalid symbol");
+                UMF_EXCEPTION(umf::IncorrectParamException, "Input base64 string contains invalid symbol");
         }
 
         result[i++] = (c[0] << 2) | (c[1] >> 4);

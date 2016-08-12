@@ -336,7 +336,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1declareCustomReference
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
 
         const char* tmp = env->GetStringUTFChars(refName, NULL);
         std::string sName(tmp);
@@ -455,7 +455,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataDesc_n_1delete (JNIEnv *env, j
         std::shared_ptr<MetadataDesc>* obj = (std::shared_ptr<MetadataDesc>*)self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata description is null pointer.");
 
         delete obj;
     }

@@ -48,7 +48,7 @@ void XMPDataSource::initialize()
     {
         if(!SXMPMeta::Initialize())
         {
-            VMF_EXCEPTION(DataStorageException, "Internal error during "
+            UMF_EXCEPTION(DataStorageException, "Internal error during "
                 "initialization of XMPMeta.");
         }
         SXMPMeta::RegisterNamespace(VMF_NS, "umf", NULL);
@@ -58,17 +58,17 @@ void XMPDataSource::initialize()
 #endif
         if(!SXMPFiles::Initialize(xmpFilesOpts))
         {
-            VMF_EXCEPTION(DataStorageException, "Internal error during "
+            UMF_EXCEPTION(DataStorageException, "Internal error during "
                 "initialization of XMPFiles.");
         }
     }
     catch (const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch (const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -141,7 +141,7 @@ void XMPDataSource::loadXMPstructs()
     tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
     if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
     {
-        VMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
+        UMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
     }
 
     //load standard VMF metadata and decompress them if there is a corresponding schema
@@ -167,7 +167,7 @@ void XMPDataSource::loadXMPstructs()
             {
                 if(!ignoreBad)
                 {
-                    VMF_EXCEPTION(IncorrectParamException,
+                    UMF_EXCEPTION(IncorrectParamException,
                                   "No decryption algorithm provided for encrypted data");
                 }
             }
@@ -188,7 +188,7 @@ void XMPDataSource::loadXMPstructs()
                     if(!ignoreBad)
                     {
                         string message = "Decryption failed: " + string(ee.what()) + ", hint: " + hint;
-                        VMF_EXCEPTION(IncorrectParamException, message);
+                        UMF_EXCEPTION(IncorrectParamException, message);
                     }
                 }
                 //replace tmp XMP entities
@@ -198,7 +198,7 @@ void XMPDataSource::loadXMPstructs()
                 tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
                 if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
                 {
-                    VMF_EXCEPTION(DataStorageException,
+                    UMF_EXCEPTION(DataStorageException,
                                   "Failed to create metadata source, schema source or stat source");
                 }
             }
@@ -234,7 +234,7 @@ void XMPDataSource::loadXMPstructs()
                 tmpStatSource = make_shared<XMPStatSource>(tmpXMP);
                 if(!tmpMetaSource || !tmpSchemaSource || !tmpStatSource)
                 {
-                    VMF_EXCEPTION(DataStorageException,
+                    UMF_EXCEPTION(DataStorageException,
                                   "Failed to create metadata source, schema source or stat source");
                 }
             }
@@ -243,7 +243,7 @@ void XMPDataSource::loadXMPstructs()
                 //if there's no such compressor and we're allowed to ignore that
                 if(!ignoreBad)
                 {
-                    VMF_EXCEPTION(IncorrectParamException, ce.what());
+                    UMF_EXCEPTION(IncorrectParamException, ce.what());
                 }
             }
             catch(InternalErrorException& ce)
@@ -251,18 +251,18 @@ void XMPDataSource::loadXMPstructs()
                 //if there was an error during decompression
                 if(!ignoreBad)
                 {
-                    VMF_EXCEPTION(IncorrectParamException, ce.what());
+                    UMF_EXCEPTION(IncorrectParamException, ce.what());
                 }
             }
         }
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 
     xmp = tmpXMP;
@@ -306,7 +306,7 @@ void XMPDataSource::saveXMPstructs()
         cMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
         if (!cMetaSource || !cSchemaSource)
         {
-            VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
+            UMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
         }
 
         try
@@ -316,11 +316,11 @@ void XMPDataSource::saveXMPstructs()
         }
         catch(const XMP_Error& e)
         {
-            VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+            UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
         }
         catch(const std::exception& e)
         {
-            VMF_EXCEPTION(DataStorageException, e.what());
+            UMF_EXCEPTION(DataStorageException, e.what());
         }
         IdType cNextId = 1;
         tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
@@ -353,7 +353,7 @@ void XMPDataSource::saveXMPstructs()
         eMetaSource = make_shared<XMPMetadataSource>(tmpXMP);
         if(!eMetaSource || !eSchemaSource)
         {
-            VMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
+            UMF_EXCEPTION(DataStorageException, "Failed to create compressed metadata source or schema source");
         }
 
         try
@@ -363,11 +363,11 @@ void XMPDataSource::saveXMPstructs()
         }
         catch(const XMP_Error& e)
         {
-            VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+            UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
         }
         catch(const std::exception& e)
         {
-            VMF_EXCEPTION(DataStorageException, e.what());
+            UMF_EXCEPTION(DataStorageException, e.what());
         }
         IdType eNextId = 1;
         tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, eNextId);
@@ -379,7 +379,7 @@ void XMPDataSource::saveXMPstructs()
     }
     else
     {
-        VMF_EXCEPTION(InternalErrorException, "Can't write XMP data to file");
+        UMF_EXCEPTION(InternalErrorException, "Can't write XMP data to file");
     }
 }
 
@@ -408,7 +408,7 @@ void XMPDataSource::openFile(const umf_string& fileName, MetadataStream::OpenMod
             opened = xmpFile.OpenFile(metaFileName, kXMP_UnknownFile, opts);
             if (!opened)
             {
-                VMF_EXCEPTION(DataStorageException, "Could not open XMP file.");
+                UMF_EXCEPTION(DataStorageException, "Could not open XMP file.");
             }
         }
 
@@ -416,11 +416,11 @@ void XMPDataSource::openFile(const umf_string& fileName, MetadataStream::OpenMod
    }
     catch (const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch (const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -438,11 +438,11 @@ void XMPDataSource::closeFile()
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch (const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -456,11 +456,11 @@ void XMPDataSource::loadSchema(const umf_string& schemaName, MetadataStream& str
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -475,11 +475,11 @@ void XMPDataSource::loadProperty(const umf_string &schemaName, const umf_string 
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -493,11 +493,11 @@ void XMPDataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -507,7 +507,7 @@ void XMPDataSource::save(const std::shared_ptr<umf::MetadataSchema>& schema)
 {
     if (schema == nullptr)
     {
-        VMF_EXCEPTION(NullPointerException, "Couldn't save nullptr schema");
+        UMF_EXCEPTION(NullPointerException, "Couldn't save nullptr schema");
     }
     schemaSourceCheck();
     try
@@ -516,11 +516,11 @@ void XMPDataSource::save(const std::shared_ptr<umf::MetadataSchema>& schema)
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -556,11 +556,11 @@ void XMPDataSource::remove(const vector<IdType>& ids)
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -573,11 +573,11 @@ void XMPDataSource::load(std::map<umf_string, std::shared_ptr<MetadataSchema> >&
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -590,11 +590,11 @@ void XMPDataSource::saveStats(const std::vector< std::shared_ptr<Stat> >& stats)
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -607,11 +607,11 @@ void XMPDataSource::loadStats(std::vector< std::shared_ptr<Stat> >& stats)
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 }
 
@@ -628,11 +628,11 @@ void XMPDataSource::clear()
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
 
 }
@@ -665,7 +665,7 @@ void XMPDataSource::metadataSourceCheck()
 {
     if (!metadataSource)
     {
-        VMF_EXCEPTION(DataStorageException, "Metadata source doesn't exist");
+        UMF_EXCEPTION(DataStorageException, "Metadata source doesn't exist");
     }
 }
 
@@ -673,7 +673,7 @@ void XMPDataSource::schemaSourceCheck()
 {
     if (!schemaSource)
     {
-        VMF_EXCEPTION(DataStorageException, "Schema source doesn't exist");
+        UMF_EXCEPTION(DataStorageException, "Schema source doesn't exist");
     }
 }
 
@@ -681,7 +681,7 @@ void XMPDataSource::statSourceCheck()
 {
     if (!statSource)
     {
-        VMF_EXCEPTION(DataStorageException, "Statistics source doesn't exist");
+        UMF_EXCEPTION(DataStorageException, "Statistics source doesn't exist");
     }
 }
 
@@ -709,15 +709,15 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
     }
     catch(const XMP_Error& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.GetErrMsg());
+        UMF_EXCEPTION(DataStorageException, e.GetErrMsg());
     }
     catch(const std::exception& e)
     {
-        VMF_EXCEPTION(DataStorageException, e.what());
+        UMF_EXCEPTION(DataStorageException, e.what());
     }
     catch(...)
     {
-        VMF_EXCEPTION(DataStorageException, "Internal failure. Checksum can't be computed!");
+        UMF_EXCEPTION(DataStorageException, "Internal failure. Checksum can't be computed!");
     }
 }
 
@@ -772,7 +772,7 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
             umf_string tmpPath;
 
             if (segment->getTitle().empty() || segment->getFPS() <= 0 || segment->getTime() < 0)
-                VMF_EXCEPTION(DataStorageException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_NAME, &tmpPath);
             xmp->SetProperty(VMF_NS, tmpPath.c_str(), segment->getTitle().c_str());
@@ -822,15 +822,15 @@ void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_NAME, &tmpPath);
 	if(!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &segmentTitle, 0) )
-	    VMF_EXCEPTION(DataStorageException, "Broken video segment's title");
+	    UMF_EXCEPTION(DataStorageException, "Broken video segment's title");
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_FPS, &tmpPath);
 	if(!xmp->GetProperty_Float(VMF_NS, tmpPath.c_str(), &fps, 0) )
-	    VMF_EXCEPTION(DataStorageException, "Broken video segment's FPS");
+	    UMF_EXCEPTION(DataStorageException, "Broken video segment's FPS");
 
 	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_TIME, &tmpPath);
 	if(!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &timestamp, 0) )
-	    VMF_EXCEPTION(DataStorageException, "Broken video segment's timestamp");
+	    UMF_EXCEPTION(DataStorageException, "Broken video segment's timestamp");
 
 	std::shared_ptr<MetadataStream::VideoSegment> segment = std::make_shared<MetadataStream::VideoSegment>(segmentTitle, fps, timestamp);
 

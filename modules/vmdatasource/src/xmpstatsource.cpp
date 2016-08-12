@@ -64,7 +64,7 @@ void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
         umf_string tmpPath;
 
         if (stat->getName().empty())
-            VMF_EXCEPTION(DataStorageException, "Invalid stat object: name is invalid!");
+            UMF_EXCEPTION(DataStorageException, "Invalid stat object: name is invalid!");
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
         metadata->SetProperty(VMF_NS, tmpPath.c_str(), stat->getName().c_str());
@@ -81,16 +81,16 @@ void XMPStatSource::save(const std::vector< std::shared_ptr<Stat> >& stats)
             SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToFieldArray.c_str(), kXMP_ArrayLastItem, &pathToField);
 
             if (field.getName().empty())
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field name is invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid stat object: field name is invalid!");
             if (field.getFieldName().empty())
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata field name is invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata field name is invalid!");
             if (field.getOpName().empty())
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field operation name is invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid stat object: field operation name is invalid!");
 
             if (field.getSchemaName().empty())
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata schema name is invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata schema name is invalid!");
             if (field.getMetadataName().empty())
-                VMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata name is invalid!");
+                UMF_EXCEPTION(DataStorageException, "Invalid stat object: field metadata name is invalid!");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_NAME, &tmpPath);
             metadata->SetProperty(VMF_NS, tmpPath.c_str(), field.getName().c_str());
@@ -127,7 +127,7 @@ void XMPStatSource::load(std::vector< std::shared_ptr<Stat> >& stats)
 
         SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToStat.c_str(), VMF_NS, VMF_STAT_NAME, &tmpPath);
         if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &statName, 0) )
-            VMF_EXCEPTION(DataStorageException, "Broken stat name");
+            UMF_EXCEPTION(DataStorageException, "Broken stat name");
 
         std::vector< StatField > fields;
 
@@ -142,23 +142,23 @@ void XMPStatSource::load(std::vector< std::shared_ptr<Stat> >& stats)
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &fieldName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field name");
+                UMF_EXCEPTION(DataStorageException, "Broken stat field name");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_SCHEMA_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &schemaName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field metadata schema name");
+                UMF_EXCEPTION(DataStorageException, "Broken stat field metadata schema name");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_METADATA_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &metadataName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field metadata name");
+                UMF_EXCEPTION(DataStorageException, "Broken stat field metadata name");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_FIELD_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &metadataFieldName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field metadata field name");
+                UMF_EXCEPTION(DataStorageException, "Broken stat field metadata field name");
 
             SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToField.c_str(), VMF_NS, VMF_STAT_FIELD_OP_NAME, &tmpPath);
             if(!metadata->GetProperty(VMF_NS, tmpPath.c_str(), &opName, 0) )
-                VMF_EXCEPTION(DataStorageException, "Broken stat field operation name");
+                UMF_EXCEPTION(DataStorageException, "Broken stat field operation name");
 
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }

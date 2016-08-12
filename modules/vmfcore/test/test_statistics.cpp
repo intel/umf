@@ -449,11 +449,11 @@ protected:
 
         std::ifstream source( srcName, std::ios::binary );
         if( !source )
-            VMF_EXCEPTION( umf::IncorrectParamException, "Error opening input file: "  + srcName );
+            UMF_EXCEPTION( umf::IncorrectParamException, "Error opening input file: "  + srcName );
 
         std::ofstream dest( dstName, std::ios::binary );
         if( !dest )
-            VMF_EXCEPTION( umf::IncorrectParamException, "Error opening output file: " + dstName );
+            UMF_EXCEPTION( umf::IncorrectParamException, "Error opening output file: " + dstName );
 
         dest << source.rdbuf();
     }

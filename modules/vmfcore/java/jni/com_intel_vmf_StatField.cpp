@@ -31,7 +31,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_StatField_n_1delete(JNIEnv *env, jclas
     try 
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         delete obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -76,7 +76,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getName(JNIEnv *env, j
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -94,7 +94,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getSchemaName(JNIEnv *
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getSchemaName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -112,7 +112,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getMetadataName(JNIEnv
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getMetadataName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -130,7 +130,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getFieldName(JNIEnv *e
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getFieldName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -148,7 +148,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_StatField_n_1getOpName(JNIEnv *env,
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return env->NewStringUTF((*obj)->getOpName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -166,7 +166,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_StatField_n_1getValue(JNIEnv *env, jc
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
         return (jlong) new std::shared_ptr<Variant>(new Variant((*obj)->getValue()));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -184,10 +184,10 @@ JNIEXPORT jboolean JNICALL Java_com_intel_vmf_StatField_n_1equals(JNIEnv *env, j
     try
     {
         std::shared_ptr<StatField>* obj = (std::shared_ptr<StatField>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField (self) is null pointer.");
 
         std::shared_ptr<StatField>* otherObj = (std::shared_ptr<StatField>*) other;
-        if (otherObj == NULL || *otherObj == NULL)  VMF_EXCEPTION(NullPointerException, "StatField to compare is null pointer.");
+        if (otherObj == NULL || *otherObj == NULL)  UMF_EXCEPTION(NullPointerException, "StatField to compare is null pointer.");
 
         return **obj == **otherObj;
     }

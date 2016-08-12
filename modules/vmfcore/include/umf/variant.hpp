@@ -297,7 +297,7 @@ namespace umf
             default:
             case umf::Variant::type_empty:
             case umf::Variant::type_string:
-                VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
+                UMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
             case umf::Variant::type_integer:
                 limit = (T)std::numeric_limits<umf::umf_integer>::lowest();
@@ -325,7 +325,7 @@ namespace umf
             default:
             case umf::Variant::type_empty:
             case umf::Variant::type_string:
-                VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
+                UMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
             case umf::Variant::type_integer:
                 limit = (T)std::numeric_limits<umf::umf_integer>::max();

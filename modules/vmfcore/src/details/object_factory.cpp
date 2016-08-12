@@ -26,14 +26,14 @@ void Initialize(std::shared_ptr<IDataSourceFactory> &dataSourceFactory)
 {
     if (!dataSourceFactory)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Unable to initialize by empty DataSourceFactory instance");
+        UMF_EXCEPTION(IncorrectParamException, "Unable to initialize by empty DataSourceFactory instance");
     }
 
     ObjectFactory *instance = ObjectFactory::getInstance();
 
     if (instance == NULL)
     {
-        VMF_EXCEPTION(InternalErrorException, "Can't get Object factory instance");
+        UMF_EXCEPTION(InternalErrorException, "Can't get Object factory instance");
     }
 
     instance->setDataSourceFactory(dataSourceFactory);
@@ -45,7 +45,7 @@ void Uninitialize()
 
     if (instance == NULL)
     {
-        VMF_EXCEPTION(InternalErrorException, "Can't get Object factory instance");
+        UMF_EXCEPTION(InternalErrorException, "Can't get Object factory instance");
     }
 
     std::shared_ptr<IDataSourceFactory> emptyDataSourceFactoryPtr;

@@ -133,7 +133,7 @@ void XMPMetadataSource::saveProperty(const MetadataSet& property, const umf_stri
 void XMPMetadataSource::saveMetadata(const shared_ptr<Metadata>& md, const umf_string& thisPropertySetPath)
 {
     if (md == nullptr)
-        VMF_EXCEPTION(DataStorageException, "Trying to save nullptr metadata");
+        UMF_EXCEPTION(DataStorageException, "Trying to save nullptr metadata");
 
     umf_string pathToMetadata;
 
@@ -210,7 +210,7 @@ void XMPMetadataSource::loadSchema(const umf_string &schemaName, MetadataStream 
     umf_string schemaPath = findSchema(schemaName);
     if (schemaPath.empty())
     {
-        VMF_EXCEPTION(DataStorageException, "Schema " + schemaName + " not found");
+        UMF_EXCEPTION(DataStorageException, "Schema " + schemaName + " not found");
     }
 
     umf_string pathToProperties;
@@ -234,7 +234,7 @@ void XMPMetadataSource::loadSchemaName(const umf_string &pathToSchema, umf_strin
 {
     if (!xmp->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_NAME, &schemaName, nullptr))
     {
-        VMF_EXCEPTION(DataStorageException, "Broken schema by path " + pathToSchema);
+        UMF_EXCEPTION(DataStorageException, "Broken schema by path " + pathToSchema);
     }
 }
 
@@ -333,7 +333,7 @@ void XMPMetadataSource::loadPropertyName(const umf_string& pathToMetadata, umf_s
 {
     if(!xmp->GetStructField(VMF_NS, pathToMetadata.c_str(), VMF_NS, PROPERTY_NAME, &metadataName, nullptr))
     {
-        VMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToMetadata);
+        UMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToMetadata);
     }
 }
 
@@ -342,7 +342,7 @@ void XMPMetadataSource::loadField(const umf_string& fieldPath, const shared_ptr<
     umf_string rawValue;
     if (!xmp->GetProperty(VMF_NS, fieldPath.c_str(), &rawValue, NULL))
     {
-        VMF_EXCEPTION(DataStorageException, "Corrupted field by path " + fieldPath);
+        UMF_EXCEPTION(DataStorageException, "Corrupted field by path " + fieldPath);
     }
 
     umf_string fieldName;
@@ -354,7 +354,7 @@ void XMPMetadataSource::loadField(const umf_string& fieldPath, const shared_ptr<
     FieldDesc thisFieldDesc;
     if (!thisPropertyDesc->getFieldDesc(thisFieldDesc, fieldName))
     {
-        VMF_EXCEPTION(DataStorageException, "Extra field by path " + fieldPath);
+        UMF_EXCEPTION(DataStorageException, "Extra field by path " + fieldPath);
     }
 
     bool isEncrypted;
@@ -366,7 +366,7 @@ void XMPMetadataSource::loadField(const umf_string& fieldPath, const shared_ptr<
     xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &encData, NULL);
     if(encData.empty() && isEncrypted)
     {
-        VMF_EXCEPTION(DataStorageException, "No encrypted data provided in field");
+        UMF_EXCEPTION(DataStorageException, "No encrypted data provided in field");
     }
 
     Variant fieldValue;
@@ -397,7 +397,7 @@ void XMPMetadataSource::loadReference(const umf_string& thisRefPath, const share
     SXMPUtils::ComposeStructFieldPath(VMF_NS, thisRefPath.c_str(), VMF_NS, REF_ID, &tmpPath);
     if (!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &id, nullptr))
     {
-        VMF_EXCEPTION(DataStorageException, "Broken reference by path" + thisRefPath);
+        UMF_EXCEPTION(DataStorageException, "Broken reference by path" + thisRefPath);
     }
 
     IdType realId = id;
@@ -407,7 +407,7 @@ void XMPMetadataSource::loadReference(const umf_string& thisRefPath, const share
         auto it = idMap.find(realId);
         if (it == idMap.end())
         {
-            VMF_EXCEPTION(DataStorageException, "Undefined reference by path " + thisRefPath);
+            UMF_EXCEPTION(DataStorageException, "Undefined reference by path " + thisRefPath);
         }
         InternalPath path = it->second;
         std::shared_ptr<MetadataSchema> refSchemaDesc = stream.getSchema(path.schema);
@@ -445,7 +445,7 @@ umf_string XMPMetadataSource::findProperty(const umf_string& pathToSchema, const
         umf_string currentPropertyName;
         if (!xmp->GetStructField(VMF_NS, currentPropertyPath.c_str(), VMF_NS, PROPERTY_NAME, &currentPropertyName, 0))
         {
-            VMF_EXCEPTION(DataStorageException, "Broken property by path " + currentPropertyPath);
+            UMF_EXCEPTION(DataStorageException, "Broken property by path " + currentPropertyPath);
         }
         if (currentPropertyName == name)
         {
@@ -522,7 +522,7 @@ void XMPMetadataSource::loadMetadataId(const umf_string& pathToMetadata, IdType&
     XMP_Int64 idValue;
     if(!xmp->GetProperty_Int64(VMF_NS, pathToId.c_str(), &idValue, 0))
     {
-        VMF_EXCEPTION(DataStorageException, "Broken property by path " + pathToMetadata);
+        UMF_EXCEPTION(DataStorageException, "Broken property by path " + pathToMetadata);
     }
     id = (IdType) idValue;
 }
@@ -545,7 +545,7 @@ void XMPMetadataSource::loadMetadataFrameIndex(const umf_string& pathToMetadata,
     }
     if(frameIndexValue < 0 && frameIndexValue != Metadata::UNDEFINED_FRAME_INDEX)
     {
-        VMF_EXCEPTION(DataStorageException, "Can't load metadata frame index. Invalid frame index value");
+        UMF_EXCEPTION(DataStorageException, "Can't load metadata frame index. Invalid frame index value");
     }
     frameIndex = frameIndexValue;
 }
@@ -559,7 +559,7 @@ void XMPMetadataSource::saveMetadataFrameIndex(const umf_string& pathToProperty,
     else if (frameIndex == Metadata::UNDEFINED_FRAME_INDEX)
         xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
     else
-        VMF_EXCEPTION(DataStorageException, "Can't save metadata frame index. Invalid frame index value");
+        UMF_EXCEPTION(DataStorageException, "Can't save metadata frame index. Invalid frame index value");
 }
 
 void XMPMetadataSource::loadMetadataNumOfFrames(const umf_string& pathToProperty, long long& num)
@@ -573,7 +573,7 @@ void XMPMetadataSource::loadMetadataNumOfFrames(const umf_string& pathToProperty
     }
     if(numOfFrames < 0)
     {
-        VMF_EXCEPTION(DataStorageException, "Can't load metadata number of frames. Invalid number of frames value");
+        UMF_EXCEPTION(DataStorageException, "Can't load metadata number of frames. Invalid number of frames value");
     }
     num = numOfFrames;
 }
@@ -588,7 +588,7 @@ void XMPMetadataSource::saveMetadataNumOfFrames(const umf_string& pathToProperty
     else if (numOfFrames == Metadata::UNDEFINED_FRAMES_NUMBER)
         xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
     else
-        VMF_EXCEPTION(DataStorageException, "Can't save metadata number of frames. Invalid number of frames value");
+        UMF_EXCEPTION(DataStorageException, "Can't save metadata number of frames. Invalid number of frames value");
 }
 
 void XMPMetadataSource::loadMetadataTime(const umf_string& pathToProperty, long long& time)
@@ -602,7 +602,7 @@ void XMPMetadataSource::loadMetadataTime(const umf_string& pathToProperty, long 
     }
     if(timestamp < 0 && timestamp != Metadata::UNDEFINED_TIMESTAMP)
     {
-        VMF_EXCEPTION(DataStorageException, "Can't load metadata timestamp. Invalid timestamp value");
+        UMF_EXCEPTION(DataStorageException, "Can't load metadata timestamp. Invalid timestamp value");
     }
     time = timestamp;
 }
@@ -616,7 +616,7 @@ void XMPMetadataSource::saveMetadataTime(const umf_string& pathToProperty, const
     else if (time == Metadata::UNDEFINED_TIMESTAMP)
         xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
     else
-        VMF_EXCEPTION(DataStorageException, "Can't save metadata timestamp. Invalid timestamp value");
+        UMF_EXCEPTION(DataStorageException, "Can't save metadata timestamp. Invalid timestamp value");
 }
 
 
@@ -672,7 +672,7 @@ void XMPMetadataSource::loadMetadataEncrypted(const umf_string &pathToProperty, 
     isEncrypted = isEncrypted && textBool == "true";
     if(isEncrypted && encryptedData.empty())
     {
-        VMF_EXCEPTION(DataStorageException, "No encrypted data provided in metadata");
+        UMF_EXCEPTION(DataStorageException, "No encrypted data provided in metadata");
     }
 }
 
@@ -688,7 +688,7 @@ void XMPMetadataSource::loadMetadataDuration(const umf_string& pathToProperty, l
     }
     if(duration < 0)
     {
-        VMF_EXCEPTION(DataStorageException, "Can't load metadata duration. Invalid duration value");
+        UMF_EXCEPTION(DataStorageException, "Can't load metadata duration. Invalid duration value");
     }
     dur = duration;
 }
@@ -702,7 +702,7 @@ void XMPMetadataSource::saveMetadataDuration(const umf_string& pathToProperty, c
     else if (duration == Metadata::UNDEFINED_DURATION)
         xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
     else
-        VMF_EXCEPTION(DataStorageException, "Can't save metadata duration. Invalid duration value");
+        UMF_EXCEPTION(DataStorageException, "Can't save metadata duration. Invalid duration value");
 
 }
 
@@ -749,7 +749,7 @@ void XMPMetadataSource::saveMetadataReferences(const umf_string& pathToMetadata,
     {
         auto spMetadata = ref->getReferenceMetadata().lock();
         if (spMetadata == NULL)
-            VMF_EXCEPTION(NullPointerException, "Trying to save nullptr reference in property by path " + pathToMetadata);
+            UMF_EXCEPTION(NullPointerException, "Trying to save nullptr reference in property by path " + pathToMetadata);
 
         xmp->AppendArrayItem(VMF_NS, pathToRefs.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
         umf_string pathToThisRef;

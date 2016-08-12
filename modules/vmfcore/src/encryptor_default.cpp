@@ -21,7 +21,7 @@ void EncryptorDefault::encrypt(const umf_string& input, umf_rawbuffer& output)
     }
     catch (CryptoPP::Exception const& e)
     {
-        VMF_EXCEPTION(IncorrectParamException, "CryptoPP::Exception caught:" +string(e.what()));
+        UMF_EXCEPTION(IncorrectParamException, "CryptoPP::Exception caught:" +string(e.what()));
     }
     output = umf_rawbuffer(outBuf.data(), outBuf.length());
 }
@@ -43,7 +43,7 @@ void EncryptorDefault::decrypt(const umf_rawbuffer& input, umf_string& output)
         }
         catch (CryptoPP::Exception const& e)
         {
-            VMF_EXCEPTION(IncorrectParamException, "CryptoPP::Exception caught:" + string(e.what()));
+            UMF_EXCEPTION(IncorrectParamException, "CryptoPP::Exception caught:" + string(e.what()));
         }
     }
 }

@@ -83,7 +83,7 @@ void XMPSchemaSource::save(const shared_ptr<MetadataSchema>& schema)
         umf_string currentSchemaName;
         if (!metadata->GetStructField(VMF_NS, currentSchemaPath.c_str(), VMF_NS, SCHEMA_NAME, &currentSchemaName, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrupted schema by path" + currentSchemaPath);
+            UMF_EXCEPTION(DataStorageException, "Corrupted schema by path" + currentSchemaPath);
         }
         if (currentSchemaName == schema->getName())
         {
@@ -136,7 +136,7 @@ void XMPSchemaSource::saveDescription(const MetadataDesc& desc, const umf_string
         umf_string currentPropertyName;
         if(!metadata->GetStructField(VMF_NS, currentPropertyPath.c_str(), VMF_NS, PROPERTY_NAME, &currentPropertyName, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrupted property by path " + currentPropertyPath);
+            UMF_EXCEPTION(DataStorageException, "Corrupted property by path " + currentPropertyPath);
         }
         if (desc.getMetadataName() == currentPropertyName)
         {
@@ -246,7 +246,7 @@ shared_ptr<MetadataSchema> XMPSchemaSource::loadMetadataSchemaByPath(const umf_s
     umf_string thisSchemaName, thisSchemaAuthor;
     if(!metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_NAME, &thisSchemaName, nullptr))
     {
-        VMF_EXCEPTION(DataStorageException, "Corrupted schema description by path " + pathToSchema);
+        UMF_EXCEPTION(DataStorageException, "Corrupted schema description by path " + pathToSchema);
     }
     metadata->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_AUTHOR, &thisSchemaAuthor, nullptr);
     umf_string thisSchemaEncrypted;
@@ -272,7 +272,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const umf_string& path
     umf_string propertyName;
     if(!metadata->GetStructField(VMF_NS, pathToDesc.c_str(), VMF_NS, PROPERTY_NAME, &propertyName, NULL))
     {
-        VMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToDesc);
+        UMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToDesc);
     }
     umf_string encryptedDescStr;
     bool useEncryptionDesc = metadata->GetStructField(VMF_NS, pathToDesc.c_str(), VMF_NS,
@@ -295,7 +295,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const umf_string& path
         umf_string rawType;
         if(!metadata->GetStructField(VMF_NS, currentFieldPath.c_str(), VMF_NS, FIELD_TYPE, &rawType, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrupted field by path " + currentFieldPath);
+            UMF_EXCEPTION(DataStorageException, "Corrupted field by path " + currentFieldPath);
         }
 
         Variant::Type type = Variant::typeFromString(rawType);
@@ -323,7 +323,7 @@ shared_ptr<MetadataDesc> XMPSchemaSource::loadDescription(const umf_string& path
     {
         umf_string name;
         if (!metadata->GetStructField(VMF_NS, currentReferencePath.c_str(), VMF_NS, REFERENCE_NAME, &name, NULL))
-            VMF_EXCEPTION(IncorrectParamException, "XMP element has invalid reference name.");
+            UMF_EXCEPTION(IncorrectParamException, "XMP element has invalid reference name.");
 
         bool isUnique = false;
         if (metadata->GetStructField(VMF_NS, currentReferencePath.c_str(), VMF_NS, REFERENCE_UNIQUE, NULL, NULL))
@@ -363,7 +363,7 @@ void XMPSchemaSource::remove(const umf_string& schemaName)
         umf_string currentSchemaName;
         if (!metadata->GetStructField(VMF_NS, currentSchemaPath.c_str(), VMF_NS, SCHEMA_NAME, &currentSchemaName, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrputed schema by path" + currentSchemaPath);
+            UMF_EXCEPTION(DataStorageException, "Corrputed schema by path" + currentSchemaPath);
         }
         if (currentSchemaName == schemaName)
         {
@@ -380,7 +380,7 @@ void XMPSchemaSource::remove(const umf_string& schemaName)
         umf_string currentSchemaName;
         if (!metadata->GetStructField(VMF_NS, currentSchemaPath.c_str(), VMF_NS, SCHEMA_NAME, &currentSchemaName, NULL))
         {
-            VMF_EXCEPTION(DataStorageException, "Corrputed metadata by path" + currentSchemaPath);
+            UMF_EXCEPTION(DataStorageException, "Corrputed metadata by path" + currentSchemaPath);
         }
         if (currentSchemaName == schemaName)
         {

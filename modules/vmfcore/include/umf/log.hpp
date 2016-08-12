@@ -108,40 +108,40 @@ private:
  * \brief Log message with given level
  */
 #ifdef __GNUC__
-#define VMF_LOG(level, msg, ...) umf::Log::log(level, msg, __func__, __FILE__, __LINE__, ##__VA_ARGS__)
+#define UMF_LOG(level, msg, ...) umf::Log::log(level, msg, __func__, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
-#define VMF_LOG(level, msg, ...) umf::Log::log(level, msg, "", __FILE__, __LINE__, ##__VA_ARGS__)
+#define UMF_LOG(level, msg, ...) umf::Log::log(level, msg, "", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
 /*!
  * \brief Log info message
  */
-#define VMF_LOG_INFO(msg, ...) VMF_LOG(umf::LOG_INFO, msg, ##__VA_ARGS__)
+#define UMF_LOG_INFO(msg, ...) UMF_LOG(umf::LOG_INFO, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Log warning message
  */
-#define VMF_LOG_WARNING(msg, ...) VMF_LOG(umf::LOG_WARNING, msg, ##__VA_ARGS__)
+#define UMF_LOG_WARNING(msg, ...) UMF_LOG(umf::LOG_WARNING, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Log error message
  */
-#define VMF_LOG_ERROR(msg, ...) VMF_LOG(umf::LOG_ERROR, msg, ##__VA_ARGS__)
+#define UMF_LOG_ERROR(msg, ...) UMF_LOG(umf::LOG_ERROR, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Redirects log messages to the file
  */
-#define VMF_LOG_TO_FILE(file) Log::logToFile(file)
+#define UMF_LOG_TO_FILE(file) Log::logToFile(file)
 
 /*!
  * \brief Redirects log messages to the console
  */
-#define VMF_LOG_TO_CONSOLE() Log::logToConsole()
+#define UMF_LOG_TO_CONSOLE() Log::logToConsole()
 
 /*!
  * \brief Sets verbosity level, all messages with level less than verbosity level will be ignored
  */
-#define VMF_LOG_VERBOSITY_LEVEL(level) Log::setVerbosityLevel(level)
+#define UMF_LOG_VERBOSITY_LEVEL(level) Log::setVerbosityLevel(level)
 
 };
 /** @}*/

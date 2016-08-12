@@ -51,12 +51,12 @@ void VideoMetadataStream::openFile(const QString& filename)
     {
         if (!metaStream.open(fileName, umf::MetadataStream::Update))
         {
-			VMF_EXCEPTION(umf::NotFoundException, "Not found");
+			UMF_EXCEPTION(umf::NotFoundException, "Not found");
         }
 
         if (!metaStream.load(SKI_RESORT_SCHEMA))
         {
-            VMF_EXCEPTION(umf::DataStorageException, "Can't load metadata schema");
+            UMF_EXCEPTION(umf::DataStorageException, "Can't load metadata schema");
         }
 
         gpsCoordinatesSet = metaStream.queryByName(SKI_RESORT_GPS_DESC);

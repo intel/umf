@@ -61,7 +61,7 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
 {
     if(!compressor)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
+        UMF_EXCEPTION(IncorrectParamException, "Incorrect instance of compressor");
     }
 
     for(CompressorType type: {BUILTIN, USER})
@@ -69,7 +69,7 @@ void Compressor::registerNew(std::shared_ptr<Compressor> compressor)
         auto& m = getMapInstance(type);
         if(m.find(compressor->getId()) != m.end())
         {
-            VMF_EXCEPTION(IncorrectParamException, "Compressor with that ID is already registered");
+            UMF_EXCEPTION(IncorrectParamException, "Compressor with that ID is already registered");
         }
     }
 
@@ -96,7 +96,7 @@ std::shared_ptr<Compressor> Compressor::create(const umf_string &id)
     }
     else
     {
-        VMF_EXCEPTION(IncorrectParamException,
+        UMF_EXCEPTION(IncorrectParamException,
                       "Unregistered compression algorithm: " + id);
     }
 }
@@ -112,12 +112,12 @@ void Compressor::unregister(const umf_string &id)
     }
     else if(builtinMap.find(id) == builtinMap.end())
     {
-        VMF_EXCEPTION(IncorrectParamException,
+        UMF_EXCEPTION(IncorrectParamException,
                       "Unregistered compression algorithm: " + id);
     }
     else
     {
-        VMF_EXCEPTION(IncorrectParamException,
+        UMF_EXCEPTION(IncorrectParamException,
                       "The algorithm \"" + id + "\" is built-in, impossible to unregister it");
     }
 }

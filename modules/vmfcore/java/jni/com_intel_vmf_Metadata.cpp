@@ -190,7 +190,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFrameIndex (JNIEnv *env
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setFrameIndex ((long long)frameIndex, (long long)numOfFrames);
     }
@@ -221,7 +221,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setTimestamp (JNIEnv *env,
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->setTimestamp ((long long)time, (long long)duration);
     }
@@ -892,10 +892,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addReference (JNIEnv *env,
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         if ((md == NULL) || (md->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
         std::string sName(str);
@@ -931,7 +931,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceById (JNIEn
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
         std::string sName(str);
@@ -967,10 +967,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1removeReferenceByMd (JNIEn
         std::shared_ptr <Metadata>* md = (std::shared_ptr <Metadata>*) mdAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         if ((md == NULL) || (md->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Referenced metadata is null pointer.");
 
         const char* str = env->GetStringUTFChars(name, NULL);
         std::string sName(str);
@@ -1007,10 +1007,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1setFieldValue (JNIEnv *env
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*)variantAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         if ((variant == NULL) || (variant->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
         const char* str = env->GetStringUTFChars(fieldName, NULL);
         std::string sName(str);
@@ -1046,10 +1046,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1addValue (JNIEnv *env, jcl
         std::shared_ptr <Variant>* variant = (std::shared_ptr <Variant>*) variantAddr;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         if ((variant == NULL) || (variant->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Variant is null pointer.");
 
         (*obj)->addValue((**variant)); 
     }
@@ -1079,7 +1079,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1validate (JNIEnv *env, jcl
         std::shared_ptr <Metadata>* obj = (std::shared_ptr <Metadata>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         (*obj)->validate ();
     }
@@ -1143,7 +1143,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Metadata_n_1delete (JNIEnv *env, jclas
         std::shared_ptr<Metadata>* obj = (std::shared_ptr<Metadata>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata is null pointer.");
 
         delete obj;
     }

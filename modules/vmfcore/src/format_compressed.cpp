@@ -143,7 +143,7 @@ std::string FormatCompressed::decompress(const std::string& input)
         umf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
 
         if(algo.empty())
-            VMF_EXCEPTION(umf::InternalErrorException, "Algorithm name isn't specified");
+            UMF_EXCEPTION(umf::InternalErrorException, "Algorithm name isn't specified");
 
         try
         {
@@ -163,7 +163,7 @@ std::string FormatCompressed::decompress(const std::string& input)
             }
             else
             {
-                VMF_EXCEPTION(IncorrectParamException, ce.what());
+                UMF_EXCEPTION(IncorrectParamException, ce.what());
             }
         }
     }

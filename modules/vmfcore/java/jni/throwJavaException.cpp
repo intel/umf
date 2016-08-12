@@ -30,5 +30,5 @@ void throwJavaException (JNIEnv *env, const std::exception *e, const char *metho
 
     env->ThrowNew(je, what.c_str());
 
-    VMF_LOG_ERROR(what.c_str());
+    UMF_LOG_ERROR(what.c_str());
 }

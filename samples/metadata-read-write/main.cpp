@@ -42,7 +42,7 @@ void copyFile(const string& srcName, const char *dstName)
     if (src && dst)
         dst << src.rdbuf();
     else
-        VMF_EXCEPTION(IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+        UMF_EXCEPTION(IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
     //src.close();
     //dst.close();
 }

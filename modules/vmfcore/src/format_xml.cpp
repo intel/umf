@@ -40,15 +40,15 @@ std::shared_ptr<Format> FormatXML::getBackendFormat()
 static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& spSchema)
 {
     if (xmlNewProp(schemaNode, BAD_CAST ATTR_NAME, BAD_CAST spSchema->getName().c_str()) == NULL)
-        VMF_EXCEPTION(Exception, "Can't create xmlNode property (schema name)");
+        UMF_EXCEPTION(Exception, "Can't create xmlNode property (schema name)");
 
     if (xmlNewProp(schemaNode, BAD_CAST ATTR_SCHEMA_AUTHOR, BAD_CAST spSchema->getAuthor().c_str()) == NULL)
-        VMF_EXCEPTION(Exception, "Can't create xmlNode property (schema author)");
+        UMF_EXCEPTION(Exception, "Can't create xmlNode property (schema author)");
 
     if(spSchema->getUseEncryption())
     {
         if(xmlNewProp(schemaNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (is schema encrypted)" );
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (is schema encrypted)" );
     }
 
     auto vDescs = spSchema->getAll();
@@ -56,15 +56,15 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
     {
         xmlNodePtr descNode = xmlNewChild(schemaNode, NULL, BAD_CAST TAG_DESCRIPTION, NULL);
         if (descNode == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode for description");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode for description");
 
         if (xmlNewProp(descNode, BAD_CAST ATTR_NAME, BAD_CAST spDescriptor->get()->getMetadataName().c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (description name)");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (description name)");
 
         if(spDescriptor->get()->getUseEncryption())
         {
             if(xmlNewProp(descNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (is description encrypted)" );
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (is description encrypted)" );
         }
 
         auto vFields = spDescriptor->get()->getFields();
@@ -72,22 +72,22 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
         {
             xmlNodePtr fieldNode = xmlNewChild(descNode, NULL, BAD_CAST TAG_FIELD, NULL);
             if (fieldNode == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode for field");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode for field");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (field name)");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (field name)");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_TYPE, BAD_CAST Variant::typeToString(fieldDesc->type).c_str()) == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (field type)");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (field type)");
 
             if (fieldDesc->optional)
                 if (xmlNewProp(fieldNode, BAD_CAST ATTR_FIELD_OPTIONAL, BAD_CAST "true") == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode property (field is optional)");
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode property (field is optional)");
 
             if(fieldDesc->useEncryption)
             {
                 if(xmlNewProp(fieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode property (is field desc. encrypted)" );
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode property (is field desc. encrypted)" );
             }
         }
 
@@ -99,18 +99,18 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
 
             xmlNodePtr refNode = xmlNewChild(descNode, NULL, BAD_CAST TAG_METADATA_REFERENCE, NULL);
             if (refNode == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode for reference.");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode for reference.");
 
             if (xmlNewProp(refNode, BAD_CAST ATTR_NAME, BAD_CAST(*refDesc)->name.c_str()) == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (reference name)");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (reference name)");
 
             if ((*refDesc)->isUnique)
                 if (xmlNewProp(refNode, BAD_CAST ATTR_REFERENCE_UNIQUE, BAD_CAST "true") == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode property (reference is unique)");
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode property (reference is unique)");
 
             if ((*refDesc)->isCustom)
                 if (xmlNewProp(refNode, BAD_CAST ATTR_REFERENCE_CUSTOM, BAD_CAST "true") == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode property (reference is custom)");
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode property (reference is custom)");
         }
     }
 }
@@ -119,41 +119,41 @@ static void add(xmlNodePtr schemaNode, const std::shared_ptr<MetadataSchema>& sp
 static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMetadata)
 {
     if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_SCHEMA, BAD_CAST spMetadata->getSchemaName().c_str()) == NULL)
-        VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata schema name)");
+        UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata schema name)");
 
     if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_DESCRIPTION, BAD_CAST spMetadata->getName().c_str()) == NULL)
-        VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata description name)");
+        UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata description name)");
 
     if (xmlNewProp(metadataNode, BAD_CAST ATTR_ID, BAD_CAST to_string(spMetadata->getId()).c_str()) == NULL)
-        VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata id)");
+        UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata id)");
 
     if(!spMetadata->getEncryptedData().empty())
     {
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST spMetadata->getEncryptedData().c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (encrypted data)" );
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (encrypted data)" );
     }
 
     if(spMetadata->getUseEncryption())
     {
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (is encrypted)" );
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (is encrypted)" );
     }
 
     if (spMetadata->getFrameIndex() != Metadata::UNDEFINED_FRAME_INDEX)
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_FRAME_IDX, BAD_CAST to_string(spMetadata->getFrameIndex()).c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata frame index)");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata frame index)");
 
     if (spMetadata->getNumOfFrames() != Metadata::UNDEFINED_FRAMES_NUMBER)
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_NFRAMES, BAD_CAST to_string(spMetadata->getNumOfFrames()).c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata number of frames)");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata number of frames)");
 
     if (spMetadata->getTime() != Metadata::UNDEFINED_TIMESTAMP)
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_TIMESTAMP, BAD_CAST to_string(spMetadata->getTime()).c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata timestamp)");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata timestamp)");
 
     if (spMetadata->getDuration() != Metadata::UNDEFINED_DURATION)
         if (xmlNewProp(metadataNode, BAD_CAST ATTR_METADATA_DURATION, BAD_CAST to_string(spMetadata->getDuration()).c_str()) == NULL)
-            VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata duration)");
+            UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata duration)");
 
     auto vFields = spMetadata->getDesc()->getFields();
     for (auto fieldDesc = vFields.begin(); fieldDesc != vFields.end(); fieldDesc++)
@@ -168,23 +168,23 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
             {
                 xmlNodePtr metadataFieldNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_FIELD, NULL);
                 if (metadataFieldNode == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode for metadata field");
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode for metadata field");
                 if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_NAME, BAD_CAST fieldDesc->name.c_str()) == NULL)
-                    VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata field name)");
+                    UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata field name)");
                 if (!val.isEmpty())
                 {
                     if (xmlNewProp(metadataFieldNode, BAD_CAST ATTR_VALUE, BAD_CAST val.toString().c_str()) == NULL)
-                        VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata field value)");
+                        UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata field value)");
                 }
                 if(fieldIt->getUseEncryption())
                 {
                     if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_BOOL, BAD_CAST "true") == NULL)
-                        VMF_EXCEPTION(Exception, "Can't create xmlNode property (is field encrypted)");
+                        UMF_EXCEPTION(Exception, "Can't create xmlNode property (is field encrypted)");
                 }
                 if(!encData.empty())
                 {
                     if(xmlNewProp(metadataFieldNode, BAD_CAST ATTR_ENCRYPTED_DATA, BAD_CAST encData.c_str()) == NULL)
-                        VMF_EXCEPTION(Exception, "Can't create xmlNode property (encrypted field data)");
+                        UMF_EXCEPTION(Exception, "Can't create xmlNode property (encrypted field data)");
                 }
             }
         }
@@ -197,13 +197,13 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
         {
             xmlNodePtr referenceNode = xmlNewChild(metadataNode, NULL, BAD_CAST TAG_METADATA_REFERENCE, NULL);
             if (referenceNode == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode for metadata reference");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode for metadata reference");
 
             if (xmlNewProp(referenceNode, BAD_CAST ATTR_NAME, BAD_CAST reference->getReferenceDescription()->name.c_str()) == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata reference name)");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata reference name)");
 
             if (xmlNewProp(referenceNode, BAD_CAST ATTR_ID, BAD_CAST to_string((*reference).getReferenceMetadata().lock()->getId()).c_str()) == NULL)
-                VMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata reference id)");
+                UMF_EXCEPTION(Exception, "Can't create xmlNode property (metadata reference id)");
         }
     }
 }
@@ -211,30 +211,30 @@ static void add(xmlNodePtr metadataNode, const std::shared_ptr<Metadata>& spMeta
 static void add(xmlNodePtr segNode, const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 {
     if (spSegment->getTitle() == "" || spSegment->getFPS() <= 0 || spSegment->getTime() < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid segment. Segment must have not empty title, fps > 0 and start time >= 0");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid segment. Segment must have not empty title, fps > 0 and start time >= 0");
 
     if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_TITLE, BAD_CAST spSegment->getTitle().c_str()) == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+        UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
 
     if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_FPS, BAD_CAST to_string(spSegment->getFPS()).c_str()) == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+        UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
 
     if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_TIME, BAD_CAST to_string(spSegment->getTime()).c_str()) == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+        UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
 
     if (spSegment->getDuration() > 0)
         if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_DURATION, BAD_CAST to_string(spSegment->getDuration()).c_str()) == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
 
     long width, height;
     spSegment->getResolution(width, height);
     if (width > 0 && height > 0)
     {
         if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_WIDTH, BAD_CAST to_string(width).c_str()) == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
 
         if (xmlNewProp(segNode, BAD_CAST ATTR_SEGMENT_HEIGHT, BAD_CAST to_string(height).c_str()) == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property (video segment title)");
     }
 }
 
@@ -242,10 +242,10 @@ static void add(xmlNodePtr segNode, const std::shared_ptr<MetadataStream::VideoS
 static void add(xmlNodePtr statNode, std::shared_ptr<Stat> stat)
 {
     if (stat->getName().empty())
-        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
     if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat->getName().c_str()) == NULL)
-        VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object name)");
+        UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object name)");
 
     std::vector< std::string > fieldNames = stat->getAllFieldNames();
     if (!fieldNames.empty())
@@ -255,38 +255,38 @@ static void add(xmlNodePtr statNode, std::shared_ptr<Stat> stat)
             const StatField& field = stat->getField(fieldName);
 
             if (field.getName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
             if (field.getFieldName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
             if (field.getOpName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
 
             /*std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
             if (metadataDesc == nullptr)
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
             if (field.getSchemaName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
             if (field.getMetadataName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
 
             xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
             if(fieldNode == NULL)
-                VMF_EXCEPTION(umf::Exception, "Can't create xmlNode for stat object field" );
+                UMF_EXCEPTION(umf::Exception, "Can't create xmlNode for stat object field" );
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
-                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
+                UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST field.getSchemaName().c_str()) == NULL)
-                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
+                UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST field.getMetadataName().c_str()) == NULL)
-                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
+                UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
-                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
+                UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
-                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
+                UMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
         }
     }
 }
@@ -303,15 +303,15 @@ std::string FormatXML::store(
     xmlDocPtr doc = xmlNewDoc(NULL);
     xmlNodePtr vmfRootNode = xmlNewNode(NULL, BAD_CAST TAG_VMF);
     if (vmfRootNode == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for umf root element");
+        UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for umf root element");
     if (xmlDocSetRootElement(doc, vmfRootNode) != 0)
-        VMF_EXCEPTION(InternalErrorException, "Can't set root element to the document");
+        UMF_EXCEPTION(InternalErrorException, "Can't set root element to the document");
 
     // attribs
     for (const auto& a : attribs)
         if (xmlNewProp(vmfRootNode, BAD_CAST a.first.c_str(), BAD_CAST a.second.c_str()) == NULL)
         {
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property. Next Id");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property. Next Id");
         }
 
     // stats
@@ -319,7 +319,7 @@ std::string FormatXML::store(
     {
         xmlNodePtr statsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
         if (statsArrayNode == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for Stat objects array");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for Stat objects array");
         for (const auto& st : stats)
         {
             xmlNodePtr statNode = xmlNewChild(statsArrayNode, NULL, BAD_CAST TAG_STAT_OBJ, NULL);
@@ -332,11 +332,11 @@ std::string FormatXML::store(
     {
         xmlNodePtr segmentsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY, NULL);
         if (segmentsArrayNode == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for video segments array");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for video segments array");
         for(const auto& seg : segments)
         {
             if (seg == nullptr)
-                VMF_EXCEPTION(NullPointerException, "Video Segment pointer is null");
+                UMF_EXCEPTION(NullPointerException, "Video Segment pointer is null");
             xmlNodePtr segmentNode = xmlNewChild(segmentsArrayNode, NULL, BAD_CAST TAG_VIDEO_SEGMENT, NULL);
             add(segmentNode, seg);
         }
@@ -351,28 +351,28 @@ std::string FormatXML::store(
         for(const std::shared_ptr<Metadata>& spMetadata : set)
         {
             if (spMetadata == nullptr)
-                VMF_EXCEPTION(umf::IncorrectParamException, "Metadata pointer is null");
+                UMF_EXCEPTION(umf::IncorrectParamException, "Metadata pointer is null");
 
             bool noSchemaForMetadata = true;
             for(const std::shared_ptr<MetadataSchema>& spSchema : schemas)
             {
                 if (spSchema == nullptr)
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Schema pointer is null");
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Schema pointer is null");
 
                 if(spMetadata->getSchemaName() == spSchema->getName())
                     noSchemaForMetadata = false;
             }
             if(noSchemaForMetadata)
-                VMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
+                UMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
         }
 
         xmlNodePtr schemasArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_SCHEMAS_ARRAY, NULL);
         if (schemasArrayNode == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for schemas array");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for schemas array");
         for(const auto& sc : schemas)
         {
             if (sc== nullptr)
-                VMF_EXCEPTION(NullPointerException, "Schema pointer is null");
+                UMF_EXCEPTION(NullPointerException, "Schema pointer is null");
             xmlNodePtr schemaNode = xmlNewChild(schemasArrayNode, NULL, BAD_CAST TAG_SCHEMA, NULL);
             add(schemaNode, sc);
         }
@@ -383,11 +383,11 @@ std::string FormatXML::store(
     {
         xmlNodePtr metadataArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_METADATA_ARRAY, NULL);
         if (metadataArrayNode == NULL)
-            VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for metadata array");
+            UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for metadata array");
         for(const auto& md : set)
         {
             if (md == nullptr)
-                VMF_EXCEPTION(NullPointerException, "Metadata pointer is null");
+                UMF_EXCEPTION(NullPointerException, "Metadata pointer is null");
             xmlNodePtr metadataNode = xmlNewChild(metadataArrayNode, NULL, BAD_CAST TAG_METADATA, NULL);
             add(metadataNode, md);
         }
@@ -398,7 +398,7 @@ std::string FormatXML::store(
     xmlKeepBlanksDefault(0);
     xmlDocDumpFormatMemory(doc, &buf, &size, 1);
     if (buf == nullptr || size == 0)
-        VMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into a temp buffer");
+        UMF_EXCEPTION(InternalErrorException, "Can't save xmlDoc into a temp buffer");
 
     std::string outputString( (char *)buf );
 
@@ -477,7 +477,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "false")
                                 field_optional = false;
                             else
-                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
+                                UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
                         }
                         if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
                         {
@@ -503,7 +503,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
                                 isUnique = false;
                             else
-                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
+                                UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
                         }
                         if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_CUSTOM))
                         {
@@ -512,7 +512,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
                                 isCustom = false;
                             else
-                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
+                                UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
                         }
                     }
                     vReferences.emplace_back(std::make_shared<ReferenceDesc>(reference_name, isUnique, isCustom));
@@ -566,7 +566,7 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
     }
 
     if(metadataUseEncryption && encryptedMetadata.empty())
-        VMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
+        UMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
     MetadataInternal mdi(desc_name, schema_name);
     mdi.id = id;
@@ -616,7 +616,7 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
                 }
             }
             if(fieldUseEncryption && fieldEncryptedData.empty())
-                VMF_EXCEPTION(umf::IncorrectParamException,
+                UMF_EXCEPTION(umf::IncorrectParamException,
                               "No encrypted data presented while the flag is set on");
             
             mdi.fields[fieldName].value         = fieldValueStr;
@@ -663,11 +663,11 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(x
     }
 
     if (title.empty())
-        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid title");
+        UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid title");
     if (fps <= 0)
-        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid fps value");
+        UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid fps value");
     if (timestamp < 0)
-        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid time value");
+        UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid time value");
 
     std::shared_ptr<MetadataStream::VideoSegment> spSegment(new MetadataStream::VideoSegment(title, fps, timestamp));
     if (duration > 0)
@@ -690,7 +690,7 @@ static std::shared_ptr<Stat> parseStatFromNode(xmlNodePtr statNode)
     }
 
     if(statName.empty())
-        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat name");
+        UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat name");
 
     const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
@@ -717,15 +717,15 @@ static std::shared_ptr<Stat> parseStatFromNode(xmlNodePtr statNode)
             }
 
             if(fieldName.empty())
-                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field name");
+                UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field name");
             if(schemaName.empty())
-                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata schema name");
+                UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata schema name");
             if(metadataName.empty())
-                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata name");
+                UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata name");
             if(metadataFieldName.empty())
-                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata field name");
+                UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata field name");
             if(opName.empty())
-                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field operation name");
+                UMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field operation name");
 
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }
@@ -747,19 +747,19 @@ Format::ParseCounters FormatXML::parse(
     Format::ParseCounters cnt = {};
 
     if (text.empty())
-        VMF_EXCEPTION(IncorrectParamException, "Empty input XML string");
+        UMF_EXCEPTION(IncorrectParamException, "Empty input XML string");
 
     xmlParserCtxtPtr ctxt = xmlNewParserCtxt();
     if (ctxt == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Failed to allocate XML parser context");
+        UMF_EXCEPTION(InternalErrorException, "Failed to allocate XML parser context");
 
     xmlDocPtr doc = xmlCtxtReadMemory(ctxt, text.c_str(), (int)text.size(), NULL, NULL, 0);
     if (doc == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create XML document");
+        UMF_EXCEPTION(InternalErrorException, "Can't create XML document");
 
     xmlNodePtr root = xmlDocGetRootElement(doc);
     if (root == NULL)
-        VMF_EXCEPTION(InternalErrorException, "XML tree has no root element");
+        UMF_EXCEPTION(InternalErrorException, "XML tree has no root element");
 
     if ((char*)root->name == std::string(TAG_VMF))
     {
@@ -784,7 +784,7 @@ Format::ParseCounters FormatXML::parse(
                         }
                         catch (Exception& e)
                         {
-                            VMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
+                            UMF_LOG_ERROR("Exception parsing Stat object: %s", e.what());
                         }
                     }
                 }
@@ -803,7 +803,7 @@ Format::ParseCounters FormatXML::parse(
                         }
                         catch (Exception& e)
                         {
-                            VMF_LOG_ERROR("Exception parsing segment: %s", e.what());
+                            UMF_LOG_ERROR("Exception parsing segment: %s", e.what());
                         }
                     }
                 }
@@ -822,7 +822,7 @@ Format::ParseCounters FormatXML::parse(
                         }
                         catch (Exception& e)
                         {
-                            VMF_LOG_ERROR("Exception parsing schema: %s", e.what());
+                            UMF_LOG_ERROR("Exception parsing schema: %s", e.what());
                         }
                     }
                 }
@@ -840,20 +840,20 @@ Format::ParseCounters FormatXML::parse(
                         }
                         catch (Exception& e)
                         {
-                            VMF_LOG_ERROR("Exception parsing metadata: %s", e.what());
+                            UMF_LOG_ERROR("Exception parsing metadata: %s", e.what());
                         }
                     }
                 }
             }
             else
             {
-                VMF_LOG_WARNING("Unknown XML element: %s", (char*)node->name);
+                UMF_LOG_WARNING("Unknown XML element: %s", (char*)node->name);
             }
         }
     }
     else
     {
-        VMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <umf> tag element");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <umf> tag element");
     }
 
     xmlFreeDoc(doc);

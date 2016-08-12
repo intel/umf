@@ -172,7 +172,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_ReferenceDesc_n_1delete (JNIEnv *env, 
         std::shared_ptr<ReferenceDesc>* obj = (std::shared_ptr<ReferenceDesc>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Reference description is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Reference description is null pointer.");
 
         delete obj;
     }

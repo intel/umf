@@ -70,7 +70,7 @@ void MyEncryptor::decrypt(const umf_rawbuffer &input, umf_string &output)
         size_t plen = passphrase.length();
         if(input.size() <= plen + nSize*3)
         {
-            VMF_EXCEPTION(IncorrectParamException, "Encrypted message is too short");
+            UMF_EXCEPTION(IncorrectParamException, "Encrypted message is too short");
         }
 
         std::string tempKey(plen, '\0');
@@ -93,7 +93,7 @@ void MyEncryptor::decrypt(const umf_rawbuffer &input, umf_string &output)
         umf_integer a = checkData[0], b = checkData[1], c = checkData[2];
         if(a * b != c)
         {
-            VMF_EXCEPTION(IncorrectParamException, "Failed to check the data!");
+            UMF_EXCEPTION(IncorrectParamException, "Failed to check the data!");
         }
 
         //decrypt the data

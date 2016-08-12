@@ -61,7 +61,7 @@ MetadataDesc::MetadataDesc( const std::string& sMetadataName, Variant::Type type
 {
     if (type == Variant::type_empty)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Invalid metadata descriprion type.");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid metadata descriprion type.");
     }
 
     m_vFields.emplace_back( FieldDesc( "", type ) );
@@ -76,7 +76,7 @@ void MetadataDesc::validate()
 {
     if( m_sMetadataName.empty() )
     {
-        VMF_EXCEPTION(ValidateException, "Metadata name cannot be empty!" );
+        UMF_EXCEPTION(ValidateException, "Metadata name cannot be empty!" );
     }
 
     // Check duplicate field names
@@ -90,7 +90,7 @@ void MetadataDesc::validate()
     vFieldNames.erase( std::unique( vFieldNames.begin(), vFieldNames.end() ), vFieldNames.end() );
     if( vFieldNames.size() < m_vFields.size() )
     {
-        VMF_EXCEPTION(ValidateException, "A structure cannot have duplicate field names!" );
+        UMF_EXCEPTION(ValidateException, "A structure cannot have duplicate field names!" );
     }
 
     // Check single value case
@@ -99,7 +99,7 @@ void MetadataDesc::validate()
         for (auto it = vFieldNames.begin(); it != vFieldNames.end(); it++)
         {
             if (it->empty())
-                VMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!");
+                UMF_EXCEPTION(ValidateException, "Anonymous field name cannot be used for metadata that has multiple fields!");
         }
     }
 }
@@ -181,7 +181,7 @@ FieldDesc& MetadataDesc::getFieldDesc(const std::string &sFieldName)
         }
     }
 
-    VMF_EXCEPTION(IncorrectParamException, "No field description found: \"" + sFieldName + "\"");
+    UMF_EXCEPTION(IncorrectParamException, "No field description found: \"" + sFieldName + "\"");
 }
 
 
@@ -195,7 +195,7 @@ void MetadataDesc::declareCustomReference(const std::string& refName, bool isUni
     for (auto it = m_vRefDesc.begin(); it != m_vRefDesc.end(); it++)
     {
         if ((*it)->name == refName)
-            VMF_EXCEPTION(ValidateException, "This reference name already exist!");
+            UMF_EXCEPTION(ValidateException, "This reference name already exist!");
     }
     
     m_vRefDesc.emplace_back(std::make_shared<ReferenceDesc>(refName, isUnique, true));

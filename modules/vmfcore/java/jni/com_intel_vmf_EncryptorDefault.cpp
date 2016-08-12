@@ -26,8 +26,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_EncryptorDefault_n_1encrypt(JNIEnv *e
     try
     {
         std::shared_ptr<EncryptorDefault>* obj = (std::shared_ptr<EncryptorDefault>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
-        if (str == 0) VMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
+        if (str == 0) UMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
         umf_rawbuffer rbuf;
         (*obj)->encrypt(getJavaStirng(env, str), rbuf);
         return (jlong) new std::shared_ptr<Variant>(new Variant(rbuf));
@@ -47,8 +47,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_EncryptorDefault_n_1decrypt(JNIEnv 
     {
         std::shared_ptr<EncryptorDefault>* obj = (std::shared_ptr<EncryptorDefault>*) self;
         std::shared_ptr<Variant>* var = (std::shared_ptr<Variant>*) variantAddr;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
-        if (var == NULL || *var == NULL)  VMF_EXCEPTION(NullPointerException, "Input data is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
+        if (var == NULL || *var == NULL)  UMF_EXCEPTION(NullPointerException, "Input data is null pointer.");
         std::string text;
         (*obj)->decrypt((*var)->get_rawbuffer(), text);
         return env->NewStringUTF(text.c_str());
@@ -67,7 +67,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_EncryptorDefault_n_1getHint(JNIEnv 
     try
     {
         std::shared_ptr<EncryptorDefault>* obj = (std::shared_ptr<EncryptorDefault>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "EncryptorDefault (self) is null pointer.");
         return env->NewStringUTF((*obj)->getHint().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -83,7 +83,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_EncryptorDefault_n_1EncryptorDefault(
 
     try
     {
-        if (passphrase == 0) VMF_EXCEPTION(NullPointerException, "EncryptorDefault passphrase can't be null.");
+        if (passphrase == 0) UMF_EXCEPTION(NullPointerException, "EncryptorDefault passphrase can't be null.");
         return (jlong) new std::shared_ptr<EncryptorDefault>(new EncryptorDefault(getJavaStirng(env, passphrase)));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }

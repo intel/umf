@@ -24,7 +24,7 @@ MetadataSchema::MetadataSchema(const std::string& sName, const std::string& sAut
 {
     if (sName.empty())
     {
-        VMF_EXCEPTION(IncorrectParamException, "Schema name can't be empty.");
+        UMF_EXCEPTION(IncorrectParamException, "Schema name can't be empty.");
     }
 }
 
@@ -67,12 +67,12 @@ void MetadataSchema::add( std::shared_ptr< MetadataDesc >& spDesc )
 {
     if( spDesc == nullptr )
     {
-        VMF_EXCEPTION(NullPointerException, "Description pointer is empty!" );
+        UMF_EXCEPTION(NullPointerException, "Description pointer is empty!" );
     }
 
     if( this->findMetadataDesc( spDesc->getMetadataName() ) != nullptr )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata with same name already exists!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata with same name already exists!" );
     }
 
     spDesc->validate();

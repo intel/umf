@@ -60,7 +60,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_MetadataSet_n_1getElement (JNIEnv *en
         if ((**obj).size() > num)
             return (jlong) new std::shared_ptr<Metadata> ((**obj)[num]);
         else
-            VMF_EXCEPTION (OutOfRangeException, "Number is out of range.");
+            UMF_EXCEPTION (OutOfRangeException, "Number is out of range.");
     }
     catch (const std::exception &e)
     {
@@ -515,7 +515,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1delete (JNIEnv *env, jc
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Metadata set is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata set is null pointer.");
 
         delete obj;
     }
@@ -541,7 +541,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1clear(JNIEnv *env, jcla
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
 
         if (obj == NULL || *obj == NULL)
-            VMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
 
         (*obj)->clear();
     }
@@ -568,10 +568,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1push_1back(JNIEnv *env,
         std::shared_ptr<Metadata>* md = (std::shared_ptr<Metadata>*)metadataAddr;
 
         if (obj == NULL || *obj == NULL)
-            VMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
 
         if (md == NULL || *md == NULL)
-            VMF_EXCEPTION(NullPointerException, "Metadata to push_back is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Metadata to push_back is null pointer.");
 
         (*obj)->push_back(*md);
     }
@@ -597,9 +597,9 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataSet_n_1erase(JNIEnv *env, jcla
         std::shared_ptr<MetadataSet>* obj = (std::shared_ptr<MetadataSet>*)self;
 
         if (obj == NULL || *obj == NULL)
-            VMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "MetadataSet (this) is null pointer.");
 
-        if (idx < 0 || idx >= (jlong)(*obj)->size()) VMF_EXCEPTION(IncorrectParamException, "Item index is out of range: " + to_string(idx));
+        if (idx < 0 || idx >= (jlong)(*obj)->size()) UMF_EXCEPTION(IncorrectParamException, "Item index is out of range: " + to_string(idx));
         else (*obj)->erase((*obj)->begin() + idx);
     }
     catch (const std::exception &e)

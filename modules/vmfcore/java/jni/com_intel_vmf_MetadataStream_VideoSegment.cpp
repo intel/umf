@@ -124,7 +124,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
 
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         const char* tmp = env->GetStringUTFChars(title, NULL);
         std::string sTitle(tmp);
@@ -191,7 +191,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         (*obj)->setFPS ((jdouble)fps);
     }
@@ -255,7 +255,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         (*obj)->setDuration((long long) duration);
     }
@@ -319,7 +319,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         (*obj)->setTime((long long) startTime);
     }
@@ -422,7 +422,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1se
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         (*obj)->setResolution ((long) w, (long) h);
     }
@@ -453,7 +453,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataStream_00024VideoSegment_n_1de
         std::shared_ptr<MetadataStream::VideoSegment>* obj = (std::shared_ptr<MetadataStream::VideoSegment>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Segment is null pointer.");
 
         delete obj;
     }

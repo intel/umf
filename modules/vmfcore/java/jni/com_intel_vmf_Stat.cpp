@@ -30,7 +30,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1delete(JNIEnv *env, jclass, jl
     try 
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         delete obj;
     }
     catch(const std::exception &e) { throwJavaException(env, &e, method_name); } 
@@ -46,7 +46,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1Stat(JNIEnv *env, jclass, jst
 
     try
     {
-        if (name == 0 || fields == 0) VMF_EXCEPTION(NullPointerException, "Neither name nor fields array can be null.");
+        if (name == 0 || fields == 0) UMF_EXCEPTION(NullPointerException, "Neither name nor fields array can be null.");
         std::vector <StatField> sfs;
         jsize len;
         jlong* addrArray;
@@ -77,7 +77,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Stat_n_1getName(JNIEnv *env, jclass
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return env->NewStringUTF((*obj)->getName().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -95,7 +95,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getState(JNIEnv *env, jclass, 
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return (*obj)->getState();
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -112,7 +112,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateMode(JNIEnv *env, jcl
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         (*obj)->setUpdateMode((Stat::UpdateMode::Type) updateMode);
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -128,7 +128,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateMode(JNIEnv *env, jcl
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return (*obj)->getUpdateMode();
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -145,7 +145,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1setUpdateTimeout(JNIEnv *env, 
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         (*obj)->setUpdateTimeout(ms);
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -161,7 +161,7 @@ JNIEXPORT jint JNICALL Java_com_intel_vmf_Stat_n_1getUpdateTimeout(JNIEnv *env, 
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return (*obj)->getUpdateTimeout();
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -178,7 +178,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1update(JNIEnv *env, jclass, jl
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         (*obj)->update(doWait == JNI_TRUE);
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -193,7 +193,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_intel_vmf_Stat_n_1getAllFieldNames(JNIEn
     try
     {
        std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-       if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+       if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
 
         std::vector<std::string> names = (*obj)->getAllFieldNames();
         jobjectArray result = (jobjectArray)env->NewObjectArray((jsize)names.size(), env->FindClass("java/lang/String"), env->NewStringUTF(""));
@@ -216,7 +216,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getField(JNIEnv *env, jclass,
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return (jlong) new std::shared_ptr<StatField>( new StatField((*obj)->getField(getJavaStirng(env, name))) );
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -233,7 +233,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Stat_n_1getValue(JNIEnv *env, jclass,
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         return (jlong) new std::shared_ptr<Variant>(new Variant((*obj)->getField(getJavaStirng(env, name)).getValue()));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -250,7 +250,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Stat_n_1clear(JNIEnv *env, jclass, jlo
     try
     {
         std::shared_ptr<Stat>* obj = (std::shared_ptr<Stat>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Stat (self) is null pointer.");
         (*obj)->clear();
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }

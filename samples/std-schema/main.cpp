@@ -38,7 +38,7 @@ static void copyFile(const std::string& src, const std::string& dest)
     source.open(src, std::ios_base::binary | std::ios_base::in);
     destination.open(dest, std::ios_base::binary | std::ios_base::out);
     if (!source.is_open() || !destination.is_open())
-        VMF_EXCEPTION(umf::Exception, "Couldn't copy " + src + " to " + dest);
+        UMF_EXCEPTION(umf::Exception, "Couldn't copy " + src + " to " + dest);
     destination << source.rdbuf();
     destination.close();
     source.close();

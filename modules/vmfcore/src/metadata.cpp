@@ -35,7 +35,7 @@ Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool u
 {
     if (!m_spDesc)
     {
-        VMF_EXCEPTION(NullPointerException, "Metadata description is null.");
+        UMF_EXCEPTION(NullPointerException, "Metadata description is null.");
     }
 
     m_sName = m_spDesc->getMetadataName();
@@ -72,12 +72,12 @@ void Metadata::setFrameIndex( long long nFrameIndex, long long nNumOfFrames )
 {
     if(nFrameIndex < 0 && nFrameIndex != UNDEFINED_FRAME_INDEX)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value: " + to_string(nFrameIndex));
+        UMF_EXCEPTION(IncorrectParamException, "Can't set metadata frame index. Invalid frame index value: " + to_string(nFrameIndex));
     }
 
     if(nNumOfFrames < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value: " + to_string(nNumOfFrames));
+        UMF_EXCEPTION(IncorrectParamException, "Can't set metadata number of frames. Invalid number of frames value: " + to_string(nNumOfFrames));
     }
 
     m_nFrameIndex = nFrameIndex;
@@ -88,12 +88,12 @@ void Metadata::setTimestamp(long long timestamp, long long duration)
 {
     if(timestamp < 0 && timestamp != UNDEFINED_TIMESTAMP)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value: " + to_string(timestamp));
+        UMF_EXCEPTION(IncorrectParamException, "Can't set metadata timestamp. Invalid timestamp value: " + to_string(timestamp));
     }
 
     if(duration < 0)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value: " + to_string(duration));
+        UMF_EXCEPTION(IncorrectParamException, "Can't set metadata duration. Invalid duration value: " + to_string(duration));
     }
 
     m_nTimestamp = timestamp;
@@ -180,13 +180,13 @@ umf::Variant Metadata::getFieldValue( const std::string& sName ) const
     FieldDesc fieldDesc;
     if( !m_spDesc->getFieldDesc( fieldDesc, sName ) )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata field not found in metadata description" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata field not found in metadata description" );
     }
 
     if(fieldDesc.optional)
         return umf::Variant();
 
-    VMF_EXCEPTION(IncorrectParamException, "Field not found!");
+    UMF_EXCEPTION(IncorrectParamException, "Field not found!");
 }
 
 Metadata::iterator Metadata::findField( const std::string& sFieldName )
@@ -209,7 +209,7 @@ bool Metadata::operator == ( const Metadata& oMetadata ) const
 {
     if( this->m_Id == INVALID_ID && oMetadata.m_Id == INVALID_ID )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Cannot compare metadata that has not been added to any stream!" );
+        UMF_EXCEPTION(IncorrectParamException, "Cannot compare metadata that has not been added to any stream!" );
     }
 
     return m_Id == oMetadata.m_Id;
@@ -219,7 +219,7 @@ bool Metadata::operator < ( const Metadata& oMetadata ) const
 {
     if( this->m_Id == INVALID_ID && oMetadata.m_Id == INVALID_ID )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Cannot compare metadata that has not been added to any stream!" );
+        UMF_EXCEPTION(IncorrectParamException, "Cannot compare metadata that has not been added to any stream!" );
     }
 
     return m_Id < oMetadata.m_Id;
@@ -249,7 +249,7 @@ MetadataSet Metadata::getReferencesByMetadata(const std::string& sMetadataName) 
 
     if (sMetadataName.empty())
     {
-        VMF_EXCEPTION(ValidateException, "MetadataName is empty!");
+        UMF_EXCEPTION(ValidateException, "MetadataName is empty!");
     }
     else
     {
@@ -332,21 +332,21 @@ bool Metadata::isReference(const std::shared_ptr<Metadata>& md, const std::strin
 void Metadata::addReference(const std::shared_ptr<Metadata>& md, const std::string& refName)
 {
     if (md == nullptr)
-        VMF_EXCEPTION(NullPointerException, "Metadata is nullptr!" );
+        UMF_EXCEPTION(NullPointerException, "Metadata is nullptr!" );
 
     if (md->getId() == INVALID_ID)
-        VMF_EXCEPTION(IncorrectParamException, "Metadata has to be added into stream before being referenced!" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata has to be added into stream before being referenced!" );
 
     if (m_pStream != nullptr && md->m_pStream != m_pStream)
-        VMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream." );
+        UMF_EXCEPTION(IncorrectParamException, "Referenced metadata is from different metadata stream." );
 
     if (isReference(md, refName))
-        VMF_EXCEPTION(IncorrectParamException, "This reference already exist.");
+        UMF_EXCEPTION(IncorrectParamException, "This reference already exist.");
 
     auto spRefDesc = m_spDesc->getReferenceDesc(refName);
 
     if (!spRefDesc)
-        VMF_EXCEPTION(IncorrectParamException, "No such reference description.");
+        UMF_EXCEPTION(IncorrectParamException, "No such reference description.");
 
     if (spRefDesc->isUnique)
     {
@@ -358,7 +358,7 @@ void Metadata::addReference(const std::shared_ptr<Metadata>& md, const std::stri
             m_vReferences.emplace_back(Reference(spRefDesc, md));
         }
         else
-            VMF_EXCEPTION(IncorrectParamException, "Unique reference with this name already exists");
+            UMF_EXCEPTION(IncorrectParamException, "Unique reference with this name already exists");
     }
     else
     {
@@ -414,19 +414,19 @@ void Metadata::addValue( const umf::Variant& value )
     // Check field against description
     if( m_spDesc == nullptr )
     {
-        VMF_EXCEPTION(NullPointerException, "Metadata description object is missing!" );
+        UMF_EXCEPTION(NullPointerException, "Metadata description object is missing!" );
     }
 
     FieldDesc fieldDesc;
     if( !m_spDesc->getFieldDesc( fieldDesc ) )
     {
-        VMF_EXCEPTION(InternalErrorException, "Metadata field not found in metadata description" );
+        UMF_EXCEPTION(InternalErrorException, "Metadata field not found in metadata description" );
     }
 
     // Check field type
     if( fieldDesc.type != value.getType() )
     {
-        VMF_EXCEPTION(TypeCastException, "Field type does not match!" );
+        UMF_EXCEPTION(TypeCastException, "Field type does not match!" );
     }
 
     this->emplace_back( FieldValue( "", value ) );
@@ -437,13 +437,13 @@ void Metadata::setFieldValue( const std::string& sFieldName, const umf::Variant&
     // Check field against description
     if( m_spDesc == nullptr )
     {
-        VMF_EXCEPTION(NullPointerException, "Metadata description object is missing!" );
+        UMF_EXCEPTION(NullPointerException, "Metadata description object is missing!" );
     }
 
     FieldDesc fieldDesc;
     if( !m_spDesc->getFieldDesc( fieldDesc, sFieldName ) )
     {
-        VMF_EXCEPTION(IncorrectParamException, "Metadata field not found in metadata description" );
+        UMF_EXCEPTION(IncorrectParamException, "Metadata field not found in metadata description" );
     }
 
     iterator it = this->findField( sFieldName );
@@ -483,17 +483,17 @@ void Metadata::validate() const
     size_t nNumOfValues = this->size();
     if( nNumOfValues < 1 && this->getEncryptedData().empty())
     {
-        VMF_EXCEPTION(ValidateException, "The metadata contains neither value nor encrypted data" );
+        UMF_EXCEPTION(ValidateException, "The metadata contains neither value nor encrypted data" );
     }
 
     if ( (m_nFrameIndex < 0 && m_nFrameIndex != UNDEFINED_FRAME_INDEX) || m_nNumOfFrames < 0 )
     {
-        VMF_EXCEPTION(ValidateException, "Invalid frame index." );
+        UMF_EXCEPTION(ValidateException, "Invalid frame index." );
     }
 
     if ( (m_nTimestamp < 0 && m_nTimestamp != UNDEFINED_TIMESTAMP) || m_nDuration < 0 )
     {
-        VMF_EXCEPTION(ValidateException, "Invalid timestamp." );
+        UMF_EXCEPTION(ValidateException, "Invalid timestamp." );
     }
 
     if( this->m_spDesc == nullptr )
@@ -504,7 +504,7 @@ void Metadata::validate() const
         auto fields = this->getDesc()->getFields();
         for(auto f = fields.begin(); f != fields.end(); f++)
             if( !f->optional && findField(f->name) == end() )
-                VMF_EXCEPTION(ValidateException,
+                UMF_EXCEPTION(ValidateException,
                               "All non-optional fields in a structure need to have not-empty field value!" );
     }
 
@@ -519,7 +519,7 @@ void Metadata::validate() const
             // Make sure the number of non-empty field names matches with the number of values
             if( nNumOfValues != nNumOfFieldNames )
             {
-                VMF_EXCEPTION(ValidateException, "All fields in a structure need to have field names!" );
+                UMF_EXCEPTION(ValidateException, "All fields in a structure need to have field names!" );
             }
 
             // Now check to see if there are duplicates in the name vector
@@ -535,13 +535,13 @@ void Metadata::validate() const
                 FieldDesc field;
                 if( false == m_spDesc->getFieldDesc( field, sFieldName ))
                 {
-                    VMF_EXCEPTION(ValidateException, "Field specified[" + sFieldName + "] not found!" );
+                    UMF_EXCEPTION(ValidateException, "Field specified[" + sFieldName + "] not found!" );
                 }
 
                 umf::Variant varValue = this->getFieldValue( sFieldName );
                 if( field.type != varValue.getType() )
                 {
-                    VMF_EXCEPTION(ValidateException, "Field type does not match with the descriptor!" );
+                    UMF_EXCEPTION(ValidateException, "Field type does not match with the descriptor!" );
                 }
             }
 
@@ -561,7 +561,7 @@ void Metadata::validate() const
             {
                 if( this->at( i ).getType() != eFirstValueType )
                 {
-                    VMF_EXCEPTION(ValidateException, "Metadata without field name should contain values of same type!" );
+                    UMF_EXCEPTION(ValidateException, "Metadata without field name should contain values of same type!" );
                 }
             }
         }
@@ -571,7 +571,7 @@ void Metadata::validate() const
         auto spReference = it->getReferenceMetadata().lock();
         if (spReference == nullptr)
         {
-            VMF_EXCEPTION(ValidateException, "At least one of references points unexistent data");
+            UMF_EXCEPTION(ValidateException, "At least one of references points unexistent data");
         }
     }
 }

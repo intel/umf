@@ -49,7 +49,7 @@ public:
             if( m_value.isEmpty() )
                 m_value = fieldValue;
             else if( m_value.getType() != fieldValue.getType() )
-                VMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
+                UMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
             else
                 switch( m_value.getType() )
                 {
@@ -62,7 +62,7 @@ public:
                         m_value = fieldValue;
                     break;
                 default:
-                    VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                    UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
                 }
         }
     virtual Variant value() const
@@ -102,7 +102,7 @@ public:
             if( m_value.isEmpty() )
                 m_value = fieldValue;
             else if( m_value.getType() != fieldValue.getType() )
-                VMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
+                UMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
             else
                 switch( m_value.getType() )
                 {
@@ -115,7 +115,7 @@ public:
                         m_value = fieldValue;
                     break;
                 default:
-                    VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                    UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
                 }
         }
     virtual Variant value() const
@@ -156,7 +156,7 @@ public:
             if( m_value.isEmpty() )
                 { m_count = 1; m_value = fieldValue; }
             else if( m_value.getType() != fieldValue.getType() )
-                VMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
+                UMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
             else
                 switch( m_value.getType() )
                 {
@@ -167,7 +167,7 @@ public:
                     ++m_count; m_value = Variant( m_value.get_real() + fieldValue.get_real() );
                     break;
                 default:
-                    VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                    UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
                 }
         }
     virtual Variant value() const
@@ -183,7 +183,7 @@ public:
             case Variant::type_real:
                 return Variant( ((umf_real) m_value.get_real()) / m_count );
             default:
-                VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
             }
         }
 
@@ -255,7 +255,7 @@ public:
             if( m_value.isEmpty() )
                 { m_value = fieldValue; }
             else if( m_value.getType() != fieldValue.getType() )
-                VMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
+                UMF_EXCEPTION( umf::TypeCastException, "Type mismatch" );
             else
                 switch( m_value.getType() )
                 {
@@ -266,7 +266,7 @@ public:
                     m_value = Variant( m_value.get_real() + fieldValue.get_real() );
                     break;
                 default:
-                    VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                    UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
                 }
         }
     virtual Variant value() const
@@ -331,13 +331,13 @@ StatOpBase* StatOpFactory::create( const std::string& name )
     auto it = ops.find( name );
     if( it == ops.end() )
     {
-        VMF_EXCEPTION( umf::NotFoundException, "User operation not registered: " + name );
+        UMF_EXCEPTION( umf::NotFoundException, "User operation not registered: " + name );
     }
 
     StatOpBase* op = (it->second)();
     if( op == nullptr )
     {
-        VMF_EXCEPTION( umf::NullPointerException, "User operation isn't created: " + name );
+        UMF_EXCEPTION( umf::NullPointerException, "User operation isn't created: " + name );
     }
 
     return op;
@@ -365,7 +365,7 @@ void StatOpFactory::registerUserOp( InstanceCreator createInstance )
     if( it != ops.end() )
     {
         // Note that op can't be registered twice even with the same creator func. Use isRegistered() to check
-        VMF_EXCEPTION( umf::IncorrectParamException, "User operation is already registered: " + userOpName );
+        UMF_EXCEPTION( umf::IncorrectParamException, "User operation is already registered: " + userOpName );
     }
     else
     {
@@ -377,14 +377,14 @@ std::string StatOpFactory::getUserOpName( InstanceCreator createInstance )
 {
     if( createInstance == nullptr )
     {
-        VMF_EXCEPTION( umf::NullPointerException, "Null pointer to the class instance creator for a user operation" );
+        UMF_EXCEPTION( umf::NullPointerException, "Null pointer to the class instance creator for a user operation" );
     }
 
     std::unique_ptr< StatOpBase > userOp( createInstance() );
 
     if( userOp == nullptr )
     {
-        VMF_EXCEPTION( umf::NullPointerException, "User operation isn't created by its createInstance() call" );
+        UMF_EXCEPTION( umf::NullPointerException, "User operation isn't created by its createInstance() call" );
     }
 
     return userOp->name();
@@ -430,7 +430,7 @@ StatOpFactory::UserOpMap& StatOpFactory::getClassMap()
     {
         ALL_BUILTIN_OPS( OP_NAME )
     }
-    VMF_EXCEPTION( umf::IncorrectParamException, "Unknown enum value: " + to_string( (int)opType ));
+    UMF_EXCEPTION( umf::IncorrectParamException, "Unknown enum value: " + to_string( (int)opType ));
 }
 #undef OP_NAME
 
@@ -524,18 +524,18 @@ public:
                 std::shared_ptr< MetadataSchema > schema = m_pMetadataStream->getSchema( m_schemaName );
                 if( schema == nullptr )
                 {
-                    VMF_EXCEPTION( IncorrectParamException, "Unknown schema '" + m_schemaName + "'" );
+                    UMF_EXCEPTION( IncorrectParamException, "Unknown schema '" + m_schemaName + "'" );
                 }
 
                 m_metadataDesc = schema->findMetadataDesc( m_metadataName );
                 if( m_metadataDesc == nullptr )
                 {
-                    VMF_EXCEPTION( IncorrectParamException, "Unknown metadata '" + m_metadataName + "' for schema '" + m_schemaName + "'" );
+                    UMF_EXCEPTION( IncorrectParamException, "Unknown metadata '" + m_metadataName + "' for schema '" + m_schemaName + "'" );
                 }
 
                 if( m_metadataDesc->getFieldDesc( m_fieldDesc, m_fieldName ) != true )
                 {
-                    VMF_EXCEPTION( IncorrectParamException, "Unknown field '" + m_fieldName + "' for metadata '" + m_metadataName + "' for schema '" + m_schemaName + "'" );
+                    UMF_EXCEPTION( IncorrectParamException, "Unknown field '" + m_fieldName + "' for metadata '" + m_metadataName + "' for schema '" + m_schemaName + "'" );
                 }
             }
             else
@@ -953,7 +953,7 @@ void Stat::notify( std::shared_ptr< Metadata > metadata, Action::Type action )
 void Stat::update(bool doWait )
 {
     if (m_needRescan) 
-        VMF_EXCEPTION(IncorrectParamException, "Stat object detected metadata removal, call MetadataStream::recalcStat() before continue using statistics");
+        UMF_EXCEPTION(IncorrectParamException, "Stat object detected metadata removal, call MetadataStream::recalcStat() before continue using statistics");
 
     if( getState() != State::UpToDate )
     {
@@ -1007,7 +1007,7 @@ void Stat::setUpdateMode( UpdateMode::Type updateMode )
             m_worker->wakeup( true );
             break;
         default:
-            VMF_EXCEPTION( umf::IncorrectParamException, "Unknown update mode" );
+            UMF_EXCEPTION( umf::IncorrectParamException, "Unknown update mode" );
         }
     }
 }
@@ -1033,7 +1033,7 @@ const StatField& Stat::getField( const std::string& name ) const
 
     if( it == m_fields.end() )
     {
-        VMF_EXCEPTION( umf::NotFoundException, "Statistics field not found: " + name );
+        UMF_EXCEPTION( umf::NotFoundException, "Statistics field not found: " + name );
     }
 
     return *it;

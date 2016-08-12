@@ -47,7 +47,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_FormatCompressed_n_1store(JNIEnv *e
     try
     {
         std::shared_ptr<FormatCompressed>* obj = (std::shared_ptr<FormatCompressed>*) self;
-        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null.");
+        if (!obj || !*obj) UMF_EXCEPTION(NullPointerException, "'self' is null.");
 
         std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
@@ -155,9 +155,9 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_FormatCompressed_n_1parse(JNIEnv
     try
     {
         std::shared_ptr<FormatCompressed>* obj = (std::shared_ptr<FormatCompressed>*) self;
-        if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null");
+        if (!obj || !*obj) UMF_EXCEPTION(NullPointerException, "'self' is null");
 
-        if (!text) VMF_EXCEPTION(NullPointerException, "Input text is null");
+        if (!text) UMF_EXCEPTION(NullPointerException, "Input text is null");
 
         std::vector<MetadataInternal> metadata;
         std::vector<std::shared_ptr<MetadataSchema>> schemas;

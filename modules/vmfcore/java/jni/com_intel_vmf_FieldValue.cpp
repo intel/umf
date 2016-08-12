@@ -157,10 +157,10 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1setTo (JNIEnv *env, jcla
         std::shared_ptr<FieldValue>* other = (std::shared_ptr<FieldValue>*) otherAddr;
 
         if ((self == NULL) || (self->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Field value is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Field value is null pointer.");
 
         if ((other == NULL) || (other->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Other field value is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Other field value is null pointer.");
 
         (**self) = (**other);
     }
@@ -331,12 +331,12 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1convertTo (JNIEnv *env, 
             std::shared_ptr <FieldValue>* obj = (std::shared_ptr <FieldValue>*)self;
 
             if ((obj == NULL) || (obj->get() == NULL))
-                VMF_EXCEPTION(NullPointerException, "Field value is null pointer.");
+                UMF_EXCEPTION(NullPointerException, "Field value is null pointer.");
 
             (*obj)->convertTo(Type);
         }
         else
-            VMF_EXCEPTION(OutOfRangeException, "Non-existent type.");
+            UMF_EXCEPTION(OutOfRangeException, "Non-existent type.");
     }
     catch (const std::exception &e)
     {
@@ -365,7 +365,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_FieldValue_n_1delete (JNIEnv *env, jcl
         std::shared_ptr<FieldValue>* obj = (std::shared_ptr<FieldValue>*) self;
 
         if ((obj == NULL) || (obj->get() == NULL))
-            VMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
+            UMF_EXCEPTION(NullPointerException, "Field description is null pointer.");
 
         delete obj;
     }

@@ -29,17 +29,17 @@
 #include "log.hpp"
 
 /*!
-* \def VMF_EXCEPTION
+* \def UMF_EXCEPTION
 * \brief VMF exception throw macro
 * \param [in] ex exception type
 * \param[in] message text message that contains exception reason
 * \details Throw an exception of specified class with text message
 */
 #ifdef __GNUC__
-#define VMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
+#define UMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
                                     throw ( ex(message, __func__, __FILE__, __LINE__) ); } while(0)
 #else
-#define VMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
+#define UMF_EXCEPTION(ex, message ) do { UMF_LOG_ERROR(message); \
                                     throw ( ex(message, "", __FILE__, __LINE__) ); } while(0)
 #endif
 

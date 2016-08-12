@@ -18,7 +18,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Encryptor_n_1delete(JNIEnv *env, jclas
     try
     {
         std::shared_ptr<Encryptor>* obj = (std::shared_ptr<Encryptor>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Encryptor (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Encryptor (self) is null pointer.");
         delete obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }

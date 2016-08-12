@@ -48,19 +48,19 @@ long long getTimestamp()
 long long getTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int ms)
 {
     if(year < 1970)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid year: " + to_string(year));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid year: " + to_string(year));
     if( month > 12 || month < 1 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid month: " + to_string(month));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid month: " + to_string(month));
     if( day > 31 || day <= 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid day: " + to_string(day));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid day: " + to_string(day));
     if( hours >= 24 || hours < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid hours: " + to_string(hours));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid hours: " + to_string(hours));
     if( minutes >= 60 || minutes < 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid minutes: " + to_string(minutes));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid minutes: " + to_string(minutes));
     if( seconds >= 60 || seconds < 0 )
-        VMF_EXCEPTION(IncorrectParamException, "Invalid seconds: " + to_string(seconds));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid seconds: " + to_string(seconds));
     if( ms >= 1000 || ms < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid milliseconds : " + to_string(ms));
+        UMF_EXCEPTION(IncorrectParamException, "Invalid milliseconds : " + to_string(ms));
 
     std::tm timeinfo = {0};
     timeinfo.tm_year = year - 1900;
@@ -75,7 +75,7 @@ long long getTimestamp(int year, int month, int day, int hours, int minutes, int
     {
         char buff[128] = {0};
         strftime(buff, sizeof(buff), "%c", &timeinfo);
-        VMF_EXCEPTION(InternalErrorException, std::string("Error converting date + time to a timestamp: ") + buff);
+        UMF_EXCEPTION(InternalErrorException, std::string("Error converting date + time to a timestamp: ") + buff);
     }
 
     long long retVal;

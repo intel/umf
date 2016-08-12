@@ -29,7 +29,7 @@ namespace umf
     {
         case STD_DST: return "umf://ns.intel.com/umf/std-dst-schema-1.0";
 
-        default: VMF_EXCEPTION(IncorrectParamException, "Unknown StdSchemaKind value");
+        default: UMF_EXCEPTION(IncorrectParamException, "Unknown StdSchemaKind value");
     }
 }
 
@@ -39,7 +39,7 @@ namespace umf
     {
         case STD_DST: return _createAllInOneSchema(getStdSchemaName(kind), "Intel Corporation");
 
-        default: VMF_EXCEPTION(IncorrectParamException, "Unknown StdSchemaKind value");
+        default: UMF_EXCEPTION(IncorrectParamException, "Unknown StdSchemaKind value");
     }
 }
 

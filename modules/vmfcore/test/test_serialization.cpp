@@ -89,7 +89,7 @@ protected:
         {
             case TypeXML:  f = std::make_shared<FormatXML>();  break;
             case TypeJson: f = std::make_shared<FormatJSON>(); break;
-            default: VMF_EXCEPTION(IncorrectParamException, "Wrong serialization format type value: " + to_string(type));
+            default: UMF_EXCEPTION(IncorrectParamException, "Wrong serialization format type value: " + to_string(type));
         }
         cf.reset(new FormatCompressed(f, compressorId));
         format.reset(new FormatEncrypted(cf, encryptor, ignoreUnknownEncryptor));
@@ -439,7 +439,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     {
         case TypeXML:  f = std::make_shared<FormatXML>();  break;
         case TypeJson: f = std::make_shared<FormatJSON>(); break;
-        default: VMF_EXCEPTION(IncorrectParamException,
+        default: UMF_EXCEPTION(IncorrectParamException,
                                "Wrong serialization format type value: " + to_string(type));
     }
     cf.reset(new FormatCompressed(f, compressorId, true));

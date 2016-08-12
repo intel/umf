@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_MetadataInternal_n_1delete (JNIEnv *en
         MetadataInternal* obj = (MetadataInternal*) self;
 
         if (obj == NULL)
-            VMF_EXCEPTION (NullPointerException, "Metadata Internal is null pointer.");
+            UMF_EXCEPTION (NullPointerException, "Metadata Internal is null pointer.");
 
         delete obj;
     }

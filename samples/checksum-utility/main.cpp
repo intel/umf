@@ -31,7 +31,7 @@ void copyFile(const string& srcPath, const string& dstPath)
     ofstream dst(dstPath, ios_base::binary | ios_base::out);
 
     if (!src.is_open() || !dst.is_open())
-        VMF_EXCEPTION(umf::Exception, "Can't copy " + srcPath + " to " + dstPath);
+        UMF_EXCEPTION(umf::Exception, "Can't copy " + srcPath + " to " + dstPath);
 
     dst << src.rdbuf();
 

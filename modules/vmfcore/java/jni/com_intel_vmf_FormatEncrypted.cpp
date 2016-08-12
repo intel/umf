@@ -48,7 +48,7 @@ extern "C" {
         try
         {
             std::shared_ptr<FormatEncrypted>* obj = (std::shared_ptr<FormatEncrypted>*) self;
-            if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null.");
+            if (!obj || !*obj) UMF_EXCEPTION(NullPointerException, "'self' is null.");
 
             std::shared_ptr<MetadataSet>* set = (std::shared_ptr<MetadataSet>*) setAddr;
 
@@ -156,9 +156,9 @@ extern "C" {
         try
         {
             std::shared_ptr<FormatEncrypted>* obj = (std::shared_ptr<FormatEncrypted>*) self;
-            if (!obj || !*obj) VMF_EXCEPTION(NullPointerException, "'self' is null");
+            if (!obj || !*obj) UMF_EXCEPTION(NullPointerException, "'self' is null");
 
-            if (!text) VMF_EXCEPTION(NullPointerException, "Input text is null");
+            if (!text) UMF_EXCEPTION(NullPointerException, "Input text is null");
 
             std::vector<MetadataInternal> metadata;
             std::vector<std::shared_ptr<MetadataSchema>> schemas;

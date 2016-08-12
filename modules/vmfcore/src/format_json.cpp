@@ -202,7 +202,7 @@ static void add(JSONNode& metadataNode, const std::shared_ptr<Metadata>& spMetad
 static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::VideoSegment>& spSegment)
 {
     if (spSegment->getTitle() == "" || spSegment->getFPS() <= 0 || spSegment->getTime() < 0)
-        VMF_EXCEPTION(IncorrectParamException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
 
     segmentsNode.push_back(JSONNode(ATTR_SEGMENT_TITLE, spSegment->getTitle()));
     segmentsNode.push_back(JSONNode(ATTR_SEGMENT_FPS, spSegment->getFPS()));
@@ -223,7 +223,7 @@ static void add(JSONNode& segmentsNode, const std::shared_ptr<MetadataStream::Vi
 static void add(JSONNode& statNode, std::shared_ptr<Stat> stat)
 {
     if (stat->getName().empty())
-        VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
+        UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
     statNode.push_back(JSONNode(ATTR_STAT_NAME, stat->getName()));
 
@@ -238,19 +238,19 @@ static void add(JSONNode& statNode, std::shared_ptr<Stat> stat)
             const StatField& field = stat->getField(fieldName);
 
             if (field.getName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field name is invalid!");
             if (field.getFieldName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata field name is invalid!");
             if (field.getOpName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field operation name is invalid!");
 
             /*std::shared_ptr< MetadataDesc > metadataDesc = field.getMetadataDesc();
             if (metadataDesc == nullptr)
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata descriptor is null!");*/
             if (field.getSchemaName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata schema name is invalid!");
             if (field.getMetadataName().empty())
-                VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
+                UMF_EXCEPTION(IncorrectParamException, "Invalid stat object: field metadata name is invalid!");
 
             JSONNode fieldNode(JSON_NODE);
             fieldNode.set_name(TAG_STAT_FIELD);
@@ -307,7 +307,7 @@ std::string FormatJSON::store(
         segmentsArrayNode.set_name(TAG_VIDEO_SEGMENTS_ARRAY);
         for (const auto& spSegment : segments)
         {
-            if (spSegment == nullptr) VMF_EXCEPTION(NullPointerException, "VideoSegment pointer is null");
+            if (spSegment == nullptr) UMF_EXCEPTION(NullPointerException, "VideoSegment pointer is null");
             JSONNode segmentNode(JSON_NODE);
             add(segmentNode, spSegment);
             segmentsArrayNode.push_back(segmentNode);
@@ -324,26 +324,26 @@ std::string FormatJSON::store(
         for(const std::shared_ptr<Metadata>& spMetadata : set)
         {
             if (spMetadata == nullptr)
-                VMF_EXCEPTION(umf::IncorrectParamException, "Metadata pointer is null");
+                UMF_EXCEPTION(umf::IncorrectParamException, "Metadata pointer is null");
 
             bool noSchemaForMetadata = true;
             for(const std::shared_ptr<MetadataSchema>& spSchema : schemas)
             {
                 if (spSchema == nullptr)
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Schema pointer is null");
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Schema pointer is null");
 
                 if(spMetadata->getSchemaName() == spSchema->getName())
                     noSchemaForMetadata = false;
             }
             if(noSchemaForMetadata)
-                VMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
+                UMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
         }
 
         JSONNode schemasArrayNode(JSON_ARRAY);
         schemasArrayNode.set_name(TAG_SCHEMAS_ARRAY);
         for (const auto& spSchema : schemas)
         {
-            if (spSchema == nullptr) VMF_EXCEPTION(NullPointerException, "Schema pointer is null");
+            if (spSchema == nullptr) UMF_EXCEPTION(NullPointerException, "Schema pointer is null");
             JSONNode schemaNode(JSON_NODE);
             add(schemaNode, spSchema);
             schemasArrayNode.push_back(schemaNode);
@@ -358,7 +358,7 @@ std::string FormatJSON::store(
         metadataArrayNode.set_name(TAG_METADATA_ARRAY);
         for (const auto& spMetadata : set)
         {
-            if (spMetadata == nullptr) VMF_EXCEPTION(NullPointerException, "Metadata pointer is null");
+            if (spMetadata == nullptr) UMF_EXCEPTION(NullPointerException, "Metadata pointer is null");
             JSONNode metadataNode(JSON_NODE);
             add(metadataNode, spMetadata);
             metadataArrayNode.push_back(metadataNode);
@@ -396,11 +396,11 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
         spSchema = std::make_shared<umf::MetadataSchema>(schemaName, schemaAuthor, schemaUseEncryption);
     }
     else
-        VMF_EXCEPTION(IncorrectParamException, "Schema has no name");
+        UMF_EXCEPTION(IncorrectParamException, "Schema has no name");
 
     auto descsArrayIter = schemaNode.find(TAG_DESCRIPTIONS_ARRAY);
     if (descsArrayIter == schemaNode.end())
-        VMF_EXCEPTION(IncorrectParamException, "Can't find descriptions-array JSON node");
+        UMF_EXCEPTION(IncorrectParamException, "Can't find descriptions-array JSON node");
 
     std::shared_ptr<umf::MetadataDesc> spDesc;
     for (auto descNode = descsArrayIter->begin(); descNode != descsArrayIter->end(); descNode++)
@@ -410,7 +410,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
         if (descNameIter != descNode->end())
             descName = descNameIter->as_string();
         else
-            VMF_EXCEPTION(IncorrectParamException, "Description has no name");
+            UMF_EXCEPTION(IncorrectParamException, "Description has no name");
         bool descUseEncryption = false;
         auto descEncryptedIter = descNode->find(ATTR_ENCRYPTED_BOOL);
         if(descEncryptedIter != descNode->end())
@@ -418,7 +418,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
 
         auto fieldsArrayIter = descNode->find(TAG_FIELDS_ARRAY);
         if (fieldsArrayIter == descNode->end())
-            VMF_EXCEPTION(IncorrectParamException, "Description has no fields array");
+            UMF_EXCEPTION(IncorrectParamException, "Description has no fields array");
 
         std::vector<FieldDesc> vFields;
         for (auto fieldNode = fieldsArrayIter->begin(); fieldNode != fieldsArrayIter->end(); fieldNode++)
@@ -426,7 +426,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
             auto fieldNameIter = fieldNode->find(ATTR_NAME);
             auto fieldTypeIter = fieldNode->find(ATTR_FIELD_TYPE);
             if (fieldNameIter == fieldNode->end() || fieldTypeIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Field has no 'name' or 'type' attribute");
+                UMF_EXCEPTION(IncorrectParamException, "Field has no 'name' or 'type' attribute");
             umf::Variant::Type field_type = Variant::typeFromString(fieldTypeIter->as_string());
             bool field_optional = false;
             auto fieldsOptionalityIter = fieldNode->find(ATTR_FIELD_OPTIONAL);
@@ -437,7 +437,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
                 else if (fieldsOptionalityIter->as_string() == "false")
                     field_optional = false;
                 else
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
             }
             bool field_use_encryption = false;
             auto fieldUseEncryptionIter = fieldNode->find(ATTR_ENCRYPTED_BOOL);
@@ -449,14 +449,14 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
 
         auto refsArrayIter = descNode->find(TAG_METADATA_REFERENCES_ARRAY);
         if (refsArrayIter == descNode->end())
-            VMF_EXCEPTION(IncorrectParamException, "Description has no references array");
+            UMF_EXCEPTION(IncorrectParamException, "Description has no references array");
 
         std::vector<std::shared_ptr<ReferenceDesc>> vReferences;
         for (auto refNode = refsArrayIter->begin(); refNode != refsArrayIter->end(); refNode++)
         {
             auto refNameIter = refNode->find(ATTR_NAME);
             if (refNameIter == refNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Field has no 'name' attribute");
+                UMF_EXCEPTION(IncorrectParamException, "Field has no 'name' attribute");
 
             auto refUniqueIter = refNode->find(ATTR_REFERENCE_UNIQUE);
             bool isUnique = false;
@@ -467,7 +467,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
                 else if (refUniqueIter->as_string() == "false")
                     isUnique = false;
                 else
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'isUnique'");
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'isUnique'");
             }
 
             auto refCustomIter = refNode->find(ATTR_REFERENCE_CUSTOM);
@@ -479,7 +479,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(const JSONNode& schem
                 else if (refCustomIter->as_string() == "false")
                     isCustom = false;
                 else
-                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'isCustom'");
+                    UMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'isCustom'");
             }
 
             vReferences.emplace_back(std::make_shared<ReferenceDesc>(refNameIter->as_string(), isUnique, isCustom));
@@ -498,7 +498,7 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
     auto descIter   = metadataNode.find(ATTR_METADATA_DESCRIPTION);
     auto idIter     = metadataNode.find(ATTR_ID);
     if (schemaIter == metadataNode.end() || descIter == metadataNode.end())
-        VMF_EXCEPTION(umf::IncorrectParamException, "Metadata item has no schema name or description name");
+        UMF_EXCEPTION(umf::IncorrectParamException, "Metadata item has no schema name or description name");
 
     std::string encryptedMetadata;
     bool metadataUseEncryption = false;
@@ -509,7 +509,7 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
     if(mdEncryptedDataIter != metadataNode.end())
         encryptedMetadata = mdEncryptedDataIter->as_string();
     if(metadataUseEncryption && encryptedMetadata.empty())
-        VMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
+        UMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
     MetadataInternal mdi(descIter->as_string(), schemaIter->as_string());
     if(idIter != metadataNode.end())
@@ -572,7 +572,7 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
 
     auto metadataFieldsArrayIter = metadataNode.find(TAG_FIELDS_ARRAY);
     if (metadataFieldsArrayIter == metadataNode.end())
-        VMF_EXCEPTION(umf::IncorrectParamException, "No metadata fields array");
+        UMF_EXCEPTION(umf::IncorrectParamException, "No metadata fields array");
 
     for (auto fieldNode = metadataFieldsArrayIter->begin(); fieldNode != metadataFieldsArrayIter->end(); fieldNode++)
     {
@@ -580,7 +580,7 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
         auto fieldNameIter = fieldNode->find(ATTR_NAME);
         auto fieldValueIter = fieldNode->find(ATTR_VALUE);
         if(fieldNameIter == fieldNode->end())
-            VMF_EXCEPTION(umf::IncorrectParamException, "Missing field name");
+            UMF_EXCEPTION(umf::IncorrectParamException, "Missing field name");
         std::string fieldName = fieldNameIter->as_string();
         std::string fieldValueString;
         if(fieldValueIter != fieldNode->end())
@@ -595,10 +595,10 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
         if(fieldEncryptedDataIter != fieldNode->end())
             encryptedFieldData = fieldEncryptedDataIter->as_string();
         if(fieldUseEncryption && encryptedFieldData.empty())
-            VMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
+            UMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
         if(fieldValueString.empty() && encryptedFieldData.empty())
-            VMF_EXCEPTION(umf::IncorrectParamException, "Missing field value or encrypted data");
+            UMF_EXCEPTION(umf::IncorrectParamException, "Missing field value or encrypted data");
         
         mdi.fields[fieldName].value         = fieldValueString;
         mdi.fields[fieldName].useEncryption = fieldUseEncryption;
@@ -611,10 +611,10 @@ static MetadataInternal parseMetadataFromNode(const JSONNode& metadataNode)
         for (auto referenceNode = referencesArrayIter->begin(); referenceNode != referencesArrayIter->end(); referenceNode++)
         {
             auto referenceIdIter = referenceNode->find(ATTR_ID);
-            if (referenceIdIter == referenceNode->end()) VMF_EXCEPTION(umf::IncorrectParamException, "Missing reference 'id'");
+            if (referenceIdIter == referenceNode->end()) UMF_EXCEPTION(umf::IncorrectParamException, "Missing reference 'id'");
 
             auto referenceNameIter = referenceNode->find(ATTR_NAME);
-            if (referenceNameIter == referenceNode->end()) VMF_EXCEPTION(umf::IncorrectParamException, "Missing reference 'name'");
+            if (referenceNameIter == referenceNode->end()) UMF_EXCEPTION(umf::IncorrectParamException, "Missing reference 'name'");
 
             mdi.refs.push_back(std::make_pair(IdType(referenceIdIter->as_int()), referenceNameIter->as_string()));
         }
@@ -633,22 +633,22 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(c
     auto segmentHeightIter = segmentNode.find(ATTR_SEGMENT_HEIGHT);
 
     if (segmentTitleIter == segmentNode.end())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has no title");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has no title");
     if (segmentFPSIter == segmentNode.end())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has no fps value");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has no fps value");
     if (segmentTimeIter == segmentNode.end())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has no time value");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has no time value");
 
     std::string title = segmentTitleIter->as_string();
     double fps = segmentFPSIter->as_float();
     long long timestamp = segmentTimeIter->as_int();
 
     if (title.empty())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid title");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid title");
     if (fps <= 0)
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid fps value");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid fps value");
     if (timestamp < 0)
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid time value");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid time value");
 
     std::shared_ptr<MetadataStream::VideoSegment> spSegment(new MetadataStream::VideoSegment(title, fps, timestamp));
 
@@ -673,13 +673,13 @@ static std::shared_ptr<Stat> parseStatFromNode(const JSONNode& statNode)
     auto statNameIter = statNode.find(ATTR_STAT_NAME);
 
     if(statNameIter == statNode.end())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has no stat name");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has no stat name");
 
     std::string statName = statNameIter->as_string();
     const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
     if(statName.empty())
-        VMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid stat name");
+        UMF_EXCEPTION(umf::InternalErrorException, "JSON element has invalid stat name");
 
     std::vector< StatField > fields;
 
@@ -690,23 +690,23 @@ static std::shared_ptr<Stat> parseStatFromNode(const JSONNode& statNode)
         {
             auto fieldNameIter = fieldNode->find(ATTR_STAT_FIELD_NAME);
             if(fieldNameIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Stat field has no name");
+                UMF_EXCEPTION(IncorrectParamException, "Stat field has no name");
 
             auto schemaNameIter = fieldNode->find(ATTR_STAT_FIELD_SCHEMA_NAME);
             if(schemaNameIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata schema name");
+                UMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata schema name");
 
             auto metadataNameIter = fieldNode->find(ATTR_STAT_FIELD_METADATA_NAME);
             if(metadataNameIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata name");
+                UMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata name");
 
             auto metadataFieldNameIter = fieldNode->find(ATTR_STAT_FIELD_FIELD_NAME);
             if(metadataFieldNameIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata field name");
+                UMF_EXCEPTION(IncorrectParamException, "Stat field has no metadata field name");
 
             auto opNameIter = fieldNode->find(ATTR_STAT_FIELD_OP_NAME);
             if(opNameIter == fieldNode->end())
-                VMF_EXCEPTION(IncorrectParamException, "Stat field has no operation name");
+                UMF_EXCEPTION(IncorrectParamException, "Stat field has no operation name");
 
             std::string fieldName, schemaName, metadataName, metadataFieldName, opName;
 
@@ -733,7 +733,7 @@ Format::ParseCounters FormatJSON::parse(
     )
 {
     Format::ParseCounters counter = {};
-    if (text.empty()) VMF_EXCEPTION(IncorrectParamException, "Empty input JSON string");
+    if (text.empty()) UMF_EXCEPTION(IncorrectParamException, "Empty input JSON string");
 
     JSONNode root;
     try
@@ -742,12 +742,12 @@ Format::ParseCounters FormatJSON::parse(
     }
     catch (...)
     {
-        VMF_EXCEPTION(IncorrectParamException, "Can't get JSON root");
+        UMF_EXCEPTION(IncorrectParamException, "Can't get JSON root");
     }
-    if (root.size() != 1) VMF_EXCEPTION(IncorrectParamException, "More than one JSON root");
+    if (root.size() != 1) UMF_EXCEPTION(IncorrectParamException, "More than one JSON root");
 
     JSONNode vmfNode = root[0];
-    if (vmfNode.name() != TAG_VMF) VMF_LOG_ERROR("Unexpected root JSON element: " + vmfNode.name());
+    if (vmfNode.name() != TAG_VMF) UMF_LOG_ERROR("Unexpected root JSON element: " + vmfNode.name());
     for (const auto& node : vmfNode)
     {
         if (node.name() == TAG_ATTRIBS_ARRAY)
@@ -775,7 +775,7 @@ Format::ParseCounters FormatJSON::parse(
             for (const auto& m : node)
                 metadata.push_back(parseMetadataFromNode(m)), counter.metadata++;
         }
-        else VMF_LOG_ERROR("Unexpected JSON element: " + node.name());
+        else UMF_LOG_ERROR("Unexpected JSON element: " + node.name());
     }
 
     return counter;

@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Compressor_n_1delete(JNIEnv *env, jcla
     try
     {
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
         delete obj;
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -41,7 +41,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Compressor_n_1create(JNIEnv *env, jcl
 
     try
     {
-        if (id == 0) VMF_EXCEPTION(NullPointerException, "Compressor ID can't be null.");
+        if (id == 0) UMF_EXCEPTION(NullPointerException, "Compressor ID can't be null.");
         return (jlong) new std::shared_ptr<Compressor>(Compressor::create(getJavaStirng(env, id)));
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -58,7 +58,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Compressor_n_1getId(JNIEnv *env, jc
     try
     {
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
         return env->NewStringUTF((*obj)->getId().c_str());
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -75,7 +75,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Compressor_n_1createNewInstance(JNIEn
     try
     {
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
         return (jlong) new std::shared_ptr<Compressor>( (*obj)->createNewInstance() );
     }
     catch (const std::exception &e) { throwJavaException(env, &e, method_name); }
@@ -92,8 +92,8 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Compressor_n_1compress(JNIEnv *env, j
     try
     {
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
-        if (str == 0) VMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
+        if (str == 0) UMF_EXCEPTION(NullPointerException, "String to compress can't be null.");
         umf_rawbuffer rbuf;
         (*obj)->compress(getJavaStirng(env, str), rbuf);
         return (jlong) new std::shared_ptr<Variant>( new Variant( rbuf ) );
@@ -113,8 +113,8 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_Compressor_n_1decompress(JNIEnv *en
     {
         std::shared_ptr<Compressor>* obj = (std::shared_ptr<Compressor>*) self;
         std::shared_ptr<Variant>* var = (std::shared_ptr<Variant>*) variantAddr;
-        if (obj == NULL || *obj == NULL)  VMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
-        if (var == NULL || *var == NULL)  VMF_EXCEPTION(NullPointerException, "Input data is null pointer.");
+        if (obj == NULL || *obj == NULL)  UMF_EXCEPTION(NullPointerException, "Compressor (self) is null pointer.");
+        if (var == NULL || *var == NULL)  UMF_EXCEPTION(NullPointerException, "Input data is null pointer.");
         std::string text;
         (*obj)->decompress((*var)->get_rawbuffer(), text);
         return env->NewStringUTF(text.c_str());

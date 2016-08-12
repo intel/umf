@@ -43,7 +43,7 @@ void copyFile(const string& srcName, const char *dstName)
     if (src && dst)
         dst << src.rdbuf();
     else
-        VMF_EXCEPTION(umf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+        UMF_EXCEPTION(umf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
 }
 
 class StrCatOp: public umf::StatOpBase
@@ -66,7 +66,7 @@ public:
         {
             std::unique_lock< std::mutex > lock( m_lock );
             if( fieldValue.getType() != umf::Variant::type_string )
-                VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
+                UMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
             if( !m_value.empty() )
                 m_value += " | ";
             m_value += fieldValue.get_string();

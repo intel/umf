@@ -64,7 +64,7 @@ T from_string(const std::string& str)
     sstream >> val;
     if (sstream.fail() || !sstream.eof())
     {
-        VMF_EXCEPTION(IncorrectParamException, "Unable to convert string '" + str +
+        UMF_EXCEPTION(IncorrectParamException, "Unable to convert string '" + str +
                 "' to " + typeid(T).name());
     }
     return val;
@@ -100,7 +100,7 @@ inline double from_string(const std::string& str) {
     sstream >> val;
     if (sstream.fail() || !sstream.eof())
     {
-        VMF_EXCEPTION(IncorrectParamException, "Unable to convert string '" + str +
+        UMF_EXCEPTION(IncorrectParamException, "Unable to convert string '" + str +
                 "' to long double");
     }
     return val;

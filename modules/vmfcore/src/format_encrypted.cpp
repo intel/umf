@@ -130,7 +130,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
         {
             if(!ignoreUnknownEncryptor)
             {
-                VMF_EXCEPTION(IncorrectParamException, "No decryptor provided for encrypted data");
+                UMF_EXCEPTION(IncorrectParamException, "No decryptor provided for encrypted data");
             }
             else
             {
@@ -156,7 +156,7 @@ std::string FormatEncrypted::decrypt(const std::string &input)
                 }
                 else
                 {
-                    VMF_EXCEPTION(IncorrectParamException, "Failed to decrypt data, the hint is \"" +
+                    UMF_EXCEPTION(IncorrectParamException, "Failed to decrypt data, the hint is \"" +
                                   hint + "\": " + ee.what());
                 }
             }
