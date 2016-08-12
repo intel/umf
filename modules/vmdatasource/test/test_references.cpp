@@ -30,7 +30,7 @@ extern std::string tempPath;
 #define TEST_FILE_SRC VIDEO_FILE
 
 
-using namespace vmf;
+using namespace umf;
 using namespace std;
 
 class TestNamedReferences : public ::testing::Test
@@ -69,14 +69,14 @@ protected:
         spMDesc2 = make_shared<MetadataDesc>("CAR", vFieldDescs2, vspReferenceDescs2);
         spSchema->add(spMDesc2);
        
-        if (!stream.open(TEST_FILE, vmf::MetadataStream::Update))
+        if (!stream.open(TEST_FILE, umf::MetadataStream::Update))
             cout << "Cann't open stream!" << endl;
 
         stream.addSchema(spSchema);
 
-        std::shared_ptr<vmf::Metadata> md1(new Metadata(spSchema->findMetadataDesc("PERSON")));
-        std::shared_ptr<vmf::Metadata> md2(new Metadata(spSchema->findMetadataDesc("PERSON")));
-        std::shared_ptr<vmf::Metadata> md3(new Metadata(spSchema->findMetadataDesc("CAR")));
+        std::shared_ptr<umf::Metadata> md1(new Metadata(spSchema->findMetadataDesc("PERSON")));
+        std::shared_ptr<umf::Metadata> md2(new Metadata(spSchema->findMetadataDesc("PERSON")));
+        std::shared_ptr<umf::Metadata> md3(new Metadata(spSchema->findMetadataDesc("CAR")));
 
         md1->setFieldValue("AGE", 25);
         md1->setFieldValue("HEIGHT", 180.5);
@@ -111,20 +111,20 @@ protected:
 
     virtual void TearDown()
     {
-        //vmf::terminate();
+        //umf::terminate();
     }
 
     MetadataStream stream;
     shared_ptr<MetadataSchema> spSchema;
     shared_ptr<MetadataDesc> spMDesc1, spMDesc2, spMDesc3;
-    vector<std::shared_ptr<vmf::ReferenceDesc>> vspReferenceDescs1, vspReferenceDescs2, vspReferenceDescs3;
-    vector<vmf::FieldDesc> vFieldDescs1, vFieldDescs2, vFieldDescs3;
+    vector<std::shared_ptr<umf::ReferenceDesc>> vspReferenceDescs1, vspReferenceDescs2, vspReferenceDescs3;
+    vector<umf::FieldDesc> vFieldDescs1, vFieldDescs2, vFieldDescs3;
 };
 
 TEST_F(TestNamedReferences, SaveLoad)
 {
-    vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    umf::MetadataStream newStream;
+    newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
     newStream.load();
 
     auto md = newStream.getAll();
@@ -159,8 +159,8 @@ TEST_F(TestNamedReferences, SaveLoad)
 
 TEST_F(TestNamedReferences, AddReferences)
 {
-    vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    umf::MetadataStream newStream;
+    newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
     newStream.load();
 
     auto md = newStream.getAll();
@@ -177,8 +177,8 @@ TEST_F(TestNamedReferences, AddReferences)
     md[0]->addReference(md[1], "CAR");
     md[0]->addReference(md[1], "FRIEND");
     md[0]->addReference(md[0], "FRIEND");
-    EXPECT_THROW(md[0]->addReference(md[1], "SPOUSE"), vmf::IncorrectParamException);
-    EXPECT_THROW(md[0]->addReference(md[2], "MODEL"), vmf::IncorrectParamException);
+    EXPECT_THROW(md[0]->addReference(md[1], "SPOUSE"), umf::IncorrectParamException);
+    EXPECT_THROW(md[0]->addReference(md[2], "MODEL"), umf::IncorrectParamException);
     
     refs = md[0]->getAllReferences();
     EXPECT_EQ(6u, refs.size());
@@ -201,7 +201,7 @@ TEST_F(TestNamedReferences, AddReferences)
     mdSet = md[0]->getReferencesByMetadata("PERSON");
     EXPECT_EQ(5u, mdSet.size());
 
-    EXPECT_THROW(md[0]->addReference(md[2], "SPOUSE"), vmf::IncorrectParamException);
+    EXPECT_THROW(md[0]->addReference(md[2], "SPOUSE"), umf::IncorrectParamException);
 
     mdSet = md[0]->getReferencesByMetadata("PERSON");
     EXPECT_EQ(5u, mdSet.size());
@@ -219,11 +219,11 @@ TEST_F(TestNamedReferences, AddReferences)
 
 TEST_F(TestNamedReferences, QueryByReference)
 {
-    vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    umf::MetadataStream newStream;
+    newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
     newStream.load();
 
-    vmf::MetadataSet set = newStream.queryByReference([&](const std::shared_ptr< vmf::Metadata >& spItem, const std::shared_ptr< vmf::Metadata >& spReferenceMd)->bool
+    umf::MetadataSet set = newStream.queryByReference([&](const std::shared_ptr< umf::Metadata >& spItem, const std::shared_ptr< umf::Metadata >& spReferenceMd)->bool
     {
         return (spItem->getName() == spReferenceMd->getName());
     });
@@ -234,8 +234,8 @@ TEST_F(TestNamedReferences, QueryByReference)
 
 TEST_F(TestNamedReferences, RemoveReferences)
 {
-    vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    umf::MetadataStream newStream;
+    newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
     newStream.load();
 
     auto md = newStream.getAll();
@@ -288,13 +288,13 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        //vmf::initialize();
+        //umf::initialize();
 
-        schema[0] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_0));
-        schema[1] = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME_1));
+        schema[0] = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME_0));
+        schema[1] = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME_1));
 
-        desc[0] = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME_0, vmf::Variant::type_string));
-        desc[1] = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME_1, vmf::Variant::type_integer));
+        desc[0] = std::shared_ptr<umf::MetadataDesc>(new umf::MetadataDesc(TEST_DESC_NAME_0, umf::Variant::type_string));
+        desc[1] = std::shared_ptr<umf::MetadataDesc>(new umf::MetadataDesc(TEST_DESC_NAME_1, umf::Variant::type_integer));
 
         schema[0]->add(desc[0]);
         schema[1]->add(desc[1]);
@@ -302,31 +302,31 @@ protected:
 
     void TearDown()
     {
-        //vmf::terminate();
+        //umf::terminate();
     }
 
-    std::shared_ptr<vmf::MetadataSchema> schema[2];
-    std::shared_ptr<vmf::MetadataDesc> desc[2];
-    vmf::IdType id[2];
+    std::shared_ptr<umf::MetadataSchema> schema[2];
+    std::shared_ptr<umf::MetadataDesc> desc[2];
+    umf::IdType id[2];
 
-    vmf::umf_string TEST_SCHEMA_NAME_0;
-    vmf::umf_string TEST_SCHEMA_NAME_1;
-    vmf::umf_string TEST_DESC_NAME_0;
-    vmf::umf_string TEST_DESC_NAME_1;
-    vmf::umf_string TEST_STRING_VAL;
-    vmf::umf_integer TEST_INTEGER_VAL;
+    umf::umf_string TEST_SCHEMA_NAME_0;
+    umf::umf_string TEST_SCHEMA_NAME_1;
+    umf::umf_string TEST_DESC_NAME_0;
+    umf::umf_string TEST_DESC_NAME_1;
+    umf::umf_string TEST_STRING_VAL;
+    umf::umf_integer TEST_INTEGER_VAL;
 };
 
 TEST_F(TestSaveLoadReference, SimpleReference)
 {
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
         metadata[0]->addValue(TEST_STRING_VAL);
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -339,18 +339,18 @@ TEST_F(TestSaveLoadReference, SimpleReference)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         stream.load(TEST_SCHEMA_NAME_0);
         stream.close();
 
-        vmf::MetadataSet schemaSet[2];
+        umf::MetadataSet schemaSet[2];
         schemaSet[0] = stream.queryBySchema(TEST_SCHEMA_NAME_0);
         schemaSet[1] = stream.queryBySchema(TEST_SCHEMA_NAME_1);
-        vmf::MetadataSet descSet[2];
+        umf::MetadataSet descSet[2];
         descSet[0] = schemaSet[0].queryByName(TEST_DESC_NAME_0);
         descSet[1] = schemaSet[1].queryByName(TEST_DESC_NAME_1);
-        std::shared_ptr< vmf::Metadata > metadata[2];
+        std::shared_ptr< umf::Metadata > metadata[2];
         metadata[0] = descSet[0].at(0);
         metadata[1] = descSet[1].at(0);
         ASSERT_TRUE(metadata[0]->isReference(id[1]));
@@ -363,14 +363,14 @@ TEST_F(TestSaveLoadReference, SimpleReference)
 TEST_F(TestSaveLoadReference, RecursiveReference)
 {
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
         metadata[0]->addValue(TEST_STRING_VAL);
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -386,18 +386,18 @@ TEST_F(TestSaveLoadReference, RecursiveReference)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         stream.load(TEST_SCHEMA_NAME_0);
         stream.close();
 
-        vmf::MetadataSet schemaSet[2];
+        umf::MetadataSet schemaSet[2];
         schemaSet[0] = stream.queryBySchema(TEST_SCHEMA_NAME_0);
         schemaSet[1] = stream.queryBySchema(TEST_SCHEMA_NAME_1);
-        vmf::MetadataSet descSet[2];
+        umf::MetadataSet descSet[2];
         descSet[0] = schemaSet[0].queryByName(TEST_DESC_NAME_0);
         descSet[1] = schemaSet[1].queryByName(TEST_DESC_NAME_1);
-        std::shared_ptr< vmf::Metadata > metadata[2];
+        std::shared_ptr< umf::Metadata > metadata[2];
         metadata[0] = descSet[0].at(0);
         metadata[1] = descSet[1].at(0);
         ASSERT_TRUE(metadata[0]->isReference(id[1]));
@@ -410,14 +410,14 @@ TEST_F(TestSaveLoadReference, RecursiveReference)
 TEST_F(TestSaveLoadReference, ToItselfReference)
 {
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
         metadata[0]->addValue(TEST_STRING_VAL);
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -433,18 +433,18 @@ TEST_F(TestSaveLoadReference, ToItselfReference)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         stream.load();
         stream.close();
 
-        vmf::MetadataSet schemaSet[2];
+        umf::MetadataSet schemaSet[2];
         schemaSet[0] = stream.queryBySchema(TEST_SCHEMA_NAME_0);
         schemaSet[1] = stream.queryBySchema(TEST_SCHEMA_NAME_1);
-        vmf::MetadataSet descSet[2];
+        umf::MetadataSet descSet[2];
         descSet[0] = schemaSet[0].queryByName(TEST_DESC_NAME_0);
         descSet[1] = schemaSet[1].queryByName(TEST_DESC_NAME_1);
-        std::shared_ptr< vmf::Metadata > metadata[2];
+        std::shared_ptr< umf::Metadata > metadata[2];
         metadata[0] = descSet[0].at(0);
         metadata[1] = descSet[1].at(0);
         ASSERT_FALSE(metadata[0]->isReference(id[1]));
@@ -456,17 +456,17 @@ TEST_F(TestSaveLoadReference, ToItselfReference)
 
 TEST_F(TestSaveLoadReference, InsideOnePropertyReference)
 {
-    const vmf::umf_integer TEST_INTEGER_VAL_0(0xDEADBEEF);
-    const vmf::umf_integer TEST_INTEGER_VAL_1(0xC0FFEE);
+    const umf::umf_integer TEST_INTEGER_VAL_0(0xDEADBEEF);
+    const umf::umf_integer TEST_INTEGER_VAL_1(0xC0FFEE);
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
         metadata[0]->addValue(TEST_INTEGER_VAL_0);
         metadata[1]->addValue(TEST_INTEGER_VAL_1);
 
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
         stream.add(metadata[1]);
@@ -481,12 +481,12 @@ TEST_F(TestSaveLoadReference, InsideOnePropertyReference)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         stream.load(TEST_SCHEMA_NAME_1, TEST_DESC_NAME_1);
         stream.close();
 
-        std::shared_ptr<vmf::Metadata> metadata[2];
+        std::shared_ptr<umf::Metadata> metadata[2];
         metadata[0] = stream.getById(id[0]);
         metadata[1] = stream.getById(id[1]);
         ASSERT_TRUE(metadata[0]->isReference(id[1]));
@@ -499,14 +499,14 @@ TEST_F(TestSaveLoadReference, InsideOnePropertyReference)
 TEST_F(TestSaveLoadReference, SeveralReferences)
 {
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[1]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[1]));
         metadata[0]->addValue(TEST_STRING_VAL);
         metadata[1]->addValue(TEST_INTEGER_VAL);
 
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.addSchema(schema[0]);
         stream.addSchema(schema[1]);
         stream.add(metadata[0]);
@@ -522,18 +522,18 @@ TEST_F(TestSaveLoadReference, SeveralReferences)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         stream.load(TEST_SCHEMA_NAME_0);
         stream.close();
 
-        vmf::MetadataSet schemaSet[2];
+        umf::MetadataSet schemaSet[2];
         schemaSet[0] = stream.queryBySchema(TEST_SCHEMA_NAME_0);
         schemaSet[1] = stream.queryBySchema(TEST_SCHEMA_NAME_1);
-        vmf::MetadataSet descSet[2];
+        umf::MetadataSet descSet[2];
         descSet[0] = schemaSet[0].queryByName(TEST_DESC_NAME_0);
         descSet[1] = schemaSet[1].queryByName(TEST_DESC_NAME_1);
-        std::shared_ptr< vmf::Metadata > metadata[2];
+        std::shared_ptr< umf::Metadata > metadata[2];
         metadata[0] = descSet[0].at(0);
         metadata[1] = descSet[1].at(0);
         ASSERT_TRUE(metadata[0]->isReference(id[1]));
@@ -545,30 +545,30 @@ TEST_F(TestSaveLoadReference, SeveralReferences)
 
 TEST_F(TestSaveLoadReference, OneToOneReference)
 {
-    const vmf::umf_string atom(TEST_STRING_VAL_1);
-    const vmf::umf_string atom(TEST_STRING_VAL_2);
+    const umf::umf_string atom(TEST_STRING_VAL_1);
+    const umf::umf_string atom(TEST_STRING_VAL_2);
     {
         schema[0]->add(desc[1]);
 
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.addSchema(schema[0]);
 
-        std::shared_ptr<vmf::Metadata> metadata, intMetadata;
+        std::shared_ptr<umf::Metadata> metadata, intMetadata;
 
-        intMetadata.reset(new vmf::Metadata(desc[1]));
+        intMetadata.reset(new umf::Metadata(desc[1]));
         intMetadata->addValue(TEST_INTEGER_VAL);
         stream.add(intMetadata);
 
-        metadata.reset(new vmf::Metadata(desc[0]));
+        metadata.reset(new umf::Metadata(desc[0]));
         metadata->addValue(TEST_STRING_VAL);
         stream.add(metadata);
 
-        metadata.reset(new vmf::Metadata(desc[0]));
+        metadata.reset(new umf::Metadata(desc[0]));
         metadata->addValue(TEST_STRING_VAL_1);
         stream.add(metadata);
 
-        metadata.reset(new vmf::Metadata(desc[0]));
+        metadata.reset(new umf::Metadata(desc[0]));
         metadata->addValue(TEST_STRING_VAL_2);
         stream.add(metadata);
         intMetadata->addReference(metadata);
@@ -577,15 +577,15 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
         stream.close();
     }
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME_0, TEST_DESC_NAME_1);
         stream.save();
         stream.close();
     }
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.load();
         stream.close();
         EXPECT_EQ(1u, stream.queryByName(TEST_DESC_NAME_1).size());
@@ -595,34 +595,34 @@ TEST_F(TestSaveLoadReference, OneToOneReference)
 
 TEST_F(TestSaveLoadReference, CheckReferenceStream)
 {
-    const vmf::umf_string atom(TEST_STRING_VAL_1);
+    const umf::umf_string atom(TEST_STRING_VAL_1);
     {
-        std::shared_ptr<vmf::Metadata> metadata[2];
-        metadata[0] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
-        metadata[1] = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(desc[0]));
+        std::shared_ptr<umf::Metadata> metadata[2];
+        metadata[0] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
+        metadata[1] = std::shared_ptr<umf::Metadata>(new umf::Metadata(desc[0]));
         metadata[0]->addValue(TEST_STRING_VAL);
         metadata[1]->addValue(TEST_STRING_VAL_1);
 
-        vmf::MetadataStream stream1, stream2;
+        umf::MetadataStream stream1, stream2;
         stream1.addSchema(schema[0]);
         stream2.addSchema(schema[0]);
         stream1.add(metadata[0]);
         stream2.add(metadata[1]);
         metadata[0]->addReference(metadata[0], "");
-        EXPECT_THROW(metadata[0]->addReference(metadata[1], ""), vmf::IncorrectParamException);
+        EXPECT_THROW(metadata[0]->addReference(metadata[1], ""), umf::IncorrectParamException);
     }
 }
 
 TEST_F(TestSaveLoadReference, NonSimpleReferencesOrder)
 {
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
 
         stream.addSchema(schema[1]);
         for (int i = 0; i < 10; i++)
         {
-            std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(desc[1]));
+            std::shared_ptr<umf::Metadata> md(new umf::Metadata(desc[1]));
             md->addValue(i);
             stream.add(md);
         }
@@ -638,8 +638,8 @@ TEST_F(TestSaveLoadReference, NonSimpleReferencesOrder)
         stream.close();
     }
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         stream.load(TEST_SCHEMA_NAME_1);
 
         auto item2 = stream.getById(2);

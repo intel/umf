@@ -19,7 +19,7 @@
 #include <random>
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 const size_t nSize = sizeof(umf_integer);
 

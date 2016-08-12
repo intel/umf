@@ -7,7 +7,7 @@
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 //n_delete(long nativeObj);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Encryptor_n_1delete(JNIEnv *env, jclass, jlong self);

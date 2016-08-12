@@ -17,19 +17,19 @@
 
 #include "test_precomp.hpp"
 
-using namespace vmf;
+using namespace umf;
 
 class TestEncryptor : public ::testing::TestWithParam<CryptAlgo>
 {
 protected:
     void SetUp()
     {
-        vmf::initialize();
+        umf::initialize();
     }
 
     void TearDown()
     {
-        vmf::terminate();
+        umf::terminate();
     }
 
     std::string generateData(int nChars)

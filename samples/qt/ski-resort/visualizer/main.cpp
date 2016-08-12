@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    vmf::initialize();
+    umf::initialize();
     QApplication a(argc, argv);
     MainWindow w;
 
@@ -14,6 +14,6 @@ int main(int argc, char *argv[])
     w.show();
 
     int retval = a.exec();
-    vmf::terminate();
+    umf::terminate();
     return retval;
 }

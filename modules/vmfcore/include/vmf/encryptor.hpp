@@ -20,7 +20,7 @@
 
 #include "vmf/metadataschema.hpp"
 
-namespace vmf
+namespace umf
 {
 
 /*!

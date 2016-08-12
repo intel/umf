@@ -15,7 +15,7 @@ static std::string getJavaStirng(JNIEnv *env, jstring str)
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 //n_delete(long nativeObj);
 JNIEXPORT void JNICALL Java_com_intel_vmf_Compressor_n_1delete(JNIEnv *env, jclass, jlong self);

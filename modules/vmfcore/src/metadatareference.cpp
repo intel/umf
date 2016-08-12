@@ -16,7 +16,7 @@
  */
 #include "vmf/metadatareference.hpp"
 
-namespace vmf
+namespace umf
 {
 Reference::Reference() : desc(NULL) {}
 
@@ -31,4 +31,4 @@ void Reference::setReferenceMetadata(const std::shared_ptr<Metadata>& spMetadata
 std::weak_ptr<Metadata> Reference::getReferenceMetadata() const { return md; }
 
 std::shared_ptr<ReferenceDesc> Reference::getReferenceDescription() const { return desc; }
-} //namespace vmf
+} //namespace umf

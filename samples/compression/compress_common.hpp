@@ -20,8 +20,8 @@
 
 #include "vmf/vmf.hpp"
 
-void generateMetadata(vmf::MetadataStream& mdStream);
-void readAndDumpMetadata(const vmf::umf_string& videoFile);
+void generateMetadata(umf::MetadataStream& mdStream);
+void readAndDumpMetadata(const umf::umf_string& videoFile);
 
 int compress_builtin(const std::string& videoFile);
 int compress_custom(const std::string& videoFile);

@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace vmf;
+using namespace umf;
 
 VideoMetadataStream::VideoMetadataStream()
   : mutex(QMutex::Recursive)
@@ -49,14 +49,14 @@ void VideoMetadataStream::openFile(const QString& filename)
     fileName = filename.toStdString();
     try
     {
-        if (!metaStream.open(fileName, vmf::MetadataStream::Update))
+        if (!metaStream.open(fileName, umf::MetadataStream::Update))
         {
-			VMF_EXCEPTION(vmf::NotFoundException, "Not found");
+			VMF_EXCEPTION(umf::NotFoundException, "Not found");
         }
 
         if (!metaStream.load(SKI_RESORT_SCHEMA))
         {
-            VMF_EXCEPTION(vmf::DataStorageException, "Can't load metadata schema");
+            VMF_EXCEPTION(umf::DataStorageException, "Can't load metadata schema");
         }
 
         gpsCoordinatesSet = metaStream.queryByName(SKI_RESORT_GPS_DESC);
@@ -84,7 +84,7 @@ void VideoMetadataStream::openFile(const QString& filename)
 
         isFileOpened = true;
     }
-    catch (const vmf::Exception&)
+    catch (const umf::Exception&)
     {
         throw std::runtime_error("Needed metadata doesn't exist or corrupted.");
     }
@@ -130,7 +130,7 @@ float VideoMetadataStream::getCurrentSpeed()
     return currentSpeed;
 }
 
-vmf::umf_integer VideoMetadataStream::getFrameDelay()
+umf::umf_integer VideoMetadataStream::getFrameDelay()
 {
     QMutexLocker autoLock(&mutex);
     return frameDelay;
@@ -171,7 +171,7 @@ void VideoMetadataStream::next()
     for (; currentGpsCoordinateIndex < gpsCoordinatesSet.size(); currentGpsCoordinateIndex++)
     {
         auto item = gpsCoordinatesSet[currentGpsCoordinateIndex];
-        vmf::umf_integer time = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
+        umf::umf_integer time = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
         
         if (time >= currentTime)
         {
@@ -184,8 +184,8 @@ void VideoMetadataStream::next()
         currentGpsCoordinateIndex--;
     auto currentGpsCoordinateItem = gpsCoordinatesSet[currentGpsCoordinateIndex];
     
-    currentCoordinates.first = (float) (vmf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
-    currentCoordinates.second = (float) (vmf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
+    currentCoordinates.first = (float) (umf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
+    currentCoordinates.second = (float) (umf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
     updateSpeed();
 }
 
@@ -206,7 +206,7 @@ void VideoMetadataStream::seek(int percentage)
     double newFramePosition = totalFrames*percentage/100;
     capture.set(CV_CAP_PROP_POS_FRAMES, newFramePosition);
     capture.retrieve(currentFrame);
-    vmf::umf_integer msecFromStart = floor(capture.get(CV_CAP_PROP_POS_MSEC));
+    umf::umf_integer msecFromStart = floor(capture.get(CV_CAP_PROP_POS_MSEC));
     currentTime = msecFromStart;
 
     for(currentGpsCoordinateIndex = 0;
@@ -214,7 +214,7 @@ void VideoMetadataStream::seek(int percentage)
         ++currentGpsCoordinateIndex)
     {
         auto item = gpsCoordinatesSet[currentGpsCoordinateIndex];
-        vmf::umf_integer time = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
+        umf::umf_integer time = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
 
         if (currentTime < time)
         {
@@ -228,8 +228,8 @@ void VideoMetadataStream::seek(int percentage)
 
     auto currentGpsCoordinateItem = gpsCoordinatesSet[currentGpsCoordinateIndex];
 
-    currentCoordinates.first = (float) (vmf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
-    currentCoordinates.second = (float) (vmf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
+    currentCoordinates.first = (float) (umf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
+    currentCoordinates.second = (float) (umf::umf_real) currentGpsCoordinateItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
 
     updateSpeed();
 }
@@ -260,22 +260,22 @@ void VideoMetadataStream::calculateSpeed()
             auto nextCoordinatesItem = gpsCoordinatesSet[i+1];
 
             float x1, x2, y1, y2;
-            x1 = (float) (vmf::umf_real) currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
-            y1 = (float) (vmf::umf_real) currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
-            x2 = (float) (vmf::umf_real) nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
-            y2 = (float) (vmf::umf_real) nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
+            x1 = (float) (umf::umf_real) currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
+            y1 = (float) (umf::umf_real) currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
+            x2 = (float) (umf::umf_real) nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_X);
+            y2 = (float) (umf::umf_real) nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_Y);
 
             float meters = distance(x1, y1, x2, y2);
-            vmf::umf_integer t1 = currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
-            vmf::umf_integer t2 = nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
-            vmf::umf_integer timeDiff = t2 - t1;
+            umf::umf_integer t1 = currentCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
+            umf::umf_integer t2 = nextCoordinatesItem->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
+            umf::umf_integer timeDiff = t2 - t1;
 
             float seconds = (float) (timeDiff / 1000);
             float speed = (meters * KMS_IN_METER) / (seconds * HOURS_IN_SEC);
 
-            std::shared_ptr<vmf::Metadata> speedMetadata(new vmf::Metadata(speedDesc));
-            speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_SPEED, (vmf::umf_real) speed);
-            speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_TIME, (vmf::umf_integer) t1);
+            std::shared_ptr<umf::Metadata> speedMetadata(new umf::Metadata(speedDesc));
+            speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_SPEED, (umf::umf_real) speed);
+            speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_TIME, (umf::umf_integer) t1);
 
             metaStream.add(speedMetadata);
         }
@@ -284,11 +284,11 @@ void VideoMetadataStream::calculateSpeed()
     if (gpsCoordinatesNumber >= 1)
     {
         auto item = gpsCoordinatesSet[gpsCoordinatesNumber-1];
-        vmf::umf_integer t = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
+        umf::umf_integer t = item->getFieldValue(SKI_RESORT_GPS_FIELD_TIME);
 
-        std::shared_ptr<vmf::Metadata> speedMetadata(new vmf::Metadata(speedDesc));
-        speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_SPEED, (vmf::umf_real) 0);
-        speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_TIME, (vmf::umf_integer) t);
+        std::shared_ptr<umf::Metadata> speedMetadata(new umf::Metadata(speedDesc));
+        speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_SPEED, (umf::umf_real) 0);
+        speedMetadata->setFieldValue(SKI_RESORT_SPEED_FIELD_TIME, (umf::umf_integer) t);
 
         metaStream.add(speedMetadata);
     }
@@ -304,7 +304,7 @@ void VideoMetadataStream::saveSpeed()
     currentFrame = currentFrame.clone();
     capture.release();
     
-    metaStream.reopen(vmf::MetadataStream::Update);
+    metaStream.reopen(umf::MetadataStream::Update);
     metaStream.save();
     metaStream.close();
 
@@ -320,5 +320,5 @@ void VideoMetadataStream::updateSpeed()
     }
 
     auto currentSpeedItem = speedValuesSet[currentGpsCoordinateIndex];
-    currentSpeed = (float) (vmf::umf_real) currentSpeedItem->getFieldValue(SKI_RESORT_SPEED_FIELD_SPEED);
+    currentSpeed = (float) (umf::umf_real) currentSpeedItem->getFieldValue(SKI_RESORT_SPEED_FIELD_SPEED);
 }

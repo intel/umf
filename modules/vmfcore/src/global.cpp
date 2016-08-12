@@ -27,7 +27,7 @@
 #include <ctime>
 #endif
 
-namespace vmf
+namespace umf
 {
 std::string getBuildInfo()
 {
@@ -87,4 +87,4 @@ long long getTimestamp(int year, int month, int day, int hours, int minutes, int
     return retVal;
 }
 
-} // namespace vmf
+} // namespace umf

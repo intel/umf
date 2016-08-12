@@ -19,7 +19,7 @@
 #include <cstdint>
 #include "zlib.h"
 
-namespace vmf {
+namespace umf {
 
 static const size_t startingBlockSize = sizeof(umf_integer);
 
@@ -117,4 +117,4 @@ void CompressorZlib::decompress(const umf_rawbuffer& input, umf_string& output)
     }
 }
 
-} /* vmf */
+} /* umf */

@@ -5,7 +5,7 @@
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 /*
  * Class:     com_intel_vmf_MetadataDesc
@@ -236,7 +236,7 @@ JNIEXPORT jstring JNICALL Java_com_intel_vmf_MetadataDesc_n_1getSchemaName (JNIE
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getFields
- * Signature: (J)[Lcom/intel/vmf/FieldDesc;
+ * Signature: (J)[Lcom/intel/umf/FieldDesc;
  */
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields(JNIEnv *env, jclass, jlong self);
 
@@ -279,7 +279,7 @@ JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getFields (JNIEn
 /*
  * Class:     com_intel_vmf_MetadataDesc
  * Method:    n_getAllReferenceDescs
- * Signature: (J)[Lcom/intel/vmf/ReferenceDesc;
+ * Signature: (J)[Lcom/intel/umf/ReferenceDesc;
  */
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_MetadataDesc_n_1getAllReferenceDescs(JNIEnv *env, jclass, jlong self);
 

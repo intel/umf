@@ -28,7 +28,7 @@
 #define VIDEO_FILE "BlueSquare.avi"
 #define WORKING_FILE "sample_std-schema.avi"
 
-using namespace vmf;
+using namespace umf;
 
 static void copyFile(const std::string& src, const std::string& dest)
 {
@@ -38,7 +38,7 @@ static void copyFile(const std::string& src, const std::string& dest)
     source.open(src, std::ios_base::binary | std::ios_base::in);
     destination.open(dest, std::ios_base::binary | std::ios_base::out);
     if (!source.is_open() || !destination.is_open())
-        VMF_EXCEPTION(vmf::Exception, "Couldn't copy " + src + " to " + dest);
+        VMF_EXCEPTION(umf::Exception, "Couldn't copy " + src + " to " + dest);
     destination << source.rdbuf();
     destination.close();
     source.close();
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
                 std::cout << "Description: " << item->getFieldValue("description").toString() << std::endl;
             /*
             // alternative code can be:
-            vmf::Variant v = item->getFieldValue("description");
+            umf::Variant v = item->getFieldValue("description");
             if(! v.isEmpty())
                 std::cout << "Description: " << v.toString() << std::endl;
             */

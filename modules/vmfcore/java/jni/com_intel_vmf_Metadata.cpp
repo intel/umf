@@ -6,7 +6,7 @@
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 /*
  * Class:     com_intel_vmf_Metadata
@@ -751,7 +751,7 @@ JNIEXPORT jlong JNICALL Java_com_intel_vmf_Metadata_n_1getReferencesByName (JNIE
 /*
  * Class:     com_intel_vmf_Metadata
  * Method:    n_getAllReferences
- * Signature: (J)[Lcom/intel/vmf/Reference;
+ * Signature: (J)[Lcom/intel/umf/Reference;
  */
 JNIEXPORT jlongArray JNICALL Java_com_intel_vmf_Metadata_n_1getAllReferences(JNIEnv *env, jclass, jlong self);
 

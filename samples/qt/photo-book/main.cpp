@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     cv::CommandLineParser parser(argc, 
         (const char**) argv, keys.c_str());
 
-    vmf::initialize();
+    umf::initialize();
     QApplication a(argc, argv);
 
     cv::String cascadesPath = parser.get<cv::String>("cascades-path");
@@ -31,6 +31,6 @@ int main(int argc, char *argv[])
     w.show();
 
     int r = a.exec();
-    vmf::terminate();
+    umf::terminate();
     return r;
 }

@@ -24,7 +24,7 @@
 
 #include <iostream>
 
-namespace vmf
+namespace umf
 {
 MetadataStream::MetadataStream(void)
     : m_eMode( InMemory ), dataSource(nullptr), nextId(0), m_sChecksumMedia(""),
@@ -47,7 +47,7 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         dataSource = ObjectFactory::getInstance()->getDataSource();
         if (!dataSource)
         {
-            VMF_EXCEPTION(InternalErrorException, "Failed to get datasource instance. Possible, call of vmf::initialize is missed");
+            VMF_EXCEPTION(InternalErrorException, "Failed to get datasource instance. Possible, call of umf::initialize is missed");
         }
         //don't call clear(), reset exactly the things needed to be reset
         m_oMetadataSet.clear();
@@ -148,7 +148,7 @@ bool MetadataStream::save(const umf_string &compressorId)
             //dataSource should know nothing about that
             if(m_useEncryption && !m_encryptor)
             {
-                VMF_EXCEPTION(vmf::IncorrectParamException, "No encryptor provided while encryption is needed");
+                VMF_EXCEPTION(umf::IncorrectParamException, "No encryptor provided while encryption is needed");
             }
             dataSource->setEncryptor(m_useEncryption ? m_encryptor : nullptr);
 
@@ -206,10 +206,10 @@ bool MetadataStream::reopen( OpenMode eMode )
 {
     dataSourceCheck();
     if((m_eMode & ReadOnly) || (m_eMode & Update))
-        VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
+        VMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
 
     if( m_sFilePath.empty())
-        VMF_EXCEPTION(vmf::IncorrectParamException, "The file path is emtpy!");
+        VMF_EXCEPTION(umf::IncorrectParamException, "The file path is emtpy!");
     try
     {
         dataSource->openFile(m_sFilePath, eMode);
@@ -227,7 +227,7 @@ bool MetadataStream::reopen( OpenMode eMode )
 bool MetadataStream::saveTo(const std::string& sFilePath, const umf_string& compressorId)
 {
     if((m_eMode & ReadOnly) || (m_eMode & Update))
-        VMF_EXCEPTION(vmf::IncorrectParamException, "The previous file has not been closed!");
+        VMF_EXCEPTION(umf::IncorrectParamException, "The previous file has not been closed!");
 
     try
     {
@@ -291,7 +291,7 @@ std::shared_ptr< Metadata > MetadataStream::getById( const IdType& id ) const
 IdType MetadataStream::add( std::shared_ptr< Metadata > spMetadata )
 {
     if( !this->getSchema(spMetadata->getDesc()->getSchemaName()) )
-        VMF_EXCEPTION(vmf::NotFoundException, "Metadata schema is not in the stream");
+        VMF_EXCEPTION(umf::NotFoundException, "Metadata schema is not in the stream");
 
     IdType id = nextId++;
     spMetadata->setId(id);
@@ -303,10 +303,10 @@ IdType MetadataStream::add( std::shared_ptr< Metadata > spMetadata )
 IdType MetadataStream::add(MetadataInternal& mdi)
 {
     auto schema = getSchema(mdi.schemaName);
-    if (!schema) VMF_EXCEPTION(vmf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
+    if (!schema) VMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Schema: " + mdi.schemaName);
 
     auto desc = schema->findMetadataDesc(mdi.descName);
-    if (!desc) VMF_EXCEPTION(vmf::NotFoundException, "Unknown Metadata Description: " + mdi.descName);
+    if (!desc) VMF_EXCEPTION(umf::NotFoundException, "Unknown Metadata Description: " + mdi.descName);
 
     if (mdi.id != INVALID_ID)
         if (!getById(mdi.id)) nextId = std::max(nextId, mdi.id + 1);
@@ -460,7 +460,7 @@ void MetadataStream::remove(std::shared_ptr< MetadataSchema > spSchema)
 
 void MetadataStream::remove()
 {
-    std::shared_ptr<vmf::MetadataSchema> emptySchema;
+    std::shared_ptr<umf::MetadataSchema> emptySchema;
     removedSchemas[""] = emptySchema;
     this->remove(this->getAll());
     m_mapSchemas.clear();
@@ -668,12 +668,12 @@ MetadataSet MetadataStream::queryByTime( long long startTime, long long endTime 
     return m_oMetadataSet.queryByTime(startTime, endTime);
 }
 
-MetadataSet MetadataStream::queryByNameAndValue( const std::string& sMetadataName, const vmf::FieldValue& value ) const
+MetadataSet MetadataStream::queryByNameAndValue( const std::string& sMetadataName, const umf::FieldValue& value ) const
 {
     return m_oMetadataSet.queryByNameAndValue( sMetadataName, value );
 }
 
-MetadataSet MetadataStream::queryByNameAndFields( const std::string& sMetadataName, const std::vector< vmf::FieldValue>& vFields ) const
+MetadataSet MetadataStream::queryByNameAndFields( const std::string& sMetadataName, const std::vector< umf::FieldValue>& vFields ) const
 {
     return m_oMetadataSet.queryByNameAndFields( sMetadataName, vFields );
 }
@@ -683,12 +683,12 @@ MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName 
     return m_oMetadataSet.queryByReference( sReferenceName );
 }
 
-MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName, const vmf::FieldValue& value ) const
+MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName, const umf::FieldValue& value ) const
 {
     return m_oMetadataSet.queryByReference( sReferenceName, value );
 }
 
-MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName, const std::vector< vmf::FieldValue>& vFields ) const
+MetadataSet MetadataStream::queryByReference( const std::string& sReferenceName, const std::vector< umf::FieldValue>& vFields ) const
 {
     return m_oMetadataSet.queryByReference( sReferenceName, vFields );
 }
@@ -1177,7 +1177,7 @@ void MetadataStream::addStat(std::shared_ptr<Stat> stat)
 std::shared_ptr<Stat> MetadataStream::getStat(const std::string& name) const
 {
     auto it = std::find_if(m_stats.begin(), m_stats.end(), [&name](std::shared_ptr<Stat> s){return s->getName() == name; });
-    if (it == m_stats.end()) VMF_EXCEPTION(vmf::NotFoundException, "Statistics object not found: " + name);
+    if (it == m_stats.end()) VMF_EXCEPTION(umf::NotFoundException, "Statistics object not found: " + name);
     return *it;
 }
 
@@ -1189,5 +1189,5 @@ std::vector< std::string > MetadataStream::getAllStatNames() const
     return names;
 }
 
-}//namespace vmf
+}//namespace umf
 

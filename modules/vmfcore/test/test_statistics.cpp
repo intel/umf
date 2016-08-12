@@ -30,21 +30,21 @@ protected:
     void SetUp()
     {
         statName = "SimpleStat";
-        defUpdateMode = vmf::Stat::UpdateMode::Manual;
-        stat = std::make_shared< vmf::Stat >( statName, emptyFields, defUpdateMode );
+        defUpdateMode = umf::Stat::UpdateMode::Manual;
+        stat = std::make_shared< umf::Stat >( statName, emptyFields, defUpdateMode );
 
         defUpdateTimeout = 0;
-        defStatState = vmf::Stat::State::UpToDate;
+        defStatState = umf::Stat::State::UpToDate;
         inexistingFieldName = "AnyNameYouWish";
     }
 
     std::string statName;
-    vmf::Stat::UpdateMode::Type defUpdateMode;
+    umf::Stat::UpdateMode::Type defUpdateMode;
     unsigned defUpdateTimeout;
-    vmf::Stat::State::Type defStatState;
-    std::vector< vmf::StatField > emptyFields;
+    umf::Stat::State::Type defStatState;
+    std::vector< umf::StatField > emptyFields;
     std::string inexistingFieldName;
-    std::shared_ptr< vmf::Stat > stat;
+    std::shared_ptr< umf::Stat > stat;
 };
 
 TEST_F( TestStat, Creation )
@@ -55,7 +55,7 @@ TEST_F( TestStat, Creation )
 
 TEST_F( TestStat, UpdateMode )
 {
-    vmf::Stat::UpdateMode::Type updateMode = vmf::Stat::UpdateMode::OnAdd;
+    umf::Stat::UpdateMode::Type updateMode = umf::Stat::UpdateMode::OnAdd;
     ASSERT_NE( updateMode, defUpdateMode );
 
     ASSERT_EQ( stat->getUpdateMode(), defUpdateMode );
@@ -88,11 +88,11 @@ TEST_F( TestStat, EmptyFields )
     EXPECT_NO_THROW( fieldNames = stat->getAllFieldNames() );
     ASSERT_EQ( fieldNames.size(), emptyFields.size() );
 
-    vmf::StatField field;
-    EXPECT_THROW( field = stat->getField( inexistingFieldName ), vmf::NotFoundException );
+    umf::StatField field;
+    EXPECT_THROW( field = stat->getField( inexistingFieldName ), umf::NotFoundException );
 
-    vmf::Variant value;
-    EXPECT_THROW( value = (*stat)[ inexistingFieldName ], vmf::NotFoundException );
+    umf::Variant value;
+    EXPECT_THROW( value = (*stat)[ inexistingFieldName ], umf::NotFoundException );
 }
 
 class TestStatFields : public ::testing::Test
@@ -110,31 +110,31 @@ protected:
 
     void initNameData()
     {
-        nameData.emplace_back( "MinField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ));
-        nameData.emplace_back( "MaxField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
-        nameData.emplace_back( "AverageField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
-        nameData.emplace_back( "CountField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
-        nameData.emplace_back( "SumField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ));
-        nameData.emplace_back( "LastField", "MetadataSchema", "MetadataName", "FieldName", vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ));
+        nameData.emplace_back( "MinField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Min ));
+        nameData.emplace_back( "MaxField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Max ));
+        nameData.emplace_back( "AverageField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Average ));
+        nameData.emplace_back( "CountField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Count ));
+        nameData.emplace_back( "SumField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Sum ));
+        nameData.emplace_back( "LastField", "MetadataSchema", "MetadataName", "FieldName", umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Last ));
     }
 
     void SetUp()
     {
         statName = "SimpleStat";
-        defUpdateMode = vmf::Stat::UpdateMode::Manual;
+        defUpdateMode = umf::Stat::UpdateMode::Manual;
 
         initNameData();
         for( auto& n : nameData )
             statFields.emplace_back( n.name, n.schemaName, n.metadataName, n.fieldName, n.opName );
 
-        stat = std::make_shared< vmf::Stat >( statName, statFields, defUpdateMode );
+        stat = std::make_shared< umf::Stat >( statName, statFields, defUpdateMode );
     }
 
     std::string statName;
-    vmf::Stat::UpdateMode::Type defUpdateMode;
+    umf::Stat::UpdateMode::Type defUpdateMode;
     std::vector< NameData > nameData;
-    std::vector< vmf::StatField > statFields;
-    std::shared_ptr< vmf::Stat > stat;
+    std::vector< umf::StatField > statFields;
+    std::shared_ptr< umf::Stat > stat;
 };
 
 TEST_F( TestStatFields, Creation )
@@ -149,7 +149,7 @@ TEST_F( TestStatFields, Creation )
     {
         const NameData& n = *it;
 
-        const vmf::StatField* testField = 0;
+        const umf::StatField* testField = 0;
         EXPECT_NO_THROW( testField = &(stat->getField( fieldName )));
 
         ASSERT_EQ( testField->getName(), n.name );
@@ -159,7 +159,7 @@ TEST_F( TestStatFields, Creation )
         ASSERT_EQ( testField->getOpName(), n.opName );
 
         //ASSERT_EQ( testField->getMetadataDesc(), nullptr );
-        vmf::FieldDesc emptyDesc;
+        umf::FieldDesc emptyDesc;
         //ASSERT_EQ( testField->getFieldDesc(), emptyDesc );
 
         ASSERT_NE( it, nameData.end() );
@@ -190,16 +190,16 @@ protected:
     {
         bool status;
         std::string str;
-        vmf::Variant val1,val2,val3,bad,res;
-        vmf::StatOpBase* op = nullptr;
+        umf::Variant val1,val2,val3,bad,res;
+        umf::StatOpBase* op = nullptr;
 
         // test if operation is registered
         status = false;
-        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        EXPECT_NO_THROW( status = umf::StatOpFactory::isRegistered( name ));
         ASSERT_EQ( status, true );
 
         // created op by fabric call
-        EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
+        EXPECT_NO_THROW( op = umf::StatOpFactory::create( name ));
         ASSERT_NE( op, nullptr );
 
         // check name consistency
@@ -213,50 +213,50 @@ protected:
             EXPECT_NO_THROW( res = op->value() );
 
             ASSERT_NE( flags & ResetMask, 0 );
-            vmf::Variant::Type resetType = res.getType();
+            umf::Variant::Type resetType = res.getType();
             if( flags & ResetInt )
-                ASSERT_EQ( resetType, vmf::Variant::type_integer );
+                ASSERT_EQ( resetType, umf::Variant::type_integer );
             else if( flags & ResetReal )
-                ASSERT_EQ( resetType, vmf::Variant::type_real );
+                ASSERT_EQ( resetType, umf::Variant::type_real );
             else /*if( flags & ResetEmpty )*/
-                ASSERT_EQ( resetType, vmf::Variant::type_empty );
+                ASSERT_EQ( resetType, umf::Variant::type_empty );
 
             // provide right output type
             ASSERT_NE( flags & OutputMask, 0 );
-            vmf::Variant::Type outputType = vmf::Variant::type_empty;
+            umf::Variant::Type outputType = umf::Variant::type_empty;
             if( flags & OutputInt )
-                outputType = vmf::Variant::type_integer;
+                outputType = umf::Variant::type_integer;
             else if( flags & OutputReal )
-                outputType = vmf::Variant::type_real;
+                outputType = umf::Variant::type_real;
             else /*if( flags & OutputSame )*/
-                outputType = vmf::Variant::type_empty; // depends on input type, see below
+                outputType = umf::Variant::type_empty; // depends on input type, see below
 
             // provide consistent test inputs
             ASSERT_NE( flags & InputMask, 0 );
             if( flags & InputInt )
             {
-                val1 = vmf::Variant( (vmf::umf_integer)131 );
-                val2 = vmf::Variant( (vmf::umf_integer)-13 );
-                val3 = vmf::Variant( (vmf::umf_integer) 75 );
-                bad = vmf::Variant( (vmf::umf_real)77.13 );
+                val1 = umf::Variant( (umf::umf_integer)131 );
+                val2 = umf::Variant( (umf::umf_integer)-13 );
+                val3 = umf::Variant( (umf::umf_integer) 75 );
+                bad = umf::Variant( (umf::umf_real)77.13 );
                 if( flags & OutputSame )
-                    outputType = vmf::Variant::type_integer; // depends on input type, fixed
+                    outputType = umf::Variant::type_integer; // depends on input type, fixed
             }
             else if( flags & InputReal )
             {
-                val1 = vmf::Variant( (vmf::umf_real) 36.6 );
-                val2 = vmf::Variant( (vmf::umf_real)307.1 );
-                val3 = vmf::Variant( (vmf::umf_real)-3.14 );
-                bad = vmf::Variant( (vmf::umf_integer)77 );
+                val1 = umf::Variant( (umf::umf_real) 36.6 );
+                val2 = umf::Variant( (umf::umf_real)307.1 );
+                val3 = umf::Variant( (umf::umf_real)-3.14 );
+                bad = umf::Variant( (umf::umf_integer)77 );
                 if( flags & OutputSame )
-                    outputType = vmf::Variant::type_real; // depends on input type, fixed
+                    outputType = umf::Variant::type_real; // depends on input type, fixed
             }
             else /*if( flags & InputAny )*/
             {
-                val1 = vmf::Variant( (vmf::umf_integer) 352 );
-                val2 = vmf::Variant( (vmf::umf_real)   13.7 );
-                val3 = vmf::Variant( (vmf::umf_string)"any" );
-                bad = vmf::Variant(); // op accepts any type, so there's no bad
+                val1 = umf::Variant( (umf::umf_integer) 352 );
+                val2 = umf::Variant( (umf::umf_real)   13.7 );
+                val3 = umf::Variant( (umf::umf_string)"any" );
+                bad = umf::Variant(); // op accepts any type, so there's no bad
                 // output depends on input type of individual value, must be checked individually
             }
 
@@ -264,7 +264,7 @@ protected:
             EXPECT_NO_THROW( op->handle( val1 ));
 
             EXPECT_NO_THROW( res = op->value() );
-            if( outputType == vmf::Variant::type_empty )
+            if( outputType == umf::Variant::type_empty )
                 ASSERT_EQ( res.getType(), val1.getType() );
             else
                 ASSERT_EQ( res.getType(), outputType );
@@ -273,7 +273,7 @@ protected:
             EXPECT_NO_THROW( op->handle( val2 ));
 
             EXPECT_NO_THROW( res = op->value() );
-            if( outputType == vmf::Variant::type_empty )
+            if( outputType == umf::Variant::type_empty )
                 ASSERT_EQ( res.getType(), val2.getType() );
             else
                 ASSERT_EQ( res.getType(), outputType );
@@ -282,16 +282,16 @@ protected:
             EXPECT_NO_THROW( op->handle( val3 ));
 
             EXPECT_NO_THROW( res = op->value() );
-            if( outputType == vmf::Variant::type_empty )
+            if( outputType == umf::Variant::type_empty )
                 ASSERT_EQ( res.getType(), val3.getType() );
             else
                 ASSERT_EQ( res.getType(), outputType );
 
             // try to handle bad input
-            if( bad.getType() == vmf::Variant::type_empty )
+            if( bad.getType() == umf::Variant::type_empty )
                 EXPECT_NO_THROW( op->handle( bad ));
             else
-                EXPECT_THROW( op->handle( bad ), vmf::TypeCastException );
+                EXPECT_THROW( op->handle( bad ), umf::TypeCastException );
 
             if( flags & InputInt )
                 flags &= ~InputInt;
@@ -309,14 +309,14 @@ protected:
     {
         bool status;
         std::string name,str;
-        vmf::StatOpBase* op = nullptr;
+        umf::StatOpBase* op = nullptr;
 
         str = "AnyUnknownStringYouWant";
-        EXPECT_THROW( op = vmf::StatOpFactory::create( str ), vmf::NotFoundException );
+        EXPECT_THROW( op = umf::StatOpFactory::create( str ), umf::NotFoundException );
         ASSERT_EQ( op, nullptr );
 
         str = "YetAnotherUnknownString";
-        EXPECT_THROW( op = vmf::StatOpFactory::create( str ), vmf::NotFoundException );
+        EXPECT_THROW( op = umf::StatOpFactory::create( str ), umf::NotFoundException );
         ASSERT_EQ( op, nullptr );
 
         EXPECT_NO_THROW( op = UserOp::createInstance() );
@@ -326,41 +326,41 @@ protected:
         delete op; op = nullptr;
 
         status = true;
-        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        EXPECT_NO_THROW( status = umf::StatOpFactory::isRegistered( name ));
         ASSERT_EQ( status, false );
 
-        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( nullptr ), vmf::NullPointerException );
-        EXPECT_NO_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance ));
-        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance ), vmf::IncorrectParamException );
-        EXPECT_THROW( vmf::StatOpFactory::registerUserOp( UserOp::createInstance2 ), vmf::IncorrectParamException );
+        EXPECT_THROW( umf::StatOpFactory::registerUserOp( nullptr ), umf::NullPointerException );
+        EXPECT_NO_THROW( umf::StatOpFactory::registerUserOp( UserOp::createInstance ));
+        EXPECT_THROW( umf::StatOpFactory::registerUserOp( UserOp::createInstance ), umf::IncorrectParamException );
+        EXPECT_THROW( umf::StatOpFactory::registerUserOp( UserOp::createInstance2 ), umf::IncorrectParamException );
 
         status = false;
-        EXPECT_NO_THROW( status = vmf::StatOpFactory::isRegistered( name ));
+        EXPECT_NO_THROW( status = umf::StatOpFactory::isRegistered( name ));
         ASSERT_EQ( status, true );
 
         ASSERT_EQ( op, nullptr );
-        EXPECT_NO_THROW( op = vmf::StatOpFactory::create( name ));
+        EXPECT_NO_THROW( op = umf::StatOpFactory::create( name ));
         ASSERT_NE( op, nullptr );
         EXPECT_NO_THROW( str = op->name() );
         ASSERT_EQ( str, name );
         delete op; op = nullptr;
     }
 
-    class UserOp: public vmf::StatOpBase
+    class UserOp: public umf::StatOpBase
     {
     public:
         UserOp() {}
         virtual ~UserOp() {}
     public:
         virtual std::string name() const { return userOpName; }
-        virtual void reset() { m_value = vmf::Variant(); }
-        virtual void handle( const vmf::Variant& /*fieldValue*/ ) {}
-        virtual vmf::Variant value() const { return m_value; }
+        virtual void reset() { m_value = umf::Variant(); }
+        virtual void handle( const umf::Variant& /*fieldValue*/ ) {}
+        virtual umf::Variant value() const { return m_value; }
     private:
-        vmf::Variant m_value;
+        umf::Variant m_value;
     public:
-        static vmf::StatOpBase* createInstance() { return new UserOp(); }
-        static vmf::StatOpBase* createInstance2() { return new UserOp(); }
+        static umf::StatOpBase* createInstance() { return new UserOp(); }
+        static umf::StatOpBase* createInstance2() { return new UserOp(); }
         static const std::string userOpName;
     };
 };
@@ -369,37 +369,37 @@ protected:
 
 TEST_F( TestStatOperations, BuiltinMin )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Min ),
                  InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinMax )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Max ),
                  InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinAverage )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Average ),
                  InputInt | InputReal | OutputReal | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinCount )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Count ),
                  InputAny | OutputInt | ResetInt );
 }
 
 TEST_F( TestStatOperations, BuiltinSum )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Sum ),
                  InputInt | InputReal | OutputSame | ResetEmpty );
 }
 
 TEST_F( TestStatOperations, BuiltinLast )
 {
-    testBuiltin( vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ),
+    testBuiltin( umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Last ),
                  InputAny | OutputSame | ResetEmpty );
 }
 
@@ -408,7 +408,7 @@ TEST_F( TestStatOperations, StatOpFactory )
     testStatOpFactory();
 }
 
-class TestStatistics : public ::testing::TestWithParam< vmf::Stat::UpdateMode::Type >
+class TestStatistics : public ::testing::TestWithParam< umf::Stat::UpdateMode::Type >
 {
 protected:
     void SetUp()
@@ -449,18 +449,18 @@ protected:
 
         std::ifstream source( srcName, std::ios::binary );
         if( !source )
-            VMF_EXCEPTION( vmf::IncorrectParamException, "Error opening input file: "  + srcName );
+            VMF_EXCEPTION( umf::IncorrectParamException, "Error opening input file: "  + srcName );
 
         std::ofstream dest( dstName, std::ios::binary );
         if( !dest )
-            VMF_EXCEPTION( vmf::IncorrectParamException, "Error opening output file: " + dstName );
+            VMF_EXCEPTION( umf::IncorrectParamException, "Error opening output file: " + dstName );
 
         dest << source.rdbuf();
     }
 
-    void configureSchema( vmf::MetadataStream& stream )
+    void configureSchema( umf::MetadataStream& stream )
     {
-        scMetadataSchema = std::make_shared< vmf::MetadataSchema >( mcSchemaName );
+        scMetadataSchema = std::make_shared< umf::MetadataSchema >( mcSchemaName );
 
         VMF_METADATA_BEGIN( mcDescName );
             VMF_FIELD_STR( mcPersonName );
@@ -473,23 +473,23 @@ protected:
 
         scMetadataDesc = scMetadataSchema->findMetadataDesc( mcDescName );
 
-        vmf::FieldDesc field;
+        umf::FieldDesc field;
         scMetadataDesc->getFieldDesc( field, mcPersonName ); scFieldDesc.push_back( field );
         scMetadataDesc->getFieldDesc( field, mcAgeName    ); scFieldDesc.push_back( field );
         scMetadataDesc->getFieldDesc( field, mcGrowthName ); scFieldDesc.push_back( field );
         scMetadataDesc->getFieldDesc( field, mcSalaryName ); scFieldDesc.push_back( field );
     }
 
-    void configureStatistics( vmf::MetadataStream& stream )
+    void configureStatistics( umf::MetadataStream& stream )
     {
-        std::vector< vmf::StatField > fields;
-        fields.emplace_back( scPersonNameCount, mcSchemaName, mcDescName, mcPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
-        fields.emplace_back( scPersonNameLast, mcSchemaName, mcDescName, mcPersonName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Last ));
-        fields.emplace_back( scPersonAgeMin, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Min ));
-        fields.emplace_back( scPersonAgeMax, mcSchemaName, mcDescName, mcAgeName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Max ));
-        fields.emplace_back( scPersonGrowthAverage, mcSchemaName, mcDescName, mcGrowthName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Average ));
-        fields.emplace_back( scPersonSalarySum, mcSchemaName, mcDescName, mcSalaryName, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Sum ));
-        stream.addStat( std::make_shared<vmf::Stat>( scStatName, fields, vmf::Stat::UpdateMode::Disabled ));
+        std::vector< umf::StatField > fields;
+        fields.emplace_back( scPersonNameCount, mcSchemaName, mcDescName, mcPersonName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Count ));
+        fields.emplace_back( scPersonNameLast, mcSchemaName, mcDescName, mcPersonName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Last ));
+        fields.emplace_back( scPersonAgeMin, mcSchemaName, mcDescName, mcAgeName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Min ));
+        fields.emplace_back( scPersonAgeMax, mcSchemaName, mcDescName, mcAgeName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Max ));
+        fields.emplace_back( scPersonGrowthAverage, mcSchemaName, mcDescName, mcGrowthName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Average ));
+        fields.emplace_back( scPersonSalarySum, mcSchemaName, mcDescName, mcSalaryName, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Sum ));
+        stream.addStat( std::make_shared<umf::Stat>( scStatName, fields, umf::Stat::UpdateMode::Disabled ));
     }
 
     void initStatistics()
@@ -506,14 +506,14 @@ protected:
     void finalizeStatistics()
     {
         if( stGrowthAverageCount != 0 )
-            stGrowthAverage = (vmf::umf_real)stGrowthAverageSum / (vmf::umf_real)stGrowthAverageCount;
+            stGrowthAverage = (umf::umf_real)stGrowthAverageSum / (umf::umf_real)stGrowthAverageCount;
         else
             stGrowthAverage = 0.0;
     }
 
-    void addMetadata( vmf::MetadataStream& stream, const vmf::umf_string& name, vmf::umf_integer age, vmf::umf_integer growth, vmf::umf_integer salary, bool doStatistics )
+    void addMetadata( umf::MetadataStream& stream, const umf::umf_string& name, umf::umf_integer age, umf::umf_integer growth, umf::umf_integer salary, bool doStatistics )
     {
-        std::shared_ptr<vmf::Metadata> metadata = std::make_shared< vmf::Metadata >( scMetadataDesc );
+        std::shared_ptr<umf::Metadata> metadata = std::make_shared< umf::Metadata >( scMetadataDesc );
 
         metadata->emplace_back( mcPersonName, name );
         if( doStatistics )
@@ -550,7 +550,7 @@ protected:
         }
     }
 
-    void putMetadata( vmf::MetadataStream& stream, bool doStatistics )
+    void putMetadata( umf::MetadataStream& stream, bool doStatistics )
     {
         if( doStatistics )
             initStatistics();
@@ -564,23 +564,23 @@ protected:
             finalizeStatistics();
     }
 
-    void checkStatistics( const vmf::Stat& stat, vmf::Stat::UpdateMode::Type updateMode, bool doCompareValues )
+    void checkStatistics( const umf::Stat& stat, umf::Stat::UpdateMode::Type updateMode, bool doCompareValues )
     {
-        vmf::Variant nameCount     = stat[scPersonNameCount];
-        vmf::Variant nameLast      = stat[scPersonNameLast];
-        vmf::Variant ageMin        = stat[scPersonAgeMin];
-        vmf::Variant ageMax        = stat[scPersonAgeMax];
-        vmf::Variant growthAverage = stat[scPersonGrowthAverage];
-        vmf::Variant salarySum     = stat[scPersonSalarySum];
+        umf::Variant nameCount     = stat[scPersonNameCount];
+        umf::Variant nameLast      = stat[scPersonNameLast];
+        umf::Variant ageMin        = stat[scPersonAgeMin];
+        umf::Variant ageMax        = stat[scPersonAgeMax];
+        umf::Variant growthAverage = stat[scPersonGrowthAverage];
+        umf::Variant salarySum     = stat[scPersonSalarySum];
 
-        if( updateMode != vmf::Stat::UpdateMode::Disabled )
+        if( updateMode != umf::Stat::UpdateMode::Disabled )
         {
-            ASSERT_EQ( nameCount.getType(), vmf::Variant::type_integer );
-            ASSERT_EQ( nameLast.getType(), vmf::Variant::type_string );
-            ASSERT_EQ( ageMin.getType(), vmf::Variant::type_integer );
-            ASSERT_EQ( ageMax.getType(), vmf::Variant::type_integer );
-            ASSERT_EQ( growthAverage.getType(), vmf::Variant::type_real );
-            ASSERT_EQ( salarySum.getType(), vmf::Variant::type_integer );
+            ASSERT_EQ( nameCount.getType(), umf::Variant::type_integer );
+            ASSERT_EQ( nameLast.getType(), umf::Variant::type_string );
+            ASSERT_EQ( ageMin.getType(), umf::Variant::type_integer );
+            ASSERT_EQ( ageMax.getType(), umf::Variant::type_integer );
+            ASSERT_EQ( growthAverage.getType(), umf::Variant::type_real );
+            ASSERT_EQ( salarySum.getType(), umf::Variant::type_integer );
 
             if( doCompareValues )
             {
@@ -604,9 +604,9 @@ protected:
     std::string mcGrowthName;
     std::string mcSalaryName;
 
-    std::vector< vmf::FieldDesc > scFieldDesc;
-    std::shared_ptr< vmf::MetadataDesc > scMetadataDesc;
-    std::shared_ptr< vmf::MetadataSchema > scMetadataSchema;
+    std::vector< umf::FieldDesc > scFieldDesc;
+    std::shared_ptr< umf::MetadataDesc > scMetadataDesc;
+    std::shared_ptr< umf::MetadataSchema > scMetadataSchema;
 
     std::string scStatName;
     std::string scPersonNameCount;
@@ -616,31 +616,31 @@ protected:
     std::string scPersonGrowthAverage;
     std::string scPersonSalarySum;
 
-    vmf::umf_integer stNameCount;
-    vmf::umf_string stNameLast;
-    vmf::umf_integer stAgeMin;
-    vmf::umf_integer stAgeMax;
-    vmf::umf_real stGrowthAverage; vmf::umf_integer stGrowthAverageSum,stGrowthAverageCount;
-    vmf::umf_integer stSalarySum;
+    umf::umf_integer stNameCount;
+    umf::umf_string stNameLast;
+    umf::umf_integer stAgeMin;
+    umf::umf_integer stAgeMax;
+    umf::umf_real stGrowthAverage; umf::umf_integer stGrowthAverageSum,stGrowthAverageCount;
+    umf::umf_integer stSalarySum;
     bool stFirstTimeOnce;
 };
 
 TEST_P( TestStatistics, Gathering )
 {
-    vmf::Stat::UpdateMode::Type updateMode = GetParam();
+    umf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
 
     std::string fileName = "test_statistics.avi";
     createFile( fileName );
 
-    vmf::MetadataStream stream;
-    ASSERT_EQ( stream.open( fileName, vmf::MetadataStream::Update ), true );
+    umf::MetadataStream stream;
+    ASSERT_EQ( stream.open( fileName, umf::MetadataStream::Update ), true );
 
     configureSchema( stream );
     configureStatistics( stream );
 
-    std::shared_ptr<vmf::Stat> stat = stream.getStat(scStatName);
+    std::shared_ptr<umf::Stat> stat = stream.getStat(scStatName);
     stat->setUpdateTimeout( updateTimeout );
     stat->setUpdateMode( updateMode );
     putMetadata( stream, doCompareValues );
@@ -654,15 +654,15 @@ TEST_P( TestStatistics, Gathering )
 
 TEST_P( TestStatistics, SaveLoad )
 {
-    vmf::Stat::UpdateMode::Type updateMode = GetParam();
+    umf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
 
     std::string fileName = "test_statistics.avi";
     createFile( fileName );
 
-    vmf::MetadataStream saveStream;
-    ASSERT_EQ( saveStream.open( fileName, vmf::MetadataStream::Update ), true );
+    umf::MetadataStream saveStream;
+    ASSERT_EQ( saveStream.open( fileName, umf::MetadataStream::Update ), true );
 
     configureSchema( saveStream );
     configureStatistics( saveStream );
@@ -671,11 +671,11 @@ TEST_P( TestStatistics, SaveLoad )
     saveStream.save();
     saveStream.close();
 
-    vmf::MetadataStream loadStream;
-    ASSERT_EQ( loadStream.open( fileName, vmf::MetadataStream::ReadOnly ), true );
+    umf::MetadataStream loadStream;
+    ASSERT_EQ( loadStream.open( fileName, umf::MetadataStream::ReadOnly ), true );
     ASSERT_EQ( loadStream.load( mcSchemaName ), true );
 
-    std::shared_ptr<vmf::Stat> stat = loadStream.getStat(scStatName);
+    std::shared_ptr<umf::Stat> stat = loadStream.getStat(scStatName);
     stat->setUpdateTimeout( updateTimeout );
     stat->setUpdateMode( updateMode );
 
@@ -689,12 +689,12 @@ TEST_P( TestStatistics, SaveLoad )
 
 TEST_P( TestStatistics, ExportImportXML )
 {
-    vmf::Stat::UpdateMode::Type updateMode = GetParam();
+    umf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
-    vmf::FormatXML format;
+    umf::FormatXML format;
 
-    vmf::MetadataStream saveStream;
+    umf::MetadataStream saveStream;
 
     configureSchema( saveStream );
     configureStatistics( saveStream );
@@ -704,11 +704,11 @@ TEST_P( TestStatistics, ExportImportXML )
 
     saveStream.close();
 
-    vmf::MetadataStream loadStream;
+    umf::MetadataStream loadStream;
 
     loadStream.deserialize( data, format );
 
-    std::shared_ptr<vmf::Stat> stat = loadStream.getStat(scStatName);
+    std::shared_ptr<umf::Stat> stat = loadStream.getStat(scStatName);
     stat->setUpdateTimeout( updateTimeout );
     stat->setUpdateMode( updateMode );
 
@@ -722,12 +722,12 @@ TEST_P( TestStatistics, ExportImportXML )
 
 TEST_P( TestStatistics, ExportImportJSON )
 {
-    vmf::Stat::UpdateMode::Type updateMode = GetParam();
+    umf::Stat::UpdateMode::Type updateMode = GetParam();
     unsigned updateTimeout = 100;
     const bool doCompareValues = true;
-    vmf::FormatJSON format;
+    umf::FormatJSON format;
 
-    vmf::MetadataStream saveStream;
+    umf::MetadataStream saveStream;
 
     configureSchema( saveStream );
     configureStatistics( saveStream );
@@ -737,11 +737,11 @@ TEST_P( TestStatistics, ExportImportJSON )
 
     saveStream.close();
 
-    vmf::MetadataStream loadStream;
+    umf::MetadataStream loadStream;
 
     loadStream.deserialize( data, format );
 
-    std::shared_ptr<vmf::Stat> stat = loadStream.getStat(scStatName);
+    std::shared_ptr<umf::Stat> stat = loadStream.getStat(scStatName);
     stat->setUpdateTimeout( updateTimeout );
     stat->setUpdateMode( updateMode );
 
@@ -755,7 +755,7 @@ TEST_P( TestStatistics, ExportImportJSON )
 
 INSTANTIATE_TEST_CASE_P(UnitTest, TestStatistics,
                         ::testing::Values(
-                            vmf::Stat::UpdateMode::Disabled ,vmf::Stat::UpdateMode::Manual
-                            ,vmf::Stat::UpdateMode::OnAdd, vmf::Stat::UpdateMode::OnTimer
+                            umf::Stat::UpdateMode::Disabled ,umf::Stat::UpdateMode::Manual
+                            ,umf::Stat::UpdateMode::OnAdd, umf::Stat::UpdateMode::OnTimer
                             ));
 

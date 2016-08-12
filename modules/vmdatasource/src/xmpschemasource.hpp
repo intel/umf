@@ -19,7 +19,7 @@
 
 #include "xmpdatasource.hpp"
 
-namespace vmf {
+namespace umf {
 
 class XMPSchemaSource
 {
@@ -27,9 +27,9 @@ public:
 
     explicit XMPSchemaSource(const std::shared_ptr<SXMPMeta>& schemaStorage);
 
-    void save(const std::shared_ptr<vmf::MetadataSchema>& schema);
+    void save(const std::shared_ptr<umf::MetadataSchema>& schema);
 
-    void load(std::map< vmf::umf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
+    void load(std::map< umf::umf_string, std::shared_ptr<umf::MetadataSchema> >& schemas);
 
     virtual void clear();
 
@@ -39,7 +39,7 @@ public:
 
 protected:
 
-    std::shared_ptr<vmf::MetadataSchema> loadMetadataSchemaByPath(const vmf::umf_string& pathToSchema);
+    std::shared_ptr<umf::MetadataSchema> loadMetadataSchemaByPath(const umf::umf_string& pathToSchema);
 
     void saveDescription(const MetadataDesc& desc, const umf_string& pathToDescriptions);
 
@@ -58,6 +58,6 @@ private:
 
 };
 
-} // namespace vmf
+} // namespace umf
 
 #endif // __XMPSCHEMASOURCE_HPP__

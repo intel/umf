@@ -25,7 +25,7 @@
 
 #include "vmf/format.hpp"
 
-namespace vmf
+namespace umf
 {
 /*!
 * \class FormatCompressed
@@ -104,11 +104,11 @@ protected:
     virtual std::string decompress(const std::string& input);
 
     std::shared_ptr<Format> format;
-    std::shared_ptr<vmf::MetadataSchema> cSchema;
+    std::shared_ptr<umf::MetadataSchema> cSchema;
     std::string compressorId;
     bool ignoreUnknownCompressor;
 };
 
-}//vmf
+}//umf
 
 #endif //VMF_FORMAT_COMPRESSED_H

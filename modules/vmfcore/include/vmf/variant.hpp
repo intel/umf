@@ -26,7 +26,7 @@
 #include "vmf/global.hpp"
 #include <vector>
 
-namespace vmf
+namespace umf
 {
     class IData; // helper class for Variant implementation
 
@@ -295,15 +295,15 @@ namespace vmf
             switch (eType)
             {
             default:
-            case vmf::Variant::type_empty:
-            case vmf::Variant::type_string:
+            case umf::Variant::type_empty:
+            case umf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!");
 
-            case vmf::Variant::type_integer:
-                limit = (T)std::numeric_limits<vmf::umf_integer>::lowest();
+            case umf::Variant::type_integer:
+                limit = (T)std::numeric_limits<umf::umf_integer>::lowest();
                 break;
             case type_real:
-                limit = (T)std::numeric_limits<vmf::umf_real>::lowest();
+                limit = (T)std::numeric_limits<umf::umf_real>::lowest();
                 break;
             }
 
@@ -323,15 +323,15 @@ namespace vmf
             switch( eType )
             {
             default:
-            case vmf::Variant::type_empty:
-            case vmf::Variant::type_string:
+            case umf::Variant::type_empty:
+            case umf::Variant::type_string:
                 VMF_EXCEPTION(IncorrectParamException, "Only numeric type has limit!" );
 
-            case vmf::Variant::type_integer:
-                limit = (T)std::numeric_limits<vmf::umf_integer>::max();
+            case umf::Variant::type_integer:
+                limit = (T)std::numeric_limits<umf::umf_integer>::max();
                 break;
             case type_real:
-                limit = (T)std::numeric_limits<vmf::umf_real>::max();
+                limit = (T)std::numeric_limits<umf::umf_real>::max();
                 break;
             }
 

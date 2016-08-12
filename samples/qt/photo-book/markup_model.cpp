@@ -8,7 +8,7 @@ MarkupModel::MarkupModel()
 {
 }
 
-void MarkupModel::loadPeopleInfo(vmf::MetadataStream* stream)
+void MarkupModel::loadPeopleInfo(umf::MetadataStream* stream)
 {
     streamPtr = stream;
 
@@ -20,8 +20,8 @@ void MarkupModel::loadMarkup()
 {
     unassociatedRegions.clear();
 
-    std::vector<vmf::FieldValue> v;
-    v.push_back(vmf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) UNASSOCIATED_RECT_TYPE));
+    std::vector<umf::FieldValue> v;
+    v.push_back(umf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) UNASSOCIATED_RECT_TYPE));
 
     auto markupInfo = streamPtr->queryByNameAndFields( MetadataHelper::MARKUP_DESC_NAME,
         v);
@@ -29,7 +29,7 @@ void MarkupModel::loadMarkup()
     {
         auto item = markupInfo[i];
 
-        vmf::umf_integer frameIndex;
+        umf::umf_integer frameIndex;
 
         try
         {
@@ -37,34 +37,34 @@ void MarkupModel::loadMarkup()
 
             FaceRect rct;
 
-            rct.r.x = (vmf::umf_real) item->getFieldValue(FieldNameConstants::X_RECT_FIELD);
-            rct.r.y = (vmf::umf_real) item->getFieldValue(FieldNameConstants::Y_RECT_FIELD);
-            rct.r.width = (vmf::umf_real) item->getFieldValue(FieldNameConstants::WIDTH_RECT_FIELD);
-            rct.r.height = (vmf::umf_real) item->getFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD);
+            rct.r.x = (umf::umf_real) item->getFieldValue(FieldNameConstants::X_RECT_FIELD);
+            rct.r.y = (umf::umf_real) item->getFieldValue(FieldNameConstants::Y_RECT_FIELD);
+            rct.r.width = (umf::umf_real) item->getFieldValue(FieldNameConstants::WIDTH_RECT_FIELD);
+            rct.r.height = (umf::umf_real) item->getFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD);
 
             unassociatedRegions[frameIndex].push_back(rct);
         }
-        catch (vmf::Exception&)
+        catch (umf::Exception&)
         {
             break;
         }
     }
 
-    v[0] = vmf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) EMPTY_RECT_TYPE);
+    v[0] = umf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) EMPTY_RECT_TYPE);
     markupInfo = streamPtr->queryByNameAndFields( MetadataHelper::MARKUP_DESC_NAME,
         v);
     for (size_t i = 0; i < markupInfo.size(); i++)
     {
         auto item = markupInfo[i];
 
-        vmf::umf_integer frameIndex;
+        umf::umf_integer frameIndex;
 
         try
         {
             frameIndex = item->getFrameIndex();
             unassociatedRegions[frameIndex] = std::vector<FaceRect>();
         }
-        catch (vmf::Exception&)
+        catch (umf::Exception&)
         {
             break;
         }
@@ -73,8 +73,8 @@ void MarkupModel::loadMarkup()
 
 void MarkupModel::storeMarkup()
 {
-    std::vector<vmf::FieldValue> v;
-    v.push_back(vmf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) UNASSOCIATED_RECT_TYPE));
+    std::vector<umf::FieldValue> v;
+    v.push_back(umf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) UNASSOCIATED_RECT_TYPE));
 
     auto markupInfo = streamPtr->queryByNameAndFields( MetadataHelper::MARKUP_DESC_NAME,
         v);
@@ -92,12 +92,12 @@ void MarkupModel::storeMarkup()
 
             if (regions.empty())
             {
-                std::shared_ptr<vmf::Metadata> regionMetadata = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(markupDesc));
-                regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (vmf::umf_real) 0);
-                regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (vmf::umf_real) 0);
-                regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (vmf::umf_real) 0);
-                regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (vmf::umf_real) 0);
-                regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) EMPTY_RECT_TYPE);
+                std::shared_ptr<umf::Metadata> regionMetadata = std::shared_ptr<umf::Metadata>(new umf::Metadata(markupDesc));
+                regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (umf::umf_real) 0);
+                regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (umf::umf_real) 0);
+                regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (umf::umf_real) 0);
+                regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (umf::umf_real) 0);
+                regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) EMPTY_RECT_TYPE);
                 regionMetadata->setFrameIndex(ref.first);
 
                 streamPtr->add(regionMetadata);
@@ -108,12 +108,12 @@ void MarkupModel::storeMarkup()
                 {
                     FaceRect rect = regions[j];
 
-                    std::shared_ptr<vmf::Metadata> regionMetadata = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(markupDesc));
-                    regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (vmf::umf_real) rect.r.x);
-                    regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (vmf::umf_real) rect.r.y);
-                    regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (vmf::umf_real) rect.r.width);
-                    regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (vmf::umf_real) rect.r.height);
-                    regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) UNASSOCIATED_RECT_TYPE);
+                    std::shared_ptr<umf::Metadata> regionMetadata = std::shared_ptr<umf::Metadata>(new umf::Metadata(markupDesc));
+                    regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (umf::umf_real) rect.r.x);
+                    regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (umf::umf_real) rect.r.y);
+                    regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (umf::umf_real) rect.r.width);
+                    regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (umf::umf_real) rect.r.height);
+                    regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) UNASSOCIATED_RECT_TYPE);
                     regionMetadata->setFrameIndex(ref.first);
 
                     streamPtr->add(regionMetadata);
@@ -192,7 +192,7 @@ auto MarkupModel::getAssociatedRegions(FrameIndex index) -> RegionList
     return outList;
 }
 
-AssociatedRect MarkupModel::addAssociatedRegion(FrameIndex index, vmf::IdType personId,
+AssociatedRect MarkupModel::addAssociatedRegion(FrameIndex index, umf::IdType personId,
     const FaceRect& rect)
 {
     AssociatedRect ar;
@@ -206,7 +206,7 @@ AssociatedRect MarkupModel::addAssociatedRegion(FrameIndex index, vmf::IdType pe
 }
 
 bool MarkupModel::findPersonByRegion(FrameIndex frameIndex, quint64 regionIndex, 
-    vmf::IdType& outId)
+    umf::IdType& outId)
 {
     AssociatedRegionList rList = associatedRegions[frameIndex];
 
@@ -229,8 +229,8 @@ void MarkupModel::loadAssocMarkup()
 {
     associatedRegions.clear();
 
-    std::vector<vmf::FieldValue> v;
-    v.push_back(vmf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) ASSOCIATED_RECT_TYPE));
+    std::vector<umf::FieldValue> v;
+    v.push_back(umf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) ASSOCIATED_RECT_TYPE));
 
     auto markupInfo = streamPtr->queryByNameAndFields( MetadataHelper::MARKUP_DESC_NAME,
         v);
@@ -245,7 +245,7 @@ void MarkupModel::loadAssocMarkup()
         {
             auto item = refs[j];
 
-            vmf::umf_integer frameIndex;
+            umf::umf_integer frameIndex;
 
             try
             {
@@ -254,15 +254,15 @@ void MarkupModel::loadAssocMarkup()
 
                 AssociatedRect rct;
 
-                rct.r.x = (vmf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::X_RECT_FIELD);
-                rct.r.y = (vmf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::Y_RECT_FIELD);
-                rct.r.width = (vmf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::WIDTH_RECT_FIELD);
-                rct.r.height = (vmf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD);
+                rct.r.x = (umf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::X_RECT_FIELD);
+                rct.r.y = (umf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::Y_RECT_FIELD);
+                rct.r.width = (umf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::WIDTH_RECT_FIELD);
+                rct.r.height = (umf::umf_real) item.getReferenceMetadata().lock()->getFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD);
                 rct.personId = referencedPeople[i]->getId();
 
                 associatedRegions[frameIndex].push_back(rct);
             }
-            catch (vmf::Exception&)
+            catch (umf::Exception&)
             {
                 // Nothing to do
             }
@@ -272,8 +272,8 @@ void MarkupModel::loadAssocMarkup()
 
 void MarkupModel::storeAssociations()
 {
-    std::vector<vmf::FieldValue> v;
-    v.push_back(vmf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) ASSOCIATED_RECT_TYPE));
+    std::vector<umf::FieldValue> v;
+    v.push_back(umf::FieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) ASSOCIATED_RECT_TYPE));
 
     auto markupInfo = streamPtr->queryByNameAndFields( MetadataHelper::MARKUP_DESC_NAME,
         v);
@@ -293,12 +293,12 @@ void MarkupModel::storeAssociations()
             {
                 AssociatedRect rect = regions[j];
 
-                std::shared_ptr<vmf::Metadata> regionMetadata = std::shared_ptr<vmf::Metadata>(new vmf::Metadata(markupDesc));
-                regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (vmf::umf_real) rect.r.x);
-                regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (vmf::umf_real) rect.r.y);
-                regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (vmf::umf_real) rect.r.width);
-                regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (vmf::umf_real) rect.r.height);
-                regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (vmf::umf_integer) ASSOCIATED_RECT_TYPE);
+                std::shared_ptr<umf::Metadata> regionMetadata = std::shared_ptr<umf::Metadata>(new umf::Metadata(markupDesc));
+                regionMetadata->setFieldValue(FieldNameConstants::X_RECT_FIELD, (umf::umf_real) rect.r.x);
+                regionMetadata->setFieldValue(FieldNameConstants::Y_RECT_FIELD, (umf::umf_real) rect.r.y);
+                regionMetadata->setFieldValue(FieldNameConstants::WIDTH_RECT_FIELD, (umf::umf_real) rect.r.width);
+                regionMetadata->setFieldValue(FieldNameConstants::HEIGHT_RECT_FIELD, (umf::umf_real) rect.r.height);
+                regionMetadata->setFieldValue(FieldNameConstants::TYPE_RECT_FIELD, (umf::umf_integer) ASSOCIATED_RECT_TYPE);
                 regionMetadata->setFrameIndex(ref.first);
 
                 streamPtr->add(regionMetadata);
@@ -314,7 +314,7 @@ void MarkupModel::storeAssociations()
 }
 
 void MarkupModel::changeRectAssociation(FrameIndex frameIndex, quint64 rectIndex,
-    vmf::IdType newPersonId)
+    umf::IdType newPersonId)
 {
     std::for_each(associatedRegions[frameIndex].begin(), associatedRegions[frameIndex].end(),
         [this, rectIndex, newPersonId] (AssociatedRegionList::reference ref)
@@ -326,12 +326,12 @@ void MarkupModel::changeRectAssociation(FrameIndex frameIndex, quint64 rectIndex
     });
 }
 
-void MarkupModel::removeAssociatedRegions(vmf::IdType personId)
+void MarkupModel::removeAssociatedRegions(umf::IdType personId)
 {
     std::for_each(associatedRegions.begin(), associatedRegions.end(),
         [this, personId] (AssociatedRList::reference ref)
     {
-        vmf::IdType id = personId;
+        umf::IdType id = personId;
         std::vector<AssociatedRect>::iterator it = std::remove_if(ref.second.begin(),
             ref.second.end(), [id] (std::vector<AssociatedRect>::reference ref)
         {

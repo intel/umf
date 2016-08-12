@@ -15,17 +15,17 @@ public:
 public:
     bool loadMetaFile(const std::string& fileName);
     void closeFile();
-    bool openFile(vmf::MetadataStream::OpenMode mode);
+    bool openFile(umf::MetadataStream::OpenMode mode);
     void saveMetadata();
-    vmf::MetadataStream *getMetadataStream();
+    umf::MetadataStream *getMetadataStream();
 
 private:
     void loadRequiredProperties();
 
 private:
-    vmf::MetadataStream metaStream;
-    vmf::MetadataSet infoProperty;
-    vmf::MetadataSet markupProperty;
+    umf::MetadataStream metaStream;
+    umf::MetadataSet infoProperty;
+    umf::MetadataSet markupProperty;
 };
 
 #endif /* __METADATA_HELPER_H__ */

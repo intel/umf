@@ -40,7 +40,7 @@
 
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 void XMPDataSource::initialize()
 {
@@ -51,7 +51,7 @@ void XMPDataSource::initialize()
             VMF_EXCEPTION(DataStorageException, "Internal error during "
                 "initialization of XMPMeta.");
         }
-        SXMPMeta::RegisterNamespace(VMF_NS, "vmf", NULL);
+        SXMPMeta::RegisterNamespace(VMF_NS, "umf", NULL);
         XMP_OptionBits xmpFilesOpts = static_cast<XMP_OptionBits>(0);
 #ifdef __linux__
         xmpFilesOpts |= kXMPFiles_ServerMode;
@@ -91,13 +91,13 @@ void XMPDataSource::terminate()
 XMPDataSource::XMPDataSource()
   : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr), encryptor(nullptr)
 {
-    schemaCompression = make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
+    schemaCompression = make_shared<umf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
     VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
         VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
         VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
     VMF_METADATA_END(schemaCompression);
 
-    schemaEncryption = make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
+    schemaEncryption = make_shared<umf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
     VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
         VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
         VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
@@ -503,7 +503,7 @@ void XMPDataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc
 
 
 
-void XMPDataSource::save(const std::shared_ptr<vmf::MetadataSchema>& schema)
+void XMPDataSource::save(const std::shared_ptr<umf::MetadataSchema>& schema)
 {
     if (schema == nullptr)
     {

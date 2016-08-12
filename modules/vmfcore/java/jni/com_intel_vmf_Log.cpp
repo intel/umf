@@ -7,7 +7,7 @@
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 /*
 * Class:     com_intel_vmf_Log

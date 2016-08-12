@@ -17,7 +17,7 @@
 #include "vmf/metadataset.hpp"
 #include <algorithm>
 
-namespace vmf
+namespace umf
 {
 MetadataSet::MetadataSet(void)
 {
@@ -81,7 +81,7 @@ MetadataSet MetadataSet::queryByName( const std::string& sName ) const
 
     return set;
 }
-MetadataSet MetadataSet::queryByNameAndValue( const std::string& sMetadataName, const vmf::FieldValue& value ) const
+MetadataSet MetadataSet::queryByNameAndValue( const std::string& sMetadataName, const umf::FieldValue& value ) const
 {
     MetadataSet set = query([&](const std::shared_ptr< Metadata >& spItem)->bool
     {
@@ -95,13 +95,13 @@ MetadataSet MetadataSet::queryByNameAndValue( const std::string& sMetadataName, 
     return set;
 }
 
-MetadataSet MetadataSet::queryByNameAndFields( const std::string& sMetadataName, const std::vector< vmf::FieldValue>& vFields ) const
+MetadataSet MetadataSet::queryByNameAndFields( const std::string& sMetadataName, const std::vector< umf::FieldValue>& vFields ) const
 {
     MetadataSet set = query( [&]( const std::shared_ptr< Metadata >& spItem )->bool
     {
         if( spItem->getName() == sMetadataName && spItem->size() > 0 )
         {
-            auto itFailed = std::find_if( vFields.begin(), vFields.end(), [&]( const vmf::FieldValue& value )->bool
+            auto itFailed = std::find_if( vFields.begin(), vFields.end(), [&]( const umf::FieldValue& value )->bool
             {
                 std::string sFieldName = value.getName();
                 auto it = spItem->findField( sFieldName );
@@ -167,7 +167,7 @@ MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName ) c
     return set;
 }
 
-MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, const vmf::FieldValue& value ) const
+MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, const umf::FieldValue& value ) const
 {
     std::string sFieldName = value.getName();
     MetadataSet set;
@@ -224,7 +224,7 @@ MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, co
     return set;
 }
 
-MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, const std::vector< vmf::FieldValue>& vFields ) const
+MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, const std::vector< umf::FieldValue>& vFields ) const
 {
     MetadataSet set;
     if( vFields.size() > 0 )
@@ -236,7 +236,7 @@ MetadataSet MetadataSet::queryByReference( const std::string& sReferenceName, co
             {
                 auto itReference = std::find_if( referenceSet.begin(), referenceSet.end(), [&]( const std::shared_ptr< Metadata >& spReference )->bool
                 {
-                    auto itFailed = std::find_if( vFields.begin(), vFields.end(), [&]( const vmf::FieldValue& value )->bool
+                    auto itFailed = std::find_if( vFields.begin(), vFields.end(), [&]( const umf::FieldValue& value )->bool
                     {
                         std::string sFieldName = value.getName();
                         auto it = spReference->findField( sFieldName );

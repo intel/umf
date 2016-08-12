@@ -28,7 +28,7 @@
 #include <vector>
 #include <stdexcept>
 
-using namespace vmf;
+using namespace umf;
 using namespace std;
 void dumpMetadataDesc(shared_ptr<MetadataDesc> spDesc)
 {

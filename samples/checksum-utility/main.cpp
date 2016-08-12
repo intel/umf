@@ -31,7 +31,7 @@ void copyFile(const string& srcPath, const string& dstPath)
     ofstream dst(dstPath, ios_base::binary | ios_base::out);
 
     if (!src.is_open() || !dst.is_open())
-        VMF_EXCEPTION(vmf::Exception, "Can't copy " + srcPath + " to " + dstPath);
+        VMF_EXCEPTION(umf::Exception, "Can't copy " + srcPath + " to " + dstPath);
 
     dst << src.rdbuf();
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         if (argc > 1)
             srcFileName = argv[1];
         else
-            throw vmf::Exception("USAGE:\nchecksum-utility <video file path>");
+            throw umf::Exception("USAGE:\nchecksum-utility <video file path>");
 
         string ext = string(srcFileName, srcFileName.find_last_of('.'));
         string dstFileName = std::string(srcFileName, 0, srcFileName.find_last_of('.')) + "Test" + ext;
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
         ifstream in(dstFileName, ios::binary);
         if (!in)
-            throw vmf::Exception(dstFileName + " not found");
+            throw umf::Exception(dstFileName + " not found");
         in.seekg(0, ios::end);
         long long originalFileSize = in.tellg();
         in.seekg(0, ios::beg);
@@ -64,16 +64,16 @@ int main(int argc, char** argv)
         in.read(originalFileBuffer.get(), originalFileSize);
         in.close();
 
-        vmf::MetadataStream stream;
-        if (!stream.open(dstFileName, vmf::MetadataStream::Update))
-            throw vmf::Exception("Can't open file by VMF stream");
+        umf::MetadataStream stream;
+        if (!stream.open(dstFileName, umf::MetadataStream::Update))
+            throw umf::Exception("Can't open file by VMF stream");
 
         string originalFileChecksum = stream.computeChecksum();
 
         stream.setChecksum(originalFileChecksum);
 
-        vmf::umf_string TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
-        shared_ptr<vmf::MetadataSchema> schema = make_shared<vmf::MetadataSchema>(TEST_SCHEMA_NAME);
+        umf::umf_string TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
+        shared_ptr<umf::MetadataSchema> schema = make_shared<umf::MetadataSchema>(TEST_SCHEMA_NAME);
 
         VMF_METADATA_BEGIN("TEST_PROPERTY_NAME1")
             VMF_FIELD_INT("TEST_FIELD_NAME1")
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 
         for (int i = 0; i < 10; i++)
         {
-            shared_ptr<vmf::Metadata> md(new vmf::Metadata(schema->findMetadataDesc("TEST_PROPERTY_NAME1")));
+            shared_ptr<umf::Metadata> md(new umf::Metadata(schema->findMetadataDesc("TEST_PROPERTY_NAME1")));
             md->setFieldValue("TEST_FIELD_NAME1", i);
             md->setFieldValue("TEST_FIELD_NAME2", 2 * i);
             md->setFieldValue("TEST_FIELD_NAME3", 3 * i);
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
             md->setFieldValue("TEST_FIELD_NAME7", i / 6.0);
             stream.add(md);
 
-            shared_ptr<vmf::Metadata> md2(new vmf::Metadata(schema->findMetadataDesc("TEST_PROPERTY_NAME2")));
+            shared_ptr<umf::Metadata> md2(new umf::Metadata(schema->findMetadataDesc("TEST_PROPERTY_NAME2")));
             md2->setFieldValue("TEST_FIELD_NAME1", i);
             md2->setFieldValue("TEST_FIELD_NAME2", 2 * i);
             md2->setFieldValue("TEST_FIELD_NAME3", 3 * i);
@@ -125,8 +125,8 @@ int main(int argc, char** argv)
         stream.save();
         stream.close();
 
-        if (!stream.reopen(vmf::MetadataStream::ReadOnly))
-            throw vmf::Exception("Can't reopen file");
+        if (!stream.reopen(umf::MetadataStream::ReadOnly))
+            throw umf::Exception("Can't reopen file");
 
         originalFileChecksum = stream.getChecksum();
 
@@ -137,7 +137,7 @@ int main(int argc, char** argv)
 
         in.open(dstFileName, ios::binary);
         if (!in)
-            throw vmf::Exception(dstFileName + " not found!");
+            throw umf::Exception(dstFileName + " not found!");
         in.seekg(0, ios::end);
         long long modifiedFileSize = in.tellg();
         in.seekg(0, ios::beg);
@@ -180,7 +180,7 @@ int main(int argc, char** argv)
         cout << endl << "Total changed bytes: " << differentBytesCounter << endl;
         return 0;
     }
-    catch (vmf::Exception& e)
+    catch (umf::Exception& e)
     {
         cout << "Fatal error: " << e.what() << endl;
         return -1;

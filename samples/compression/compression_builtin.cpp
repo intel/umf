@@ -28,7 +28,7 @@
 #include "compress_common.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 int compress_builtin(const string& videoFile)
 {

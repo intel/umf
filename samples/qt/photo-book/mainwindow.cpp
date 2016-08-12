@@ -157,7 +157,7 @@ void MainWindow::openFile()
                     loadVideoData();
                 }
             }
-            catch (vmf::Exception& e)
+            catch (umf::Exception& e)
             {
                 msgBox.setText(e.what());
                 msgBox.exec();
@@ -283,7 +283,7 @@ void MainWindow::commitMarkup()
         markupModel.storeMarkup();
         markupModel.storeAssociations();
 
-        if (metadataHelper.openFile(vmf::MetadataStream::Update))
+        if (metadataHelper.openFile(umf::MetadataStream::Update))
         {
             metadataHelper.saveMetadata();
         }
@@ -297,7 +297,7 @@ void MainWindow::commitMarkup()
             return;
         }
     }
-    catch (vmf::Exception& e)
+    catch (umf::Exception& e)
     {
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Critical);
@@ -396,7 +396,7 @@ void MainWindow::associateRectangle(quint64 frameIndex, const FaceRect& r)
 
     if (index != -1)
     {
-        vmf::IdType id = ui->comboBox->itemData(index).toULongLong();
+        umf::IdType id = ui->comboBox->itemData(index).toULongLong();
         AssociatedRect ar = markupModel.addAssociatedRegion(frameIndex, id, r);
         ui->graphicsView->addAssociatedRectangle(ar);
     }
@@ -418,7 +418,7 @@ void MainWindow::fillPeopleList()
             std::string name = item->getFieldValue(FieldNameConstants::NAME_FIELD);
             ui->comboBox->addItem(QString::fromStdString(name), (qulonglong) item->getId());
         }
-        catch (vmf::Exception&)
+        catch (umf::Exception&)
         {
             // Ignore exception
         }
@@ -445,16 +445,16 @@ void MainWindow::personChanged(int index)
     try
     {
         auto metadata = itemSet[index];
-        vmf::umf_integer age = metadata->getFieldValue(FieldNameConstants::AGE_FIELD);
+        umf::umf_integer age = metadata->getFieldValue(FieldNameConstants::AGE_FIELD);
         ui->lblAge->setText(QString::number(age));
 
-        vmf::umf_integer weight = metadata->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
+        umf::umf_integer weight = metadata->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
         ui->lblWeight->setText(QString::number(weight));
 
-        vmf::umf_integer height = metadata->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
+        umf::umf_integer height = metadata->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
         ui->lblHeight->setText(QString::number(height));
 
-        vmf::umf_integer sex = metadata->getFieldValue(FieldNameConstants::SEX_FIELD);
+        umf::umf_integer sex = metadata->getFieldValue(FieldNameConstants::SEX_FIELD);
         ui->lblSex->setText(Utilities::sexEnum2String((PersonSex) sex));
 
         auto items = scene->selectedItems();
@@ -478,7 +478,7 @@ void MainWindow::personChanged(int index)
             }
         }
     }
-    catch (vmf::Exception&)
+    catch (umf::Exception&)
     {
         // Ignore exception
     }
@@ -496,7 +496,7 @@ void MainWindow::onSceneSelection()
         if (graphicsItem != NULL)
         {
             FaceRect rect = graphicsItem->getModelRect();
-            vmf::IdType personId;
+            umf::IdType personId;
             if (markupModel.findPersonByRegion(currentFrameNumber, rect.getIndex(), 
                 personId))
             {

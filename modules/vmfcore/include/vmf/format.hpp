@@ -34,7 +34,7 @@
 #include <map>
 #include <array>
 
-namespace vmf
+namespace umf
 {
 /*!
 * \class Format
@@ -85,6 +85,6 @@ public:
     virtual std::shared_ptr<Format> getBackendFormat() = 0;
 };
 
-}//vmf
+}//umf
 
 #endif /* VMF_FORMAT_H */

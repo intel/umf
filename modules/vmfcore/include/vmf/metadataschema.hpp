@@ -33,7 +33,7 @@
 
 #include "metadatadesc.hpp"
 
-namespace vmf
+namespace umf
 {
 
 /*!
@@ -122,7 +122,7 @@ public:
     /*!
     * \brief Get name of standard predefined metadata schema
     * \param kind [in] standard schema kind
-    * \return string schema name (e.g. "vmf://ns.intel.com/vmf/std-dst-schema-1.0")
+    * \return string schema name (e.g. "umf://ns.intel.com/umf/std-dst-schema-1.0")
     */
     static std::string getStdSchemaName(StdSchemaKind kind = STD_DST);
 
@@ -145,50 +145,50 @@ private:
 
 #define VMF_METADATA_BEGIN( name ) \
 {\
-    std::vector< vmf::FieldDesc > fields;\
+    std::vector< umf::FieldDesc > fields;\
     std::string _name( name );
 
 #define VMF_METADATA_END( schema ) \
-    auto desc = std::make_shared< vmf::MetadataDesc >( _name, fields ); \
+    auto desc = std::make_shared< umf::MetadataDesc >( _name, fields ); \
     schema->add( desc );\
 };
 
 #define VMF_FIELD_STR_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_string, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_string, isOptional ));
 #define VMF_FIELD_STR( name ) VMF_FIELD_STR_( name, false )
 #define VMF_FIELD_STR_OPT( name ) VMF_FIELD_STR_( name, true )
 
 #define VMF_FIELD_INT_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_integer, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_integer, isOptional ));
 #define VMF_FIELD_INT( name ) VMF_FIELD_INT_( name, false )
 #define VMF_FIELD_INT_OPT( name ) VMF_FIELD_INT_( name, true )
 
 #define VMF_FIELD_REAL_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_real, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_real, isOptional ));
 #define VMF_FIELD_REAL( name ) VMF_FIELD_REAL_( name, false )
 #define VMF_FIELD_REAL_OPT( name ) VMF_FIELD_REAL_( name, true )
 
 #define VMF_FIELD_VEC2D_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_vector2d, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector2d, isOptional ));
 #define VMF_FIELD_VEC2D( name ) VMF_FIELD_VEC2D_( name, false )
 #define VMF_FIELD_VEC2D_OPT( name ) VMF_FIELD_VEC2D_( name, true )
 
 #define VMF_FIELD_VEC3D_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_vector3d, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector3d, isOptional ));
 #define VMF_FIELD_VEC3D( name ) VMF_FIELD_VEC3D_( name, false )
 #define VMF_FIELD_VEC3D_OPT( name ) VMF_FIELD_VEC3D_( name, true )
 
 #define VMF_FIELD_VEC4D_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_vector4d, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector4d, isOptional ));
 #define VMF_FIELD_VEC4D( name ) VMF_FIELD_VEC4D_( name, false )
 #define VMF_FIELD_VEC4D_OPT( name ) VMF_FIELD_VEC4D_( name, true )
 
 #define VMF_FIELD_RAW_( name, isOptional ) \
-    fields.emplace_back( vmf::FieldDesc( name, vmf::Variant::type_rawbuffer, isOptional ));
+    fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_rawbuffer, isOptional ));
 #define VMF_FIELD_RAW( name ) VMF_FIELD_RAW_( name, false )
 #define VMF_FIELD_RAW_OPT( name ) VMF_FIELD_RAW_( name, true )
 
-} // namespace vmf
+} // namespace umf
 
 #ifdef _MSC_VER
 #pragma warning(pop)

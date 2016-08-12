@@ -19,7 +19,7 @@
 
 #include "libxml/tree.h"
 
-namespace vmf
+namespace umf
 {
 
 FormatXML::FormatXML()
@@ -245,7 +245,7 @@ static void add(xmlNodePtr statNode, std::shared_ptr<Stat> stat)
         VMF_EXCEPTION(IncorrectParamException, "Invalid stat object: name is invalid!");
 
     if(xmlNewProp(statNode, BAD_CAST ATTR_STAT_NAME, BAD_CAST stat->getName().c_str()) == NULL)
-        VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object name)");
+        VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object name)");
 
     std::vector< std::string > fieldNames = stat->getAllFieldNames();
     if (!fieldNames.empty())
@@ -271,22 +271,22 @@ static void add(xmlNodePtr statNode, std::shared_ptr<Stat> stat)
 
             xmlNodePtr fieldNode = xmlNewChild(statNode, NULL, BAD_CAST TAG_STAT_FIELD, NULL);
             if(fieldNode == NULL)
-                VMF_EXCEPTION(vmf::Exception, "Can't create xmlNode for stat object field" );
+                VMF_EXCEPTION(umf::Exception, "Can't create xmlNode for stat object field" );
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_NAME, BAD_CAST field.getName().c_str() ) == NULL)
-                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
+                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field name)");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_SCHEMA_NAME, BAD_CAST field.getSchemaName().c_str()) == NULL)
-                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
+                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata schema name)");
 
             if (xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_METADATA_NAME, BAD_CAST field.getMetadataName().c_str()) == NULL)
-                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
+                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata name)");
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_FIELD_NAME, BAD_CAST field.getFieldName().c_str() ) == NULL)
-                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
+                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field metadata field name)");
 
             if(xmlNewProp(fieldNode, BAD_CAST ATTR_STAT_FIELD_OP_NAME, BAD_CAST field.getOpName().c_str() ) == NULL)
-                VMF_EXCEPTION(vmf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
+                VMF_EXCEPTION(umf::InternalErrorException, "Can't create xmlNode property (stat object field operation name)");
         }
     }
 }
@@ -303,7 +303,7 @@ std::string FormatXML::store(
     xmlDocPtr doc = xmlNewDoc(NULL);
     xmlNodePtr vmfRootNode = xmlNewNode(NULL, BAD_CAST TAG_VMF);
     if (vmfRootNode == NULL)
-        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for vmf root element");
+        VMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for umf root element");
     if (xmlDocSetRootElement(doc, vmfRootNode) != 0)
         VMF_EXCEPTION(InternalErrorException, "Can't set root element to the document");
 
@@ -351,19 +351,19 @@ std::string FormatXML::store(
         for(const std::shared_ptr<Metadata>& spMetadata : set)
         {
             if (spMetadata == nullptr)
-                VMF_EXCEPTION(vmf::IncorrectParamException, "Metadata pointer is null");
+                VMF_EXCEPTION(umf::IncorrectParamException, "Metadata pointer is null");
 
             bool noSchemaForMetadata = true;
             for(const std::shared_ptr<MetadataSchema>& spSchema : schemas)
             {
                 if (spSchema == nullptr)
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Schema pointer is null");
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Schema pointer is null");
 
                 if(spMetadata->getSchemaName() == spSchema->getName())
                     noSchemaForMetadata = false;
             }
             if(noSchemaForMetadata)
-                VMF_EXCEPTION(vmf::IncorrectParamException, "MetadataSet item references unknown schema");
+                VMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
         }
 
         xmlNodePtr schemasArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_SCHEMAS_ARRAY, NULL);
@@ -416,8 +416,8 @@ std::string FormatXML::store(
 
 static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode)
 {
-    std::shared_ptr<vmf::MetadataSchema> spSchema;
-    std::shared_ptr<vmf::MetadataDesc> spDesc;
+    std::shared_ptr<umf::MetadataSchema> spSchema;
+    std::shared_ptr<umf::MetadataDesc> spDesc;
     std::string schema_name, schema_author;
     bool schemaUseEncryption = false;
     for (xmlAttrPtr cur_prop = schemaNode->properties; cur_prop; cur_prop = cur_prop->next)
@@ -432,7 +432,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
             schemaUseEncryption = encBool == "true";
         }
     }
-    spSchema = std::make_shared<vmf::MetadataSchema>(schema_name, schema_author, schemaUseEncryption);
+    spSchema = std::make_shared<umf::MetadataSchema>(schema_name, schema_author, schemaUseEncryption);
 
     for (xmlNodePtr descNode = schemaNode->children; descNode; descNode = descNode->next)
     {
@@ -458,7 +458,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                 if (fieldNode->type == XML_ELEMENT_NODE && (char*)fieldNode->name == std::string(TAG_FIELD))
                 {
                     std::string field_name;
-                    vmf::Variant::Type field_type = vmf::Variant::type_empty;
+                    umf::Variant::Type field_type = umf::Variant::type_empty;
                     bool field_optional = false;
                     bool fieldUseEncryption = false;
                     for (xmlAttrPtr cur_prop = fieldNode->properties; cur_prop; cur_prop = cur_prop->next) //fill field's attributes
@@ -468,7 +468,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                         if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_TYPE))
                         {
                             std::string sFieldType = (char*)xmlGetProp(fieldNode, cur_prop->name);
-                            field_type = vmf::Variant::typeFromString(sFieldType);
+                            field_type = umf::Variant::typeFromString(sFieldType);
                         }
                         if (std::string((char*)cur_prop->name) == std::string(ATTR_FIELD_OPTIONAL))
                         {
@@ -477,7 +477,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_prop->name)) == "false")
                                 field_optional = false;
                             else
-                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
+                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'optional'");
                         }
                         if(std::string((char*)cur_prop->name) == std::string(ATTR_ENCRYPTED_BOOL))
                         {
@@ -503,7 +503,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
                                 isUnique = false;
                             else
-                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
+                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'unique'");
                         }
                         if (std::string((char*)cur_ref->name) == std::string(ATTR_REFERENCE_CUSTOM))
                         {
@@ -512,7 +512,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
                             else if (std::string((char*)xmlGetProp(fieldNode, cur_ref->name)) == "false")
                                 isCustom = false;
                             else
-                                VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
+                                VMF_EXCEPTION(umf::IncorrectParamException, "Invalid value of boolean attribute 'custom'");
                         }
                     }
                     vReferences.emplace_back(std::make_shared<ReferenceDesc>(reference_name, isUnique, isCustom));
@@ -520,7 +520,7 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
 
             }
 
-            spDesc = std::make_shared<vmf::MetadataDesc>(desc_name, vFields, vReferences, descUseEncryption);
+            spDesc = std::make_shared<umf::MetadataDesc>(desc_name, vFields, vReferences, descUseEncryption);
             spSchema->add(spDesc);
         }
     }
@@ -536,8 +536,8 @@ static std::shared_ptr<MetadataSchema> parseSchemaFromNode(xmlNodePtr schemaNode
 static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
 {
     std::string schema_name, desc_name;
-    long long frameIndex = vmf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = vmf::Metadata::UNDEFINED_FRAMES_NUMBER,
-              timestamp = vmf::Metadata::UNDEFINED_TIMESTAMP, duration = vmf::Metadata::UNDEFINED_DURATION, id = INVALID_ID;
+    long long frameIndex = umf::Metadata::UNDEFINED_FRAME_INDEX, nFrames = umf::Metadata::UNDEFINED_FRAMES_NUMBER,
+              timestamp = umf::Metadata::UNDEFINED_TIMESTAMP, duration = umf::Metadata::UNDEFINED_DURATION, id = INVALID_ID;
     std::string encryptedMetadata;
     bool metadataUseEncryption = false;
     for (xmlAttr* cur_prop = metadataNode->properties; cur_prop; cur_prop = cur_prop->next)
@@ -566,7 +566,7 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
     }
 
     if(metadataUseEncryption && encryptedMetadata.empty())
-        VMF_EXCEPTION(vmf::IncorrectParamException, "No encrypted data presented while the flag is set on");
+        VMF_EXCEPTION(umf::IncorrectParamException, "No encrypted data presented while the flag is set on");
 
     MetadataInternal mdi(desc_name, schema_name);
     mdi.id = id;
@@ -574,16 +574,16 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
     mdi.useEncryption = metadataUseEncryption;
     mdi.encryptedData = encryptedMetadata;
 
-    if (frameIndex != vmf::Metadata::UNDEFINED_FRAME_INDEX)
+    if (frameIndex != umf::Metadata::UNDEFINED_FRAME_INDEX)
     {
         mdi.frameIndex = frameIndex;
-        if (nFrames != vmf::Metadata::UNDEFINED_FRAMES_NUMBER)
+        if (nFrames != umf::Metadata::UNDEFINED_FRAMES_NUMBER)
             mdi.frameNum = nFrames;
     }
-    if (timestamp != vmf::Metadata::UNDEFINED_TIMESTAMP)
+    if (timestamp != umf::Metadata::UNDEFINED_TIMESTAMP)
     {
         mdi.timestamp = timestamp;
-        if (duration != vmf::Metadata::UNDEFINED_DURATION)
+        if (duration != umf::Metadata::UNDEFINED_DURATION)
             mdi.duration = duration;
     }
 
@@ -616,7 +616,7 @@ static MetadataInternal parseMetadataFromNode(xmlNodePtr metadataNode)
                 }
             }
             if(fieldUseEncryption && fieldEncryptedData.empty())
-                VMF_EXCEPTION(vmf::IncorrectParamException,
+                VMF_EXCEPTION(umf::IncorrectParamException,
                               "No encrypted data presented while the flag is set on");
             
             mdi.fields[fieldName].value         = fieldValueStr;
@@ -663,11 +663,11 @@ static std::shared_ptr<MetadataStream::VideoSegment> parseVideoSegmentFromNode(x
     }
 
     if (title.empty())
-        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid title");
+        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid title");
     if (fps <= 0)
-        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid fps value");
+        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid fps value");
     if (timestamp < 0)
-        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid time value");
+        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid time value");
 
     std::shared_ptr<MetadataStream::VideoSegment> spSegment(new MetadataStream::VideoSegment(title, fps, timestamp));
     if (duration > 0)
@@ -690,7 +690,7 @@ static std::shared_ptr<Stat> parseStatFromNode(xmlNodePtr statNode)
     }
 
     if(statName.empty())
-        VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat name");
+        VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat name");
 
     const Stat::UpdateMode::Type updateMode = Stat::UpdateMode::Disabled;
 
@@ -717,15 +717,15 @@ static std::shared_ptr<Stat> parseStatFromNode(xmlNodePtr statNode)
             }
 
             if(fieldName.empty())
-                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field name");
+                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field name");
             if(schemaName.empty())
-                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata schema name");
+                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata schema name");
             if(metadataName.empty())
-                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata name");
+                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata name");
             if(metadataFieldName.empty())
-                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field metadata field name");
+                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field metadata field name");
             if(opName.empty())
-                VMF_EXCEPTION(vmf::InternalErrorException, "XML element has invalid stat field operation name");
+                VMF_EXCEPTION(umf::InternalErrorException, "XML element has invalid stat field operation name");
 
             fields.push_back(StatField(fieldName, schemaName, metadataName, metadataFieldName, opName));
         }
@@ -853,7 +853,7 @@ Format::ParseCounters FormatXML::parse(
     }
     else
     {
-        VMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <vmf> tag element");
+        VMF_EXCEPTION(IncorrectParamException, "Invalid XML document format. Root element of the XMLTree is not the <umf> tag element");
     }
 
     xmlFreeDoc(doc);
@@ -864,4 +864,4 @@ Format::ParseCounters FormatXML::parse(
     return cnt;
 }
 
-}//vmf
+}//umf

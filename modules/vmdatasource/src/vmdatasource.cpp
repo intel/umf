@@ -24,7 +24,7 @@
 
 using namespace std;
 
-namespace vmf
+namespace umf
 {
 
 class XMPDataSourceFactory: public IDataSourceFactory
@@ -58,4 +58,4 @@ void terminate()
     Uninitialize();
 }
 
-} // namespace vmf
+} // namespace umf

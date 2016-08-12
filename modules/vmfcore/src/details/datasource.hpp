@@ -29,7 +29,7 @@
 #include "vmf/metadatastream.hpp"
 #include "vmf/statistics.hpp"
 
-namespace vmf
+namespace umf
 {
 class PropertyImpl;
 class MetadataStream;
@@ -60,7 +60,7 @@ public:
      * \param [out] stream stream to be filled by loaded metadata
      * \throw DataStorageException
      */
-    virtual void loadSchema(const vmf::umf_string& schemaName, vmf::MetadataStream& stream) = 0;
+    virtual void loadSchema(const umf::umf_string& schemaName, umf::MetadataStream& stream) = 0;
 
     /*!
      * \brief Loads all metadata belonging to the specified property
@@ -69,7 +69,7 @@ public:
      * \param [out] stream stream to be filled by loaded metadata
      * \throw DataStorageException
      */
-    virtual void loadProperty(const vmf::umf_string& schemaName, const vmf::umf_string& propertyName, vmf::MetadataStream& stream) = 0;
+    virtual void loadProperty(const umf::umf_string& schemaName, const umf::umf_string& propertyName, umf::MetadataStream& stream) = 0;
 
     /*!
      * \brief Saves all metadata belonging to the specified schema
@@ -188,6 +188,6 @@ public:
     virtual void loadStats(std::vector< std::shared_ptr<Stat> >& stats) = 0;
 };
 
-} /* vmf */
+} /* umf */
 
 #endif /* __VMF_DATA_SOURCE_INTERFACE_H__ */

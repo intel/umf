@@ -25,7 +25,7 @@
 
 #include "format.hpp"
 
-namespace vmf
+namespace umf
 {
 /*!
 * class FormatJSON
@@ -70,6 +70,6 @@ public:
     virtual std::shared_ptr<Format> getBackendFormat();
 };
 
-}//vmf
+}//umf
 
 #endif //VMF_FORMAT_JSON_H

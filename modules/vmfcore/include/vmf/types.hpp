@@ -31,7 +31,7 @@
 #include <vector>
 #include <limits>
 
-namespace vmf
+namespace umf
 {
     /*!
     * \brief Compares double values
@@ -150,5 +150,5 @@ namespace vmf
     };
 
 
-} /* vmf */
+} /* umf */
 #endif /* __VMF_TYPES_H__ */

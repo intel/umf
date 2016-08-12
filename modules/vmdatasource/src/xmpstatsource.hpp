@@ -19,7 +19,7 @@
 
 #include "xmpdatasource.hpp"
 
-namespace vmf {
+namespace umf {
 
 class XMPStatSource
 {
@@ -44,6 +44,6 @@ private:
 
 };
 
-} // namespace vmf
+} // namespace umf
 
 #endif // __XMPSTATSOURCE_HPP__

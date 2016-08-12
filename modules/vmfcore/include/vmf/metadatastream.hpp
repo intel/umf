@@ -42,7 +42,7 @@
 
 #include <algorithm>
 
-namespace vmf
+namespace umf
 {
 class IDataSource;
 class IReader;
@@ -70,7 +70,7 @@ public:
     };
     typedef int OpenMode;
 
-	//static vmf::MetadataStream::OpenMode ReadWrite;
+	//static umf::MetadataStream::OpenMode ReadWrite;
 
     /*!
      * \class VideoSegment
@@ -295,12 +295,12 @@ public:
     MetadataSet queryBySchema( const std::string& sSchemaName ) const;
     MetadataSet queryByName( const std::string& sName ) const;
 
-    MetadataSet queryByNameAndValue( const std::string& sMetadataName, const vmf::FieldValue& value ) const;
-    MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< vmf::FieldValue>& vFields ) const;
+    MetadataSet queryByNameAndValue( const std::string& sMetadataName, const umf::FieldValue& value ) const;
+    MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< umf::FieldValue>& vFields ) const;
 
     MetadataSet queryByReference( const std::string& sReferenceName ) const;
-    MetadataSet queryByReference( const std::string& sReferenceName, const vmf::FieldValue& value ) const;
-    MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< vmf::FieldValue>& vFields ) const;
+    MetadataSet queryByReference( const std::string& sReferenceName, const umf::FieldValue& value ) const;
+    MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< umf::FieldValue>& vFields ) const;
 
     void sortById()
     {
@@ -458,7 +458,7 @@ private:
     std::vector<IdType> removedIds;
     std::vector<IdType> addedIds;
     std::shared_ptr<IDataSource> dataSource;
-    vmf::IdType nextId;
+    umf::IdType nextId;
     std::string m_sChecksumMedia;
     bool m_useEncryption;
     std::shared_ptr<Encryptor> m_encryptor;

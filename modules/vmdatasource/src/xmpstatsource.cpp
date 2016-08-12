@@ -33,7 +33,7 @@
 #define VMF_STAT_FIELD_OP_NAME       "op_name"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 XMPStatSource::XMPStatSource(const std::shared_ptr<SXMPMeta> statStorage)
     : metadata(statStorage)

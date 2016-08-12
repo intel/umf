@@ -20,20 +20,20 @@
 
 TEST(TestStdSchema, GetName)
 {
-    std::string sn = vmf::MetadataSchema::getStdSchemaName();
+    std::string sn = umf::MetadataSchema::getStdSchemaName();
     ASSERT_EQ(sn, "vmf://ns.intel.com/vmf/std-dst-schema-1.0");
 }
 
 TEST(TestStdSchema, GetSchema)
 {
-    auto stdSchema = vmf::MetadataSchema::getStdSchema();
+    auto stdSchema = umf::MetadataSchema::getStdSchema();
     ASSERT_TRUE( (bool)stdSchema );
 
-    EXPECT_EQ(stdSchema->getName(), vmf::MetadataSchema::getStdSchemaName());
+    EXPECT_EQ(stdSchema->getName(), umf::MetadataSchema::getStdSchemaName());
     EXPECT_EQ(stdSchema->getAuthor(), "Intel Corporation");
 
-    ASSERT_THROW(vmf::MetadataSchema::getStdSchemaName((vmf::MetadataSchema::StdSchemaKind)14), vmf::IncorrectParamException);
-    ASSERT_THROW(vmf::MetadataSchema::getStdSchema((vmf::MetadataSchema::StdSchemaKind)14), vmf::IncorrectParamException);
+    ASSERT_THROW(umf::MetadataSchema::getStdSchemaName((umf::MetadataSchema::StdSchemaKind)14), umf::IncorrectParamException);
+    ASSERT_THROW(umf::MetadataSchema::getStdSchema((umf::MetadataSchema::StdSchemaKind)14), umf::IncorrectParamException);
 
     auto channels = stdSchema->getAll();
     EXPECT_EQ(channels.size(), 23u);

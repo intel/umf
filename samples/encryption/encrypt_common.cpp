@@ -22,7 +22,7 @@
 #include <fstream>
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 const string GPS_DESC = "gps";
 const string GPS_COORD_LAT_FIELD = "lat";
@@ -192,7 +192,7 @@ void readAndDumpEncryptedMetadata(const umf_string& videoFile, std::shared_ptr<E
                     {
                         cout << separator << f << "=";
                         try { cout << item->getFieldValue(f).toString(); }
-                        catch (vmf::Exception& e) { cout << '<' << e.what() << '>'; }
+                        catch (umf::Exception& e) { cout << '<' << e.what() << '>'; }
                         if(item->findField(f)->getUseEncryption())
                         {
                             cout << " encrypted";

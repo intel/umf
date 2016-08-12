@@ -31,7 +31,7 @@
 #include "metadata.hpp"
 #include "global.hpp"
 
-namespace vmf
+namespace umf
 {
 class MetadataSet;
 
@@ -93,7 +93,7 @@ public:
     * \param value [in] metadata value
     * \return filtered set of metadata
     */
-    virtual MetadataSet queryByNameAndValue( const std::string& sMetadataName, const vmf::FieldValue& value ) const = 0;
+    virtual MetadataSet queryByNameAndValue( const std::string& sMetadataName, const umf::FieldValue& value ) const = 0;
 
     /*!
     * \brief Make metadata query by metadata item name and multiple values
@@ -101,7 +101,7 @@ public:
     * \param vFields [in] metadata values
     * \return filtered set of metadata
     */
-    virtual MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< vmf::FieldValue>& vFields ) const = 0;
+    virtual MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< umf::FieldValue>& vFields ) const = 0;
 
     /*!
     * \brief Make metadata query by reference name
@@ -116,7 +116,7 @@ public:
     * \param value [in] metadata value
     * \return filtered set of metadata
     */
-    virtual MetadataSet queryByReference( const std::string& sReferenceName, const vmf::FieldValue& value ) const = 0;
+    virtual MetadataSet queryByReference( const std::string& sReferenceName, const umf::FieldValue& value ) const = 0;
 
     /*!
     * \brief Make metadata query by reference name and multiple metadata item values
@@ -124,7 +124,7 @@ public:
     * \param vFields [in] possible metadata values
     * \return filtered set of metadata
     */
-    virtual MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< vmf::FieldValue>& vFields ) const = 0;
+    virtual MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< umf::FieldValue>& vFields ) const = 0;
 };
 }
 

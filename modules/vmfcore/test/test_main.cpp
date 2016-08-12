@@ -20,9 +20,9 @@
 
 int main(int argc, char **argv) 
 {
-    std::cout << "VMF build info:\n" << vmf::getBuildInfo() << std::endl;
+    std::cout << "VMF build info:\n" << umf::getBuildInfo() << std::endl;
     ::testing::InitGoogleTest(&argc, argv);
-    vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
+    umf::Log::setVerbosityLevel(umf::LOG_NO_MESSAGE);
 
     return RUN_ALL_TESTS();
 }

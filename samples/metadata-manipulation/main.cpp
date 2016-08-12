@@ -27,7 +27,7 @@
 #include "vmf/vmf.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 void printMetadataStructure(const string& path)
 {
@@ -101,7 +101,7 @@ void dumpMetadata(const string& path, const string& schemaName = "", const strin
                 {
                     cout << separator << *f << "=";
                     try { cout << (*item)->getFieldValue(*f).toString(); }
-                    catch(vmf::Exception& e) { cout << '<' << e.what() << '>'; }
+                    catch(umf::Exception& e) { cout << '<' << e.what() << '>'; }
                     separator = ", ";
                 }
                 cout << " }" << endl;

@@ -18,7 +18,7 @@ public:
     }
 
 public:
-    vmf::IdType personId;
+    umf::IdType personId;
 };
 
 class MarkupModel : public QObject
@@ -28,7 +28,7 @@ class MarkupModel : public QObject
 public:
     typedef std::vector<FaceRect> RegionList;
     typedef std::vector<AssociatedRect> AssociatedRegionList;
-    typedef vmf::umf_integer FrameIndex;
+    typedef umf::umf_integer FrameIndex;
     typedef std::map<FrameIndex, RegionList> UnassociatedRList;
     typedef std::map<FrameIndex, AssociatedRegionList> AssociatedRList;
 
@@ -42,20 +42,20 @@ public slots:
 public:
     MarkupModel();
 
-    void loadPeopleInfo(vmf::MetadataStream* stream);
+    void loadPeopleInfo(umf::MetadataStream* stream);
     void setUnassociatedRegions(FrameIndex index, const RegionList& list);
     RegionList getUnassociatedRegions(FrameIndex index);
     bool isAlreadyViewed(FrameIndex index);
     RegionList getAssociatedRegions(FrameIndex index);
     void storeMarkup();
     void storeAssociations();
-    AssociatedRect addAssociatedRegion(FrameIndex index, vmf::IdType personId,
+    AssociatedRect addAssociatedRegion(FrameIndex index, umf::IdType personId,
         const FaceRect& rect);
     bool findPersonByRegion(FrameIndex frameIndex, quint64 regionIndex, 
-        vmf::IdType& outId);
+        umf::IdType& outId);
     void changeRectAssociation(FrameIndex frameIndex, quint64 rectIndex,
-        vmf::IdType newPersonId);
-    void removeAssociatedRegions(vmf::IdType personId);
+        umf::IdType newPersonId);
+    void removeAssociatedRegions(umf::IdType personId);
     void clear();
 
 private:
@@ -64,7 +64,7 @@ private:
 
 private:
     UnassociatedRList unassociatedRegions;
-    vmf::MetadataStream *streamPtr;
+    umf::MetadataStream *streamPtr;
     AssociatedRList associatedRegions;
 };
 

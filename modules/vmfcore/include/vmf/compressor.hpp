@@ -25,7 +25,7 @@
 #include <map>
 #include "vmf/metadataschema.hpp"
 
-namespace vmf
+namespace umf
 {
 
 /*! \class Compressor
@@ -100,6 +100,6 @@ public:
     static std::string builtinId();
 };
 
-} /* vmf */
+} /* umf */
 
 #endif /* VMF_COMPRESSOR_HPP */

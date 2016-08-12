@@ -228,9 +228,9 @@ private:
     void execute();
 
     void updateLocations();
-    static double getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name);
-    void setWrappingStatus(std::shared_ptr<vmf::Format> f,
-                           std::shared_ptr<vmf::Encryptor> e,
+    static double getFieldValue(std::shared_ptr<umf::Metadata> md, const std::string& name);
+    void setWrappingStatus(std::shared_ptr<umf::Format> f,
+                           std::shared_ptr<umf::Encryptor> e,
                            std::string buf);
 
     QFuture<void> m_worker;
@@ -239,7 +239,7 @@ private:
     int m_sock;
     bool m_useXml;
 
-    vmf::MetadataStream m_ms;
+    umf::MetadataStream m_ms;
     QList<Location*> m_locations;
     WrappingInfo* m_wrappingInfo;
     StatInfo* m_statInfo;

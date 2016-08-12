@@ -25,7 +25,7 @@
 
 #include "vmf/format.hpp"
 
-namespace vmf
+namespace umf
 {
 /*!
 * class FormatXML
@@ -70,6 +70,6 @@ public:
     virtual std::shared_ptr<Format> getBackendFormat();
 };
 
-}//vmf
+}//umf
 
 #endif //VMF_FORMAT_XML_H

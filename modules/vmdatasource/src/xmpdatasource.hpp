@@ -28,14 +28,14 @@
 #include "vmf/compressor.hpp"
 #include "vmf/encryptor.hpp"
 
-#define TXMP_STRING_TYPE vmf::umf_string
+#define TXMP_STRING_TYPE umf::umf_string
 #define XMP_INCLUDE_XMPFILES 1
 #include <XMP.incl_cpp>
 #include <XMP.hpp>
 
-#define VMF_NS "http://ns.intel.com/vmf/2.0"
+#define VMF_NS "http://ns.intel.com/umf/2.0"
 
-namespace vmf
+namespace umf
 {
 
 #ifdef _MSC_VER
@@ -57,27 +57,27 @@ public:
 
     ~XMPDataSource();
 
-    virtual void openFile(const vmf::umf_string& fileName, vmf::MetadataStream::OpenMode mode);
+    virtual void openFile(const umf::umf_string& fileName, umf::MetadataStream::OpenMode mode);
 
     virtual void closeFile();
 
-    virtual void loadSchema(const vmf::umf_string& schemaName, vmf::MetadataStream& stream);
+    virtual void loadSchema(const umf::umf_string& schemaName, umf::MetadataStream& stream);
 
-    virtual void loadProperty(const vmf::umf_string &schemaName, const vmf::umf_string &propertyName, MetadataStream &stream);
+    virtual void loadProperty(const umf::umf_string &schemaName, const umf::umf_string &propertyName, MetadataStream &stream);
 
     virtual void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const MetadataSet& mdSet);
 
-    virtual void save(const std::shared_ptr<vmf::MetadataSchema>& schema);
+    virtual void save(const std::shared_ptr<umf::MetadataSchema>& schema);
 
-    virtual void remove(const std::vector<vmf::IdType>& ids);
+    virtual void remove(const std::vector<umf::IdType>& ids);
 
-    virtual void load(std::map<umf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas);
+    virtual void load(std::map<umf_string, std::shared_ptr<umf::MetadataSchema> >& schemas);
 
     virtual void clear();
 
-    virtual void save(const vmf::IdType& id);
+    virtual void save(const umf::IdType& id);
 
-    virtual vmf::IdType loadId();
+    virtual umf::IdType loadId();
 
     virtual void removeSchema(const umf_string &schemaName);
 
@@ -134,18 +134,18 @@ private:
     std::shared_ptr<XMPMetadataSource> metadataSource;
     std::shared_ptr<XMPSchemaSource> schemaSource;
     std::shared_ptr<XMPStatSource> statSource;
-    vmf::umf_string metaFileName;
-    vmf::MetadataStream::OpenMode openMode;
+    umf::umf_string metaFileName;
+    umf::MetadataStream::OpenMode openMode;
     std::shared_ptr<Compressor> compressor;
     std::shared_ptr<Encryptor>  encryptor;
-    std::shared_ptr<vmf::MetadataSchema> schemaCompression;
-    std::shared_ptr<vmf::MetadataSchema> schemaEncryption;
+    std::shared_ptr<umf::MetadataSchema> schemaCompression;
+    std::shared_ptr<umf::MetadataSchema> schemaEncryption;
 };
 
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
-} // namespace vmf
+} // namespace umf
 
 #endif // __XMPDATASOURCE_HPP__

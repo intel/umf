@@ -20,7 +20,7 @@
 
 #include "encryptor.hpp"
 
-namespace vmf
+namespace umf
 {
 
 /*!

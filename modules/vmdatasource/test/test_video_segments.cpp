@@ -29,7 +29,7 @@ extern std::string tempPath;
 
 #define TEST_FILE_SRC VIDEO_FILE
 
-using namespace vmf;
+using namespace umf;
 
 enum SerializerType
 {
@@ -43,7 +43,7 @@ protected:
     void SetUp()
     {
         copyFile(TEST_FILE_SRC, TEST_FILE);
-        //vmf::initialize();
+        //umf::initialize();
 
         stream.open(TEST_FILE, MetadataStream::Update);
 
@@ -68,7 +68,7 @@ protected:
 
     void TearDown()
     {
-	//vmf::terminate();
+	//umf::terminate();
     }
 
     void compareSegments(const std::shared_ptr<MetadataStream::VideoSegment>& s1, const std::shared_ptr<MetadataStream::VideoSegment>& s2)
@@ -96,31 +96,31 @@ protected:
 
 TEST_F(TestVideoSegments, SaveLoad)
 {
-    std::shared_ptr<vmf::MetadataStream::VideoSegment> segment1 =
-        std::make_shared<vmf::MetadataStream::VideoSegment>("segment1", 30, 0);
+    std::shared_ptr<umf::MetadataStream::VideoSegment> segment1 =
+        std::make_shared<umf::MetadataStream::VideoSegment>("segment1", 30, 0);
     {
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
         ASSERT_NO_THROW(stream.addVideoSegment(segment1));
-        stream.open(TEST_FILE, vmf::MetadataStream::Update);
+        stream.open(TEST_FILE, umf::MetadataStream::Update);
         auto loadedSegments = stream.getAllVideoSegments();
         ASSERT_EQ(segments.size(), loadedSegments.size());
         for (unsigned int i = 0; i < loadedSegments.size(); i++)
             compareSegments(segments[i], loadedSegments[i]);
-        ASSERT_THROW(stream.addVideoSegment(segment1), vmf::IncorrectParamException);
+        ASSERT_THROW(stream.addVideoSegment(segment1), umf::IncorrectParamException);
         stream.getAllVideoSegments().clear();
         stream.addVideoSegment(segment1);
         stream.save();
         stream.close();
     }
     {
-        vmf::MetadataStream stream;
-        stream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         auto loadedSegments = stream.getAllVideoSegments();
         ASSERT_EQ(1u, loadedSegments.size());
         compareSegments(segment1, loadedSegments[0]);
 
-        std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
-        ASSERT_THROW(stream.addVideoSegment(nullSegment), vmf::NullPointerException);
+        std::shared_ptr<umf::MetadataStream::VideoSegment> nullSegment = nullptr;
+        ASSERT_THROW(stream.addVideoSegment(nullSegment), umf::NullPointerException);
 
         stream.close();
     }
@@ -148,7 +148,7 @@ TEST_P(TestVideoSegments, ParseSegmentsArray)
 
     std::shared_ptr<MetadataStream::VideoSegment> nullSegment = nullptr;
     segments.emplace_back(nullSegment);
-    ASSERT_THROW(format->store({}, {}, segments), vmf::NullPointerException);
+    ASSERT_THROW(format->store({}, {}, segments), umf::NullPointerException);
 }
 
 TEST_P(TestVideoSegments, ParseSegmentsAll)
@@ -193,7 +193,7 @@ INSTANTIATE_TEST_CASE_P(UnitTestDS, TestVideoSegments, ::testing::Values(TypeXML
 
 TEST(TestVideoSegmentsConvertation, TimestampToFrameIndex)
 {
-    vmf::MetadataStream stream;
+    umf::MetadataStream stream;
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment1", 20, 0, 1000));
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment2", 25, 5000, 1000));
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment3", 5, 10000, 1000));
@@ -216,7 +216,7 @@ TEST(TestVideoSegmentsConvertation, TimestampToFrameIndex)
 
 TEST(TestVideoSegmentsConvertation, FrameIndexToTimestamp)
 {
-    vmf::MetadataStream stream;
+    umf::MetadataStream stream;
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment1", 20, 0, 1000));
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment2", 25, 5000, 1000));
     stream.addVideoSegment(std::make_shared<MetadataStream::VideoSegment>("segment3", 5, 10000, 1000));

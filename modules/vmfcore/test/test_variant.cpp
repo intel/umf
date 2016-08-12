@@ -19,24 +19,24 @@
 class TestVariant: public ::testing::Test
 {
 public:
-    vmf::Variant v;
-    std::shared_ptr<vmf::Variant> var = nullptr;
+    umf::Variant v;
+    std::shared_ptr<umf::Variant> var = nullptr;
 };
 
 TEST_F(TestVariant, CreateByMoveCopyConstructor)
 {
-    var = std::make_shared<vmf::Variant>(vmf::Variant());
+    var = std::make_shared<umf::Variant>(umf::Variant());
     ASSERT_FALSE(var == nullptr);
 }
 
 TEST_F(TestVariant, Compare)
 {
-    vmf::Variant var1((vmf::umf_integer) 42);
-    vmf::Variant var2((vmf::umf_real) 42.0);
-    vmf::Variant var3((vmf::umf_integer) 42);
-    vmf::Variant var4;
-    vmf::Variant var5;
-    ASSERT_TRUE(vmf::Variant::isConvertible(vmf::Variant::type_integer, vmf::Variant::type_integer));
+    umf::Variant var1((umf::umf_integer) 42);
+    umf::Variant var2((umf::umf_real) 42.0);
+    umf::Variant var3((umf::umf_integer) 42);
+    umf::Variant var4;
+    umf::Variant var5;
+    ASSERT_TRUE(umf::Variant::isConvertible(umf::Variant::type_integer, umf::Variant::type_integer));
     ASSERT_TRUE(var3 == var1);
     ASSERT_TRUE(var2 == var1);
     ASSERT_TRUE(var1 == var2);
@@ -45,35 +45,35 @@ TEST_F(TestVariant, Compare)
 
 TEST_F(TestVariant, CreateEmpty)
 {
-    ASSERT_EQ(v.getType(), vmf::Variant::type_empty);
+    ASSERT_EQ(v.getType(), umf::Variant::type_empty);
 }
 
 TEST_F(TestVariant, CreateInteger)
 {
-    vmf::Variant v((vmf::umf_integer) 42);
-    ASSERT_EQ(v.getType(), vmf::Variant::type_integer);
-    ASSERT_EQ((vmf::umf_integer) v, 42);
+    umf::Variant v((umf::umf_integer) 42);
+    ASSERT_EQ(v.getType(), umf::Variant::type_integer);
+    ASSERT_EQ((umf::umf_integer) v, 42);
     ASSERT_EQ(v.get_integer(), 42);
 
     unsigned int value = 10;
     v = value;
-    ASSERT_EQ(value, (vmf::umf_integer)v);
+    ASSERT_EQ(value, (umf::umf_integer)v);
 }
 
 TEST_F(TestVariant, CreateReal)
 {
-    vmf::Variant v((vmf::umf_real) 42.42);
-    ASSERT_EQ(v.getType(), vmf::Variant::type_real);
-    ASSERT_DOUBLE_EQ((vmf::umf_real) v, 42.42);
+    umf::Variant v((umf::umf_real) 42.42);
+    ASSERT_EQ(v.getType(), umf::Variant::type_real);
+    ASSERT_DOUBLE_EQ((umf::umf_real) v, 42.42);
     ASSERT_DOUBLE_EQ(v.get_real(), 42.42);
 }
 
 TEST_F(TestVariant, CreateString)
 {
-    vmf::Variant v("string");
+    umf::Variant v("string");
 
-    ASSERT_EQ(v.getType(), vmf::Variant::type_string);
-    ASSERT_EQ((vmf::umf_string) v, "string");
+    ASSERT_EQ(v.getType(), umf::Variant::type_string);
+    ASSERT_EQ((umf::umf_string) v, "string");
     ASSERT_EQ(v.get_string(), "string");
  
     const char str[] = "";
@@ -82,8 +82,8 @@ TEST_F(TestVariant, CreateString)
 
 TEST_F(TestVariant, CreateVec2d)
 {
-    vmf::umf_vec2d vec = vmf::umf_vec2d(42.42, 24.24);
-    vmf::Variant v(vec);
+    umf::umf_vec2d vec = umf::umf_vec2d(42.42, 24.24);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec2d");
     bool result = v.get_vec2d() == vec;
     ASSERT_TRUE(result);
@@ -91,8 +91,8 @@ TEST_F(TestVariant, CreateVec2d)
 
 TEST_F(TestVariant, CreateVec3d)
 {
-    vmf::umf_vec3d vec = vmf::umf_vec3d(42.42, 24.24, 42.24);
-    vmf::Variant v(vec);
+    umf::umf_vec3d vec = umf::umf_vec3d(42.42, 24.24, 42.24);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec3d");
     bool result = v.get_vec3d() == vec;
     ASSERT_TRUE(result);
@@ -100,8 +100,8 @@ TEST_F(TestVariant, CreateVec3d)
 
 TEST_F(TestVariant, CreateVec4d)
 {
-    vmf::umf_vec4d vec = vmf::umf_vec4d(42.42, 24.24, 42.24, 24.42);
-    vmf::Variant v(vec);
+    umf::umf_vec4d vec = umf::umf_vec4d(42.42, 24.24, 42.24, 24.42);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec4d");
     bool result = v.get_vec4d() == vec;
     ASSERT_TRUE(result);
@@ -109,8 +109,8 @@ TEST_F(TestVariant, CreateVec4d)
 
 TEST_F(TestVariant, CreateRawbuffer)
 {
-    vmf::umf_rawbuffer rbuf("Raw <buffer \0 content>\n&", 25);
-    vmf::Variant v(rbuf);
+    umf::umf_rawbuffer rbuf("Raw <buffer \0 content>\n&", 25);
+    umf::Variant v(rbuf);
     ASSERT_EQ(v.getTypeName(), "rawbuffer");
     bool result = v.get_rawbuffer() == rbuf;
     ASSERT_TRUE(result);
@@ -118,44 +118,44 @@ TEST_F(TestVariant, CreateRawbuffer)
 
 TEST_F(TestVariant, CreateIntegerVector)
 {
-    std::vector<vmf::umf_integer> vint;
+    std::vector<umf::umf_integer> vint;
     vint.push_back(42);
     vint.push_back(24);
-    vmf::Variant v(vint);
-    ASSERT_EQ(v.getType(), vmf::Variant::type_integer_vector);
+    umf::Variant v(vint);
+    ASSERT_EQ(v.getType(), umf::Variant::type_integer_vector);
     ASSERT_EQ(v.get_integer_vector()[0], 42);
     ASSERT_EQ(v.get_integer_vector()[1], 24);
 }
 
 TEST_F(TestVariant, CreateRealVector)
 {
-    std::vector<vmf::umf_real> vreal;
+    std::vector<umf::umf_real> vreal;
     vreal.push_back(42.42);
     vreal.push_back(24.24);
-    vmf::Variant v(vreal);
-    ASSERT_EQ(v.getType(), vmf::Variant::type_real_vector);
+    umf::Variant v(vreal);
+    ASSERT_EQ(v.getType(), umf::Variant::type_real_vector);
     ASSERT_DOUBLE_EQ(v.get_real_vector()[0], 42.42);
     ASSERT_DOUBLE_EQ(v.get_real_vector()[1], 24.24);
 }
 
 TEST_F(TestVariant, CreateStringVector)
 {
-    std::vector<vmf::umf_string> vstr;
+    std::vector<umf::umf_string> vstr;
     vstr.push_back("string");
     vstr.push_back("gnirts");
-    vmf::Variant v(vstr);
-    ASSERT_EQ(v.getType(), vmf::Variant::type_string_vector);
+    umf::Variant v(vstr);
+    ASSERT_EQ(v.getType(), umf::Variant::type_string_vector);
     ASSERT_EQ(v.get_string_vector()[0], "string");
     ASSERT_EQ(v.get_string_vector()[1], "gnirts");
 }
 
 TEST_F(TestVariant, CreateVec2dVector)
 {
-    vmf::umf_vec2d vec(42.42, 24.24), vec2(24.24, 42.42);
-    std::vector<vmf::umf_vec2d> vvec;
+    umf::umf_vec2d vec(42.42, 24.24), vec2(24.24, 42.42);
+    std::vector<umf::umf_vec2d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec2d[]");
     bool result = v.get_vec2d_vector()[0] == vec;
     ASSERT_TRUE(result);
@@ -165,11 +165,11 @@ TEST_F(TestVariant, CreateVec2dVector)
 
 TEST_F(TestVariant, CreateVec3dVector)
 {
-    vmf::umf_vec3d vec(42.42, 24.24, 1.1), vec2(24.24, 42.42, 1.1);
-    std::vector<vmf::umf_vec3d> vvec;
+    umf::umf_vec3d vec(42.42, 24.24, 1.1), vec2(24.24, 42.42, 1.1);
+    std::vector<umf::umf_vec3d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec3d[]");
     bool result = v.get_vec3d_vector()[0] == vec;
     ASSERT_TRUE(result);
@@ -179,11 +179,11 @@ TEST_F(TestVariant, CreateVec3dVector)
 
 TEST_F(TestVariant, CreateVec4dVector)
 {
-    vmf::umf_vec4d vec(42.42, 24.24, 1.1, 128.0), vec2(24.24, 42.42, 1.1, 0.128);
-    std::vector<vmf::umf_vec4d> vvec;
+    umf::umf_vec4d vec(42.42, 24.24, 1.1, 128.0), vec2(24.24, 42.42, 1.1, 0.128);
+    std::vector<umf::umf_vec4d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec4d[]");
     bool result = v.get_vec4d_vector()[0] == vec;
     ASSERT_TRUE(result);
@@ -198,94 +198,94 @@ TEST_F(TestVariant, GetTypeNameEmpty)
 
 TEST_F(TestVariant, GetTypeNameInteger)
 {
-    vmf::Variant v((vmf::umf_integer) 42);
+    umf::Variant v((umf::umf_integer) 42);
     ASSERT_EQ(v.getTypeName(), "integer");
 }
 
 TEST_F(TestVariant, GetTypeNameReal)
 {
-    vmf::Variant v((vmf::umf_real) 42.42);
+    umf::Variant v((umf::umf_real) 42.42);
     ASSERT_EQ(v.getTypeName(), "real");
 }
 
 TEST_F(TestVariant, GetTypeNameString)
 {
-    vmf::Variant v("string");
+    umf::Variant v("string");
     ASSERT_EQ(v.getTypeName(), "string");
 }
 
 TEST_F(TestVariant, GetTypeNameVec2d)
 {
-    vmf::umf_vec2d vec = vmf::umf_vec2d(42.42, 24.24);
-    vmf::Variant v(vec);
+    umf::umf_vec2d vec = umf::umf_vec2d(42.42, 24.24);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec2d");
 }
 
 TEST_F(TestVariant, GetTypeNameVec3d)
 {
-    vmf::umf_vec3d vec = vmf::umf_vec3d(42.42, 24.24, 42.24);
-    vmf::Variant v(vec);
+    umf::umf_vec3d vec = umf::umf_vec3d(42.42, 24.24, 42.24);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec3d");
 }
 
 TEST_F(TestVariant, GetTypeNameVec4d)
 {
-    vmf::umf_vec4d vec = vmf::umf_vec4d(42.42, 24.24, 42.24, 24.42);
-    vmf::Variant v(vec);
+    umf::umf_vec4d vec = umf::umf_vec4d(42.42, 24.24, 42.24, 24.42);
+    umf::Variant v(vec);
     ASSERT_EQ(v.getTypeName(), "vec4d");
 }
 
 TEST_F(TestVariant, GetTypeNameRawbuffer)
 {
-    vmf::umf_rawbuffer rbuf("Raw <buffer \0 content>\n&", 25);
-    vmf::Variant v(rbuf);
+    umf::umf_rawbuffer rbuf("Raw <buffer \0 content>\n&", 25);
+    umf::Variant v(rbuf);
     ASSERT_EQ(v.getTypeName(), "rawbuffer");
 }
 
 TEST_F(TestVariant, GetTypeNameIntegerVector)
 {
-    std::vector<vmf::umf_integer> vint;
+    std::vector<umf::umf_integer> vint;
     vint.push_back(42);
     vint.push_back(24);
-    vmf::Variant v(vint);
+    umf::Variant v(vint);
     ASSERT_EQ(v.getTypeName(), "integer[]");
 }
 
 TEST_F(TestVariant, GetTypeNameRealVector)
 {
-    std::vector<vmf::umf_real> vreal;
+    std::vector<umf::umf_real> vreal;
     vreal.push_back(42.42);
     vreal.push_back(24.24);
-    vmf::Variant v(vreal);
+    umf::Variant v(vreal);
     ASSERT_EQ(v.getTypeName(), "real[]");
 }
 
 TEST_F(TestVariant, GetTypeNameStringVector)
 {
-    std::vector<vmf::umf_string> vstr;
+    std::vector<umf::umf_string> vstr;
     vstr.push_back("string");
     vstr.push_back("gnirts");
-    vmf::Variant v(vstr);
+    umf::Variant v(vstr);
     ASSERT_EQ(v.getTypeName(), "string[]");
 }
 
 TEST_F(TestVariant, GetTypeNameVec2dVector)
 {
-    vmf::umf_vec2d vec(42.42, 24.24), vec2(24.24, 42.42);
-    std::vector<vmf::umf_vec2d> vvec;
+    umf::umf_vec2d vec(42.42, 24.24), vec2(24.24, 42.42);
+    std::vector<umf::umf_vec2d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec2d[]");
 }
 
 TEST_F(TestVariant, GetTypeNameVec3dVector)
 {
-    vmf::umf_vec3d vec(42.42, 24.24, 1.1), vec2(24.24, 42.42, 1.1);
-    std::vector<vmf::umf_vec3d> vvec;
+    umf::umf_vec3d vec(42.42, 24.24, 1.1), vec2(24.24, 42.42, 1.1);
+    std::vector<umf::umf_vec3d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec3d[]");
     bool result = v.get_vec3d_vector()[0] == vec;
     ASSERT_TRUE(result);
@@ -293,87 +293,87 @@ TEST_F(TestVariant, GetTypeNameVec3dVector)
 
 TEST_F(TestVariant, GetTypeNameVec4dVector)
 {
-    vmf::umf_vec4d vec(42.42, 24.24, 1.1, 128.0), vec2(24.24, 42.42, 1.1, 0.128);
-    std::vector<vmf::umf_vec4d> vvec;
+    umf::umf_vec4d vec(42.42, 24.24, 1.1, 128.0), vec2(24.24, 42.42, 1.1, 0.128);
+    std::vector<umf::umf_vec4d> vvec;
     vvec.push_back(vec);
     vvec.push_back(vec2);
-    vmf::Variant v(vvec);
+    umf::Variant v(vvec);
     ASSERT_EQ(v.getTypeName(), "vec4d[]");
 }
 
 TEST_F(TestVariant, MaxLimitUnknown)
 {
-    EXPECT_THROW(vmf::Variant::maxLimit<vmf::umf_integer>(vmf::Variant::type_empty), vmf::IncorrectParamException);
+    EXPECT_THROW(umf::Variant::maxLimit<umf::umf_integer>(umf::Variant::type_empty), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, MaxLimitInteger)
 {
-    vmf::umf_integer limitValue = vmf::Variant::maxLimit<vmf::umf_integer>(vmf::Variant::type_integer);
-    ASSERT_EQ(limitValue, std::numeric_limits<vmf::umf_integer>::max());
+    umf::umf_integer limitValue = umf::Variant::maxLimit<umf::umf_integer>(umf::Variant::type_integer);
+    ASSERT_EQ(limitValue, std::numeric_limits<umf::umf_integer>::max());
 }
 
 TEST_F(TestVariant, MaxLimitReal)
 {
-    vmf::umf_real limitReal = vmf::Variant::maxLimit<vmf::umf_real>(vmf::Variant::type_real);
-    ASSERT_DOUBLE_EQ(limitReal, std::numeric_limits<vmf::umf_real>::max());
+    umf::umf_real limitReal = umf::Variant::maxLimit<umf::umf_real>(umf::Variant::type_real);
+    ASSERT_DOUBLE_EQ(limitReal, std::numeric_limits<umf::umf_real>::max());
 }
 
 TEST_F(TestVariant, MinLimitUnknown)
 {
-    EXPECT_THROW(vmf::Variant::minLimit<vmf::umf_integer>(vmf::Variant::type_empty), vmf::IncorrectParamException);
+    EXPECT_THROW(umf::Variant::minLimit<umf::umf_integer>(umf::Variant::type_empty), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, MinLimitInteger)
 {
-    vmf::umf_integer limitValue = vmf::Variant::minLimit<vmf::umf_integer>(vmf::Variant::type_integer);
-    ASSERT_EQ(limitValue, std::numeric_limits<vmf::umf_integer>::lowest());
+    umf::umf_integer limitValue = umf::Variant::minLimit<umf::umf_integer>(umf::Variant::type_integer);
+    ASSERT_EQ(limitValue, std::numeric_limits<umf::umf_integer>::lowest());
 }
 
 TEST_F(TestVariant, MinLimitReal)
 {
-    vmf::umf_real limitReal = vmf::Variant::minLimit<vmf::umf_real>(vmf::Variant::type_real);
-    ASSERT_DOUBLE_EQ(limitReal, std::numeric_limits<vmf::umf_real>::lowest());
+    umf::umf_real limitReal = umf::Variant::minLimit<umf::umf_real>(umf::Variant::type_real);
+    ASSERT_DOUBLE_EQ(limitReal, std::numeric_limits<umf::umf_real>::lowest());
 }
 
 TEST_F(TestVariant, FromStringEmpty)
 {
-    v.fromString(vmf::Variant::type_empty, "noType");
+    v.fromString(umf::Variant::type_empty, "noType");
     ASSERT_TRUE(v.isEmpty());
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringInteger)
 {
-    v.fromString(vmf::Variant::type_integer, "42");
-    ASSERT_EQ(v.getType(), vmf::Variant::type_integer);
-    ASSERT_EQ((vmf::umf_integer) v, 42);
+    v.fromString(umf::Variant::type_integer, "42");
+    ASSERT_EQ(v.getType(), umf::Variant::type_integer);
+    ASSERT_EQ((umf::umf_integer) v, 42);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringReal)
 {
-    v.fromString(vmf::Variant::type_real, "42.42");
-    ASSERT_EQ(v.getType(), vmf::Variant::type_real);
-    ASSERT_EQ((vmf::umf_real) v, 42.42);
+    v.fromString(umf::Variant::type_real, "42.42");
+    ASSERT_EQ(v.getType(), umf::Variant::type_real);
+    ASSERT_EQ((umf::umf_real) v, 42.42);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
 }
 
 TEST_F(TestVariant, FromStringString)
 {
-    v.fromString(vmf::Variant::type_string, "string");
-    ASSERT_EQ(v.getType(), vmf::Variant::type_string);
-    ASSERT_EQ((vmf::umf_string) v, "string");
+    v.fromString(umf::Variant::type_string, "string");
+    ASSERT_EQ(v.getType(), umf::Variant::type_string);
+    ASSERT_EQ((umf::umf_string) v, "string");
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
 }
@@ -386,142 +386,142 @@ TEST_F(TestVariant, ToStringEmpty)
 
 TEST_F(TestVariant, ToStringFromStringVectorInteger)
 {
-    std::vector<vmf::umf_integer> vint;
+    std::vector<umf::umf_integer> vint;
     vint.push_back(42);
     vint.push_back(24);
     vint.push_back(0);
     vint.push_back(1);
-    v = vmf::Variant(vint);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_integer_vector, v.toString());
+    v = umf::Variant(vint);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_integer_vector, v.toString());
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_integer_vector, "0 : 0 : 0 : 0"), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_integer_vector, "0 : 0 : 0 : 0"), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorReal)
 {
-    std::vector<vmf::umf_real> vreal;
+    std::vector<umf::umf_real> vreal;
     vreal.push_back(0.0);
     vreal.push_back(1.1);
     vreal.push_back(2.2);
     vreal.push_back(3.3);
-    v = vmf::Variant(vreal);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_real_vector, v.toString());
+    v = umf::Variant(vreal);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_real_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_real_vector, "0.0 : 0.0 : 0.0 : 0.0"), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_real_vector, "0.0 : 0.0 : 0.0 : 0.0"), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorString)
 {
-    std::vector<vmf::umf_string> vstring;
+    std::vector<umf::umf_string> vstring;
     vstring.push_back("s 0");
     vstring.push_back("s 1");
     vstring.push_back("s 2");
     vstring.push_back("s 3 test");
-    v = vmf::Variant(vstring);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_string_vector, v.toString());
+    v = umf::Variant(vstring);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_string_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_string_vector, "AA== : AA=="), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_string_vector, "AA== : AA=="), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorVec2d)
 {
-    std::vector<vmf::umf_vec2d> vvec2d;
-    vvec2d.push_back(vmf::umf_vec2d(0,0));
-    vvec2d.push_back(vmf::umf_vec2d(1,1));
-    vvec2d.push_back(vmf::umf_vec2d(2,2));
-    vvec2d.push_back(vmf::umf_vec2d(3,3));
-    v = vmf::Variant(vvec2d);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_vec2d_vector, v.toString());
+    std::vector<umf::umf_vec2d> vvec2d;
+    vvec2d.push_back(umf::umf_vec2d(0,0));
+    vvec2d.push_back(umf::umf_vec2d(1,1));
+    vvec2d.push_back(umf::umf_vec2d(2,2));
+    vvec2d.push_back(umf::umf_vec2d(3,3));
+    v = umf::Variant(vvec2d);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_vec2d_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_vec2d_vector, "0 0 : 0 0 : 0 0 : 0 0"), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_vec2d_vector, "0 0 : 0 0 : 0 0 : 0 0"), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorVec3d)
 {
-    std::vector<vmf::umf_vec3d> vvec3d;
-    vvec3d.push_back(vmf::umf_vec3d(0,0,0));
-    vvec3d.push_back(vmf::umf_vec3d(1,1,1));
-    vvec3d.push_back(vmf::umf_vec3d(2,2,2));
-    vvec3d.push_back(vmf::umf_vec3d(3,3,3));
-    v = vmf::Variant(vvec3d);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_vec3d_vector, v.toString());
+    std::vector<umf::umf_vec3d> vvec3d;
+    vvec3d.push_back(umf::umf_vec3d(0,0,0));
+    vvec3d.push_back(umf::umf_vec3d(1,1,1));
+    vvec3d.push_back(umf::umf_vec3d(2,2,2));
+    vvec3d.push_back(umf::umf_vec3d(3,3,3));
+    v = umf::Variant(vvec3d);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_vec3d_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_vec3d_vector, "0 0 0 : 0 0 0 : 0 0 0 : 0 0 0"), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_vec3d_vector, "0 0 0 : 0 0 0 : 0 0 0 : 0 0 0"), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ToStringFromStringVectorVec4d)
 {
-    std::vector<vmf::umf_vec4d> vvec4d;
-    vvec4d.push_back(vmf::umf_vec4d(0,0,0,0));
-    vvec4d.push_back(vmf::umf_vec4d(1,1,1,1));
-    vvec4d.push_back(vmf::umf_vec4d(2,2,2,2));
-    vvec4d.push_back(vmf::umf_vec4d(3,3,3,3));
-    v = vmf::Variant(vvec4d);
-    vmf::Variant v2;
-    v2.fromString(vmf::Variant::type_vec4d_vector, v.toString());
+    std::vector<umf::umf_vec4d> vvec4d;
+    vvec4d.push_back(umf::umf_vec4d(0,0,0,0));
+    vvec4d.push_back(umf::umf_vec4d(1,1,1,1));
+    vvec4d.push_back(umf::umf_vec4d(2,2,2,2));
+    vvec4d.push_back(umf::umf_vec4d(3,3,3,3));
+    v = umf::Variant(vvec4d);
+    umf::Variant v2;
+    v2.fromString(umf::Variant::type_vec4d_vector, v.toString());
     ASSERT_TRUE(v == v2);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v.toString(true));
     ASSERT_TRUE(v3 == v);
     ASSERT_TRUE(v == v2);
 
-    ASSERT_THROW(v2.fromString(vmf::Variant::type_vec4d_vector, "0 0 0 0 : 0 0 0 0 : 0 0 0 0 : 0 0 0 0"), vmf::IncorrectParamException);
-    ASSERT_THROW(v2.fromString((vmf::Variant::Type)14, "0 0 0 0 : 0 0 0 0 : 0 0 0 0 : 0 0 0 0"), vmf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString(umf::Variant::type_vec4d_vector, "0 0 0 0 : 0 0 0 0 : 0 0 0 0 : 0 0 0 0"), umf::IncorrectParamException);
+    ASSERT_THROW(v2.fromString((umf::Variant::Type)14, "0 0 0 0 : 0 0 0 0 : 0 0 0 0 : 0 0 0 0"), umf::IncorrectParamException);
 }
 
 TEST_F(TestVariant, ConvertInc)
 {
-    v = vmf::Variant((vmf::umf_real) 42.42);
-    EXPECT_THROW(v.convertTo(vmf::Variant::type_string), vmf::TypeCastException);
+    v = umf::Variant((umf::umf_real) 42.42);
+    EXPECT_THROW(v.convertTo(umf::Variant::type_string), umf::TypeCastException);
 }
 
 TEST_F(TestVariant, IntConstructor)
 {
     int value = 42;
-    v = vmf::Variant(value);
-    ASSERT_EQ(value, (vmf::umf_integer) v);
+    v = umf::Variant(value);
+    ASSERT_EQ(value, (umf::umf_integer) v);
 }
 
 TEST_F(TestVariant, FloatConstructor)
 {
     float value = 42.0f;
-    v = vmf::Variant(value);
-    ASSERT_DOUBLE_EQ(value, (vmf::umf_real) v);
+    v = umf::Variant(value);
+    ASSERT_DOUBLE_EQ(value, (umf::umf_real) v);
 }
 
 TEST_F(TestVariant, VectorIntConstructor)
@@ -529,7 +529,7 @@ TEST_F(TestVariant, VectorIntConstructor)
     std::vector<int> value;
     value.push_back(42);
     value.push_back(24);
-    v = vmf::Variant(value);
+    v = umf::Variant(value);
     ASSERT_EQ(value[0], v.get_integer_vector()[0]);
     ASSERT_EQ(value[1], v.get_integer_vector()[1]);
 }
@@ -539,33 +539,33 @@ TEST_F(TestVariant, VectorFloatConstructor)
     std::vector<float> value;
     value.push_back(42.42f);
     value.push_back(24.24f);
-    v = vmf::Variant(value);
+    v = umf::Variant(value);
     ASSERT_DOUBLE_EQ(value[0], v.get_real_vector()[0]);
     ASSERT_DOUBLE_EQ(value[1], v.get_real_vector()[1]);
 }
 
 TEST_F(TestVariant, typeFromString)
 {
-    ASSERT_THROW(v.typeFromString(""), vmf::IncorrectParamException);
-    ASSERT_THROW(v.typeFromString("invalid type"), vmf::IncorrectParamException);
+    ASSERT_THROW(v.typeFromString(""), umf::IncorrectParamException);
+    ASSERT_THROW(v.typeFromString("invalid type"), umf::IncorrectParamException);
 
-    ASSERT_EQ(v.typeFromString("empty"), vmf::Variant::type_empty);
-    ASSERT_EQ(v.typeFromString("char"), vmf::Variant::type_integer); // removed char replaced with integer
-    ASSERT_EQ(v.typeFromString("integer"), vmf::Variant::type_integer);
-    ASSERT_EQ(v.typeFromString("real"), vmf::Variant::type_real);
-    ASSERT_EQ(v.typeFromString("string"), vmf::Variant::type_string);
-    ASSERT_EQ(v.typeFromString("vec2d"), vmf::Variant::type_vec2d);
-    ASSERT_EQ(v.typeFromString("vec3d"), vmf::Variant::type_vec3d);
-    ASSERT_EQ(v.typeFromString("vec4d"), vmf::Variant::type_vec4d);
-    ASSERT_EQ(v.typeFromString("rawbuffer"), vmf::Variant::type_rawbuffer);
+    ASSERT_EQ(v.typeFromString("empty"), umf::Variant::type_empty);
+    ASSERT_EQ(v.typeFromString("char"), umf::Variant::type_integer); // removed char replaced with integer
+    ASSERT_EQ(v.typeFromString("integer"), umf::Variant::type_integer);
+    ASSERT_EQ(v.typeFromString("real"), umf::Variant::type_real);
+    ASSERT_EQ(v.typeFromString("string"), umf::Variant::type_string);
+    ASSERT_EQ(v.typeFromString("vec2d"), umf::Variant::type_vec2d);
+    ASSERT_EQ(v.typeFromString("vec3d"), umf::Variant::type_vec3d);
+    ASSERT_EQ(v.typeFromString("vec4d"), umf::Variant::type_vec4d);
+    ASSERT_EQ(v.typeFromString("rawbuffer"), umf::Variant::type_rawbuffer);
 
-    ASSERT_EQ(v.typeFromString("char[]"), vmf::Variant::type_integer_vector); // removed char[] replaced with integer[]
-    ASSERT_EQ(v.typeFromString("integer[]"), vmf::Variant::type_integer_vector);
-    ASSERT_EQ(v.typeFromString("real[]"), vmf::Variant::type_real_vector);
-    ASSERT_EQ(v.typeFromString("string[]"), vmf::Variant::type_string_vector);
-    ASSERT_EQ(v.typeFromString("vec2d[]"), vmf::Variant::type_vec2d_vector);
-    ASSERT_EQ(v.typeFromString("vec3d[]"), vmf::Variant::type_vec3d_vector);
-    ASSERT_EQ(v.typeFromString("vec4d[]"), vmf::Variant::type_vec4d_vector);
+    ASSERT_EQ(v.typeFromString("char[]"), umf::Variant::type_integer_vector); // removed char[] replaced with integer[]
+    ASSERT_EQ(v.typeFromString("integer[]"), umf::Variant::type_integer_vector);
+    ASSERT_EQ(v.typeFromString("real[]"), umf::Variant::type_real_vector);
+    ASSERT_EQ(v.typeFromString("string[]"), umf::Variant::type_string_vector);
+    ASSERT_EQ(v.typeFromString("vec2d[]"), umf::Variant::type_vec2d_vector);
+    ASSERT_EQ(v.typeFromString("vec3d[]"), umf::Variant::type_vec3d_vector);
+    ASSERT_EQ(v.typeFromString("vec4d[]"), umf::Variant::type_vec4d_vector);
 }
 
 class TestVariantVectorTypes : public ::testing::Test
@@ -578,17 +578,17 @@ protected:
         z = 42.24;
         w = 24.42;
     }
-    vmf::umf_real x, y, z, w;
-    vmf::Variant v1, v2, v3;
+    umf::umf_real x, y, z, w;
+    umf::Variant v1, v2, v3;
 };
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec2d)
 {
-    vmf::umf_vec2d vec(x, y);
-    ASSERT_FALSE(vec == vmf::umf_vec2d());
-    v1 = vmf::Variant(vec);
+    umf::umf_vec2d vec(x, y);
+    ASSERT_FALSE(vec == umf::umf_vec2d());
+    v1 = umf::Variant(vec);
 
-    v2.fromString(vmf::Variant::type_vec2d, v1.toString());
+    v2.fromString(umf::Variant::type_vec2d, v1.toString());
     ASSERT_TRUE(v1 == v2);
 
     v3.fromString(v1.toString(true));
@@ -597,11 +597,11 @@ TEST_F(TestVariantVectorTypes, ToStringFromStringvec2d)
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec3d)
 {
-    vmf::umf_vec3d vec(x, y, z);
-    ASSERT_FALSE(vec == vmf::umf_vec3d());
-    v1 = vmf::Variant(vec);
+    umf::umf_vec3d vec(x, y, z);
+    ASSERT_FALSE(vec == umf::umf_vec3d());
+    v1 = umf::Variant(vec);
 
-    v2.fromString(vmf::Variant::type_vec3d, v1.toString());
+    v2.fromString(umf::Variant::type_vec3d, v1.toString());
     ASSERT_TRUE(v1 == v2);
 
     v3.fromString(v1.toString(true));
@@ -610,11 +610,11 @@ TEST_F(TestVariantVectorTypes, ToStringFromStringvec3d)
 
 TEST_F(TestVariantVectorTypes, ToStringFromStringvec4d)
 {
-    vmf::umf_vec4d vec(x, y, z, w);
-    ASSERT_FALSE(vec == vmf::umf_vec4d());
-    v1 = vmf::Variant(vec);
+    umf::umf_vec4d vec(x, y, z, w);
+    ASSERT_FALSE(vec == umf::umf_vec4d());
+    v1 = umf::Variant(vec);
 
-    v2.fromString(vmf::Variant::type_vec4d, v1.toString());
+    v2.fromString(umf::Variant::type_vec4d, v1.toString());
     ASSERT_TRUE(v1 == v2);
 
     v3.fromString(v1.toString(true));
@@ -625,7 +625,7 @@ class TestVariantRawByfferType : public ::testing::TestWithParam<size_t>
 {
 protected:
     std::unique_ptr<char[]> data;
-    vmf::Variant v1, v2;
+    umf::Variant v1, v2;
 };
 
 TEST_P(TestVariantRawByfferType, ToStringFromString)
@@ -634,9 +634,9 @@ TEST_P(TestVariantRawByfferType, ToStringFromString)
     switch(size)
     {
     case 0:
-        ASSERT_NO_THROW(vmf::umf_rawbuffer("", (size_t)0));
-        ASSERT_NO_THROW(vmf::umf_rawbuffer(0, 10));
-        ASSERT_NO_THROW(vmf::umf_rawbuffer(0, (size_t)0));
+        ASSERT_NO_THROW(umf::umf_rawbuffer("", (size_t)0));
+        ASSERT_NO_THROW(umf::umf_rawbuffer(0, 10));
+        ASSERT_NO_THROW(umf::umf_rawbuffer(0, (size_t)0));
         return;
     default:
         data = std::unique_ptr<char[]>(new char[size]);
@@ -644,13 +644,13 @@ TEST_P(TestVariantRawByfferType, ToStringFromString)
             data[i] = (unsigned char)i;
         break;
     }
-    vmf::umf_rawbuffer rbuf(data.get(), size);
-    v1 = vmf::Variant(rbuf);
-    v2.fromString(vmf::Variant::type_rawbuffer, v1.toString());
+    umf::umf_rawbuffer rbuf(data.get(), size);
+    v1 = umf::Variant(rbuf);
+    v2.fromString(umf::Variant::type_rawbuffer, v1.toString());
     bool result = v1 == v2;
     ASSERT_TRUE(result);
 
-    vmf::Variant v3;
+    umf::Variant v3;
     v3.fromString(v1.toString(true));
     ASSERT_TRUE(v3 == v1);
 }
@@ -661,7 +661,7 @@ class TestVariantRawBuffer_Base64Encoding : public ::testing::TestWithParam<std:
 {
 protected:
     const char* data;
-    vmf::Variant v1, v2;
+    umf::Variant v1, v2;
 };
 
 TEST_P(TestVariantRawBuffer_Base64Encoding, TestEncode)
@@ -669,16 +669,16 @@ TEST_P(TestVariantRawBuffer_Base64Encoding, TestEncode)
     data = std::get<0>(GetParam());
     size_t size = std::get<1>(GetParam());
 
-    vmf::umf_rawbuffer rbuf(data, size);
-    v1 = vmf::Variant(rbuf);
+    umf::umf_rawbuffer rbuf(data, size);
+    v1 = umf::Variant(rbuf);
     std::string result = v1.toString();
-    if(rbuf == vmf::umf_rawbuffer())
+    if(rbuf == umf::umf_rawbuffer())
         ASSERT_EQ(result, "");
-    else if( rbuf == vmf::umf_rawbuffer("\0", 1) )
+    else if( rbuf == umf::umf_rawbuffer("\0", 1) )
         ASSERT_EQ(result, "AA==");
-    else if( rbuf == vmf::umf_rawbuffer("foob", 4) )
+    else if( rbuf == umf::umf_rawbuffer("foob", 4) )
         ASSERT_EQ(result, "Zm9vYg==");
-    else if( rbuf == vmf::umf_rawbuffer("foobar", 6) )
+    else if( rbuf == umf::umf_rawbuffer("foobar", 6) )
         ASSERT_EQ(result, "Zm9vYmFy");
 }
 
@@ -689,7 +689,7 @@ class TestVariantRawBuffer_Base64Decoding : public ::testing::TestWithParam<std:
 {
 protected:
     const char* data;
-    vmf::Variant v1, v2;
+    umf::Variant v1, v2;
 };
 
 TEST_P(TestVariantRawBuffer_Base64Decoding, TestDecode)
@@ -699,27 +699,27 @@ TEST_P(TestVariantRawBuffer_Base64Decoding, TestDecode)
     switch(idx)
     {
     case 0:
-        ASSERT_THROW(v1.fromString(vmf::Variant::type_rawbuffer, data), vmf::IncorrectParamException);
+        ASSERT_THROW(v1.fromString(umf::Variant::type_rawbuffer, data), umf::IncorrectParamException);
         break;
     case 1:
-        ASSERT_THROW(v1.fromString(vmf::Variant::type_rawbuffer, data), vmf::IncorrectParamException);
+        ASSERT_THROW(v1.fromString(umf::Variant::type_rawbuffer, data), umf::IncorrectParamException);
         break;
     case 2:
-        ASSERT_THROW(v1.fromString(vmf::Variant::type_rawbuffer, data), vmf::IncorrectParamException);
+        ASSERT_THROW(v1.fromString(umf::Variant::type_rawbuffer, data), umf::IncorrectParamException);
         break;
     case 3:
         {
-            v1.fromString(vmf::Variant::type_rawbuffer, data);
-            vmf::umf_rawbuffer rbuf("foob\0\0", 6);
-            v2 = vmf::Variant(rbuf);
+            v1.fromString(umf::Variant::type_rawbuffer, data);
+            umf::umf_rawbuffer rbuf("foob\0\0", 6);
+            v2 = umf::Variant(rbuf);
             bool result = v1 == v2;
             ASSERT_TRUE(result);
             break;
         }
     case 4:
         {
-            v1.fromString(vmf::Variant::type_rawbuffer, data);
-            v2 = vmf::Variant(vmf::umf_rawbuffer());
+            v1.fromString(umf::Variant::type_rawbuffer, data);
+            v2 = umf::Variant(umf::umf_rawbuffer());
             bool result = v1 == v2;
             ASSERT_TRUE(result);
             break;

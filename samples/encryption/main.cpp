@@ -27,7 +27,7 @@
 #include "encrypt_common.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 int main(int argc, char** argv)
 {
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    vmf::initialize();
+    umf::initialize();
 
     string videoFile(argv[1]);
 
@@ -104,6 +104,6 @@ int main(int argc, char** argv)
         cout << endl << endl;
     }
 
-    vmf::terminate();
+    umf::terminate();
     return 0;
 }

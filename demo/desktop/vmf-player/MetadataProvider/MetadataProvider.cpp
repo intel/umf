@@ -24,7 +24,7 @@ typedef SSIZE_T ssize_t;
 //#define USE_NATIVE_ENDIAN
 #define USE_SIZES_ON_HANDSHAKE
 
-static const std::string schemaName = vmf::MetadataSchema::getStdSchemaName();
+static const std::string schemaName = umf::MetadataSchema::getStdSchemaName();
 static const std::string descName = "location";
 static const std::string latFieldName = "latitude";
 static const std::string lngFieldName = "longitude";
@@ -104,7 +104,7 @@ MetadataProvider::MetadataProvider(QObject *parent)
     , m_deviceId("")
     , m_lastTimestamp(0)
 {
-    vmf::Log::setVerbosityLevel(vmf::LogLevel::LOG_ERROR);
+    umf::Log::setVerbosityLevel(umf::LogLevel::LOG_ERROR);
 }
 
 MetadataProvider::~MetadataProvider()
@@ -288,20 +288,20 @@ void MetadataProvider::disconnect()
 }
 
 
-void MetadataProvider::setWrappingStatus(std::shared_ptr<vmf::Format> f,
-                                         std::shared_ptr<vmf::Encryptor> e,
+void MetadataProvider::setWrappingStatus(std::shared_ptr<umf::Format> f,
+                                         std::shared_ptr<umf::Encryptor> e,
                                          std::string buf)
 {
     //this parser should be transparent for encryption
     //it shows existence (or absence) of compression schema in input data
-    vmf::FormatEncrypted compressionDetector(f, e);
+    umf::FormatEncrypted compressionDetector(f, e);
 
-    std::vector<vmf::MetadataInternal> tmpMetadata;
-    std::vector<std::shared_ptr<vmf::MetadataSchema>> tmpSchemas;
-    std::vector<std::shared_ptr<vmf::MetadataStream::VideoSegment>> tmpSegments;
-    std::vector<std::shared_ptr<vmf::Stat>> tmpStats;
-    vmf::Format::AttribMap tmpAttribs;
-    vmf::Format::ParseCounters tmpCounter;
+    std::vector<umf::MetadataInternal> tmpMetadata;
+    std::vector<std::shared_ptr<umf::MetadataSchema>> tmpSchemas;
+    std::vector<std::shared_ptr<umf::MetadataStream::VideoSegment>> tmpSegments;
+    std::vector<std::shared_ptr<umf::Stat>> tmpStats;
+    umf::Format::AttribMap tmpAttribs;
+    umf::Format::ParseCounters tmpCounter;
 
     std::string toSetCompressionId, toSetPassphrase;
     //check encryption status
@@ -339,26 +339,26 @@ void MetadataProvider::execute()
         std::cerr << "*** MetadataProvider::execute() : connect : " << (connection.isSuccessful() ? "SUCC" : "FAIL") << std::endl;
         if (connection.isSuccessful())
         {
-            std::shared_ptr<vmf::Format> f;
+            std::shared_ptr<umf::Format> f;
             if(m_useXml)
             {
-                f = std::make_shared<vmf::FormatXML>();
+                f = std::make_shared<umf::FormatXML>();
             }
             else
             {
-                f = std::make_shared<vmf::FormatJSON>();
+                f = std::make_shared<umf::FormatJSON>();
             }
 
-            std::shared_ptr<vmf::Format> cf = std::make_shared<vmf::FormatCompressed>(f, streamCompressionId);
-            std::shared_ptr<vmf::Encryptor> e = std::make_shared<vmf::EncryptorDefault>(streamPassphrase);
-            vmf::FormatEncrypted parser(cf, e);
+            std::shared_ptr<umf::Format> cf = std::make_shared<umf::FormatCompressed>(f, streamCompressionId);
+            std::shared_ptr<umf::Encryptor> e = std::make_shared<umf::EncryptorDefault>(streamPassphrase);
+            umf::FormatEncrypted parser(cf, e);
 
-            std::vector<vmf::MetadataInternal> metadata;
-            std::vector<std::shared_ptr<vmf::MetadataSchema>> schemas;
-            std::vector<std::shared_ptr<vmf::MetadataStream::VideoSegment>> segments;
-            std::vector<std::shared_ptr<vmf::Stat>> stats;
-            vmf::Format::AttribMap attribs;
-            vmf::Format::ParseCounters c;
+            std::vector<umf::MetadataInternal> metadata;
+            std::vector<std::shared_ptr<umf::MetadataSchema>> schemas;
+            std::vector<std::shared_ptr<umf::MetadataStream::VideoSegment>> segments;
+            std::vector<std::shared_ptr<umf::Stat>> stats;
+            umf::Format::AttribMap attribs;
+            umf::Format::ParseCounters c;
 
             char buf[bufSize];
 
@@ -412,21 +412,21 @@ void MetadataProvider::execute()
             //set up statistics object
             try
             {
-                std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
+                std::shared_ptr<umf::Stat> stat = m_ms.getStat(statName);
             }
-            catch(vmf::NotFoundException&)
+            catch(umf::NotFoundException&)
             {
                 //add it to the stream if it does not exist yet
-                std::vector< vmf::StatField > statFields;
+                std::vector< umf::StatField > statFields;
                 statFields.emplace_back(countStatName, schemaName, descName, latFieldName,
-                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Count));
+                                        umf::StatOpFactory::builtinName(umf::StatOpFactory::BuiltinOp::Count));
                 statFields.emplace_back(minStatName, schemaName, descName, latFieldName,
-                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Min));
+                                        umf::StatOpFactory::builtinName(umf::StatOpFactory::BuiltinOp::Min));
                 statFields.emplace_back(avgStatName, schemaName, descName, latFieldName,
-                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Average));
+                                        umf::StatOpFactory::builtinName(umf::StatOpFactory::BuiltinOp::Average));
                 statFields.emplace_back(lastStatName, schemaName, descName, latFieldName,
-                                        vmf::StatOpFactory::builtinName(vmf::StatOpFactory::BuiltinOp::Last));
-                m_ms.addStat(std::make_shared<vmf::Stat>(statName, statFields, vmf::Stat::UpdateMode::Manual));
+                                        umf::StatOpFactory::builtinName(umf::StatOpFactory::BuiltinOp::Last));
+                m_ms.addStat(std::make_shared<umf::Stat>(statName, statFields, umf::Stat::UpdateMode::Manual));
             }
 
             while (!m_exiting)
@@ -447,7 +447,7 @@ void MetadataProvider::execute()
                     for (auto md : metadata)
                     {
                         std::unique_lock< std::mutex > lock( m_lock );
-                        //md.id = vmf::INVALID_ID;
+                        //md.id = umf::INVALID_ID;
                         m_ms.add(md);
                         ++num;
                     }
@@ -498,12 +498,12 @@ double MetadataProvider::lastTimestamp()
     return m_lastTimestamp;
 }
 
-double MetadataProvider::getFieldValue(std::shared_ptr<vmf::Metadata> md, const std::string& name)
+double MetadataProvider::getFieldValue(std::shared_ptr<umf::Metadata> md, const std::string& name)
 {
     try
     {
-        vmf::Variant fv = md->getFieldValue(name);
-        if (fv.getType() == vmf::FieldValue::type_real)
+        umf::Variant fv = md->getFieldValue(name);
+        if (fv.getType() == umf::FieldValue::type_real)
             return fv.get_real();
         else
             return 0;
@@ -519,9 +519,9 @@ void MetadataProvider::updateLocations()
     std::unique_lock< std::mutex > lock( m_lock );
     std::cerr << "*** MetadataProvider::updateLocations()" << std::endl;
 
-    vmf::MetadataSet ms = m_ms.getAll();
+    umf::MetadataSet ms = m_ms.getAll();
 
-    std::sort(ms.begin(), ms.end(), [](std::shared_ptr<vmf::Metadata> a, std::shared_ptr<vmf::Metadata> b) -> bool{
+    std::sort(ms.begin(), ms.end(), [](std::shared_ptr<umf::Metadata> a, std::shared_ptr<umf::Metadata> b) -> bool{
         return (a->getId() < b->getId());
     });
 
@@ -537,11 +537,11 @@ void MetadataProvider::updateLocations()
     m_locations = newLocations;
 
     //update statistics: doRescan + doWait
-    std::shared_ptr<vmf::Stat> stat = m_ms.getStat(statName);
+    std::shared_ptr<umf::Stat> stat = m_ms.getStat(statName);
     stat->update(true);
 
     //grab statistics
-    m_statInfo->setCount((vmf::vmf_integer)stat->getField(countStatName).getValue());
+    m_statInfo->setCount((umf::vmf_integer)stat->getField(countStatName).getValue());
     m_statInfo->setMinLat(stat->getField(minStatName).getValue());
     m_statInfo->setAvgLat(stat->getField(avgStatName).getValue());
     m_statInfo->setLastLat(stat->getField(lastStatName).getValue());

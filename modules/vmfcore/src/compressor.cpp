@@ -19,14 +19,14 @@
 #include "vmf/compressor.hpp"
 #include "compressor_zlib.hpp"
 
-namespace vmf {
+namespace umf {
 
 typedef std::map< umf_string, std::shared_ptr<Compressor> > CompressorsMap;
 enum CompressorType {BUILTIN=0, USER=1};
 
 /*static*/ std::string Compressor::builtinId()
 {
-    return "com.intel.vmf.compressor.zlib";
+    return "com.intel.umf.compressor.zlib";
 }
 
 CompressorsMap& getMapInstance(CompressorType type)
@@ -122,4 +122,4 @@ void Compressor::unregister(const umf_string &id)
     }
 }
 
-} /* vmf */
+} /* umf */

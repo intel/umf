@@ -8,7 +8,7 @@
 
 #include "vmf/vmf.hpp"
 
-using namespace vmf;
+using namespace umf;
 using namespace std;
 
 std::string workingPath;
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
 
-    vmf::initialize();
+    umf::initialize();
 
     std::string appPath = argv[0];
 #ifdef WIN32
@@ -86,6 +86,6 @@ int main(int argc, char **argv)
         QMessageBox::information(NULL, "VMF Demo Unicode", QString::fromUtf8(savedString.c_str()));
     }
 
-    vmf::terminate();
+    umf::terminate();
     return 0;
 }

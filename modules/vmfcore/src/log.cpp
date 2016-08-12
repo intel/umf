@@ -23,7 +23,7 @@
 
 using namespace std;
 
-namespace vmf
+namespace umf
 {
 string Log::logFile = "";
 bool Log::writeToFile = false;

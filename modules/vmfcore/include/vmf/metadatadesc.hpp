@@ -32,7 +32,7 @@
 #include "variant.hpp"
 #include "config.hpp"
 
-namespace vmf
+namespace umf
 {
 /*!
 * \struct FieldDesc

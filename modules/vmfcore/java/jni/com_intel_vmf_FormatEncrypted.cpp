@@ -14,7 +14,7 @@ static std::string getJavaStirng(JNIEnv *env, jstring str)
 
 extern "C" {
 
-    using namespace vmf;
+    using namespace umf;
 
     //long n_FormatEncrypted(long format, long encryptor)
     JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatEncrypted_n_1FormatEncrypted(JNIEnv *env, jclass, jlong format, jlong encryptor);

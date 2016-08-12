@@ -30,7 +30,7 @@
 #include "my_lzw.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 int compress_custom(const string& videoFile)
 {
@@ -66,7 +66,7 @@ int compress_custom(const string& videoFile)
     readAndDumpMetadata(videoFile);
 
     cout << "Unregistering custom '" << compressor->getId() << "' compressor (it's optional here)..." << endl;
-    vmf::Compressor::unregister(compressor->getId());
+    umf::Compressor::unregister(compressor->getId());
 
     cout << "That's all!" << endl;
     return 0;

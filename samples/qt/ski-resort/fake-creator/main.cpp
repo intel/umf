@@ -25,15 +25,15 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    vmf::Log::setVerbosityLevel(vmf::LOG_NO_MESSAGE);
-    vmf::initialize();
+    umf::Log::setVerbosityLevel(umf::LOG_NO_MESSAGE);
+    umf::initialize();
 
-    vmf::umf_string coordFile(argv[1]);
-    vmf::umf_string videoFile(argv[2]);
+    umf::umf_string coordFile(argv[1]);
+    umf::umf_string videoFile(argv[2]);
 
-    vmf::MetadataStream stream;
+    umf::MetadataStream stream;
     
-    if (!stream.open(videoFile, vmf::MetadataStream::Update))
+    if (!stream.open(videoFile, umf::MetadataStream::Update))
     {
         std::cerr << "Can't open file '" + videoFile + "'" << std::endl;
         exit(1);
@@ -43,19 +43,19 @@ int main(int argc, char** argv)
     {
         std::cout << "Create ski resort schema..." << std::endl;
 
-        std::vector<vmf::FieldDesc> gpsFields;
-        gpsFields.push_back(vmf::FieldDesc(SKI_RESORT_GPS_FIELD_X, vmf::Variant::type_real));
-        gpsFields.push_back(vmf::FieldDesc(SKI_RESORT_GPS_FIELD_Y, vmf::Variant::type_real));
-        gpsFields.push_back(vmf::FieldDesc(SKI_RESORT_GPS_FIELD_TIME, vmf::Variant::type_integer));
+        std::vector<umf::FieldDesc> gpsFields;
+        gpsFields.push_back(umf::FieldDesc(SKI_RESORT_GPS_FIELD_X, umf::Variant::type_real));
+        gpsFields.push_back(umf::FieldDesc(SKI_RESORT_GPS_FIELD_Y, umf::Variant::type_real));
+        gpsFields.push_back(umf::FieldDesc(SKI_RESORT_GPS_FIELD_TIME, umf::Variant::type_integer));
 
-        std::shared_ptr<vmf::MetadataDesc> gpsDesc(new vmf::MetadataDesc(SKI_RESORT_GPS_DESC, gpsFields));
+        std::shared_ptr<umf::MetadataDesc> gpsDesc(new umf::MetadataDesc(SKI_RESORT_GPS_DESC, gpsFields));
 
-        std::vector<vmf::FieldDesc> speedFields;
-        speedFields.push_back(vmf::FieldDesc(SKI_RESORT_SPEED_FIELD_SPEED, vmf::Variant::type_real));
-        speedFields.push_back(vmf::FieldDesc(SKI_RESORT_SPEED_FIELD_TIME, vmf::Variant::type_integer));
-        std::shared_ptr<vmf::MetadataDesc> speedDesc(new vmf::MetadataDesc(SKI_RESORT_SPEED_DESC, speedFields));
+        std::vector<umf::FieldDesc> speedFields;
+        speedFields.push_back(umf::FieldDesc(SKI_RESORT_SPEED_FIELD_SPEED, umf::Variant::type_real));
+        speedFields.push_back(umf::FieldDesc(SKI_RESORT_SPEED_FIELD_TIME, umf::Variant::type_integer));
+        std::shared_ptr<umf::MetadataDesc> speedDesc(new umf::MetadataDesc(SKI_RESORT_SPEED_DESC, speedFields));
 
-        std::shared_ptr<vmf::MetadataSchema> appSchema(new vmf::MetadataSchema(SKI_RESORT_SCHEMA));
+        std::shared_ptr<umf::MetadataSchema> appSchema(new umf::MetadataSchema(SKI_RESORT_SCHEMA));
         appSchema->add(gpsDesc);
         appSchema->add(speedDesc);
 
@@ -89,15 +89,15 @@ int main(int argc, char** argv)
 
     auto gpsDesc = schema->findMetadataDesc(SKI_RESORT_GPS_DESC);
 
-    vmf::umf_integer frameTime = 0;
+    umf::umf_integer frameTime = 0;
     while (true)
     {
-        vmf::umf_real latitude, longitude;
+        umf::umf_real latitude, longitude;
         coordinatesStream >> latitude >> longitude;
         if (coordinatesStream.eof())
             break;
 
-        std::shared_ptr<vmf::Metadata> frameCoordinates(new vmf::Metadata(gpsDesc));
+        std::shared_ptr<umf::Metadata> frameCoordinates(new umf::Metadata(gpsDesc));
 
         frameCoordinates->setFieldValue(SKI_RESORT_GPS_FIELD_X, latitude);
         frameCoordinates->setFieldValue(SKI_RESORT_GPS_FIELD_Y, longitude);
@@ -111,7 +111,7 @@ int main(int argc, char** argv)
     stream.save();
     stream.close();
 
-    vmf::terminate();
+    umf::terminate();
 
     return 0;
 }

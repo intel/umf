@@ -21,7 +21,7 @@
 
 #include "vmf/encryptor.hpp"
 
-namespace vmf
+namespace umf
 {
 
 enum CryptAlgo
@@ -30,7 +30,7 @@ enum CryptAlgo
 };
 
 //Some testing class for encryption
-class WeakEncryptor : public vmf::Encryptor
+class WeakEncryptor : public umf::Encryptor
 {
 public:
     WeakEncryptor(char _key) : key(_key) { }
@@ -52,7 +52,7 @@ private:
 };
 
 
-std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong = false);
+std::shared_ptr<umf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong = false);
 
 }
 

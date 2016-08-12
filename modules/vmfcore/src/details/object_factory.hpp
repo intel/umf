@@ -20,7 +20,7 @@
 #include <memory>
 #include "config.hpp"
 
-namespace vmf
+namespace umf
 {
 
 class IDataSourceFactory;
@@ -60,6 +60,6 @@ private:
 #pragma warning(pop)
 #endif
 
-} /* vmf */
+} /* umf */
 
 #endif /* __VMF_OBJECT_FACTORY_HPP__ */

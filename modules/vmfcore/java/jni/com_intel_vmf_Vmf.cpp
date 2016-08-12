@@ -5,7 +5,7 @@
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 /*
 * Class:     com_intel_vmf_Vmf
@@ -17,11 +17,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize(JNIEnv *env, jclass)
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1initialize (JNIEnv *env, jclass)
 {
-    static const char method_name[] = "Vmf::n_1initialize";
+    static const char method_name[] = "umf::n_1initialize";
 
     try
     {
-        //vmf::initialize();
+        //umf::initialize();
     }
     catch (const std::exception &e)
     {
@@ -43,11 +43,11 @@ JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate(JNIEnv *env, jclass);
 
 JNIEXPORT void JNICALL Java_com_intel_vmf_Vmf_n_1terminate (JNIEnv *env, jclass)
 {
-    static const char method_name[] = "Vmf::n_1terminate";
+    static const char method_name[] = "umf::n_1terminate";
 
     try
     {
-        //vmf::terminate();
+        //umf::terminate();
     }
     catch (const std::exception &e)
     {

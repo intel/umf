@@ -25,7 +25,7 @@
 
 #include "vmf/format.hpp"
 
-namespace vmf
+namespace umf
 {
 
 /*!
@@ -107,7 +107,7 @@ protected:
 
     std::shared_ptr<Format> format;
     std::shared_ptr<Encryptor> encryptor;
-    std::shared_ptr<vmf::MetadataSchema> eSchema;
+    std::shared_ptr<umf::MetadataSchema> eSchema;
     bool ignoreUnknownEncryptor;
 };
 

@@ -32,7 +32,7 @@ public slots:
 private:
     void fillPeopleList();
     void exitEditMode();
-    bool checkInputData(std::shared_ptr<vmf::Metadata>& newInfo);
+    bool checkInputData(std::shared_ptr<umf::Metadata>& newInfo);
     void clearInfoFields();
     void fillInfo();
     void enableEditControls(bool bEnable);

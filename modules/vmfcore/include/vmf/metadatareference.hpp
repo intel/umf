@@ -31,7 +31,7 @@
 #include "metadatadesc.hpp"
 #include "metadata.hpp"
 
-namespace vmf
+namespace umf
 {
 class Metadata;
 

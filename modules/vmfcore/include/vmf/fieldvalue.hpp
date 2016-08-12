@@ -22,14 +22,14 @@
 #include "global.hpp"
 #include <string>
 
-namespace vmf
+namespace umf
 {
 /*!
  * \class FieldValue
  * \brief The class that keeps the data containing in the field
  * as well as its name and other atrributes
  */
-class UMF_EXPORT FieldValue : public vmf::Variant
+class UMF_EXPORT FieldValue : public umf::Variant
 {
 public:
     /*!
@@ -73,8 +73,8 @@ public:
      * \param useEncryption Flag specifying whether to use separate encryption
      * for this field or not
      */
-    FieldValue( const std::string& name, vmf::Variant variant, bool useEncryption = false)
-        : vmf::Variant( variant )
+    FieldValue( const std::string& name, umf::Variant variant, bool useEncryption = false)
+        : umf::Variant( variant )
         , m_name( name )
         , m_useEncryption(useEncryption)
         , m_encryptedData("")

@@ -38,7 +38,7 @@
 #include "vmf/metadatadesc.hpp"
 #include "vmf/metadatareference.hpp"
 
-namespace vmf
+namespace umf
 {
 class MetadataSet;
 class MetadataStream;
@@ -50,7 +50,7 @@ class Reference;
 * \class Metadata
 * \brief The class contains values of metadata items
 */
-class UMF_EXPORT Metadata : public std::vector< vmf::FieldValue >
+class UMF_EXPORT Metadata : public std::vector< umf::FieldValue >
 {
     friend class MetadataSet;
     friend class MetadataStream;
@@ -149,7 +149,7 @@ public:
     * \note For missing optional fields returns an empty Variant value
     *       that can be checked via 'Variant::isEmpty()' call.
     */
-    vmf::Variant getFieldValue( const std::string& sName = std::string()) const;
+    umf::Variant getFieldValue( const std::string& sName = std::string()) const;
 
     /*!
     * \brief Find field by name
@@ -239,7 +239,7 @@ public:
     * \throw NullPointerException when metadata field description object is null
     * \throw IncorrectParamException when field description not found
     */
-    void setFieldValue( const std::string& sFieldName, const vmf::Variant& value );
+    void setFieldValue( const std::string& sFieldName, const umf::Variant& value );
 
     /*!
     * \brief Add new value with empty name to metadata item
@@ -248,7 +248,7 @@ public:
     * \throw InternalErrorException when field description not found
     * \throw TypeCastException if field type is incompatible with type of value
     */
-    void addValue( const vmf::Variant& value );
+    void addValue( const umf::Variant& value );
 
 
     /*!

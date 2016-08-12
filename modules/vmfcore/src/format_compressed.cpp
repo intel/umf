@@ -17,7 +17,7 @@
 #include "vmf/format_compressed.hpp"
 #include "vmf/format_const.hpp"
 
-namespace vmf
+namespace umf
 {
 
 FormatCompressed::FormatCompressed(std::shared_ptr<Format> format,
@@ -25,7 +25,7 @@ FormatCompressed::FormatCompressed(std::shared_ptr<Format> format,
                                    bool _ignoreUnknownCompressor)
     : format(format), compressorId(compressorId), ignoreUnknownCompressor(_ignoreUnknownCompressor)
 {
-    cSchema = std::make_shared<vmf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
+    cSchema = std::make_shared<umf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
     VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
         VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
         VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
@@ -143,7 +143,7 @@ std::string FormatCompressed::decompress(const std::string& input)
         umf_string data = dataIter == mapEnd ? "" : dataIter->second.value;
 
         if(algo.empty())
-            VMF_EXCEPTION(vmf::InternalErrorException, "Algorithm name isn't specified");
+            VMF_EXCEPTION(umf::InternalErrorException, "Algorithm name isn't specified");
 
         try
         {
@@ -173,4 +173,4 @@ std::string FormatCompressed::decompress(const std::string& input)
     }
 }
 
-}//vmf
+}//umf

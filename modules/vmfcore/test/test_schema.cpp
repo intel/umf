@@ -25,21 +25,21 @@ protected:
     {
         SCHEMA_NAME = "vmf:http://ns.intel.com/vmf/1.0";
 
-        EXPECT_NO_THROW(spSchema = std::shared_ptr< vmf::MetadataSchema >( new vmf::MetadataSchema( SCHEMA_NAME )));
+        EXPECT_NO_THROW(spSchema = std::shared_ptr< umf::MetadataSchema >( new umf::MetadataSchema( SCHEMA_NAME )));
 
-        vFields.emplace_back( vmf::FieldDesc( "name", vmf::Variant::type_string ));
-        vFields.emplace_back( vmf::FieldDesc( "age", vmf::Variant::type_integer ));
-        vFields.emplace_back( vmf::FieldDesc( "sex", vmf::Variant::type_integer ));
-        vFields.emplace_back( vmf::FieldDesc( "email", vmf::Variant::type_string ));
+        vFields.emplace_back( umf::FieldDesc( "name", umf::Variant::type_string ));
+        vFields.emplace_back( umf::FieldDesc( "age", umf::Variant::type_integer ));
+        vFields.emplace_back( umf::FieldDesc( "sex", umf::Variant::type_integer ));
+        vFields.emplace_back( umf::FieldDesc( "email", umf::Variant::type_string ));
 
-        spDesc = std::shared_ptr< vmf::MetadataDesc >( new vmf::MetadataDesc( "people", vFields ));
+        spDesc = std::shared_ptr< umf::MetadataDesc >( new umf::MetadataDesc( "people", vFields ));
     }
 
-    std::shared_ptr< vmf::MetadataSchema > spSchema;
-    std::vector< vmf::FieldDesc > vFields;
-    std::shared_ptr< vmf::MetadataDesc > spDesc;
+    std::shared_ptr< umf::MetadataSchema > spSchema;
+    std::vector< umf::FieldDesc > vFields;
+    std::shared_ptr< umf::MetadataDesc > spDesc;
 
-    vmf::umf_string SCHEMA_NAME;
+    umf::umf_string SCHEMA_NAME;
 };
 
 TEST_F(TestMetadataSchema, AddSchema)
@@ -57,19 +57,19 @@ TEST_F(TestMetadataSchema, AddTheSameDesc)
 
 TEST_F(TestMetadataSchema, AddNullDesc)
 {
-    std::shared_ptr< vmf::MetadataDesc > emptyPtr;
+    std::shared_ptr< umf::MetadataDesc > emptyPtr;
     EXPECT_THROW(spSchema->add(emptyPtr), std::exception);
 }
 
 TEST_F(TestMetadataSchema, CreateSchemaEmptyName)
 {
-    EXPECT_THROW(spSchema = std::shared_ptr< vmf::MetadataSchema >( new vmf::MetadataSchema( vmf::umf_string() )), vmf::IncorrectParamException);
+    EXPECT_THROW(spSchema = std::shared_ptr< umf::MetadataSchema >( new umf::MetadataSchema( umf::umf_string() )), umf::IncorrectParamException);
 }
 
 TEST_F(TestMetadataSchema, FindDesc)
 {
     EXPECT_NO_THROW(spSchema->add( spDesc ));
-    std::shared_ptr< vmf::MetadataDesc > findPtr;
+    std::shared_ptr< umf::MetadataDesc > findPtr;
     EXPECT_NO_THROW(findPtr = spSchema->findMetadataDesc("people"));
     ASSERT_NE(findPtr, nullptr);
     ASSERT_EQ(findPtr, spDesc);
@@ -78,7 +78,7 @@ TEST_F(TestMetadataSchema, FindDesc)
 TEST_F(TestMetadataSchema, FindUnknownDesc)
 {
     EXPECT_NO_THROW(spSchema->add( spDesc ));
-    std::shared_ptr< vmf::MetadataDesc > findPtr;
+    std::shared_ptr< umf::MetadataDesc > findPtr;
     EXPECT_NO_THROW(findPtr = spSchema->findMetadataDesc("some desc"));
     ASSERT_EQ(findPtr, nullptr);
 }

@@ -36,58 +36,58 @@ protected:
 
         copyFile(VIDEO_FILE, SCHEMA_TEST_FILE);
 
-        //vmf::initialize();
+        //umf::initialize();
 
-        schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
-        desc = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME, vmf::Variant::type_string));
+        schema = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME));
+        desc = std::shared_ptr<umf::MetadataDesc>(new umf::MetadataDesc(TEST_DESC_NAME, umf::Variant::type_string));
         schema->add(desc);
     }
 
     void TearDown()
     {
-        //vmf::terminate();
+        //umf::terminate();
     }
 
-    std::shared_ptr<vmf::MetadataSchema> schema;
-    std::shared_ptr<vmf::MetadataDesc> desc;
+    std::shared_ptr<umf::MetadataSchema> schema;
+    std::shared_ptr<umf::MetadataDesc> desc;
 
-    vmf::umf_string TEST_SCHEMA_NAME;
-    vmf::umf_string TEST_DESC_NAME;
-    vmf::umf_string TEST_FIELD_NAME;
-    vmf::umf_string TEST_VALUE_1;
-    vmf::umf_string TEST_VALUE_2;
+    umf::umf_string TEST_SCHEMA_NAME;
+    umf::umf_string TEST_DESC_NAME;
+    umf::umf_string TEST_FIELD_NAME;
+    umf::umf_string TEST_VALUE_1;
+    umf::umf_string TEST_VALUE_2;
 };
 
 TEST_F(TestSaveLoadSchema, OneField)
 {
     {
-        std::vector<vmf::FieldDesc> fields;
-        fields.push_back(vmf::FieldDesc(TEST_FIELD_NAME,vmf::Variant::type_string));
-        desc = std::shared_ptr<vmf::MetadataDesc> (new vmf::MetadataDesc(TEST_DESC_NAME, fields));
-        schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+        std::vector<umf::FieldDesc> fields;
+        fields.push_back(umf::FieldDesc(TEST_FIELD_NAME,umf::Variant::type_string));
+        desc = std::shared_ptr<umf::MetadataDesc> (new umf::MetadataDesc(TEST_DESC_NAME, fields));
+        schema = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME));
         schema->add(desc);
 
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
         stream.addSchema(schema);
         stream.saveTo(SCHEMA_TEST_FILE);
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(SCHEMA_TEST_FILE, umf::MetadataStream::ReadOnly);
         auto schema = stream.getSchema(TEST_SCHEMA_NAME);
 
         ASSERT_EQ(TEST_SCHEMA_NAME, schema->getName());
         ASSERT_EQ(1u, schema->size());
-        std::shared_ptr<vmf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        std::shared_ptr<umf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
         ASSERT_TRUE(desc != NULL);
         ASSERT_EQ(TEST_SCHEMA_NAME, desc->getSchemaName());
         ASSERT_EQ(TEST_DESC_NAME, desc->getMetadataName());
         auto fields = desc->getFields();
         ASSERT_EQ(1u, fields.size());
-        vmf::FieldDesc fieldDescr;
+        umf::FieldDesc fieldDescr;
         ASSERT_TRUE(desc->getFieldDesc(fieldDescr, TEST_FIELD_NAME));
-        ASSERT_EQ(vmf::Variant::type_string, fieldDescr.type);
+        ASSERT_EQ(umf::Variant::type_string, fieldDescr.type);
         ASSERT_EQ(TEST_FIELD_NAME, fieldDescr.name);
     }
 }
@@ -95,26 +95,26 @@ TEST_F(TestSaveLoadSchema, OneField)
 TEST_F(TestSaveLoadSchema, Array)
 {
     {
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
         stream.addSchema(schema);
         stream.saveTo(SCHEMA_TEST_FILE);
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(SCHEMA_TEST_FILE, umf::MetadataStream::ReadOnly);
 
         auto schema = stream.getSchema(TEST_SCHEMA_NAME);
 
         ASSERT_EQ(1u, schema->size());
-        std::shared_ptr<vmf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
+        std::shared_ptr<umf::MetadataDesc> desc = schema->findMetadataDesc(TEST_DESC_NAME);
         ASSERT_TRUE(desc.get() != NULL);
         ASSERT_EQ(TEST_SCHEMA_NAME, desc->getSchemaName());
         ASSERT_EQ(TEST_DESC_NAME, desc->getMetadataName());
-        std::vector<vmf::FieldDesc> fields = desc->getFields();
+        std::vector<umf::FieldDesc> fields = desc->getFields();
         ASSERT_EQ(1u, fields.size());
-        vmf::FieldDesc field = fields.at(0);
-        ASSERT_EQ(vmf::Variant::type_string, field.type);
+        umf::FieldDesc field = fields.at(0);
+        ASSERT_EQ(umf::Variant::type_string, field.type);
         ASSERT_EQ("", field.name);
     }
 }
@@ -122,14 +122,14 @@ TEST_F(TestSaveLoadSchema, Array)
 TEST_F(TestSaveLoadSchema, GetAllNames)
 {
     {
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
         stream.addSchema(schema);
         stream.saveTo(SCHEMA_TEST_FILE);
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(SCHEMA_TEST_FILE, umf::MetadataStream::ReadOnly);
 
         auto schemaNames = stream.getAllSchemaNames();
         ASSERT_EQ(1u, schemaNames.size());
@@ -139,14 +139,14 @@ TEST_F(TestSaveLoadSchema, GetAllNames)
 
 TEST_F(TestSaveLoadSchema, SchemaAuthor)
 {
-    const vmf::umf_string TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
-    const vmf::umf_string TEST_AUTHOR_NAME = "< the \"Author\" >";
+    const umf::umf_string TEST_SCHEMA_WITH_AUTHOR_NAME = "Schema with author";
+    const umf::umf_string TEST_AUTHOR_NAME = "< the \"Author\" >";
 
     {
-        vmf::MetadataStream stream;
+        umf::MetadataStream stream;
 
-        auto schemaWithAuthor = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_WITH_AUTHOR_NAME, TEST_AUTHOR_NAME));
-        auto desc1 = std::shared_ptr<vmf::MetadataDesc>(new vmf::MetadataDesc(TEST_DESC_NAME, vmf::Variant::type_string));
+        auto schemaWithAuthor = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_WITH_AUTHOR_NAME, TEST_AUTHOR_NAME));
+        auto desc1 = std::shared_ptr<umf::MetadataDesc>(new umf::MetadataDesc(TEST_DESC_NAME, umf::Variant::type_string));
         schemaWithAuthor->add(desc1);
 
         stream.addSchema(schema);
@@ -156,8 +156,8 @@ TEST_F(TestSaveLoadSchema, SchemaAuthor)
     }
 
     {
-        vmf::MetadataStream stream;
-        stream.open(SCHEMA_TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream stream;
+        stream.open(SCHEMA_TEST_FILE, umf::MetadataStream::ReadOnly);
 
         auto schemaNames = stream.getAllSchemaNames();
         ASSERT_EQ(2u, schemaNames.size());

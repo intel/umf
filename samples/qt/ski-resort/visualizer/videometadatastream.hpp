@@ -20,7 +20,7 @@ public:
     float getCurrentSpeed();
     int getCurrentPercentage();
     int getCurrentFrameNumber();
-    vmf::umf_integer getFrameDelay();
+    umf::umf_integer getFrameDelay();
     bool hasSpeed();
     bool isOpened();
     void next();
@@ -37,16 +37,16 @@ private:
     cv::VideoCapture capture;
     cv::Mat currentFrame;
     GpsCoordinates currentCoordinates;
-    vmf::umf_integer currentTime;
+    umf::umf_integer currentTime;
     float currentSpeed;
     double fps;
-    vmf::umf_integer frameDelay;
+    umf::umf_integer frameDelay;
     double duration;
-    vmf::MetadataStream metaStream;
+    umf::MetadataStream metaStream;
     size_t currentGpsCoordinateIndex;
     bool hasSpeedValues;
-    vmf::MetadataSet gpsCoordinatesSet;
-    vmf::MetadataSet speedValuesSet;
+    umf::MetadataSet gpsCoordinatesSet;
+    umf::MetadataSet speedValuesSet;
     QMutex mutex;
 };
 

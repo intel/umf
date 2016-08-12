@@ -21,7 +21,7 @@
 
 #include "vmf/compressor.hpp"
 
-namespace vmf
+namespace umf
 {
 
 //Compressor class to pass fake Id to registerNew() method
@@ -47,7 +47,7 @@ public:
         return ptr;
     }
 
-    virtual vmf::umf_string getId()
+    virtual umf::umf_string getId()
     {
         return id;
     }

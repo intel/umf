@@ -20,7 +20,7 @@
 
 #include "vmf/compressor.hpp"
 
-namespace vmf {
+namespace umf {
 
 /*!
  * \class ZLibCompressor
@@ -69,6 +69,6 @@ public:
     }
 };
 
-} /* vmf */
+} /* umf */
 
 #endif /* VMF_COMPRESSOR_ZLIB_HPP */

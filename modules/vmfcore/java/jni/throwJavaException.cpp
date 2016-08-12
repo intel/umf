@@ -5,7 +5,7 @@
 #include "vmf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
-using namespace vmf;
+using namespace umf;
 
 void throwJavaException (JNIEnv *env, const std::exception *e, const char *method)
 {
@@ -18,8 +18,8 @@ void throwJavaException (JNIEnv *env, const std::exception *e, const char *metho
 
         if (dynamic_cast<const Exception*>(e))
         {
-            exception_type = "vmf::Exception";
-            je = env->FindClass("com/intel/vmf/Exception");
+            exception_type = "umf::Exception";
+            je = env->FindClass("com/intel/umf/Exception");
         }
 
         what = exception_type + ": " + e->what();

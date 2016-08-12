@@ -1,7 +1,7 @@
 #include "vmf/format_encrypted.hpp"
 #include "vmf/format_const.hpp"
 
-namespace vmf
+namespace umf
 {
 
 FormatEncrypted::FormatEncrypted(std::shared_ptr<Format> format,
@@ -11,7 +11,7 @@ FormatEncrypted::FormatEncrypted(std::shared_ptr<Format> format,
       encryptor(_encryptor),
       ignoreUnknownEncryptor(_ignoreUnknownEncryptor)
 {
-    eSchema = std::make_shared<vmf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
+    eSchema = std::make_shared<umf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
     VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
         VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
         VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
@@ -70,14 +70,14 @@ std::string FormatEncrypted::encrypt(const std::string &input)
         std::string encrypted = Variant::base64encode(encryptedBuf);
 
         //Store encrypted data in a format of current implementation
-        std::shared_ptr<vmf::Metadata> eMetadata;
-        eMetadata = std::make_shared<vmf::Metadata>(eSchema->findMetadataDesc(ENCRYPTED_DATA_DESC_NAME));
+        std::shared_ptr<umf::Metadata> eMetadata;
+        eMetadata = std::make_shared<umf::Metadata>(eSchema->findMetadataDesc(ENCRYPTED_DATA_DESC_NAME));
         eMetadata->push_back(FieldValue(ENCRYPTION_HINT_PROP_NAME, encryptor->getHint()));
         eMetadata->push_back(FieldValue(ENCRYPTED_DATA_PROP_NAME, encrypted));
 
         MetadataAccessor metadataAccessor(*eMetadata);
         metadataAccessor.setId(0);
-        eMetadata = std::make_shared<vmf::Metadata>(metadataAccessor);
+        eMetadata = std::make_shared<umf::Metadata>(metadataAccessor);
 
         MetadataSet eSet;
         eSet.push_back(eMetadata);
@@ -168,4 +168,4 @@ std::string FormatEncrypted::decrypt(const std::string &input)
     }
 }
 
-} //vmf
+} //umf

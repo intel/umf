@@ -17,7 +17,7 @@
 #include "vmf/metadatadesc.hpp"
 #include <algorithm>
 
-namespace vmf
+namespace umf
 {
 MetadataDesc::MetadataDesc()
     : m_sSchemaName()

@@ -23,7 +23,7 @@
 #include <limits>
 #include <iomanip>
 
-namespace vmf
+namespace umf
 {
 
 class IData
@@ -493,7 +493,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_integer>>(vec);
         }
@@ -510,7 +510,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_real>>(vec);
         }
@@ -527,7 +527,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_string>>(vec);
         }
@@ -544,7 +544,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec2d>>(vec);
         }
@@ -561,7 +561,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec3d>>(vec);
         }
@@ -578,7 +578,7 @@ void Variant::fromString(Type eType, const std::string& sValue)
                 if(ss)
                     ss >> separator;
                 if(separator != ';')
-                    VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
+                    VMF_EXCEPTION(umf::IncorrectParamException, "Invalid array item separator: " + to_string(separator));
             }
             data = new Data<std::vector<umf_vec4d>>(vec);
         }
@@ -631,7 +631,7 @@ void Variant::convertTo(Type type)
 }
 
 #define TYPE_TO_STRING(T, VAL) \
-    case(vmf::Variant::type_##T): \
+    case(umf::Variant::type_##T): \
     sType = #VAL;\
     break;
 
@@ -732,13 +732,13 @@ umf_rawbuffer Variant::base64decode(const std::string& base64Str)
 
     size_t size = base64Str.size();
     if (base64Str.size() % 4 != 0)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid base64 string size (isn't multiple of 4)");
+        VMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string size (isn't multiple of 4)");
 
     size_t i = 0;
     auto rit = base64Str.rbegin();
     while (rit != base64Str.rend() && *rit++ == '=') ++i;
     if (i > 2)
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Invalid base64 string: more than 2 trailing '=' symbols");
+        VMF_EXCEPTION(umf::IncorrectParamException, "Invalid base64 string: more than 2 trailing '=' symbols");
 
     size_t  res_size = size / 4 * 3 - i;
     std::unique_ptr<char[]> result(new char[res_size]);
@@ -752,7 +752,7 @@ umf_rawbuffer Variant::base64decode(const std::string& base64Str)
         {
             c[j] = (char)base64_chars.find(*in++);
             if (c[j] < 0 && i + j <= res_size)
-                VMF_EXCEPTION(vmf::IncorrectParamException, "Input base64 string contains invalid symbol");
+                VMF_EXCEPTION(umf::IncorrectParamException, "Input base64 string contains invalid symbol");
         }
 
         result[i++] = (c[0] << 2) | (c[1] >> 4);
@@ -768,4 +768,4 @@ void Variant::release()
     data = nullptr;
 };
 
-}//vmf
+}//umf

@@ -32,7 +32,7 @@
 #include "iquery.hpp"
 #include <functional>
 
-namespace vmf
+namespace umf
 {
 /*!
 * \class MetadataSet
@@ -83,12 +83,12 @@ public:
     MetadataSet queryBySchema( const std::string& sSchemaName ) const;
     MetadataSet queryByName( const std::string& sName ) const;
 
-    MetadataSet queryByNameAndValue( const std::string& sMetadataName, const vmf::FieldValue& value ) const;
-    MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< vmf::FieldValue>& vFields ) const;
+    MetadataSet queryByNameAndValue( const std::string& sMetadataName, const umf::FieldValue& value ) const;
+    MetadataSet queryByNameAndFields( const std::string& sMetadataName, const std::vector< umf::FieldValue>& vFields ) const;
 
     MetadataSet queryByReference( const std::string& sReferenceName ) const;
-    MetadataSet queryByReference( const std::string& sReferenceName, const vmf::FieldValue& value ) const;
-    MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< vmf::FieldValue>& vFields ) const;
+    MetadataSet queryByReference( const std::string& sReferenceName, const umf::FieldValue& value ) const;
+    MetadataSet queryByReference( const std::string& sReferenceName, const std::vector< umf::FieldValue>& vFields ) const;
 
     /*!
     * \brief Shift frame index value associated with metadata

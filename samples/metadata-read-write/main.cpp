@@ -28,7 +28,7 @@
 #include "vmf/vmf.hpp"
 
 
-using namespace vmf;
+using namespace umf;
 using namespace std;
 
 string workingPath;

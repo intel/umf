@@ -21,19 +21,19 @@
 
 // User-created compression algorithm should implement Compressor interface
 // Straightforward implementation of LZW algorithm
-class MyLZWCompressor : public vmf::Compressor
+class MyLZWCompressor : public umf::Compressor
 {
 public:
-    virtual void compress(const vmf::umf_string& input, vmf::umf_rawbuffer& output);
+    virtual void compress(const umf::umf_string& input, umf::umf_rawbuffer& output);
 
-    virtual void decompress(const vmf::umf_rawbuffer& input, vmf::umf_string &output);
+    virtual void decompress(const umf::umf_rawbuffer& input, umf::umf_string &output);
 
     std::shared_ptr<Compressor> createNewInstance() const
     {
         return std::shared_ptr<Compressor>(new MyLZWCompressor);
     }
 
-    virtual vmf::umf_string getId()
+    virtual umf::umf_string getId()
     {
         return "com.intel.vmf.compressor.example.my_lzw";
     }

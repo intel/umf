@@ -26,7 +26,7 @@ enum SerializerType
     TypeJson = 1
 };
 
-using namespace vmf;
+using namespace umf;
 
 class TestSerialization : public ::testing::TestWithParam< std::tuple<SerializerType, umf_string, CryptAlgo> >
 {
@@ -186,7 +186,7 @@ protected:
     MetadataSet set;
 
     std::unique_ptr<Format> format;
-    std::shared_ptr<vmf::Encryptor> encryptor;
+    std::shared_ptr<umf::Encryptor> encryptor;
     std::shared_ptr< MetadataSchema > spSchemaPeople, spSchemaFrames;
     std::shared_ptr< MetadataDesc > spDescPeople, spDescFrames;
     std::vector< FieldDesc > vFieldsPeople, vFieldsFrames;
@@ -209,30 +209,30 @@ TEST_P(TestSerialization, StoreAll)
     schemas.push_back(spSchemaPeople);
     schemas.push_back(spSchemaFrames);
 
-    std::shared_ptr<vmf::MetadataStream::VideoSegment> nullSegment = nullptr;
+    std::shared_ptr<umf::MetadataStream::VideoSegment> nullSegment = nullptr;
     segments.push_back(nullSegment);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
+    ASSERT_THROW(format->store(set, schemas, segments), umf::NullPointerException);
 
     segments.pop_back();
     
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), umf::IncorrectParamException);
 
     set.pop_back();
 
     std::shared_ptr< MetadataSchema > spSchemaNull = nullptr;
     schemas.push_back(spSchemaNull);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), umf::IncorrectParamException);
 
     set.clear();
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::NullPointerException);
+    ASSERT_THROW(format->store(set, schemas, segments), umf::NullPointerException);
 
-    auto spNewDesc = std::make_shared<vmf::MetadataDesc>("new", vFieldsPeople, vRefDescsFrames);
+    auto spNewDesc = std::make_shared<umf::MetadataDesc>("new", vFieldsPeople, vRefDescsFrames);
     schemas.pop_back();
     std::string check = "";
     std::shared_ptr<Metadata> md1(new Metadata(spNewDesc));
@@ -240,7 +240,7 @@ TEST_P(TestSerialization, StoreAll)
     set.push_back(md1);
     set.push_back(md2);
 
-    ASSERT_THROW(format->store(set, schemas, segments), vmf::IncorrectParamException);
+    ASSERT_THROW(format->store(set, schemas, segments), umf::IncorrectParamException);
 
     segments.clear();
     schemas.clear();
@@ -248,7 +248,7 @@ TEST_P(TestSerialization, StoreAll)
     std::vector<std::shared_ptr<Stat>> stats;
     Format::AttribMap attribs;
 
-    ASSERT_THROW(format->parse("", mdInt, schemas, segments, stats, attribs), vmf::IncorrectParamException);
+    ASSERT_THROW(format->parse("", mdInt, schemas, segments, stats, attribs), umf::IncorrectParamException);
 }
 
 
@@ -336,7 +336,7 @@ TEST_P(TestSerialization, Parse_metadataArray)
 
     std::shared_ptr<Metadata> nullElement = nullptr;
     set.push_back(nullElement);
-    ASSERT_THROW(format->store(set), vmf::NullPointerException);
+    ASSERT_THROW(format->store(set), umf::NullPointerException);
 }
 
 
@@ -428,11 +428,11 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     umf_string compressorId = "unknown_compressor";
     std::shared_ptr<Compressor> fake = std::make_shared<FakeCompressor>();
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(compressorId);
-    vmf::Compressor::registerNew(fake);
+    umf::Compressor::registerNew(fake);
 
     SerializerType type = std::get<0>(param);
     CryptAlgo algo      = std::get<2>(param);
-    std::shared_ptr<vmf::Encryptor> encryptor = getEncryptor(algo);
+    std::shared_ptr<umf::Encryptor> encryptor = getEncryptor(algo);
 
     std::shared_ptr<Format> f, cf;
     switch (type)
@@ -451,7 +451,7 @@ TEST_P(TestSerialization, CheckIgnoreUnknownCompressor)
     schemas.push_back(spSchemaFrames);
     std::string result = stream.serialize(*format);
 
-    vmf::Compressor::unregister(compressorId);
+    umf::Compressor::unregister(compressorId);
 
     std::vector<MetadataInternal> md;
     std::vector<std::shared_ptr<MetadataSchema>> schemas1;

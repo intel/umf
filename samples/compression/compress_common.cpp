@@ -22,7 +22,7 @@
 #include <fstream>
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 const string GPS_DESC = "gps";
 const string GPS_COORD_LAT_FIELD = "lat";
@@ -122,7 +122,7 @@ void readAndDumpMetadata(const umf_string& videoFile)
                     {
                         cout << separator << f << "=";
                         try { cout << item->getFieldValue(f).toString(); }
-                        catch (vmf::Exception& e) { cout << '<' << e.what() << '>'; }
+                        catch (umf::Exception& e) { cout << '<' << e.what() << '>'; }
                         separator = ", ";
                     }
                     cout << " }";

@@ -8,11 +8,11 @@
 #include <string>
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
-vmf::umf_integer calculateFrameDelay(double fps)
+umf::umf_integer calculateFrameDelay(double fps)
 {
-    vmf::umf_integer frameDelay = (vmf::umf_integer) floor(1000.0 / fps);
+    umf::umf_integer frameDelay = (umf::umf_integer) floor(1000.0 / fps);
     return frameDelay;
 }
 

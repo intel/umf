@@ -17,15 +17,15 @@
 
 #include "test_precomp.hpp"
 
-using namespace vmf;
+using namespace umf;
 
 //Bad compressor that increases the size of input data
-class BloatingCompressor : public vmf::Compressor
+class BloatingCompressor : public umf::Compressor
 {
 public:
     static const int factor = 5;
 
-    virtual void compress(const vmf::umf_string& input, vmf::umf_rawbuffer& output)
+    virtual void compress(const umf::umf_string& input, umf::umf_rawbuffer& output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end(); ++it)
@@ -35,7 +35,7 @@ public:
         }
     }
 
-    virtual void decompress(const vmf::umf_rawbuffer& input, vmf::umf_string &output)
+    virtual void decompress(const umf::umf_rawbuffer& input, umf::umf_string &output)
     {
         output.clear();
         for(auto it = input.begin(); it != input.end();)
@@ -58,7 +58,7 @@ public:
         return std::shared_ptr<Compressor>(new BloatingCompressor);
     }
 
-    virtual vmf::umf_string getId()
+    virtual umf::umf_string getId()
     {
         return "com.intel.vmf.compressor.test.bloating";
     }
@@ -70,16 +70,16 @@ class TestCompressor : public ::testing::TestWithParam<std::string>
 protected:
     void SetUp()
     {
-        //vmf::initialize();
+        //umf::initialize();
         //register bloating compressor
         std::shared_ptr<Compressor> bloating = std::make_shared<BloatingCompressor>();
-        vmf::Compressor::registerNew(bloating);
+        umf::Compressor::registerNew(bloating);
     }
 
     void TearDown()
     {
-        vmf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
-        //vmf::terminate();
+        umf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+        //umf::terminate();
     }
 
     std::string generateData(int nChars)
@@ -95,12 +95,12 @@ protected:
 TEST_P(TestCompressor, TryRegisterNewNull)
 {
     std::shared_ptr<Compressor> newBloating = NULL;
-    ASSERT_THROW(vmf::Compressor::registerNew(newBloating), IncorrectParamException);
+    ASSERT_THROW(umf::Compressor::registerNew(newBloating), IncorrectParamException);
 }
 
 TEST_P(TestCompressor, TryUnregisterNonExisting)
 {
-    ASSERT_THROW(vmf::Compressor::unregister("trampampam"), IncorrectParamException);
+    ASSERT_THROW(umf::Compressor::unregister("trampampam"), IncorrectParamException);
 }
 
 TEST_P(TestCompressor, CreateByName)
@@ -109,11 +109,11 @@ TEST_P(TestCompressor, CreateByName)
 
     if(name == "unregistered")
     {
-        ASSERT_THROW(compressor = vmf::Compressor::create(name), IncorrectParamException);
+        ASSERT_THROW(compressor = umf::Compressor::create(name), IncorrectParamException);
     }
     else
     {
-        ASSERT_NE(compressor = vmf::Compressor::create(name), nullptr);
+        ASSERT_NE(compressor = umf::Compressor::create(name), nullptr);
     }
 }
 
@@ -124,7 +124,7 @@ TEST_P(TestCompressor, LossesOnCompression)
 
     if(name != "unregistered")
     {
-        compressor = vmf::Compressor::create(name);
+        compressor = umf::Compressor::create(name);
         int nChars = 0;
         do
         {
@@ -147,7 +147,7 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 
     if(name != "unregistered")
     {
-        compressor = vmf::Compressor::create(name);
+        compressor = umf::Compressor::create(name);
         umf_rawbuffer compressed;
         std::string result;
         ASSERT_NO_THROW(compressor->decompress(compressed, result));
@@ -158,7 +158,7 @@ TEST_P(TestCompressor, DecompressionOfEmpty)
 
 TEST_P(TestCompressor, CheckRegisteredIds)
 {
-    std::vector<umf_string> regIds = vmf::Compressor::getRegisteredIds();
+    std::vector<umf_string> regIds = umf::Compressor::getRegisteredIds();
     std::set<umf_string> registeredIds(regIds.begin(), regIds.end());
     std::set<umf_string> knownIds = { Compressor::builtinId(),
                                       "com.intel.vmf.compressor.test.bloating" };
@@ -173,12 +173,12 @@ TEST_P(TestCompressor, TryRegisterExisting)
     std::dynamic_pointer_cast<FakeCompressor>(fake)->setId(name);
     if(name == "unregistered")
     {
-        ASSERT_NO_THROW(vmf::Compressor::registerNew(fake));
-        ASSERT_NO_THROW(vmf::Compressor::unregister(name));
+        ASSERT_NO_THROW(umf::Compressor::registerNew(fake));
+        ASSERT_NO_THROW(umf::Compressor::unregister(name));
     }
     else
     {
-        ASSERT_THROW(vmf::Compressor::registerNew(fake), IncorrectParamException);
+        ASSERT_THROW(umf::Compressor::registerNew(fake), IncorrectParamException);
     }
 }
 

@@ -34,7 +34,7 @@ protected:
     {
         n = 10;
 
-        //vmf::initialize();
+        //umf::initialize();
 
         TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         TEST_PROPERTY_NAME1 = "TEST_PROPERTY_NAME1";
@@ -42,7 +42,7 @@ protected:
         TEST_FIELD_NAME = "TEST_FIELD_NAME";
         TEST_FIELD_NAME2 = "TEST_FIELD_NAME2";
 
-        schema = std::shared_ptr<vmf::MetadataSchema>(new vmf::MetadataSchema(TEST_SCHEMA_NAME));
+        schema = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME));
 
         VMF_METADATA_BEGIN(TEST_PROPERTY_NAME1)
         VMF_FIELD_INT(TEST_FIELD_NAME)
@@ -55,19 +55,19 @@ protected:
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 
-        if (!stream.open(TEST_FILE, vmf::MetadataStream::Update))
+        if (!stream.open(TEST_FILE, umf::MetadataStream::Update))
             std::cout << "Cann't open stream!" << std::endl;
 
         stream.addSchema(schema);
 
         for (int i = 0; i < n; i++)
         {
-            std::shared_ptr<vmf::Metadata> md(new vmf::Metadata(schema->findMetadataDesc(TEST_PROPERTY_NAME1)));
+            std::shared_ptr<umf::Metadata> md(new umf::Metadata(schema->findMetadataDesc(TEST_PROPERTY_NAME1)));
             md->setFieldValue(TEST_FIELD_NAME, i);
             md->setFieldValue(TEST_FIELD_NAME2, 2*i);
             stream.add(md);
 
-            std::shared_ptr<vmf::Metadata> md2(new vmf::Metadata(schema->findMetadataDesc(TEST_PROPERTY_NAME2)));
+            std::shared_ptr<umf::Metadata> md2(new umf::Metadata(schema->findMetadataDesc(TEST_PROPERTY_NAME2)));
             md2->setFieldValue(TEST_FIELD_NAME, n + i);
             stream.add(md2);
         }
@@ -79,34 +79,34 @@ protected:
 
     virtual void TearDown()
     {
-        //vmf::terminate();
+        //umf::terminate();
     }
 
     int n;
 
-    vmf::MetadataStream stream;
-    std::shared_ptr<vmf::MetadataSchema> schema;
-    std::shared_ptr<vmf::MetadataDesc> descr1;
-    std::shared_ptr<vmf::MetadataDesc> descr2;
+    umf::MetadataStream stream;
+    std::shared_ptr<umf::MetadataSchema> schema;
+    std::shared_ptr<umf::MetadataDesc> descr1;
+    std::shared_ptr<umf::MetadataDesc> descr2;
 
-    vmf::umf_string TEST_SCHEMA_NAME;
-    vmf::umf_string TEST_PROPERTY_NAME1;
-    vmf::umf_string TEST_PROPERTY_NAME2;
-    vmf::umf_string TEST_FIELD_NAME;
-    vmf::umf_string TEST_FIELD_NAME2;
+    umf::umf_string TEST_SCHEMA_NAME;
+    umf::umf_string TEST_PROPERTY_NAME1;
+    umf::umf_string TEST_PROPERTY_NAME2;
+    umf::umf_string TEST_FIELD_NAME;
+    umf::umf_string TEST_FIELD_NAME2;
 };
 
 TEST_F(TestQuery, QueryByNameAndValue)
 {
     {
-        vmf::MetadataStream newStream;
-        newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+        umf::MetadataStream newStream;
+        newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
         newStream.load(TEST_SCHEMA_NAME);
 
         for (int i = 0; i < n; i++)
         {
-            vmf::Variant value(2*i);
-            vmf::FieldValue fieldValue(TEST_FIELD_NAME2, value);
+            umf::Variant value(2*i);
+            umf::FieldValue fieldValue(TEST_FIELD_NAME2, value);
             auto set = newStream.queryByNameAndValue(TEST_PROPERTY_NAME1, fieldValue);
             ASSERT_EQ(set.size(), 1u);
 
@@ -117,11 +117,11 @@ TEST_F(TestQuery, QueryByNameAndValue)
 
 TEST_F(TestQuery, Query)
 {
-    vmf::MetadataStream newStream;
-    newStream.open(TEST_FILE, vmf::MetadataStream::ReadOnly);
+    umf::MetadataStream newStream;
+    newStream.open(TEST_FILE, umf::MetadataStream::ReadOnly);
     newStream.load(TEST_SCHEMA_NAME);
     
-    vmf::MetadataSet set = newStream.query([&](const std::shared_ptr< vmf::Metadata >& spItem)->bool
+    umf::MetadataSet set = newStream.query([&](const std::shared_ptr< umf::Metadata >& spItem)->bool
     {
         return (spItem->getName() == TEST_PROPERTY_NAME1);
     });

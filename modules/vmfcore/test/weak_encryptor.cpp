@@ -1,7 +1,7 @@
 #include "weak_encryptor.hpp"
 #include "vmf/encryptor_default.hpp"
 
-namespace vmf
+namespace umf
 {
 
 const char WeakEncryptor::magic = 109;
@@ -36,7 +36,7 @@ void WeakEncryptor::decrypt(const umf_rawbuffer &input, umf_string &output)
 }
 
 
-std::shared_ptr<vmf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong)
+std::shared_ptr<umf::Encryptor> getEncryptor(CryptAlgo algo, bool wrong)
 {
     std::string wrongKey = "goodbyemranderson";
     std::string rightKey = "thereisnospoon";

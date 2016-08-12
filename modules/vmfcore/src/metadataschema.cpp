@@ -17,7 +17,7 @@
 #include "vmf/metadataschema.hpp"
 #include <algorithm>
 
-namespace vmf
+namespace umf
 {
 MetadataSchema::MetadataSchema(const std::string& sName, const std::string& sAuthor, bool useEncryption)
     : m_sName(sName), m_sAuthor(sAuthor), m_useEncryption(useEncryption)
@@ -105,4 +105,4 @@ std::vector<std::shared_ptr< MetadataDesc >> MetadataSchema::getAll() const
     return set;
 }
 
-} // namespace vmf
+} // namespace umf

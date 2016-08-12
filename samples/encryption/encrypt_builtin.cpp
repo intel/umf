@@ -27,7 +27,7 @@
 #include "encrypt_common.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 int encrypt_builtin(const string& videoFile, EncryptionScope scope)
 {

@@ -29,7 +29,7 @@
 #include "my_encryptor.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 int encrypt_custom(const string& videoFile, EncryptionScope scope)
 {

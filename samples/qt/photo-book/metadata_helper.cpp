@@ -23,27 +23,27 @@ void MetadataHelper::loadRequiredProperties()
 {
     if (!metaStream.load(PHOTO_BOOK_SCHEMA_NAME))
     {
-        std::shared_ptr<vmf::MetadataSchema> schema(new vmf::MetadataSchema(PHOTO_BOOK_SCHEMA_NAME));
+        std::shared_ptr<umf::MetadataSchema> schema(new umf::MetadataSchema(PHOTO_BOOK_SCHEMA_NAME));
 
-        std::vector<vmf::FieldDesc> peopleFields;
-        peopleFields.push_back(vmf::FieldDesc(FieldNameConstants::NAME_FIELD, vmf::Variant::type_string));
-        peopleFields.push_back(vmf::FieldDesc(FieldNameConstants::AGE_FIELD, vmf::Variant::type_integer));
-        peopleFields.push_back(vmf::FieldDesc(FieldNameConstants::HEIGHT_FIELD, vmf::Variant::type_integer));
-        peopleFields.push_back(vmf::FieldDesc(FieldNameConstants::WEIGHT_FIELD, vmf::Variant::type_integer));
-        peopleFields.push_back(vmf::FieldDesc(FieldNameConstants::SEX_FIELD, vmf::Variant::type_integer));
+        std::vector<umf::FieldDesc> peopleFields;
+        peopleFields.push_back(umf::FieldDesc(FieldNameConstants::NAME_FIELD, umf::Variant::type_string));
+        peopleFields.push_back(umf::FieldDesc(FieldNameConstants::AGE_FIELD, umf::Variant::type_integer));
+        peopleFields.push_back(umf::FieldDesc(FieldNameConstants::HEIGHT_FIELD, umf::Variant::type_integer));
+        peopleFields.push_back(umf::FieldDesc(FieldNameConstants::WEIGHT_FIELD, umf::Variant::type_integer));
+        peopleFields.push_back(umf::FieldDesc(FieldNameConstants::SEX_FIELD, umf::Variant::type_integer));
 
-        std::shared_ptr<vmf::MetadataDesc> peopleDescription(new vmf::MetadataDesc(PEOPLE_DESC_NAME,
+        std::shared_ptr<umf::MetadataDesc> peopleDescription(new umf::MetadataDesc(PEOPLE_DESC_NAME,
             peopleFields));
         schema->add(peopleDescription);
 
-        std::vector<vmf::FieldDesc> markupFields;
-        markupFields.push_back(vmf::FieldDesc(FieldNameConstants::X_RECT_FIELD, vmf::Variant::type_real));
-        markupFields.push_back(vmf::FieldDesc(FieldNameConstants::Y_RECT_FIELD, vmf::Variant::type_real));
-        markupFields.push_back(vmf::FieldDesc(FieldNameConstants::WIDTH_RECT_FIELD, vmf::Variant::type_real));
-        markupFields.push_back(vmf::FieldDesc(FieldNameConstants::HEIGHT_RECT_FIELD, vmf::Variant::type_real));
-        markupFields.push_back(vmf::FieldDesc(FieldNameConstants::TYPE_RECT_FIELD, vmf::Variant::type_integer));
+        std::vector<umf::FieldDesc> markupFields;
+        markupFields.push_back(umf::FieldDesc(FieldNameConstants::X_RECT_FIELD, umf::Variant::type_real));
+        markupFields.push_back(umf::FieldDesc(FieldNameConstants::Y_RECT_FIELD, umf::Variant::type_real));
+        markupFields.push_back(umf::FieldDesc(FieldNameConstants::WIDTH_RECT_FIELD, umf::Variant::type_real));
+        markupFields.push_back(umf::FieldDesc(FieldNameConstants::HEIGHT_RECT_FIELD, umf::Variant::type_real));
+        markupFields.push_back(umf::FieldDesc(FieldNameConstants::TYPE_RECT_FIELD, umf::Variant::type_integer));
 
-        std::shared_ptr<vmf::MetadataDesc> markupDescription(new vmf::MetadataDesc(MARKUP_DESC_NAME,
+        std::shared_ptr<umf::MetadataDesc> markupDescription(new umf::MetadataDesc(MARKUP_DESC_NAME,
             markupFields));
         schema->add(markupDescription);
 
@@ -56,7 +56,7 @@ void MetadataHelper::closeFile()
     metaStream.close();
 }
 
-bool MetadataHelper::openFile(vmf::MetadataStream::OpenMode mode)
+bool MetadataHelper::openFile(umf::MetadataStream::OpenMode mode)
 {
     return metaStream.reopen(mode);
 }
@@ -66,7 +66,7 @@ void MetadataHelper::saveMetadata()
     metaStream.save();
 }
 
-vmf::MetadataStream *MetadataHelper::getMetadataStream()
+umf::MetadataStream *MetadataHelper::getMetadataStream()
 {
     return &metaStream;
 }

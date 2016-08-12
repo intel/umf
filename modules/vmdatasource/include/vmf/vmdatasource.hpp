@@ -17,7 +17,7 @@ limitations under the License.*/
 
 #include "config.hpp"
 
-namespace vmf {
+namespace umf {
 /*!
  * \brief Prepares VMF internal objects for work
  */
@@ -28,6 +28,6 @@ void UMF_EXPORT initialize();
  */
 void UMF_EXPORT terminate();
 
-} // namespace vmf
+} // namespace umf
 
 #endif /* __VMF_DATASOURCE_HPP__ */

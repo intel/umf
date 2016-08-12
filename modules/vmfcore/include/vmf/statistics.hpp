@@ -42,7 +42,7 @@
 #include <queue>
 #include <thread>
 
-namespace vmf
+namespace umf
 {
 class Metadata;
 class MetadataSchema;
@@ -480,7 +480,7 @@ private:
     bool m_needRescan;
 };
 
-} // namespace vmf
+} // namespace umf
 
 #ifdef _MSC_VER
 #pragma warning(pop)

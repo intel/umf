@@ -16,7 +16,7 @@
  */
 
 /*!
-* \file vmf.hpp
+* \file umf.hpp
 * \brief Main header file of VMF
 * \details This file contains all required headers for use
 * Video Metadata Framework

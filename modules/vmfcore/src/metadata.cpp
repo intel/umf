@@ -18,7 +18,7 @@
 #include "vmf/metadata.hpp"
 #include <algorithm>
 
-namespace vmf
+namespace umf
 {
 Metadata::Metadata(const std::shared_ptr< MetadataDesc >& spDescription , bool useEncryption)
     : m_Id( INVALID_ID )
@@ -158,7 +158,7 @@ std::vector< std::string > Metadata::getFieldNames() const
 {
     std::vector< std::string > vNames;
 
-    std::for_each( this->begin(), this->end(), [ &vNames ]( const vmf::FieldValue& v )
+    std::for_each( this->begin(), this->end(), [ &vNames ]( const umf::FieldValue& v )
     { 
         // Only add non-empty names
         std::string sName = v.getName();
@@ -171,9 +171,9 @@ std::vector< std::string > Metadata::getFieldNames() const
     return vNames;
 }
 
-vmf::Variant Metadata::getFieldValue( const std::string& sName ) const
+umf::Variant Metadata::getFieldValue( const std::string& sName ) const
 {
-    const_iterator it = const_cast<vmf::Metadata*>(this)->findField( sName );
+    const_iterator it = const_cast<umf::Metadata*>(this)->findField( sName );
     if( it != this->end() )
         return *it;
 
@@ -184,14 +184,14 @@ vmf::Variant Metadata::getFieldValue( const std::string& sName ) const
     }
 
     if(fieldDesc.optional)
-        return vmf::Variant();
+        return umf::Variant();
 
     VMF_EXCEPTION(IncorrectParamException, "Field not found!");
 }
 
 Metadata::iterator Metadata::findField( const std::string& sFieldName )
 {
-    return std::find_if( this->begin(), this->end(), [&]( vmf::FieldValue& value )->bool 
+    return std::find_if( this->begin(), this->end(), [&]( umf::FieldValue& value )->bool 
     {
         return sFieldName == value.getName();
     });
@@ -199,7 +199,7 @@ Metadata::iterator Metadata::findField( const std::string& sFieldName )
 
 Metadata::const_iterator Metadata::findField(const std::string& sFieldName) const
 {
-    return std::find_if(this->begin(), this->end(), [&](const vmf::FieldValue& value)->bool
+    return std::find_if(this->begin(), this->end(), [&](const umf::FieldValue& value)->bool
     {
         return sFieldName == value.getName();
     });
@@ -409,7 +409,7 @@ void Metadata::removeReference(const std::shared_ptr<Metadata>& md, const std::s
     return;
 }
 
-void Metadata::addValue( const vmf::Variant& value )
+void Metadata::addValue( const umf::Variant& value )
 {
     // Check field against description
     if( m_spDesc == nullptr )
@@ -432,7 +432,7 @@ void Metadata::addValue( const vmf::Variant& value )
     this->emplace_back( FieldValue( "", value ) );
 }
 
-void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant& value )
+void Metadata::setFieldValue( const std::string& sFieldName, const umf::Variant& value )
 {
     // Check field against description
     if( m_spDesc == nullptr )
@@ -453,7 +453,7 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
     {
         if( it != this->end() )
         {
-            *it = vmf::FieldValue( sFieldName, value );
+            *it = umf::FieldValue( sFieldName, value );
         }
         else
         {
@@ -463,13 +463,13 @@ void Metadata::setFieldValue( const std::string& sFieldName, const vmf::Variant&
     // If the field type is not the same, try to convert it to the right type
     else
     {
-        vmf::Variant varNew( value );
+        umf::Variant varNew( value );
         // This line may throw exception
         varNew.convertTo( fieldDesc.type );
 
         if( it != this->end() )
         {
-            *it = vmf::FieldValue( sFieldName, varNew );
+            *it = umf::FieldValue( sFieldName, varNew );
         }
         else
         {
@@ -538,7 +538,7 @@ void Metadata::validate() const
                     VMF_EXCEPTION(ValidateException, "Field specified[" + sFieldName + "] not found!" );
                 }
 
-                vmf::Variant varValue = this->getFieldValue( sFieldName );
+                umf::Variant varValue = this->getFieldValue( sFieldName );
                 if( field.type != varValue.getType() )
                 {
                     VMF_EXCEPTION(ValidateException, "Field type does not match with the descriptor!" );
@@ -553,7 +553,7 @@ void Metadata::validate() const
             if( false == m_spDesc->getFieldDesc( field ))
                 throw std::runtime_error("Field descriptor is not for Array type.");
 
-            vmf::Variant::Type eFirstValueType = this->at( 0 ).getType();
+            umf::Variant::Type eFirstValueType = this->at( 0 ).getType();
             if( field.type != eFirstValueType )
                 throw std::runtime_error( "Value type does not match with type specified in descriptor!" );
 
@@ -647,4 +647,4 @@ void Metadata::setStreamRef(const MetadataStream* streamPtr)
     m_pStream = streamPtr;
 }
 
-} //namespace vmf
+} //namespace umf

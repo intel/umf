@@ -29,7 +29,7 @@
 
 #include "vmf/vmf.hpp"
 
-//using namespace vmf;
+//using namespace umf;
 using namespace std;
 
 string workingPath;
@@ -43,10 +43,10 @@ void copyFile(const string& srcName, const char *dstName)
     if (src && dst)
         dst << src.rdbuf();
     else
-        VMF_EXCEPTION(vmf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
+        VMF_EXCEPTION(umf::IncorrectParamException, "Error copying '" + srcName + "' to '" + dstName + "'");
 }
 
-class StrCatOp: public vmf::StatOpBase
+class StrCatOp: public umf::StatOpBase
 {
 public:
     StrCatOp()
@@ -62,19 +62,19 @@ public:
             std::unique_lock< std::mutex > lock( m_lock );
             m_value = "";
         }
-    virtual void handle( const vmf::Variant& fieldValue )
+    virtual void handle( const umf::Variant& fieldValue )
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            if( fieldValue.getType() != vmf::Variant::type_string )
-                VMF_EXCEPTION( vmf::NotImplementedException, "Operation not applicable to this data type" );
+            if( fieldValue.getType() != umf::Variant::type_string )
+                VMF_EXCEPTION( umf::NotImplementedException, "Operation not applicable to this data type" );
             if( !m_value.empty() )
                 m_value += " | ";
             m_value += fieldValue.get_string();
         }
-    virtual vmf::Variant value() const
+    virtual umf::Variant value() const
         {
             std::unique_lock< std::mutex > lock( m_lock );
-            return vmf::Variant( (vmf::umf_string)m_value );
+            return umf::Variant( (umf::umf_string)m_value );
         }
 
 private:
@@ -88,13 +88,13 @@ public:
         { return "User.StrCatOp"; }
 };
 
-inline std::ostream& operator<<( std::ostream& os, const vmf::Variant& value )
+inline std::ostream& operator<<( std::ostream& os, const umf::Variant& value )
 {
     os << "(" << value.getTypeName() << ") " << value.toString();
     return os;
 }
 
-static void dumpStatistics( const vmf::MetadataStream& mdStream )
+static void dumpStatistics( const umf::MetadataStream& mdStream )
 {
     std::cout << std::endl;
     std::cout << "** statistics dump **" << std::endl;
@@ -112,7 +112,7 @@ static void dumpStatistics( const vmf::MetadataStream& mdStream )
             {
                 for( auto& fieldName : fieldNames )
                 {
-                    const vmf::StatField& field = stat->getField( fieldName );
+                    const umf::StatField& field = stat->getField( fieldName );
 
                     std::cout << "  name='" << field.getName() << "'"
                                  "  operation='" << field.getOpName() << "'"
@@ -177,15 +177,15 @@ int sample(int argc, char *argv[])
     cout << "Opening file name '" << FILE_NAME << "'" << endl;
 
     // Open metadata stream
-    vmf::MetadataStream mdStream;
-    if (!mdStream.open(FILE_NAME, vmf::MetadataStream::Update))
+    umf::MetadataStream mdStream;
+    if (!mdStream.open(FILE_NAME, umf::MetadataStream::Update))
     {
         cerr << "Can't open file " << FILE_NAME << endl;
         exit(1);
     }
 
     // Create GPS metadata schema
-    std::shared_ptr<vmf::MetadataSchema> gpsSchema = std::make_shared<vmf::MetadataSchema>(GPS_SCHEMA_NAME);
+    std::shared_ptr<umf::MetadataSchema> gpsSchema = std::make_shared<umf::MetadataSchema>(GPS_SCHEMA_NAME);
 
     // Add description to the schema
     VMF_METADATA_BEGIN( GPS_DESC );
@@ -194,7 +194,7 @@ int sample(int argc, char *argv[])
     VMF_METADATA_END( gpsSchema );
 
     // Get GPS metadata description
-    std::shared_ptr<vmf::MetadataDesc> gpsDesc = gpsSchema->findMetadataDesc( GPS_DESC );
+    std::shared_ptr<umf::MetadataDesc> gpsDesc = gpsSchema->findMetadataDesc( GPS_DESC );
 
     string t = "21.02.2013 18:35";
     cout << "Add metadata schema '" << GPS_SCHEMA_NAME << "'" << endl;
@@ -203,31 +203,31 @@ int sample(int argc, char *argv[])
     mdStream.addSchema(gpsSchema);
 
     // Register user operation: exactly one of two calls must be issued once for each user op
-    // vmf::StatOpFactory::registerUserOp( StrCatOp::opName(), StrCatOp::createInstance );
-    vmf::StatOpFactory::registerUserOp( StrCatOp::createInstance );
+    // umf::StatOpFactory::registerUserOp( StrCatOp::opName(), StrCatOp::createInstance );
+    umf::StatOpFactory::registerUserOp( StrCatOp::createInstance );
 
     // Set up statistics object(s)
-    std::vector< vmf::StatField > fields;
-    fields.emplace_back( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
-    fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, vmf::StatOpFactory::builtinName( vmf::StatOpFactory::BuiltinOp::Count ));
+    std::vector< umf::StatField > fields;
+    fields.emplace_back( GPS_COUNT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Count ));
+    fields.emplace_back( GPS_COUNT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, umf::StatOpFactory::builtinName( umf::StatOpFactory::BuiltinOp::Count ));
     fields.emplace_back( GPS_STRCAT_COORD_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_COORD_FIELD, StrCatOp::opName() );
     fields.emplace_back( GPS_STRCAT_TIME_NAME, GPS_SCHEMA_NAME, GPS_DESC, GPS_TIME_FIELD, StrCatOp::opName() );
-    mdStream.addStat( make_shared<vmf::Stat>( GPS_STAT_NAME, fields, vmf::Stat::UpdateMode::Disabled ));
+    mdStream.addStat( make_shared<umf::Stat>( GPS_STAT_NAME, fields, umf::Stat::UpdateMode::Disabled ));
 
     mdStream.getStat(GPS_STAT_NAME)->setUpdateTimeout( 50 );
-    mdStream.getStat(GPS_STAT_NAME)->setUpdateMode( vmf::Stat::UpdateMode::OnTimer );
+    mdStream.getStat(GPS_STAT_NAME)->setUpdateMode( umf::Stat::UpdateMode::OnTimer );
 
-    std::shared_ptr<vmf::Metadata> gpsMetadata;
+    std::shared_ptr<umf::Metadata> gpsMetadata;
 
     t = "21.02.2013 18:45";
     cout << "Adding metadata's item '" << GPS_METADATA_ITEM1 << "' with associated time " << t << endl;
     
     // Create a metadata item
-    gpsMetadata = std::make_shared<vmf::Metadata>(gpsDesc);
+    gpsMetadata = std::make_shared<umf::Metadata>(gpsDesc);
 
     // Fill item fields
-    gpsMetadata->push_back(vmf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM1));
-    gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
+    gpsMetadata->push_back(umf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM1));
+    gpsMetadata->push_back(umf::FieldValue(GPS_TIME_FIELD, t));
 
     // Add to metadata a new item
     mdStream.add(gpsMetadata);
@@ -235,9 +235,9 @@ int sample(int argc, char *argv[])
     t = "21.02.2013 19:28";
     cout << "Adding metadata's item '" << GPS_METADATA_ITEM2 << "' with associated time " << t << endl;
 
-    gpsMetadata = std::make_shared<vmf::Metadata>(gpsDesc);
-    gpsMetadata->push_back(vmf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM2));
-    gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
+    gpsMetadata = std::make_shared<umf::Metadata>(gpsDesc);
+    gpsMetadata->push_back(umf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM2));
+    gpsMetadata->push_back(umf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
 
 //    mdStream.getStat(GPS_STAT_NAME).update();
@@ -245,17 +245,17 @@ int sample(int argc, char *argv[])
     t = "21.02.2013 21:02";
     cout << "Adding metadata's item '" << GPS_METADATA_ITEM3 << "' with associated time " << t << endl;
 
-    gpsMetadata = std::make_shared<vmf::Metadata>(gpsDesc);
-    gpsMetadata->push_back(vmf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM3));
-    gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
+    gpsMetadata = std::make_shared<umf::Metadata>(gpsDesc);
+    gpsMetadata->push_back(umf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM3));
+    gpsMetadata->push_back(umf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
 
     t = "21.02.2013 23:19";
     cout << "Adding metadata's item '" << GPS_METADATA_ITEM4 << "' with associated time " << t << endl;
 
-    gpsMetadata = std::make_shared<vmf::Metadata>(gpsDesc);
-    gpsMetadata->push_back(vmf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM4));
-    gpsMetadata->push_back(vmf::FieldValue(GPS_TIME_FIELD, t));
+    gpsMetadata = std::make_shared<umf::Metadata>(gpsDesc);
+    gpsMetadata->push_back(umf::FieldValue(GPS_COORD_FIELD, GPS_METADATA_ITEM4));
+    gpsMetadata->push_back(umf::FieldValue(GPS_TIME_FIELD, t));
     mdStream.add(gpsMetadata);
 
     mdStream.getStat(GPS_STAT_NAME)->update();
@@ -273,8 +273,8 @@ int sample(int argc, char *argv[])
     cout << "Opening file name '" << FILE_NAME << "'" << endl;
     
     // Open new metadata stream to load and print saved metadata
-    vmf::MetadataStream loadStream;
-    if (!loadStream.open(FILE_NAME, vmf::MetadataStream::ReadOnly))
+    umf::MetadataStream loadStream;
+    if (!loadStream.open(FILE_NAME, umf::MetadataStream::ReadOnly))
     {
         cerr << "Can't open file " << FILE_NAME << endl;
         exit(1);
@@ -287,7 +287,7 @@ int sample(int argc, char *argv[])
         exit(1);
     }
 
-    loadStream.getStat(GPS_STAT_NAME)->setUpdateMode( vmf::Stat::UpdateMode::Manual );
+    loadStream.getStat(GPS_STAT_NAME)->setUpdateMode( umf::Stat::UpdateMode::Manual );
 //    loadStream.getStat(GPS_STAT_NAME).update( true );
 
     // Select all metadata items from loaded schema
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
     {
         return sample(argc, argv);
     }
-    catch( const vmf::Exception& e )
+    catch( const umf::Exception& e )
     {
         std::cerr << "EXCEPTION : " << e.getMessage() << std::endl;
         return EXIT_FAILURE;

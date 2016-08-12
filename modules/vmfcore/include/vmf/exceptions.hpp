@@ -43,7 +43,7 @@
                                     throw ( ex(message, "", __FILE__, __LINE__) ); } while(0)
 #endif
 
-namespace vmf
+namespace umf
 {
 /*! \class Exception
 * \brief Base class for exceptions ierarchy
@@ -632,6 +632,6 @@ public:
     {
     }
 };
-} /* vmf */
+} /* umf */
 
 #endif /* __VMF_EXCEPTIONS_H__ */

@@ -30,7 +30,7 @@
 
 #include "metadata.hpp"
 
-namespace vmf
+namespace umf
 {
 /*!
 * struct MetadataInternal
@@ -88,7 +88,7 @@ struct UMF_EXPORT MetadataInternal
     std::string encryptedData;
 };
 
-}//vmf
+}//umf
 
 #ifdef _MSC_VER
 #pragma warning(pop)

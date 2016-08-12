@@ -18,7 +18,7 @@
 #include "my_lzw.hpp"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 // Straightforward implementation of LZW algorithm
 // Based on this: http://rosettacode.org/wiki/LZW_compression#C.2B.2B

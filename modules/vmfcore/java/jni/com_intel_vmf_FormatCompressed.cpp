@@ -14,7 +14,7 @@ static std::string getJavaStirng(JNIEnv *env, jstring str)
 
 extern "C" {
 
-using namespace vmf;
+using namespace umf;
 
 //long n_FormatCompressed(long format, String compressorId)
 JNIEXPORT jlong JNICALL Java_com_intel_vmf_FormatCompressed_n_1FormatCompressed(JNIEnv *env, jclass, jlong format, jstring compressorId);

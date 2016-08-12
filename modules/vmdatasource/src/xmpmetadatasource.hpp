@@ -22,84 +22,84 @@
 #include "vmf/vmf.hpp"
 #include <map>
 
-namespace vmf
+namespace umf
 {
 
 class XMPMetadataSource
 {
 public:
     explicit XMPMetadataSource(const std::shared_ptr<SXMPMeta>& meta);
-    void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const vmf::MetadataSet& mdSet);
-    void loadSchema(const vmf::umf_string& schemaName, vmf::MetadataStream& stream);
-    void loadProperty(const vmf::umf_string& schemaName, const vmf::umf_string& metadataName, vmf::MetadataStream& stream);
-    void remove(const std::vector<vmf::IdType>& removedIds);
+    void saveSchema(const std::shared_ptr<MetadataSchema>& schemaDesc, const umf::MetadataSet& mdSet);
+    void loadSchema(const umf::umf_string& schemaName, umf::MetadataStream& stream);
+    void loadProperty(const umf::umf_string& schemaName, const umf::umf_string& metadataName, umf::MetadataStream& stream);
+    void remove(const std::vector<umf::IdType>& removedIds);
     void clear();
 private:
     struct InternalPath {
-        vmf::umf_string schema;
-        vmf::umf_string metadata;
-        vmf::umf_string path;
+        umf::umf_string schema;
+        umf::umf_string metadata;
+        umf::umf_string path;
     };
 
-    typedef std::map<vmf::IdType, InternalPath> IdMap;
+    typedef std::map<umf::IdType, InternalPath> IdMap;
 
-    void loadPropertyByPath(const vmf::umf_string& pathToProperty, const vmf::umf_string& schemaName, vmf::MetadataStream& stream);
-    void saveProperty(const vmf::MetadataSet& property, const vmf::umf_string& pathToSchema, const vmf::umf_string& propertyName);
+    void loadPropertyByPath(const umf::umf_string& pathToProperty, const umf::umf_string& schemaName, umf::MetadataStream& stream);
+    void saveProperty(const umf::MetadataSet& property, const umf::umf_string& pathToSchema, const umf::umf_string& propertyName);
 
-    void loadMetadata(const vmf::umf_string& pathToCurrentMetadata, const std::shared_ptr<MetadataDesc>& description, vmf::MetadataStream& stream);
-    void saveMetadata(const std::shared_ptr<vmf::Metadata>& md, const vmf::umf_string& thisPropertySetPath);
+    void loadMetadata(const umf::umf_string& pathToCurrentMetadata, const std::shared_ptr<MetadataDesc>& description, umf::MetadataStream& stream);
+    void saveMetadata(const std::shared_ptr<umf::Metadata>& md, const umf::umf_string& thisPropertySetPath);
 
-    void loadSchemaName(const vmf::umf_string& pathToSchema, vmf::umf_string& schemaName);
-    void loadReference(const vmf::umf_string& thisRefPath, const std::shared_ptr<vmf::Metadata>& md, vmf::MetadataStream& stream);
+    void loadSchemaName(const umf::umf_string& pathToSchema, umf::umf_string& schemaName);
+    void loadReference(const umf::umf_string& thisRefPath, const std::shared_ptr<umf::Metadata>& md, umf::MetadataStream& stream);
 
-    void loadField(const vmf::umf_string& fieldPath, const std::shared_ptr<vmf::Metadata>& md,
+    void loadField(const umf::umf_string& fieldPath, const std::shared_ptr<umf::Metadata>& md,
                    const std::shared_ptr<MetadataDesc>& thisPropertyDesc);
-    void saveField(const vmf::umf_string& fieldName, const vmf::Variant& value, const bool isEncrypted,
-                   const vmf::umf_string& encryptedData, const vmf::umf_string& fieldsPath);
+    void saveField(const umf::umf_string& fieldName, const umf::Variant& value, const bool isEncrypted,
+                   const umf::umf_string& encryptedData, const umf::umf_string& fieldsPath);
 
     void loadIds();
-    void loadIds(const vmf::umf_string& pathToSchema);
+    void loadIds(const umf::umf_string& pathToSchema);
 
-    void loadMetadataId(const vmf::umf_string& pathToMetadata, vmf::IdType& id);
-    void saveMetadataId(const vmf::umf_string& pathToMetadata, const vmf::IdType& id);
+    void loadMetadataId(const umf::umf_string& pathToMetadata, umf::IdType& id);
+    void saveMetadataId(const umf::umf_string& pathToMetadata, const umf::IdType& id);
 
-    void loadMetadataFrameIndex(const vmf::umf_string& pathToMetadata, long long& frameIndex);
-    void saveMetadataFrameIndex(const vmf::umf_string& pathToProperty, const long long& frameIndex);
+    void loadMetadataFrameIndex(const umf::umf_string& pathToMetadata, long long& frameIndex);
+    void saveMetadataFrameIndex(const umf::umf_string& pathToProperty, const long long& frameIndex);
 
-    void loadMetadataNumOfFrames(const vmf::umf_string& pathToProperty, long long& num);
-    void saveMetadataNumOfFrames(const vmf::umf_string& pathToProperty, const long long& numOfFrames);
+    void loadMetadataNumOfFrames(const umf::umf_string& pathToProperty, long long& num);
+    void saveMetadataNumOfFrames(const umf::umf_string& pathToProperty, const long long& numOfFrames);
 
-    void loadMetadataTime(const vmf::umf_string& pathToProperty, long long& timestamp);
-    void saveMetadataTime(const vmf::umf_string& pathToProperty, const long long& timestamp);
+    void loadMetadataTime(const umf::umf_string& pathToProperty, long long& timestamp);
+    void saveMetadataTime(const umf::umf_string& pathToProperty, const long long& timestamp);
 
-    void loadMetadataEncrypted(const vmf::umf_string& pathToProperty, bool &isEncrypted,
-                               vmf::umf_string& encryptedData);
-    void saveMetadataEncrypted(const vmf::umf_string& pathToProperty, bool isEncrypted,
-                               const vmf::umf_string& encryptedData);
+    void loadMetadataEncrypted(const umf::umf_string& pathToProperty, bool &isEncrypted,
+                               umf::umf_string& encryptedData);
+    void saveMetadataEncrypted(const umf::umf_string& pathToProperty, bool isEncrypted,
+                               const umf::umf_string& encryptedData);
 
-    void loadMetadataDuration(const vmf::umf_string& pathToProperty, long long& duration);
-    void saveMetadataDuration(const vmf::umf_string& pathToProperty, const long long& duration);
+    void loadMetadataDuration(const umf::umf_string& pathToProperty, long long& duration);
+    void saveMetadataDuration(const umf::umf_string& pathToProperty, const long long& duration);
 
-    void loadPropertyName(const vmf::umf_string& pathToMetadata, vmf::umf_string& metadataName);
-    void savePropertyName(const vmf::umf_string& pathToProperty, const umf_string &name);
+    void loadPropertyName(const umf::umf_string& pathToMetadata, umf::umf_string& metadataName);
+    void savePropertyName(const umf::umf_string& pathToProperty, const umf_string &name);
 
-    void saveMetadataFields(const vmf::umf_string& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
+    void saveMetadataFields(const umf::umf_string& pathToMetadata, const std::shared_ptr<umf::Metadata>& md);
 
-    void saveMetadataReferences(const vmf::umf_string& pathToMetadata, const std::shared_ptr<vmf::Metadata>& md);
+    void saveMetadataReferences(const umf::umf_string& pathToMetadata, const std::shared_ptr<umf::Metadata>& md);
 
-    umf_string appendProperty(const vmf::umf_string& pathToSchema);
-    umf_string findSchema(const vmf::umf_string& name);
-    umf_string findProperty(const vmf::umf_string& pathToSchema, const vmf::umf_string& name);
-    umf_string findId(const InternalPath& internalPath, const vmf::IdType& id);
+    umf_string appendProperty(const umf::umf_string& pathToSchema);
+    umf_string findSchema(const umf::umf_string& name);
+    umf_string findProperty(const umf::umf_string& pathToSchema, const umf::umf_string& name);
+    umf_string findId(const InternalPath& internalPath, const umf::IdType& id);
 
     XMPMetadataSource();
-    XMPMetadataSource(const vmf::XMPMetadataSource& origin);
-    XMPMetadataSource& operator=(const vmf::XMPMetadataSource& origin);
+    XMPMetadataSource(const umf::XMPMetadataSource& origin);
+    XMPMetadataSource& operator=(const umf::XMPMetadataSource& origin);
     std::shared_ptr<SXMPMeta> xmp;
     IdMap idMap;
 };
 
-} // namespace vmf
+} // namespace umf
 
 
 #endif // __XMPMETADATASOURCE_HPP__

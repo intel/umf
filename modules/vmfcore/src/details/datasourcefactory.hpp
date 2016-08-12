@@ -24,7 +24,7 @@
 
 #include "vmf/vmf.hpp"
 
-namespace vmf
+namespace umf
 {
 
 class IDataSource;
@@ -42,6 +42,6 @@ public:
 private:
 };
 
-} // namespace vmf
+} // namespace umf
 
 #endif // __VMF_DATASOURCEFACTORY_HPP__

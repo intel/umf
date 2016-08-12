@@ -45,7 +45,7 @@
 
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 
 
@@ -227,7 +227,7 @@ void XMPSchemaSource::saveReference(const std::shared_ptr<ReferenceDesc> ref, co
     return;
 }
 
-void XMPSchemaSource::load(std::map<vmf::umf_string, std::shared_ptr<vmf::MetadataSchema> >& schemas)
+void XMPSchemaSource::load(std::map<umf::umf_string, std::shared_ptr<umf::MetadataSchema> >& schemas)
 {
     SXMPIterator schemasIterator(*metadata, VMF_NS, VMF_GLOBAL_SCHEMA_DESRIPTIONS_ARRAY, kXMP_IterJustChildren);
     umf_string currentSchemaPath;

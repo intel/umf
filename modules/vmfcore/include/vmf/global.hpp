@@ -35,13 +35,13 @@
 #include "types.hpp"
 
 /*!
-* \namespace vmf
+* \namespace umf
 * \brief Video metadata framework namespace
 * \details This namespace contains all functionality related to
 * Video metadata framework
 */
 
-namespace vmf
+namespace umf
 {
 
 template<typename T>
@@ -176,6 +176,6 @@ UMF_EXPORT extern void terminate();
 #pragma warning(pop)
 #endif
 
-} /* vmf */
+} /* umf */
 
 #endif /* __VMF_GLOBAL_H__ */

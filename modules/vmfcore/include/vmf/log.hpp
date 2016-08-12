@@ -27,7 +27,7 @@
 * \brief Logging framework of Video Metadata Framework
 */
 
-namespace vmf
+namespace umf
 {
 /*! 
  * \brief Verbosity level of a Logger
@@ -108,25 +108,25 @@ private:
  * \brief Log message with given level
  */
 #ifdef __GNUC__
-#define VMF_LOG(level, msg, ...) vmf::Log::log(level, msg, __func__, __FILE__, __LINE__, ##__VA_ARGS__)
+#define VMF_LOG(level, msg, ...) umf::Log::log(level, msg, __func__, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
-#define VMF_LOG(level, msg, ...) vmf::Log::log(level, msg, "", __FILE__, __LINE__, ##__VA_ARGS__)
+#define VMF_LOG(level, msg, ...) umf::Log::log(level, msg, "", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
 /*!
  * \brief Log info message
  */
-#define VMF_LOG_INFO(msg, ...) VMF_LOG(vmf::LOG_INFO, msg, ##__VA_ARGS__)
+#define VMF_LOG_INFO(msg, ...) VMF_LOG(umf::LOG_INFO, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Log warning message
  */
-#define VMF_LOG_WARNING(msg, ...) VMF_LOG(vmf::LOG_WARNING, msg, ##__VA_ARGS__)
+#define VMF_LOG_WARNING(msg, ...) VMF_LOG(umf::LOG_WARNING, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Log error message
  */
-#define VMF_LOG_ERROR(msg, ...) VMF_LOG(vmf::LOG_ERROR, msg, ##__VA_ARGS__)
+#define VMF_LOG_ERROR(msg, ...) VMF_LOG(umf::LOG_ERROR, msg, ##__VA_ARGS__)
 
 /*!
  * \brief Redirects log messages to the file

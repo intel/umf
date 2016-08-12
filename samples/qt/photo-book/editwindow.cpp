@@ -64,7 +64,7 @@ void EditWindow::fillPeopleList()
 
             ui->listWidget->addItem(qlwi);
         }
-        catch (vmf::Exception&)
+        catch (umf::Exception&)
         {
         }
     }
@@ -113,7 +113,7 @@ void EditWindow::onSavePressed()
 
         if (inAddMode)
         {
-            std::shared_ptr<vmf::Metadata> newInfo(new vmf::Metadata(desc));
+            std::shared_ptr<umf::Metadata> newInfo(new umf::Metadata(desc));
 
             if (checkInputData(newInfo))
             {
@@ -127,7 +127,7 @@ void EditWindow::onSavePressed()
             checkInputData(item);
         }
     }
-    catch (vmf::Exception& e)
+    catch (umf::Exception& e)
     {
         QMessageBox::warning(NULL, "Error", QString("Internal error: ") + e.what(), QMessageBox::Ok);
         return;
@@ -151,7 +151,7 @@ void EditWindow::exitEditMode()
     fillInfo();
 }
 
-bool EditWindow::checkInputData(std::shared_ptr<vmf::Metadata>& newInfo)
+bool EditWindow::checkInputData(std::shared_ptr<umf::Metadata>& newInfo)
 {
     QTextCursor cursor = ui->txtName->textCursor();
     newInfo->setFieldValue(FieldNameConstants::NAME_FIELD, cursor.document()->toPlainText().toStdString());
@@ -160,13 +160,13 @@ bool EditWindow::checkInputData(std::shared_ptr<vmf::Metadata>& newInfo)
     if (listIndex != -1)
     {
         PersonSex ps = (PersonSex) ui->cmbSex->itemData(listIndex).toInt();
-        newInfo->setFieldValue(FieldNameConstants::SEX_FIELD, (vmf::umf_integer) ps);
+        newInfo->setFieldValue(FieldNameConstants::SEX_FIELD, (umf::umf_integer) ps);
     }
 
     cursor = ui->txtAge->textCursor();
 
     bool ok;
-    vmf::umf_integer result = cursor.document()->toPlainText().toUShort(&ok);
+    umf::umf_integer result = cursor.document()->toPlainText().toUShort(&ok);
 
     if (!ok)
     {
@@ -230,13 +230,13 @@ void EditWindow::fillInfo()
     {
         ui->btnDelete->setEnabled(true);
 
-        vmf::IdType requiredId = listItem->data(Qt::UserRole).toULongLong();
+        umf::IdType requiredId = listItem->data(Qt::UserRole).toULongLong();
 
         auto stream = helperPtr->getMetadataStream();
         auto itemSet = stream->queryByName(MetadataHelper::PEOPLE_DESC_NAME);
 
-        std::shared_ptr<vmf::Metadata> item;
-        bool result = [&item, &itemSet](vmf::IdType id) -> bool
+        std::shared_ptr<umf::Metadata> item;
+        bool result = [&item, &itemSet](umf::IdType id) -> bool
             {
                 for (size_t i = 0; i < itemSet.size(); i++)
                 {
@@ -260,19 +260,19 @@ void EditWindow::fillInfo()
             std::string name = item->getFieldValue(FieldNameConstants::NAME_FIELD);
             ui->txtName->textCursor().document()->setPlainText(QString::fromStdString(name));
 
-            vmf::umf_integer age = item->getFieldValue(FieldNameConstants::AGE_FIELD);
+            umf::umf_integer age = item->getFieldValue(FieldNameConstants::AGE_FIELD);
             QString str = QString::number(age);
             ui->txtAge->textCursor().document()->setPlainText(str);
 
-            vmf::umf_integer weight = item->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
+            umf::umf_integer weight = item->getFieldValue(FieldNameConstants::WEIGHT_FIELD);
             str = QString::number(weight);
             ui->txtWeight->textCursor().document()->setPlainText(str);
 
-            vmf::umf_integer height = item->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
+            umf::umf_integer height = item->getFieldValue(FieldNameConstants::HEIGHT_FIELD);
             str = QString::number(height);
             ui->txtHeight->textCursor().document()->setPlainText(str);
 
-            vmf::umf_integer sex = item->getFieldValue(FieldNameConstants::SEX_FIELD);
+            umf::umf_integer sex = item->getFieldValue(FieldNameConstants::SEX_FIELD);
             int dataIndex = ui->cmbSex->findData((qlonglong) sex);
 
             if (dataIndex != -1)
@@ -280,7 +280,7 @@ void EditWindow::fillInfo()
                 ui->cmbSex->setCurrentIndex(dataIndex);
             }
         }
-        catch (vmf::Exception&)
+        catch (umf::Exception&)
         {
             // Ignore exception
         }
@@ -297,7 +297,7 @@ void EditWindow::onDeletePressed()
 
     if (listItem != NULL)
     {
-        vmf::IdType personId = listItem->data(Qt::UserRole).toULongLong();
+        umf::IdType personId = listItem->data(Qt::UserRole).toULongLong();
 
         auto stream = helperPtr->getMetadataStream();
         stream->remove(personId);

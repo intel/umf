@@ -6,7 +6,7 @@
 using namespace std;
 using namespace CryptoPP;
 
-namespace vmf
+namespace umf
 {
 
 void EncryptorDefault::encrypt(const umf_string& input, umf_rawbuffer& output)

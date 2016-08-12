@@ -48,7 +48,7 @@
 #define REF_ID "id"
 
 using namespace std;
-using namespace vmf;
+using namespace umf;
 
 class MetadataAccessor: public Metadata
 {
@@ -484,7 +484,7 @@ void XMPMetadataSource::loadIds()
     }
 }
 
-void XMPMetadataSource::loadIds(const vmf::umf_string& pathToSchema)
+void XMPMetadataSource::loadIds(const umf::umf_string& pathToSchema)
 {
     umf_string pathToPropertiesArray;
     SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_SET, &pathToPropertiesArray);

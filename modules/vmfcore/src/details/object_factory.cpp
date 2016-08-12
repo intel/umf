@@ -18,7 +18,7 @@
 #include "object_factory.hpp"
 #include "datasourcefactory.hpp"
 
-namespace vmf
+namespace umf
 {
 std::unique_ptr<ObjectFactory> ObjectFactory::instance;
 
@@ -75,7 +75,7 @@ std::shared_ptr<IDataSource> ObjectFactory::getDataSource()
 {
     if (!dataSourceFactoryInstance)
     {
-        vmf::initialize();
+        umf::initialize();
     }
     std::shared_ptr<IDataSource> dataSource =
             dataSourceFactoryInstance->createDataSource();
@@ -86,4 +86,4 @@ void ObjectFactory::setDataSourceFactory(std::shared_ptr<IDataSourceFactory>& da
 {
     dataSourceFactoryInstance = dataSourceFactory;
 }
-} // namespace vmf
+} // namespace umf

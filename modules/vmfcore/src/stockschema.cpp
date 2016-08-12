@@ -18,16 +18,16 @@
 
 using namespace std;
 
-static shared_ptr< vmf::MetadataSchema > _createAllInOneSchema(const string& schemaName, const string& author);
+static shared_ptr< umf::MetadataSchema > _createAllInOneSchema(const string& schemaName, const string& author);
 
-namespace vmf
+namespace umf
 {
 
 /*static*/ string MetadataSchema::getStdSchemaName(StdSchemaKind kind)
 {
     switch(kind)
     {
-        case STD_DST: return "vmf://ns.intel.com/vmf/std-dst-schema-1.0";
+        case STD_DST: return "umf://ns.intel.com/umf/std-dst-schema-1.0";
 
         default: VMF_EXCEPTION(IncorrectParamException, "Unknown StdSchemaKind value");
     }
@@ -43,14 +43,14 @@ namespace vmf
     }
 }
 
-} // namespace vmf
+} // namespace umf
 
 //
 // ALL_IN_ONE
 //
-static shared_ptr< vmf::MetadataSchema > _createAllInOneSchema(const string& schemaName, const string& author)
+static shared_ptr< umf::MetadataSchema > _createAllInOneSchema(const string& schemaName, const string& author)
 {
-    auto schema = make_shared<vmf::MetadataSchema>(schemaName, author);
+    auto schema = make_shared<umf::MetadataSchema>(schemaName, author);
 
     VMF_METADATA_BEGIN("person");
         VMF_FIELD_STR( "name" );
