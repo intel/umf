@@ -1,7 +1,7 @@
 #include<string>
 #include<vector>
 #include<numeric>
-#include "vmf/format_compressed.hpp"
+#include "umf/format_compressed.hpp"
 #include "throwJavaException.hpp"
 
 static std::string getJavaStirng(JNIEnv *env, jstring str)

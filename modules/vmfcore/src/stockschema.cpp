@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-#include "vmf/metadataschema.hpp"
+#include "umf/metadataschema.hpp"
 
 using namespace std;
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#include "vmf/metadatastream.hpp"
-#include "vmf/format.hpp"
+#include "umf/metadatastream.hpp"
+#include "umf/format.hpp"
 #include "datasource.hpp"
 #include "object_factory.hpp"
 #include <algorithm>

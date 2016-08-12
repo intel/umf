@@ -24,10 +24,10 @@
 */
 
 #include <vector>
-#include "vmf/global.hpp"
-#include "vmf/metadataschema.hpp"
-#include "vmf/metadatastream.hpp"
-#include "vmf/statistics.hpp"
+#include "umf/global.hpp"
+#include "umf/metadataschema.hpp"
+#include "umf/metadatastream.hpp"
+#include "umf/statistics.hpp"
 
 namespace umf
 {

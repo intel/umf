@@ -25,11 +25,11 @@
 #ifndef __VMF_H__
 #define __VMF_H__
 
-#include "vmf/metadatastream.hpp"
-#include "vmf/format_xml.hpp"
-#include "vmf/format_json.hpp"
-#include "vmf/format_compressed.hpp"
-#include "vmf/encryptor_default.hpp"
-#include "vmf/format_encrypted.hpp"
+#include "umf/metadatastream.hpp"
+#include "umf/format_xml.hpp"
+#include "umf/format_json.hpp"
+#include "umf/format_compressed.hpp"
+#include "umf/encryptor_default.hpp"
+#include "umf/format_encrypted.hpp"
 
 #endif /* __VMF_H__ */

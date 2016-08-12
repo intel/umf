@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-#include "vmf/metadatareference.hpp"
+#include "umf/metadatareference.hpp"
 
 namespace umf
 {

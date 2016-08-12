@@ -18,7 +18,7 @@
 #ifndef VMF_ENCRYPTOR_HPP
 #define VMF_ENCRYPTOR_HPP
 
-#include "vmf/metadataschema.hpp"
+#include "umf/metadataschema.hpp"
 
 namespace umf
 {

@@ -23,7 +23,7 @@
 #ifndef VMF_FORMAT_COMPRESSED_H
 #define VMF_FORMAT_COMPRESSED_H
 
-#include "vmf/format.hpp"
+#include "umf/format.hpp"
 
 namespace umf
 {

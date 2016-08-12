@@ -2,7 +2,7 @@
 #include<vector>
 #include <memory>
 #include <stdexcept>
-#include "vmf/compressor.hpp"
+#include "umf/compressor.hpp"
 #include "throwJavaException.hpp"
 
 static std::string getJavaStirng(JNIEnv *env, jstring str)

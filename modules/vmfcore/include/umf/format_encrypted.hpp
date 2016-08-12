@@ -23,7 +23,7 @@
 #ifndef VMF_FORMAT_ENCRYPTED_HPP
 #define VMF_FORMAT_ENCRYPTED_HPP
 
-#include "vmf/format.hpp"
+#include "umf/format.hpp"
 
 namespace umf
 {

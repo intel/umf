@@ -34,9 +34,9 @@
 #include <map>
 #include <stdexcept>
 #include <limits>
-#include "vmf/fieldvalue.hpp"
-#include "vmf/metadatadesc.hpp"
-#include "vmf/metadatareference.hpp"
+#include "umf/fieldvalue.hpp"
+#include "umf/metadatadesc.hpp"
+#include "umf/metadatareference.hpp"
 
 namespace umf
 {

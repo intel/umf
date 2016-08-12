@@ -23,7 +23,7 @@
 */
 
 #include <map>
-#include "vmf/metadataschema.hpp"
+#include "umf/metadataschema.hpp"
 
 namespace umf
 {

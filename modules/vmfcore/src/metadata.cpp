@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#include "vmf/metadatastream.hpp"
-#include "vmf/metadata.hpp"
+#include "umf/metadatastream.hpp"
+#include "umf/metadata.hpp"
 #include <algorithm>
 
 namespace umf

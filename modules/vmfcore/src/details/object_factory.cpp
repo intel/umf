@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-#include "vmf/exceptions.hpp"
+#include "umf/exceptions.hpp"
 #include "object_factory.hpp"
 #include "datasourcefactory.hpp"
 

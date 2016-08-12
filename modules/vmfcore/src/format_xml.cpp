@@ -14,8 +14,8 @@
 * limitations under the License.
 *
 */
-#include "vmf/format_xml.hpp"
-#include "vmf/format_const.hpp"
+#include "umf/format_xml.hpp"
+#include "umf/format_const.hpp"
 
 #include "libxml/tree.h"
 

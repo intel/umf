@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#include "vmf/global.hpp"
-#include "vmf/vmf.hpp"
+#include "umf/global.hpp"
+#include "umf/vmf.hpp"
 #include "object_factory.hpp"
 
 #include <ctime>

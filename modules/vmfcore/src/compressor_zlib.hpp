@@ -18,7 +18,7 @@
 #ifndef VMF_COMPRESSOR_ZLIB_HPP
 #define VMF_COMPRESSOR_ZLIB_HPP
 
-#include "vmf/compressor.hpp"
+#include "umf/compressor.hpp"
 
 namespace umf {
 

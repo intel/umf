@@ -22,7 +22,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 
 #include "encrypt_common.hpp"
 

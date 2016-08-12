@@ -16,8 +16,8 @@
  */
 #include "xmpdatasource.hpp"
 
-#include "vmf/metadatastream.hpp"
-#include "vmf/format_const.hpp"
+#include "umf/metadatastream.hpp"
+#include "umf/format_const.hpp"
 
 #include "xmpschemasource.hpp"
 #include "xmpmetadatasource.hpp"

@@ -1,7 +1,7 @@
 #include<string>
 #include<vector>
 #include<numeric>
-#include "vmf/format_xml.hpp"
+#include "umf/format_xml.hpp"
 #include "throwJavaException.hpp"
 
 extern "C" {

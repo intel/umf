@@ -5,7 +5,7 @@
 
 #include <QGraphicsItem>
 #include <opencv2/opencv.hpp>
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 
 #define UNASSOCIATED_RECT_TYPE          0
 #define ASSOCIATED_RECT_TYPE            1

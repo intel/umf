@@ -1,6 +1,6 @@
 #include<string>
 #include<vector>
-#include "vmf/metadatastream.hpp"
+#include "umf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
 extern "C" {

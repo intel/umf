@@ -26,7 +26,7 @@
 #ifndef VMF_FORMAT_H
 #define VMF_FORMAT_H
 
-#include "vmf/metadatastream.hpp"
+#include "umf/metadatastream.hpp"
 
 #include <memory>
 #include <vector>

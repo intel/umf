@@ -1,7 +1,7 @@
 #include<string>
 #include<vector>
 #include<numeric>
-#include "vmf/format_json.hpp"
+#include "umf/format_json.hpp"
 #include "throwJavaException.hpp"
 
 extern "C" {

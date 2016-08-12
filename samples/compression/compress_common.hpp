@@ -18,7 +18,7 @@
 #ifndef VMF_COMPRESS_COMMON_HPP
 #define VMF_COMPRESS_COMMON_HPP
 
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 
 void generateMetadata(umf::MetadataStream& mdStream);
 void readAndDumpMetadata(const umf::umf_string& videoFile);

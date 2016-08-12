@@ -6,7 +6,7 @@
 #include <map>
 #include <QObject>
 
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 #include "photo_book.hpp"
 
 class AssociatedRect : public FaceRect

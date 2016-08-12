@@ -19,7 +19,7 @@
 #ifndef _FAKE_COMPRESSOR_HPP
 #define _FAKE_COMPRESSOR_HPP
 
-#include "vmf/compressor.hpp"
+#include "umf/compressor.hpp"
 
 namespace umf
 {

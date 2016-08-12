@@ -2,7 +2,7 @@
 #include<vector>
 #include <memory>
 #include <stdexcept>
-#include "vmf/encryptor.hpp"
+#include "umf/encryptor.hpp"
 #include "throwJavaException.hpp"
 
 extern "C" {

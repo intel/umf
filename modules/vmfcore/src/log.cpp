@@ -19,7 +19,7 @@
 #include <fstream>
 #include <stdarg.h>
 #include <iostream>
-#include "vmf/log.hpp"
+#include "umf/log.hpp"
 
 using namespace std;
 

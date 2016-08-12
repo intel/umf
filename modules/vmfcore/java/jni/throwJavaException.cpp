@@ -2,7 +2,7 @@
 #include<vector>
 #include <memory>
 #include <stdexcept>
-#include "vmf/metadatastream.hpp"
+#include "umf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
 using namespace umf;

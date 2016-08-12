@@ -1,7 +1,7 @@
 #include<string>
 #include<vector>
 #include <map>
-#include "vmf/metadatastream.hpp"
+#include "umf/metadatastream.hpp"
 #include "throwJavaException.hpp"
 
 extern "C" {

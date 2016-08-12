@@ -18,7 +18,7 @@
 #ifndef VMF_MY_ENCRYPTOR_HPP
 #define VMF_MY_ENCRYPTOR_HPP
 
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 
 //User-created encryption algorithm should implement Encryptor interface
 class MyEncryptor : public umf::Encryptor

@@ -27,14 +27,14 @@
 #pragma warning(disable: 4251)
 #endif
 
-#include "vmf/global.hpp"
-#include "vmf/metadatainternal.hpp"
-#include "vmf/metadataset.hpp"
-#include "vmf/metadataschema.hpp"
-#include "vmf/compressor.hpp"
-#include "vmf/encryptor.hpp"
-#include "vmf/iquery.hpp"
-#include "vmf/statistics.hpp"
+#include "umf/global.hpp"
+#include "umf/metadatainternal.hpp"
+#include "umf/metadataset.hpp"
+#include "umf/metadataschema.hpp"
+#include "umf/compressor.hpp"
+#include "umf/encryptor.hpp"
+#include "umf/iquery.hpp"
+#include "umf/statistics.hpp"
 
 #include <map>
 #include <memory>

@@ -2,7 +2,7 @@
 #include<vector>
 #include <memory>
 #include <stdexcept>
-#include "vmf/encryptor_default.hpp"
+#include "umf/encryptor_default.hpp"
 #include "throwJavaException.hpp"
 
 static std::string getJavaStirng(JNIEnv *env, jstring str)

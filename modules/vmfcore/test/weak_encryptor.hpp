@@ -19,7 +19,7 @@
 #ifndef _WEAK_ENCRYPTOR_HPP
 #define _WEAK_ENCRYPTOR_HPP
 
-#include "vmf/encryptor.hpp"
+#include "umf/encryptor.hpp"
 
 namespace umf
 {

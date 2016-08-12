@@ -23,7 +23,7 @@
 #ifndef VMF_FORMAT_XML_H
 #define VMF_FORMAT_XML_H
 
-#include "vmf/format.hpp"
+#include "umf/format.hpp"
 
 namespace umf
 {

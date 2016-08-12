@@ -15,9 +15,9 @@
  *
  */
 
-#include "vmf/vmdatasource.hpp"
+#include "umf/vmdatasource.hpp"
 
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 #include "datasourcefactory.hpp"
 #include "object_factory.hpp"
 #include "xmpdatasource.hpp"

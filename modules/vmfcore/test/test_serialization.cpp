@@ -16,7 +16,7 @@
  */
 #include "test_precomp.hpp"
 #include <fstream>
-#include "vmf/format_const.hpp"
+#include "umf/format_const.hpp"
 
 #define TO_VECTOR(x) std::vector<int>(std::begin(x), std::end(x))
 

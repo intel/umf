@@ -24,9 +24,9 @@
 
 #include "datasource.hpp"
 
-#include "vmf/metadataschema.hpp"
-#include "vmf/compressor.hpp"
-#include "vmf/encryptor.hpp"
+#include "umf/metadataschema.hpp"
+#include "umf/compressor.hpp"
+#include "umf/encryptor.hpp"
 
 #define TXMP_STRING_TYPE umf::umf_string
 #define XMP_INCLUDE_XMPFILES 1

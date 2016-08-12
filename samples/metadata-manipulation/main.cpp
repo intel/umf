@@ -24,7 +24,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include "vmf/vmf.hpp"
+#include "umf/vmf.hpp"
 
 using namespace std;
 using namespace umf;

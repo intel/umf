@@ -14,8 +14,8 @@
 * limitations under the License.
 *
 */
-#include "vmf/format_compressed.hpp"
-#include "vmf/format_const.hpp"
+#include "umf/format_compressed.hpp"
+#include "umf/format_const.hpp"
 
 namespace umf
 {

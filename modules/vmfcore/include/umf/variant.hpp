@@ -23,7 +23,7 @@
 #ifndef __VMF_VARIANT_H__
 #define __VMF_VARIANT_H__
 
-#include "vmf/global.hpp"
+#include "umf/global.hpp"
 #include <vector>
 
 namespace umf

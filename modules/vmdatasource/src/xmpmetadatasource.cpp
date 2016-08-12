@@ -16,7 +16,7 @@
  */
 #include "xmpmetadatasource.hpp"
 
-#include "vmf/metadatastream.hpp"
+#include "umf/metadatastream.hpp"
 
 #define VMF_GLOBAL_SCHEMAS_ARRAY "metadata"
 
