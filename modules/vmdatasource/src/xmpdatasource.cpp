@@ -25,18 +25,18 @@
 
 #include <XMPUtils.hpp>
 
-#define VMF_GLOBAL_NEXT_ID "next-id"
-#define VMF_GLOBAL_CHECKSUM "media-checksum"
-#define VMF_GLOBAL_HINT "hint-encryption"
+#define UMF_GLOBAL_NEXT_ID "next-id"
+#define UMF_GLOBAL_CHECKSUM "media-checksum"
+#define UMF_GLOBAL_HINT "hint-encryption"
 
-#define VMF_INTERNAL "internal"
-#define VMF_VIDEO_SEGMENTS "video-segments"
-#define VMF_VIDEO_SEGMENT_NAME "name"
-#define VMF_VIDEO_SEGMENT_FPS "fps"
-#define VMF_VIDEO_SEGMENT_TIME "time"
-#define VMF_VIDEO_SEGMENT_DURATION "duration"
-#define VMF_VIDEO_SEGMENT_RESOLUTION_W "resolution_width"
-#define VMF_VIDEO_SEGMENT_RESOLUTION_H "resolution_height"
+#define UMF_INTERNAL "internal"
+#define UMF_VIDEO_SEGMENTS "video-segments"
+#define UMF_VIDEO_SEGMENT_NAME "name"
+#define UMF_VIDEO_SEGMENT_FPS "fps"
+#define UMF_VIDEO_SEGMENT_TIME "time"
+#define UMF_VIDEO_SEGMENT_DURATION "duration"
+#define UMF_VIDEO_SEGMENT_RESOLUTION_W "resolution_width"
+#define UMF_VIDEO_SEGMENT_RESOLUTION_H "resolution_height"
 
 
 using namespace std;
@@ -92,16 +92,16 @@ XMPDataSource::XMPDataSource()
   : IDataSource(), xmp(nullptr), metadataSource(nullptr), compressor(nullptr), encryptor(nullptr)
 {
     schemaCompression = make_shared<umf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
-    VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
-        VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
-        VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
-    VMF_METADATA_END(schemaCompression);
+    UMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
+        UMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
+        UMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
+    UMF_METADATA_END(schemaCompression);
 
     schemaEncryption = make_shared<umf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
-    VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
-        VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
-        VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
-    VMF_METADATA_END(schemaEncryption);
+    UMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
+        UMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
+        UMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
+    UMF_METADATA_END(schemaEncryption);
 }
 
 XMPDataSource::~XMPDataSource()
@@ -323,7 +323,7 @@ void XMPDataSource::saveXMPstructs()
             UMF_EXCEPTION(DataStorageException, e.what());
         }
         IdType cNextId = 1;
-        tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, cNextId);
+        tmpXMP->SetProperty_Int64(VMF_NS, UMF_GLOBAL_NEXT_ID, cNextId);
     }
 
     //existing encryptor should mean that we need an encryption
@@ -370,7 +370,7 @@ void XMPDataSource::saveXMPstructs()
             UMF_EXCEPTION(DataStorageException, e.what());
         }
         IdType eNextId = 1;
-        tmpXMP->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, eNextId);
+        tmpXMP->SetProperty_Int64(VMF_NS, UMF_GLOBAL_NEXT_ID, eNextId);
     }
 
     if(xmpFile.CanPutXMP(*tmpXMP))
@@ -640,7 +640,7 @@ void XMPDataSource::clear()
 IdType XMPDataSource::loadId()
 {
     XMP_Int64 id;
-    if(!xmp->GetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, &id, nullptr))
+    if(!xmp->GetProperty_Int64(VMF_NS, UMF_GLOBAL_NEXT_ID, &id, nullptr))
     {
         return 0;
     }
@@ -649,7 +649,7 @@ IdType XMPDataSource::loadId()
 
 void XMPDataSource::save(const IdType &id)
 {
-    xmp->SetProperty_Int64(VMF_NS, VMF_GLOBAL_NEXT_ID, id);
+    xmp->SetProperty_Int64(VMF_NS, UMF_GLOBAL_NEXT_ID, id);
 }
 
 
@@ -725,21 +725,21 @@ std::string XMPDataSource::computeChecksum(long long& XMPPacketSize, long long& 
 std::string XMPDataSource::loadChecksum()
 {
     std::string checksum;
-    if(!xmp->GetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, &checksum, NULL) )
+    if(!xmp->GetProperty(VMF_NS, UMF_GLOBAL_CHECKSUM, &checksum, NULL) )
         return "";
     return checksum;
 }
 
 void XMPDataSource::saveChecksum(const umf_string& checksum)
 {
-    xmp->SetProperty(VMF_NS, VMF_GLOBAL_CHECKSUM, checksum.c_str());
+    xmp->SetProperty(VMF_NS, UMF_GLOBAL_CHECKSUM, checksum.c_str());
 }
 
 
 std::string XMPDataSource::loadHintEncryption()
 {
     std::string hint;
-    if(!xmp->GetProperty(VMF_NS, VMF_GLOBAL_HINT, &hint, NULL))
+    if(!xmp->GetProperty(VMF_NS, UMF_GLOBAL_HINT, &hint, NULL))
         return "";
     return hint;
 }
@@ -747,24 +747,24 @@ std::string XMPDataSource::loadHintEncryption()
 
 void XMPDataSource::saveHintEncryption(const umf_string& hint)
 {
-    xmp->SetProperty(VMF_NS, VMF_GLOBAL_HINT, hint.c_str());
+    xmp->SetProperty(VMF_NS, UMF_GLOBAL_HINT, hint.c_str());
 }
 
 
 void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
-    xmp->DeleteProperty(VMF_NS, VMF_INTERNAL);
+    xmp->DeleteProperty(VMF_NS, UMF_INTERNAL);
     if (!segments.empty())
     {
         umf_string pathToInternalData;
-        xmp->AppendArrayItem(VMF_NS, VMF_INTERNAL, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
-        xmp->SetStructField(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, nullptr, kXMP_PropValueIsArray);
+        xmp->AppendArrayItem(VMF_NS, UMF_INTERNAL, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
+        SXMPUtils::ComposeArrayItemPath(VMF_NS, UMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
+        xmp->SetStructField(VMF_NS, pathToInternalData.c_str(), VMF_NS, UMF_VIDEO_SEGMENTS, nullptr, kXMP_PropValueIsArray);
 
         std::for_each(segments.begin(), segments.end(), [&](const std::shared_ptr<MetadataStream::VideoSegment>& segment)
         {
             umf_string pathToSegmentsArray;
-            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
+            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, UMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
             xmp->AppendArrayItem(VMF_NS, pathToSegmentsArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
             umf_string pathToSegment;
             SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToSegmentsArray.c_str(), kXMP_ArrayLastItem, &pathToSegment);
@@ -774,18 +774,18 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
             if (segment->getTitle().empty() || segment->getFPS() <= 0 || segment->getTime() < 0)
                 UMF_EXCEPTION(DataStorageException, "Invalid video segment: title, fps or timestamp value(s) is/are invalid!");
 
-            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_NAME, &tmpPath);
+            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_NAME, &tmpPath);
             xmp->SetProperty(VMF_NS, tmpPath.c_str(), segment->getTitle().c_str());
 
-            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_FPS, &tmpPath);
+            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_FPS, &tmpPath);
             xmp->SetProperty_Float(VMF_NS, tmpPath.c_str(), segment->getFPS());
 
-            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_TIME, &tmpPath);
+            SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_TIME, &tmpPath);
             xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), segment->getTime());
 
             if (segment->getDuration() > 0)
             {
-                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_DURATION, &tmpPath);
+                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_DURATION, &tmpPath);
                 xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), segment->getDuration());
             }
 
@@ -793,10 +793,10 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
             segment->getResolution(width, height);
             if (width > 0 && height > 0)
             {
-                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_W, &tmpPath);
+                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_RESOLUTION_W, &tmpPath);
                 xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), width);
 
-                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_H, &tmpPath);
+                SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_RESOLUTION_H, &tmpPath);
                 xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), height);
             }
         });
@@ -806,10 +806,10 @@ void XMPDataSource::saveVideoSegments(const std::vector<std::shared_ptr<Metadata
 void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream::VideoSegment>>& segments)
 {
     umf_string pathToInternalData;
-    SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
+    SXMPUtils::ComposeArrayItemPath(VMF_NS, UMF_INTERNAL, kXMP_ArrayLastItem, &pathToInternalData);
 
     umf_string pathToSegmentsArray;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, VMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
+    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToInternalData.c_str(), VMF_NS, UMF_VIDEO_SEGMENTS, &pathToSegmentsArray);
 
     SXMPIterator segmentsIter(*xmp, VMF_NS, pathToSegmentsArray.c_str(), kXMP_IterJustChildren);
     umf_string pathToSegment;
@@ -820,29 +820,29 @@ void XMPDataSource::loadVideoSegments(std::vector<std::shared_ptr<MetadataStream
 	long long timestamp, duration;
 	XMP_Int32 width, height;
 
-	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_NAME, &tmpPath);
+	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_NAME, &tmpPath);
 	if(!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &segmentTitle, 0) )
 	    UMF_EXCEPTION(DataStorageException, "Broken video segment's title");
 
-	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_FPS, &tmpPath);
+	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_FPS, &tmpPath);
 	if(!xmp->GetProperty_Float(VMF_NS, tmpPath.c_str(), &fps, 0) )
 	    UMF_EXCEPTION(DataStorageException, "Broken video segment's FPS");
 
-	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_TIME, &tmpPath);
+	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_TIME, &tmpPath);
 	if(!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &timestamp, 0) )
 	    UMF_EXCEPTION(DataStorageException, "Broken video segment's timestamp");
 
 	std::shared_ptr<MetadataStream::VideoSegment> segment = std::make_shared<MetadataStream::VideoSegment>(segmentTitle, fps, timestamp);
 
-	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_DURATION, &tmpPath);
+	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_DURATION, &tmpPath);
 	if(xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &duration, 0) )
 	    segment->setDuration(duration);
 
-	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_W, &tmpPath);
+	SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_RESOLUTION_W, &tmpPath);
 
 	if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &width, 0) )
 	{
-	    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, VMF_VIDEO_SEGMENT_RESOLUTION_H, &tmpPath);
+	    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSegment.c_str(), VMF_NS, UMF_VIDEO_SEGMENT_RESOLUTION_H, &tmpPath);
 	    if(xmp->GetProperty_Int(VMF_NS, tmpPath.c_str(), &height, 0))
 		segment->setResolution((long)width, (long)height);
 	}

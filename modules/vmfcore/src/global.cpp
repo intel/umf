@@ -15,14 +15,14 @@
  *
  */
 #include "umf/global.hpp"
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 #include "object_factory.hpp"
 
 #include <ctime>
 
 #if (defined(__cplusplus) && __cplusplus > 199711L) || (defined(_MSC_VER) && _MSC_VER >= 1700)
 #include <chrono>
-#define _VMF_USE_STD_CHRONO
+#define _UMF_USE_STD_CHRONO
 #else
 #include <ctime>
 #endif
@@ -33,16 +33,16 @@ std::string getBuildInfo()
 {
 #include "build-info.inc"
 
-    return vmf_build_info;
+    return umf_build_info;
 }
 
 long long getTimestamp()
 {
-#ifdef _VMF_USE_STD_CHRONO
+#ifdef _UMF_USE_STD_CHRONO
     return std::chrono::duration_cast<std::chrono::milliseconds> ( std::chrono::system_clock::now().time_since_epoch() ).count();
 #else
     return (long long) std::time(NULL) * 1000LL;
-#endif //_VMF_USE_STD_CHRONO
+#endif //_UMF_USE_STD_CHRONO
 }
 
 long long getTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int ms)
@@ -79,11 +79,11 @@ long long getTimestamp(int year, int month, int day, int hours, int minutes, int
     }
 
     long long retVal;
-#ifdef _VMF_USE_STD_CHRONO
+#ifdef _UMF_USE_STD_CHRONO
     retVal = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(time).time_since_epoch())).count() + (long long)ms;
 #else
     retVal = time * 1000LL + ms;
-#endif //_VMF_USE_STD_CHRONO
+#endif //_UMF_USE_STD_CHRONO
     return retVal;
 }
 

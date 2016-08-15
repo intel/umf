@@ -23,7 +23,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #include "compress_common.hpp"
 

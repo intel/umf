@@ -23,7 +23,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #include "encrypt_common.hpp"
 #include "my_encryptor.hpp"

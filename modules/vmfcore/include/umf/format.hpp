@@ -23,8 +23,8 @@
 
 #pragma once
 
-#ifndef VMF_FORMAT_H
-#define VMF_FORMAT_H
+#ifndef UMF_FORMAT_H
+#define UMF_FORMAT_H
 
 #include "umf/metadatastream.hpp"
 
@@ -87,4 +87,4 @@ public:
 
 }//umf
 
-#endif /* VMF_FORMAT_H */
+#endif /* UMF_FORMAT_H */

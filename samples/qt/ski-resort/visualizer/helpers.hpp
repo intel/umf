@@ -1,6 +1,6 @@
 // Copyright (C) 2013, Intel Corporation, all rights reserved.
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #define METERS_IN_KM 1000.0f
 #define KMS_IN_METER (1 / METERS_IN_KM)

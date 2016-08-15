@@ -20,8 +20,8 @@
 * \brief Serialization and deserialization based on instances of Compressor and Format classes
 */
 
-#ifndef VMF_FORMAT_COMPRESSED_H
-#define VMF_FORMAT_COMPRESSED_H
+#ifndef UMF_FORMAT_COMPRESSED_H
+#define UMF_FORMAT_COMPRESSED_H
 
 #include "umf/format.hpp"
 
@@ -111,4 +111,4 @@ protected:
 
 }//umf
 
-#endif //VMF_FORMAT_COMPRESSED_H
+#endif //UMF_FORMAT_COMPRESSED_H

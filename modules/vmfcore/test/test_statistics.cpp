@@ -462,12 +462,12 @@ protected:
     {
         scMetadataSchema = std::make_shared< umf::MetadataSchema >( mcSchemaName );
 
-        VMF_METADATA_BEGIN( mcDescName );
-            VMF_FIELD_STR( mcPersonName );
-            VMF_FIELD_INT( mcAgeName );
-            VMF_FIELD_INT( mcGrowthName );
-            VMF_FIELD_INT( mcSalaryName );
-        VMF_METADATA_END( scMetadataSchema );
+        UMF_METADATA_BEGIN( mcDescName );
+            UMF_FIELD_STR( mcPersonName );
+            UMF_FIELD_INT( mcAgeName );
+            UMF_FIELD_INT( mcGrowthName );
+            UMF_FIELD_INT( mcSalaryName );
+        UMF_METADATA_END( scMetadataSchema );
 
         stream.addSchema( scMetadataSchema );
 

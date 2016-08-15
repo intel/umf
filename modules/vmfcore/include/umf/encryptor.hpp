@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_ENCRYPTOR_HPP
-#define VMF_ENCRYPTOR_HPP
+#ifndef UMF_ENCRYPTOR_HPP
+#define UMF_ENCRYPTOR_HPP
 
 #include "umf/metadataschema.hpp"
 
@@ -62,4 +62,4 @@ public:
 
 }
 
-#endif //VMF_ENCRYPTOR_HPP
+#endif //UMF_ENCRYPTOR_HPP

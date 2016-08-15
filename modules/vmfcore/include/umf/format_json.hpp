@@ -20,8 +20,8 @@
 * \brief %FormatJSON class header file
 */
 
-#ifndef VMF_FORMAT_JSON_H
-#define VMF_FORMAT_JSON_H
+#ifndef UMF_FORMAT_JSON_H
+#define UMF_FORMAT_JSON_H
 
 #include "format.hpp"
 
@@ -72,4 +72,4 @@ public:
 
 }//umf
 
-#endif //VMF_FORMAT_JSON_H
+#endif //UMF_FORMAT_JSON_H

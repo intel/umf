@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __VMF_LOG_H__
-#define __VMF_LOG_H__
+#ifndef __UMF_LOG_H__
+#define __UMF_LOG_H__
 
 #include <string>
 

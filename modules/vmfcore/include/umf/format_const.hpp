@@ -23,10 +23,10 @@
 
 #pragma once
 
-#ifndef __VMF_RWCONST_H__
-#define __VMF_RWCONST_H__
+#ifndef __UMF_RWCONST_H__
+#define __UMF_RWCONST_H__
 
-#define TAG_VMF "vmf"
+#define TAG_UMF "umf"
 #define TAG_ATTRIBS_ARRAY "attribs"
 #define TAG_STATS_ARRAY "stat-objects"
 #define TAG_STAT_OBJ "stat"
@@ -67,10 +67,10 @@
 #define ATTR_REFERENCE_UNIQUE "unique"
 #define ATTR_REFERENCE_CUSTOM "custom"
 
-#define ATTR_VMF_NEXTID "nextId"
-#define ATTR_VMF_FILEPATH "filepath"
-#define ATTR_VMF_CHECKSUM "checksum"
-#define ATTR_VMF_HINT "hint-encryption"
+#define ATTR_UMF_NEXTID "nextId"
+#define ATTR_UMF_FILEPATH "filepath"
+#define ATTR_UMF_CHECKSUM "checksum"
+#define ATTR_UMF_HINT "hint-encryption"
 #define ATTR_METADATA_SCHEMA "schema"
 #define ATTR_METADATA_DESCRIPTION "description"
 #define ATTR_METADATA_FRAME_IDX "frame-index"
@@ -107,4 +107,4 @@
 #define ATTR_STAT_FIELD_FIELD_NAME "field-name"
 #define ATTR_STAT_FIELD_OP_NAME "op-name"
 
-#endif /* __VMF_RWCONST_H__ */
+#endif /* __UMF_RWCONST_H__ */

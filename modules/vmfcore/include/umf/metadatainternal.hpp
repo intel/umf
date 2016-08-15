@@ -20,8 +20,8 @@
 * \brief %MetadataInternal class header file
 */
 
-#ifndef __VMF_METADATAINTERNAL_H__
-#define __VMF_METADATAINTERNAL_H__
+#ifndef __UMF_METADATAINTERNAL_H__
+#define __UMF_METADATAINTERNAL_H__
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -94,4 +94,4 @@ struct UMF_EXPORT MetadataInternal
 #pragma warning(pop)
 #endif
 
-#endif //__VMF_METADATAINTERNAL_H__
+#endif //__UMF_METADATAINTERNAL_H__

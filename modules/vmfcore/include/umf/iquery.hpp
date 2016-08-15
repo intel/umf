@@ -21,8 +21,8 @@
 * \details The file contains declaration of %IQuery interface.
 */
 
-#ifndef __VMF_IQUERY_H__
-#define __VMF_IQUERY_H__
+#ifndef __UMF_IQUERY_H__
+#define __UMF_IQUERY_H__
 
 #include <string>
 #include <vector>
@@ -128,4 +128,4 @@ public:
 };
 }
 
-#endif /* __VMF_IQUERY_H__ */
+#endif /* __UMF_IQUERY_H__ */

@@ -20,8 +20,8 @@
 */
 
 #pragma once
-#ifndef __VMF_METADATA_H__
-#define __VMF_METADATA_H__
+#ifndef __UMF_METADATA_H__
+#define __UMF_METADATA_H__
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -330,4 +330,4 @@ private:
 #pragma warning(pop)
 #endif
 
-#endif /* __VMF_METADATA_H__ */
+#endif /* __UMF_METADATA_H__ */

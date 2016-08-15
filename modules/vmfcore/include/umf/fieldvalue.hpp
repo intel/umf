@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __VMF_FIELD_VALUE_H__
-#define __VMF_FIELD_VALUE_H__
+#ifndef __UMF_FIELD_VALUE_H__
+#define __UMF_FIELD_VALUE_H__
 
 #include "variant.hpp"
 #include "global.hpp"
@@ -165,4 +165,4 @@ private:
 };
 }
 
-#endif /* __VMF_FIELD_VALUE_H__ */
+#endif /* __UMF_FIELD_VALUE_H__ */

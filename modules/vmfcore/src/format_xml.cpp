@@ -301,15 +301,15 @@ std::string FormatXML::store(
     )
 {
     xmlDocPtr doc = xmlNewDoc(NULL);
-    xmlNodePtr vmfRootNode = xmlNewNode(NULL, BAD_CAST TAG_VMF);
-    if (vmfRootNode == NULL)
+    xmlNodePtr umfRootNode = xmlNewNode(NULL, BAD_CAST TAG_UMF);
+    if (umfRootNode == NULL)
         UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for umf root element");
-    if (xmlDocSetRootElement(doc, vmfRootNode) != 0)
+    if (xmlDocSetRootElement(doc, umfRootNode) != 0)
         UMF_EXCEPTION(InternalErrorException, "Can't set root element to the document");
 
     // attribs
     for (const auto& a : attribs)
-        if (xmlNewProp(vmfRootNode, BAD_CAST a.first.c_str(), BAD_CAST a.second.c_str()) == NULL)
+        if (xmlNewProp(umfRootNode, BAD_CAST a.first.c_str(), BAD_CAST a.second.c_str()) == NULL)
         {
             UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode property. Next Id");
         }
@@ -317,7 +317,7 @@ std::string FormatXML::store(
     // stats
     if (!stats.empty())
     {
-        xmlNodePtr statsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
+        xmlNodePtr statsArrayNode = xmlNewChild(umfRootNode, NULL, BAD_CAST TAG_STATS_ARRAY, NULL);
         if (statsArrayNode == NULL)
             UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for Stat objects array");
         for (const auto& st : stats)
@@ -330,7 +330,7 @@ std::string FormatXML::store(
     // segments
     if (!segments.empty())
     {
-        xmlNodePtr segmentsArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY, NULL);
+        xmlNodePtr segmentsArrayNode = xmlNewChild(umfRootNode, NULL, BAD_CAST TAG_VIDEO_SEGMENTS_ARRAY, NULL);
         if (segmentsArrayNode == NULL)
             UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for video segments array");
         for(const auto& seg : segments)
@@ -366,7 +366,7 @@ std::string FormatXML::store(
                 UMF_EXCEPTION(umf::IncorrectParamException, "MetadataSet item references unknown schema");
         }
 
-        xmlNodePtr schemasArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_SCHEMAS_ARRAY, NULL);
+        xmlNodePtr schemasArrayNode = xmlNewChild(umfRootNode, NULL, BAD_CAST TAG_SCHEMAS_ARRAY, NULL);
         if (schemasArrayNode == NULL)
             UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for schemas array");
         for(const auto& sc : schemas)
@@ -381,7 +381,7 @@ std::string FormatXML::store(
     // set
     if (!set.empty())
     {
-        xmlNodePtr metadataArrayNode = xmlNewChild(vmfRootNode, NULL, BAD_CAST TAG_METADATA_ARRAY, NULL);
+        xmlNodePtr metadataArrayNode = xmlNewChild(umfRootNode, NULL, BAD_CAST TAG_METADATA_ARRAY, NULL);
         if (metadataArrayNode == NULL)
             UMF_EXCEPTION(InternalErrorException, "Can't create xmlNode for metadata array");
         for(const auto& md : set)
@@ -761,7 +761,7 @@ Format::ParseCounters FormatXML::parse(
     if (root == NULL)
         UMF_EXCEPTION(InternalErrorException, "XML tree has no root element");
 
-    if ((char*)root->name == std::string(TAG_VMF))
+    if ((char*)root->name == std::string(TAG_UMF))
     {
         for (xmlAttr* cur_prop = root->properties; cur_prop; cur_prop = cur_prop->next)
         {

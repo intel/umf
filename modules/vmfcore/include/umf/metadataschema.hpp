@@ -20,8 +20,8 @@
 * \brief %MetadataSchema class header file
 */
 
-#ifndef __VMF_METADATA_SCHEMA_H__
-#define __VMF_METADATA_SCHEMA_H__
+#ifndef __UMF_METADATA_SCHEMA_H__
+#define __UMF_METADATA_SCHEMA_H__
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -143,50 +143,50 @@ private:
 };
 
 
-#define VMF_METADATA_BEGIN( name ) \
+#define UMF_METADATA_BEGIN( name ) \
 {\
     std::vector< umf::FieldDesc > fields;\
     std::string _name( name );
 
-#define VMF_METADATA_END( schema ) \
+#define UMF_METADATA_END( schema ) \
     auto desc = std::make_shared< umf::MetadataDesc >( _name, fields ); \
     schema->add( desc );\
 };
 
-#define VMF_FIELD_STR_( name, isOptional ) \
+#define UMF_FIELD_STR_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_string, isOptional ));
-#define VMF_FIELD_STR( name ) VMF_FIELD_STR_( name, false )
-#define VMF_FIELD_STR_OPT( name ) VMF_FIELD_STR_( name, true )
+#define UMF_FIELD_STR( name ) UMF_FIELD_STR_( name, false )
+#define UMF_FIELD_STR_OPT( name ) UMF_FIELD_STR_( name, true )
 
-#define VMF_FIELD_INT_( name, isOptional ) \
+#define UMF_FIELD_INT_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_integer, isOptional ));
-#define VMF_FIELD_INT( name ) VMF_FIELD_INT_( name, false )
-#define VMF_FIELD_INT_OPT( name ) VMF_FIELD_INT_( name, true )
+#define UMF_FIELD_INT( name ) UMF_FIELD_INT_( name, false )
+#define UMF_FIELD_INT_OPT( name ) UMF_FIELD_INT_( name, true )
 
-#define VMF_FIELD_REAL_( name, isOptional ) \
+#define UMF_FIELD_REAL_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_real, isOptional ));
-#define VMF_FIELD_REAL( name ) VMF_FIELD_REAL_( name, false )
-#define VMF_FIELD_REAL_OPT( name ) VMF_FIELD_REAL_( name, true )
+#define UMF_FIELD_REAL( name ) UMF_FIELD_REAL_( name, false )
+#define UMF_FIELD_REAL_OPT( name ) UMF_FIELD_REAL_( name, true )
 
-#define VMF_FIELD_VEC2D_( name, isOptional ) \
+#define UMF_FIELD_VEC2D_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector2d, isOptional ));
-#define VMF_FIELD_VEC2D( name ) VMF_FIELD_VEC2D_( name, false )
-#define VMF_FIELD_VEC2D_OPT( name ) VMF_FIELD_VEC2D_( name, true )
+#define UMF_FIELD_VEC2D( name ) UMF_FIELD_VEC2D_( name, false )
+#define UMF_FIELD_VEC2D_OPT( name ) UMF_FIELD_VEC2D_( name, true )
 
-#define VMF_FIELD_VEC3D_( name, isOptional ) \
+#define UMF_FIELD_VEC3D_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector3d, isOptional ));
-#define VMF_FIELD_VEC3D( name ) VMF_FIELD_VEC3D_( name, false )
-#define VMF_FIELD_VEC3D_OPT( name ) VMF_FIELD_VEC3D_( name, true )
+#define UMF_FIELD_VEC3D( name ) UMF_FIELD_VEC3D_( name, false )
+#define UMF_FIELD_VEC3D_OPT( name ) UMF_FIELD_VEC3D_( name, true )
 
-#define VMF_FIELD_VEC4D_( name, isOptional ) \
+#define UMF_FIELD_VEC4D_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_vector4d, isOptional ));
-#define VMF_FIELD_VEC4D( name ) VMF_FIELD_VEC4D_( name, false )
-#define VMF_FIELD_VEC4D_OPT( name ) VMF_FIELD_VEC4D_( name, true )
+#define UMF_FIELD_VEC4D( name ) UMF_FIELD_VEC4D_( name, false )
+#define UMF_FIELD_VEC4D_OPT( name ) UMF_FIELD_VEC4D_( name, true )
 
-#define VMF_FIELD_RAW_( name, isOptional ) \
+#define UMF_FIELD_RAW_( name, isOptional ) \
     fields.emplace_back( umf::FieldDesc( name, umf::Variant::type_rawbuffer, isOptional ));
-#define VMF_FIELD_RAW( name ) VMF_FIELD_RAW_( name, false )
-#define VMF_FIELD_RAW_OPT( name ) VMF_FIELD_RAW_( name, true )
+#define UMF_FIELD_RAW( name ) UMF_FIELD_RAW_( name, false )
+#define UMF_FIELD_RAW_OPT( name ) UMF_FIELD_RAW_( name, true )
 
 } // namespace umf
 
@@ -194,4 +194,4 @@ private:
 #pragma warning(pop)
 #endif
 
-#endif /* __VMF_METADATA_SCHEMA_H__ */
+#endif /* __UMF_METADATA_SCHEMA_H__ */

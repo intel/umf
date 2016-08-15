@@ -22,8 +22,8 @@
 * functions.
 */
 
-#ifndef __VMF_GLOBAL_H__
-#define __VMF_GLOBAL_H__
+#ifndef __UMF_GLOBAL_H__
+#define __UMF_GLOBAL_H__
 
 #include <string>
 #include <sstream>
@@ -178,4 +178,4 @@ UMF_EXPORT extern void terminate();
 
 } /* umf */
 
-#endif /* __VMF_GLOBAL_H__ */
+#endif /* __UMF_GLOBAL_H__ */

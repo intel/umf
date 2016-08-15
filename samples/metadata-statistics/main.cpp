@@ -27,7 +27,7 @@
 #include <chrono>
 #include <thread>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 //using namespace umf;
 using namespace std;
@@ -188,10 +188,10 @@ int sample(int argc, char *argv[])
     std::shared_ptr<umf::MetadataSchema> gpsSchema = std::make_shared<umf::MetadataSchema>(GPS_SCHEMA_NAME);
 
     // Add description to the schema
-    VMF_METADATA_BEGIN( GPS_DESC );
-        VMF_FIELD_STR( GPS_COORD_FIELD );
-        VMF_FIELD_STR( GPS_TIME_FIELD );
-    VMF_METADATA_END( gpsSchema );
+    UMF_METADATA_BEGIN( GPS_DESC );
+        UMF_FIELD_STR( GPS_COORD_FIELD );
+        UMF_FIELD_STR( GPS_TIME_FIELD );
+    UMF_METADATA_END( gpsSchema );
 
     // Get GPS metadata description
     std::shared_ptr<umf::MetadataDesc> gpsDesc = gpsSchema->findMetadataDesc( GPS_DESC );

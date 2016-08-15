@@ -338,9 +338,9 @@ TEST_F(TestRemovingSchema, RemoveAllAddSchema)
         newStream.close();
 
         std::shared_ptr<umf::MetadataSchema> newSchema(new umf::MetadataSchema(TEST_SCHEMA_NAME));
-        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
-            VMF_FIELD_INT(TEST_FIELD_NAME);
-        VMF_METADATA_END(newSchema);
+        UMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            UMF_FIELD_INT(TEST_FIELD_NAME);
+        UMF_METADATA_END(newSchema);
 
         newStream.reopen(umf::MetadataStream::Update);
         newStream.addSchema(newSchema);
@@ -375,9 +375,9 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchema)
         newStream.close();
 
         std::shared_ptr<umf::MetadataSchema> newSchema(new umf::MetadataSchema(TEST_SCHEMA_NAME));
-        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
-            VMF_FIELD_INT(TEST_FIELD_NAME);
-        VMF_METADATA_END(newSchema);
+        UMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            UMF_FIELD_INT(TEST_FIELD_NAME);
+        UMF_METADATA_END(newSchema);
 
         newStream.reopen(umf::MetadataStream::Update);
         newStream.addSchema(newSchema);
@@ -410,9 +410,9 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchemaBeforeSaving)
         newStream.remove(schemaForRemoving);
 
         std::shared_ptr<umf::MetadataSchema> newSchema(new umf::MetadataSchema(TEST_SCHEMA_NAME));
-        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
-            VMF_FIELD_INT(TEST_FIELD_NAME);
-        VMF_METADATA_END(newSchema);
+        UMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+            UMF_FIELD_INT(TEST_FIELD_NAME);
+        UMF_METADATA_END(newSchema);
         newStream.addSchema(newSchema);
 
         newStream.save();
@@ -443,9 +443,9 @@ TEST_F(TestRemovingSchema, RemoveOneAddSchemaNoSaving)
     newStream.remove(schemaForRemoving);
 
     std::shared_ptr<umf::MetadataSchema> newSchema(new umf::MetadataSchema(TEST_SCHEMA_NAME));
-    VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
-        VMF_FIELD_INT(TEST_FIELD_NAME);
-    VMF_METADATA_END(newSchema);
+    UMF_METADATA_BEGIN(TEST_PROPERTY_NAME2);
+        UMF_FIELD_INT(TEST_FIELD_NAME);
+    UMF_METADATA_END(newSchema);
     newStream.addSchema(newSchema);
 
     std::shared_ptr<umf::MetadataSchema> schema = newStream.getSchema(TEST_SCHEMA_NAME);

@@ -20,8 +20,8 @@
  * \brief %FormatEncrypted class header file
  */
 
-#ifndef VMF_FORMAT_ENCRYPTED_HPP
-#define VMF_FORMAT_ENCRYPTED_HPP
+#ifndef UMF_FORMAT_ENCRYPTED_HPP
+#define UMF_FORMAT_ENCRYPTED_HPP
 
 #include "umf/format.hpp"
 
@@ -114,4 +114,4 @@ protected:
 }
 
 
-#endif // VMF_FORMAT_ENCRYPTED_HPP
+#endif // UMF_FORMAT_ENCRYPTED_HPP

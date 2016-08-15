@@ -277,7 +277,7 @@ std::string FormatJSON::store(
     )
 {
     JSONNode vmfRootNode(JSON_NODE);
-    vmfRootNode.set_name(TAG_VMF);
+    vmfRootNode.set_name(TAG_UMF);
 
     // attribs
     JSONNode attribsArrayNode(JSON_NODE);
@@ -747,7 +747,7 @@ Format::ParseCounters FormatJSON::parse(
     if (root.size() != 1) UMF_EXCEPTION(IncorrectParamException, "More than one JSON root");
 
     JSONNode vmfNode = root[0];
-    if (vmfNode.name() != TAG_VMF) UMF_LOG_ERROR("Unexpected root JSON element: " + vmfNode.name());
+    if (vmfNode.name() != TAG_UMF) UMF_LOG_ERROR("Unexpected root JSON element: " + vmfNode.name());
     for (const auto& node : vmfNode)
     {
         if (node.name() == TAG_ATTRIBS_ARRAY)

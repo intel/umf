@@ -22,8 +22,8 @@
 * Video Metadata Framework
 */
 
-#ifndef __VMF_H__
-#define __VMF_H__
+#ifndef __UMF_H__
+#define __UMF_H__
 
 #include "umf/metadatastream.hpp"
 #include "umf/format_xml.hpp"
@@ -32,4 +32,4 @@
 #include "umf/encryptor_default.hpp"
 #include "umf/format_encrypted.hpp"
 
-#endif /* __VMF_H__ */
+#endif /* __UMF_H__ */

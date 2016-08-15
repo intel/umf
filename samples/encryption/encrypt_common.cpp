@@ -40,10 +40,10 @@ void generateEncryptedMetadata(MetadataStream &mdStream, EncryptionScope scope)
     // Create a GPS metadata field descriptions
     shared_ptr<MetadataSchema> gpsSchema(new MetadataSchema(GPS_SCHEMA_NAME));
 
-    VMF_METADATA_BEGIN(GPS_DESC);
-        VMF_FIELD_REAL(GPS_COORD_LAT_FIELD);
-        VMF_FIELD_REAL(GPS_COORD_LNG_FIELD);
-    VMF_METADATA_END(gpsSchema);
+    UMF_METADATA_BEGIN(GPS_DESC);
+        UMF_FIELD_REAL(GPS_COORD_LAT_FIELD);
+        UMF_FIELD_REAL(GPS_COORD_LNG_FIELD);
+    UMF_METADATA_END(gpsSchema);
 
     //set encryption for all fields/metadata/schema/stream
     std::shared_ptr< MetadataDesc > metadesc = gpsSchema->findMetadataDesc(GPS_DESC);

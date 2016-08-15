@@ -20,8 +20,8 @@
 * \brief %FormatXML class header file
 */
 
-#ifndef VMF_FORMAT_XML_H
-#define VMF_FORMAT_XML_H
+#ifndef UMF_FORMAT_XML_H
+#define UMF_FORMAT_XML_H
 
 #include "umf/format.hpp"
 
@@ -72,4 +72,4 @@ public:
 
 }//umf
 
-#endif //VMF_FORMAT_XML_H
+#endif //UMF_FORMAT_XML_H

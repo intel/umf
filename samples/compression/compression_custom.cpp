@@ -24,7 +24,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #include "compress_common.hpp"
 #include "my_lzw.hpp"

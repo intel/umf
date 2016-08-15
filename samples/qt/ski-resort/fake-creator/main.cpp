@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #define MSEC_IN_SEC                     1000
 

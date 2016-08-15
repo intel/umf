@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QFile>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 using namespace umf;
 using namespace std;

@@ -1,7 +1,7 @@
 // Copyright (C) 2013, Intel Corporation, all rights reserved.
 #include "mainwindow.hpp"
 #include <QApplication>
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 int main(int argc, char *argv[])
 {

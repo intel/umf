@@ -21,7 +21,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 using namespace std;
 
@@ -75,26 +75,26 @@ int main(int argc, char** argv)
         umf::umf_string TEST_SCHEMA_NAME = "TEST_SCHEMA_NAME";
         shared_ptr<umf::MetadataSchema> schema = make_shared<umf::MetadataSchema>(TEST_SCHEMA_NAME);
 
-        VMF_METADATA_BEGIN("TEST_PROPERTY_NAME1")
-            VMF_FIELD_INT("TEST_FIELD_NAME1")
-            VMF_FIELD_INT("TEST_FIELD_NAME2")
-            VMF_FIELD_INT("TEST_FIELD_NAME3")
-            VMF_FIELD_INT("TEST_FIELD_NAME4")
-            VMF_FIELD_REAL("TEST_FIELD_NAME5")
-            VMF_FIELD_REAL("TEST_FIELD_NAME6")
-            VMF_FIELD_REAL("TEST_FIELD_NAME7")
-        VMF_METADATA_END(schema);
+        UMF_METADATA_BEGIN("TEST_PROPERTY_NAME1")
+            UMF_FIELD_INT("TEST_FIELD_NAME1")
+            UMF_FIELD_INT("TEST_FIELD_NAME2")
+            UMF_FIELD_INT("TEST_FIELD_NAME3")
+            UMF_FIELD_INT("TEST_FIELD_NAME4")
+            UMF_FIELD_REAL("TEST_FIELD_NAME5")
+            UMF_FIELD_REAL("TEST_FIELD_NAME6")
+            UMF_FIELD_REAL("TEST_FIELD_NAME7")
+        UMF_METADATA_END(schema);
 
-        VMF_METADATA_BEGIN("TEST_PROPERTY_NAME2")
-            VMF_FIELD_INT("TEST_FIELD_NAME1")
-            VMF_FIELD_INT("TEST_FIELD_NAME2")
-            VMF_FIELD_INT("TEST_FIELD_NAME3")
-            VMF_FIELD_INT("TEST_FIELD_NAME4")
-            VMF_FIELD_REAL("TEST_FIELD_NAME5")
-            VMF_FIELD_REAL("TEST_FIELD_NAME6")
-            VMF_FIELD_REAL("TEST_FIELD_NAME7")
-            VMF_FIELD_REAL("TEST_FIELD_NAME8")
-        VMF_METADATA_END(schema);
+        UMF_METADATA_BEGIN("TEST_PROPERTY_NAME2")
+            UMF_FIELD_INT("TEST_FIELD_NAME1")
+            UMF_FIELD_INT("TEST_FIELD_NAME2")
+            UMF_FIELD_INT("TEST_FIELD_NAME3")
+            UMF_FIELD_INT("TEST_FIELD_NAME4")
+            UMF_FIELD_REAL("TEST_FIELD_NAME5")
+            UMF_FIELD_REAL("TEST_FIELD_NAME6")
+            UMF_FIELD_REAL("TEST_FIELD_NAME7")
+            UMF_FIELD_REAL("TEST_FIELD_NAME8")
+        UMF_METADATA_END(schema);
 
         stream.addSchema(schema);
 

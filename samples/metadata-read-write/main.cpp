@@ -25,7 +25,7 @@
 #include <cstdio>
 #include <cassert>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 
 using namespace umf;

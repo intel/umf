@@ -20,8 +20,8 @@
 * \details The file contains %Variant class definition.
 */
 
-#ifndef __VMF_VARIANT_H__
-#define __VMF_VARIANT_H__
+#ifndef __UMF_VARIANT_H__
+#define __UMF_VARIANT_H__
 
 #include "umf/global.hpp"
 #include <vector>
@@ -361,4 +361,4 @@ namespace umf
     };
 };
 
-#endif /* __VMF_VARIANT_H__ */
+#endif /* __UMF_VARIANT_H__ */

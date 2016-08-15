@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __VMF_EXCEPTIONS_H__
-#define __VMF_EXCEPTIONS_H__
+#ifndef __UMF_EXCEPTIONS_H__
+#define __UMF_EXCEPTIONS_H__
 
 /*!
 * \file exceptions.hpp
@@ -634,4 +634,4 @@ public:
 };
 } /* umf */
 
-#endif /* __VMF_EXCEPTIONS_H__ */
+#endif /* __UMF_EXCEPTIONS_H__ */

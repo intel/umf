@@ -20,7 +20,7 @@
 #define _TEST_PRECOMP_HPP
 
 #include "gtest/gtest.h"
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 #include "utils.hpp"
 
 #endif //_TEST_PRECOMP_HPP

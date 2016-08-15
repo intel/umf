@@ -26,10 +26,10 @@ FormatCompressed::FormatCompressed(std::shared_ptr<Format> format,
     : format(format), compressorId(compressorId), ignoreUnknownCompressor(_ignoreUnknownCompressor)
 {
     cSchema = std::make_shared<umf::MetadataSchema>(COMPRESSED_DATA_SCHEMA_NAME);
-    VMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
-        VMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
-        VMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
-    VMF_METADATA_END(cSchema);
+    UMF_METADATA_BEGIN(COMPRESSED_DATA_DESC_NAME);
+        UMF_FIELD_STR(COMPRESSION_ALGO_PROP_NAME);
+        UMF_FIELD_STR(COMPRESSED_DATA_PROP_NAME);
+    UMF_METADATA_END(cSchema);
 }
 
 

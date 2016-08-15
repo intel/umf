@@ -19,7 +19,7 @@
 #define __XMPMETADATASOURCE_HPP__
 
 #include "xmpdatasource.hpp"
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 #include <map>
 
 namespace umf

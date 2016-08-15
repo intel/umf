@@ -19,8 +19,8 @@
 * \brief %MetadataSet class header file
 */
 
-#ifndef __VMF_METADATA_SET_H__
-#define __VMF_METADATA_SET_H__
+#ifndef __UMF_METADATA_SET_H__
+#define __UMF_METADATA_SET_H__
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -110,4 +110,4 @@ public:
 #pragma warning(pop)
 #endif
 
-#endif /* __VMF_METADATA_SET_H__ */
+#endif /* __UMF_METADATA_SET_H__ */

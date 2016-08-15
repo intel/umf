@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __VMF_TYPES_H__
-#define __VMF_TYPES_H__
+#ifndef __UMF_TYPES_H__
+#define __UMF_TYPES_H__
 
 /*!
 * \file types.hpp
@@ -151,4 +151,4 @@ namespace umf
 
 
 } /* umf */
-#endif /* __VMF_TYPES_H__ */
+#endif /* __UMF_TYPES_H__ */

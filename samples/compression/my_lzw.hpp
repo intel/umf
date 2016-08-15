@@ -17,7 +17,7 @@
 #ifndef VMF_MY_LZW_HPP
 #define VMF_MY_LZW_HPP
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 // User-created compression algorithm should implement Compressor interface
 // Straightforward implementation of LZW algorithm

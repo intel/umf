@@ -22,8 +22,8 @@
 * - Enums: %State::State::Type, %State::Action::Type, State::UpdateMode::Type;
 */
 
-#ifndef VMF_STATISTICS_H
-#define VMF_STATISTICS_H
+#ifndef UMF_STATISTICS_H
+#define UMF_STATISTICS_H
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -486,5 +486,5 @@ private:
 #pragma warning(pop)
 #endif
 
-#endif /* VMF_STATISTICS_H */
+#endif /* UMF_STATISTICS_H */
     

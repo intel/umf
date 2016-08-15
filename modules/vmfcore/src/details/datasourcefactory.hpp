@@ -22,7 +22,7 @@
  * \brief IDataSourceFactory interface header file
  */
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 namespace umf
 {

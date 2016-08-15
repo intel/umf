@@ -20,8 +20,8 @@
 * \brief %MetadataDesc class header file
 */
 
-#ifndef __VMF_METADATA_DESC_H__
-#define __VMF_METADATA_DESC_H__
+#ifndef __UMF_METADATA_DESC_H__
+#define __UMF_METADATA_DESC_H__
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -203,4 +203,4 @@ private:
 #pragma warning(pop)
 #endif
 
-#endif /* __VMF_METADATA_DESC_H__ */
+#endif /* __UMF_METADATA_DESC_H__ */

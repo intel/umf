@@ -10,7 +10,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 #define MS_NAME "trek"
 #define PROP_X "gps_coordinate_x"

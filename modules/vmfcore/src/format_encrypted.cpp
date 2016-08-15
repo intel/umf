@@ -12,10 +12,10 @@ FormatEncrypted::FormatEncrypted(std::shared_ptr<Format> format,
       ignoreUnknownEncryptor(_ignoreUnknownEncryptor)
 {
     eSchema = std::make_shared<umf::MetadataSchema>(ENCRYPTED_DATA_SCHEMA_NAME);
-    VMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
-        VMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
-        VMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
-    VMF_METADATA_END(eSchema);
+    UMF_METADATA_BEGIN(ENCRYPTED_DATA_DESC_NAME);
+        UMF_FIELD_STR(ENCRYPTION_HINT_PROP_NAME);
+        UMF_FIELD_STR(ENCRYPTED_DATA_PROP_NAME);
+    UMF_METADATA_END(eSchema);
 }
 
 

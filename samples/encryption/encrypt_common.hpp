@@ -18,7 +18,7 @@
 #ifndef VMF_ENCRYPT_COMMON_HPP
 #define VMF_ENCRYPT_COMMON_HPP
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 enum EncryptionScope
 {

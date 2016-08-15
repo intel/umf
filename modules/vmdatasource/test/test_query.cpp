@@ -44,14 +44,14 @@ protected:
 
         schema = std::shared_ptr<umf::MetadataSchema>(new umf::MetadataSchema(TEST_SCHEMA_NAME));
 
-        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME1)
-        VMF_FIELD_INT(TEST_FIELD_NAME)
-        VMF_FIELD_INT(TEST_FIELD_NAME2)
-        VMF_METADATA_END(schema);
+        UMF_METADATA_BEGIN(TEST_PROPERTY_NAME1)
+        UMF_FIELD_INT(TEST_FIELD_NAME)
+        UMF_FIELD_INT(TEST_FIELD_NAME2)
+        UMF_METADATA_END(schema);
         
-        VMF_METADATA_BEGIN(TEST_PROPERTY_NAME2)
-        VMF_FIELD_INT(TEST_FIELD_NAME)
-        VMF_METADATA_END(schema);
+        UMF_METADATA_BEGIN(TEST_PROPERTY_NAME2)
+        UMF_FIELD_INT(TEST_FIELD_NAME)
+        UMF_METADATA_END(schema);
 
         copyFile(TEST_FILE_SRC, TEST_FILE);
 

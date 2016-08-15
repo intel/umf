@@ -20,7 +20,7 @@
 #define _TEST_PRECOMP_HPP
 
 #include "gtest/gtest.h"
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 #include "fake_compressor.hpp"
 #include "weak_encryptor.hpp"
 

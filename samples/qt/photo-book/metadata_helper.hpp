@@ -3,7 +3,7 @@
 #ifndef __METADATA_HELPER_H__
 #define __METADATA_HELPER_H__
 
-#include "umf/vmf.hpp"
+#include "umf/umf.hpp"
 
 class MetadataHelper
 {
