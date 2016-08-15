@@ -18,7 +18,7 @@
 
 #include "umf/metadatastream.hpp"
 
-#define VMF_GLOBAL_SCHEMAS_ARRAY "metadata"
+#define UMF_GLOBAL_SCHEMAS_ARRAY "metadata"
 
 #define SCHEMA_NAME "schema"
 #define SCHEMA_SET "set"
@@ -84,10 +84,10 @@ void XMPMetadataSource::saveSchema(const std::shared_ptr<MetadataSchema>& schema
 
     if (thisSchemaPath.empty())
     {
-        xmp->AppendArrayItem(VMF_NS, VMF_GLOBAL_SCHEMAS_ARRAY, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, VMF_GLOBAL_SCHEMAS_ARRAY, kXMP_ArrayLastItem, &thisSchemaPath);
-        xmp->SetStructField(VMF_NS, thisSchemaPath.c_str(), VMF_NS, SCHEMA_NAME, schemaName);
-        xmp->SetStructField(VMF_NS, thisSchemaPath.c_str(), VMF_NS, SCHEMA_SET, nullptr, kXMP_PropValueIsArray);
+        xmp->AppendArrayItem(UMF_NS, UMF_GLOBAL_SCHEMAS_ARRAY, kXMP_PropValueIsArray, NULL, kXMP_PropValueIsStruct);
+        SXMPUtils::ComposeArrayItemPath(UMF_NS, UMF_GLOBAL_SCHEMAS_ARRAY, kXMP_ArrayLastItem, &thisSchemaPath);
+        xmp->SetStructField(UMF_NS, thisSchemaPath.c_str(), UMF_NS, SCHEMA_NAME, schemaName);
+        xmp->SetStructField(UMF_NS, thisSchemaPath.c_str(), UMF_NS, SCHEMA_SET, nullptr, kXMP_PropValueIsArray);
     }
 
     MetadataSet thisSchemaSet = mdSet.queryBySchema(schemaName);
@@ -109,19 +109,19 @@ void XMPMetadataSource::saveProperty(const MetadataSet& property, const umf_stri
     }
 
     umf_string pathToPropertiesArray;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_SET, &pathToPropertiesArray);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToSchema.c_str(), UMF_NS, SCHEMA_SET, &pathToPropertiesArray);
 
     umf_string thisPropertyPath = findProperty(pathToSchema, propertyName);
     if (thisPropertyPath.empty())
     {
-        xmp->AppendArrayItem(VMF_NS, pathToPropertiesArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToPropertiesArray.c_str(), kXMP_ArrayLastItem, &thisPropertyPath);
+        xmp->AppendArrayItem(UMF_NS, pathToPropertiesArray.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
+        SXMPUtils::ComposeArrayItemPath(UMF_NS, pathToPropertiesArray.c_str(), kXMP_ArrayLastItem, &thisPropertyPath);
     }
 
     savePropertyName(thisPropertyPath, propertyName);
-    xmp->SetStructField(VMF_NS, thisPropertyPath.c_str(), VMF_NS, PROPERTY_SET, nullptr, kXMP_PropValueIsArray);
+    xmp->SetStructField(UMF_NS, thisPropertyPath.c_str(), UMF_NS, PROPERTY_SET, nullptr, kXMP_PropValueIsArray);
     umf_string thisPropertySetPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, thisPropertyPath.c_str(), VMF_NS, PROPERTY_SET, &thisPropertySetPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, thisPropertyPath.c_str(), UMF_NS, PROPERTY_SET, &thisPropertySetPath);
 
     for(auto metadata = property.begin(); metadata != property.end(); ++metadata)
     {
@@ -140,8 +140,8 @@ void XMPMetadataSource::saveMetadata(const shared_ptr<Metadata>& md, const umf_s
     auto it = idMap.find(md->getId());
     if (it == idMap.end())
     {
-        xmp->AppendArrayItem(VMF_NS, thisPropertySetPath.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, thisPropertySetPath.c_str(), kXMP_ArrayLastItem, &pathToMetadata);
+        xmp->AppendArrayItem(UMF_NS, thisPropertySetPath.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
+        SXMPUtils::ComposeArrayItemPath(UMF_NS, thisPropertySetPath.c_str(), kXMP_ArrayLastItem, &pathToMetadata);
     }
     else
     {
@@ -165,41 +165,41 @@ void XMPMetadataSource::saveField(const umf_string& fieldName, const Variant& _v
     std::string value = _value.toString();
     if(value.empty())
         value = " ";
-    xmp->AppendArrayItem(VMF_NS, fieldsPath.c_str(), kXMP_PropValueIsArray, value, kXMP_NoOptions);
+    xmp->AppendArrayItem(UMF_NS, fieldsPath.c_str(), kXMP_PropValueIsArray, value, kXMP_NoOptions);
 
     if (!fieldName.empty())
     {
         umf_string thisFieldPath;
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &thisFieldPath);
-        xmp->SetQualifier(VMF_NS, thisFieldPath.c_str(), VMF_NS, FIELD_NAME, fieldName.c_str(), kXMP_NoOptions);
+        SXMPUtils::ComposeArrayItemPath(UMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &thisFieldPath);
+        xmp->SetQualifier(UMF_NS, thisFieldPath.c_str(), UMF_NS, FIELD_NAME, fieldName.c_str(), kXMP_NoOptions);
     }
     umf_string encBoolPath;
-    SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encBoolPath);
+    SXMPUtils::ComposeArrayItemPath(UMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encBoolPath);
     if(isEncrypted)
     {
-        xmp->SetQualifier(VMF_NS, encBoolPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, "true", kXMP_NoOptions);
+        xmp->SetQualifier(UMF_NS, encBoolPath.c_str(), UMF_NS, FIELD_ENCRYPTED_BOOL, "true", kXMP_NoOptions);
     }
     else
     {
         umf_string tmpString;
-        if(xmp->GetQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &tmpString, NULL))
+        if(xmp->GetQualifier(UMF_NS, fieldsPath.c_str(), UMF_NS, FIELD_ENCRYPTED_BOOL, &tmpString, NULL))
         {
-            xmp->DeleteQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL);
+            xmp->DeleteQualifier(UMF_NS, fieldsPath.c_str(), UMF_NS, FIELD_ENCRYPTED_BOOL);
         }
     }
     umf_string encDataPath;
-    SXMPUtils::ComposeArrayItemPath(VMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encDataPath);
+    SXMPUtils::ComposeArrayItemPath(UMF_NS, fieldsPath.c_str(), kXMP_ArrayLastItem, &encDataPath);
     if(!encryptedData.empty())
     {
-        xmp->SetQualifier(VMF_NS, encDataPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA,
+        xmp->SetQualifier(UMF_NS, encDataPath.c_str(), UMF_NS, FIELD_ENCRYPTED_DATA,
                           encryptedData.c_str(), kXMP_NoOptions);
     }
     else
     {
         umf_string tmpString;
-        if(xmp->GetQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &tmpString, NULL))
+        if(xmp->GetQualifier(UMF_NS, fieldsPath.c_str(), UMF_NS, FIELD_ENCRYPTED_DATA, &tmpString, NULL))
         {
-            xmp->DeleteQualifier(VMF_NS, fieldsPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA);
+            xmp->DeleteQualifier(UMF_NS, fieldsPath.c_str(), UMF_NS, FIELD_ENCRYPTED_DATA);
         }
     }
 }
@@ -214,8 +214,8 @@ void XMPMetadataSource::loadSchema(const umf_string &schemaName, MetadataStream 
     }
 
     umf_string pathToProperties;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, schemaPath.c_str(), VMF_NS, SCHEMA_SET, &pathToProperties);
-    SXMPIterator propIterator(*xmp, VMF_NS, pathToProperties.c_str(), kXMP_IterJustChildren);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, schemaPath.c_str(), UMF_NS, SCHEMA_SET, &pathToProperties);
+    SXMPIterator propIterator(*xmp, UMF_NS, pathToProperties.c_str(), kXMP_IterJustChildren);
     umf_string currentPropertyPath;
     while(propIterator.Next(NULL, &currentPropertyPath))
     {
@@ -232,7 +232,7 @@ void XMPMetadataSource::loadProperty(const umf_string& schemaName, const umf_str
 
 void XMPMetadataSource::loadSchemaName(const umf_string &pathToSchema, umf_string& schemaName)
 {
-    if (!xmp->GetStructField(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_NAME, &schemaName, nullptr))
+    if (!xmp->GetStructField(UMF_NS, pathToSchema.c_str(), UMF_NS, SCHEMA_NAME, &schemaName, nullptr))
     {
         UMF_EXCEPTION(DataStorageException, "Broken schema by path " + pathToSchema);
     }
@@ -244,11 +244,11 @@ void XMPMetadataSource::loadPropertyByPath(const umf_string& pathToProperty, con
     umf_string metadataName;
     loadPropertyName(pathToProperty, metadataName);
     umf_string pathToMetadataSet;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, PROPERTY_SET, &pathToMetadataSet);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, PROPERTY_SET, &pathToMetadataSet);
 
     shared_ptr<MetadataDesc> description(schema->findMetadataDesc(metadataName));
 
-    SXMPIterator mIter(*xmp, VMF_NS, pathToMetadataSet.c_str(), kXMP_IterJustChildren);
+    SXMPIterator mIter(*xmp, UMF_NS, pathToMetadataSet.c_str(), kXMP_IterJustChildren);
     umf_string pathToCurrentMetadata;
     while(mIter.Next(nullptr, &pathToCurrentMetadata))
     {
@@ -303,11 +303,11 @@ void XMPMetadataSource::loadMetadata(const umf_string& pathToCurrentMetadata, co
         metadataAccessor->setUseEncryption(false);
     }
     umf_string fieldsPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToCurrentMetadata.c_str(), VMF_NS, METADATA_FIELDS, &fieldsPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToCurrentMetadata.c_str(), UMF_NS, METADATA_FIELDS, &fieldsPath);
 
     shared_ptr<MetadataSchema> thisSchemaDesc = stream.getSchema(description->getSchemaName());
     shared_ptr<MetadataDesc> thisPropertyDesc = thisSchemaDesc->findMetadataDesc(description->getMetadataName());
-    SXMPIterator fieldsIterator(*xmp, VMF_NS, fieldsPath.c_str(), kXMP_IterJustChildren);
+    SXMPIterator fieldsIterator(*xmp, UMF_NS, fieldsPath.c_str(), kXMP_IterJustChildren);
     umf_string currentFieldPath;
     while(fieldsIterator.Next(NULL, &currentFieldPath))
     {
@@ -319,8 +319,8 @@ void XMPMetadataSource::loadMetadata(const umf_string& pathToCurrentMetadata, co
 
     // Load refs only after adding to steam to stop recursive loading when there are circular references
     umf_string pathToRefs;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToCurrentMetadata.c_str(), VMF_NS, METADATA_REFERENCES, &pathToRefs);
-    SXMPIterator refsIterator(*xmp, VMF_NS, pathToRefs.c_str(), kXMP_IterJustChildren);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToCurrentMetadata.c_str(), UMF_NS, METADATA_REFERENCES, &pathToRefs);
+    SXMPIterator refsIterator(*xmp, UMF_NS, pathToRefs.c_str(), kXMP_IterJustChildren);
     umf_string currentRefPath;
     while(refsIterator.Next(NULL, &currentRefPath))
     {
@@ -331,7 +331,7 @@ void XMPMetadataSource::loadMetadata(const umf_string& pathToCurrentMetadata, co
 
 void XMPMetadataSource::loadPropertyName(const umf_string& pathToMetadata, umf_string& metadataName)
 {
-    if(!xmp->GetStructField(VMF_NS, pathToMetadata.c_str(), VMF_NS, PROPERTY_NAME, &metadataName, nullptr))
+    if(!xmp->GetStructField(UMF_NS, pathToMetadata.c_str(), UMF_NS, PROPERTY_NAME, &metadataName, nullptr))
     {
         UMF_EXCEPTION(DataStorageException, "Corrupted property by path " + pathToMetadata);
     }
@@ -340,13 +340,13 @@ void XMPMetadataSource::loadPropertyName(const umf_string& pathToMetadata, umf_s
 void XMPMetadataSource::loadField(const umf_string& fieldPath, const shared_ptr<Metadata>& md, const shared_ptr<MetadataDesc>& thisPropertyDesc)
 {
     umf_string rawValue;
-    if (!xmp->GetProperty(VMF_NS, fieldPath.c_str(), &rawValue, NULL))
+    if (!xmp->GetProperty(UMF_NS, fieldPath.c_str(), &rawValue, NULL))
     {
         UMF_EXCEPTION(DataStorageException, "Corrupted field by path " + fieldPath);
     }
 
     umf_string fieldName;
-    if (!xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_NAME, &fieldName, NULL))
+    if (!xmp->GetQualifier(UMF_NS, fieldPath.c_str(), UMF_NS, FIELD_NAME, &fieldName, NULL))
     {
         fieldName = "";
     }
@@ -359,11 +359,11 @@ void XMPMetadataSource::loadField(const umf_string& fieldPath, const shared_ptr<
 
     bool isEncrypted;
     umf_string encBool;
-    xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_BOOL, &encBool, NULL);
+    xmp->GetQualifier(UMF_NS, fieldPath.c_str(), UMF_NS, FIELD_ENCRYPTED_BOOL, &encBool, NULL);
     isEncrypted = (encBool=="true") ;
 
     umf_string encData;
-    xmp->GetQualifier(VMF_NS, fieldPath.c_str(), VMF_NS, FIELD_ENCRYPTED_DATA, &encData, NULL);
+    xmp->GetQualifier(UMF_NS, fieldPath.c_str(), UMF_NS, FIELD_ENCRYPTED_DATA, &encData, NULL);
     if(encData.empty() && isEncrypted)
     {
         UMF_EXCEPTION(DataStorageException, "No encrypted data provided in field");
@@ -390,12 +390,12 @@ void XMPMetadataSource::loadReference(const umf_string& thisRefPath, const share
     XMP_Int64 id;
     umf_string tmpPath;
     umf_string refName;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, thisRefPath.c_str(), VMF_NS, REF_NAME, &tmpPath);
-    if (!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &refName, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, thisRefPath.c_str(), UMF_NS, REF_NAME, &tmpPath);
+    if (!xmp->GetProperty(UMF_NS, tmpPath.c_str(), &refName, nullptr))
         refName = "";
     
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, thisRefPath.c_str(), VMF_NS, REF_ID, &tmpPath);
-    if (!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &id, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, thisRefPath.c_str(), UMF_NS, REF_ID, &tmpPath);
+    if (!xmp->GetProperty_Int64(UMF_NS, tmpPath.c_str(), &id, nullptr))
     {
         UMF_EXCEPTION(DataStorageException, "Broken reference by path" + thisRefPath);
     }
@@ -420,7 +420,7 @@ void XMPMetadataSource::loadReference(const umf_string& thisRefPath, const share
 
 umf_string XMPMetadataSource::findSchema(const umf_string& name)
 {
-    SXMPIterator it(*xmp, VMF_NS, VMF_GLOBAL_SCHEMAS_ARRAY, kXMP_IterJustChildren);
+    SXMPIterator it(*xmp, UMF_NS, UMF_GLOBAL_SCHEMAS_ARRAY, kXMP_IterJustChildren);
     umf_string currentSchemaPath;
     while(it.Next(nullptr, &currentSchemaPath))
     {
@@ -437,13 +437,13 @@ umf_string XMPMetadataSource::findSchema(const umf_string& name)
 umf_string XMPMetadataSource::findProperty(const umf_string& pathToSchema, const umf_string& name)
 {
     umf_string pathToSchemaSet;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_SET, &pathToSchemaSet);
-    SXMPIterator pIter(*xmp, VMF_NS, pathToSchemaSet.c_str(), kXMP_IterJustChildren);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToSchema.c_str(), UMF_NS, SCHEMA_SET, &pathToSchemaSet);
+    SXMPIterator pIter(*xmp, UMF_NS, pathToSchemaSet.c_str(), kXMP_IterJustChildren);
     umf_string currentPropertyPath;
     while(pIter.Next(nullptr, &currentPropertyPath))
     {
         umf_string currentPropertyName;
-        if (!xmp->GetStructField(VMF_NS, currentPropertyPath.c_str(), VMF_NS, PROPERTY_NAME, &currentPropertyName, 0))
+        if (!xmp->GetStructField(UMF_NS, currentPropertyPath.c_str(), UMF_NS, PROPERTY_NAME, &currentPropertyName, 0))
         {
             UMF_EXCEPTION(DataStorageException, "Broken property by path " + currentPropertyPath);
         }
@@ -462,7 +462,7 @@ void XMPMetadataSource::remove(const vector<IdType>& removedIds)
         auto property = idMap.find(*id);
         if (property != idMap.end())
         {
-            xmp->DeleteProperty(VMF_NS, property->second.path.c_str());
+            xmp->DeleteProperty(UMF_NS, property->second.path.c_str());
             idMap.erase(property);
         }
     }
@@ -470,13 +470,13 @@ void XMPMetadataSource::remove(const vector<IdType>& removedIds)
 
 void XMPMetadataSource::clear()
 {
-    xmp->DeleteProperty(VMF_NS, VMF_GLOBAL_SCHEMAS_ARRAY);
+    xmp->DeleteProperty(UMF_NS, UMF_GLOBAL_SCHEMAS_ARRAY);
 }
 
 void XMPMetadataSource::loadIds()
 {
     idMap.clear();
-    SXMPIterator sIter(*xmp, VMF_NS, VMF_GLOBAL_SCHEMAS_ARRAY, kXMP_IterJustChildren);
+    SXMPIterator sIter(*xmp, UMF_NS, UMF_GLOBAL_SCHEMAS_ARRAY, kXMP_IterJustChildren);
     umf_string currentSchemaPath;
     while (sIter.Next(nullptr, &currentSchemaPath))
     {
@@ -487,11 +487,11 @@ void XMPMetadataSource::loadIds()
 void XMPMetadataSource::loadIds(const umf::umf_string& pathToSchema)
 {
     umf_string pathToPropertiesArray;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToSchema.c_str(), VMF_NS, SCHEMA_SET, &pathToPropertiesArray);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToSchema.c_str(), UMF_NS, SCHEMA_SET, &pathToPropertiesArray);
     umf_string schemaName;
     loadSchemaName(pathToSchema, schemaName);
 
-    SXMPIterator pIter(*xmp, VMF_NS, pathToPropertiesArray.c_str(), kXMP_IterJustChildren);
+    SXMPIterator pIter(*xmp, UMF_NS, pathToPropertiesArray.c_str(), kXMP_IterJustChildren);
     umf_string pathToCurrentProperty;
     while (pIter.Next(nullptr, &pathToCurrentProperty))
     {
@@ -499,8 +499,8 @@ void XMPMetadataSource::loadIds(const umf::umf_string& pathToSchema)
         loadPropertyName(pathToCurrentProperty, metadataName);
 
         umf_string pathToCurrentMetadataSet;
-        SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToCurrentProperty.c_str(), VMF_NS, PROPERTY_SET, &pathToCurrentMetadataSet);
-        SXMPIterator mIter(*xmp, VMF_NS, pathToCurrentMetadataSet.c_str(), kXMP_IterJustChildren);
+        SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToCurrentProperty.c_str(), UMF_NS, PROPERTY_SET, &pathToCurrentMetadataSet);
+        SXMPIterator mIter(*xmp, UMF_NS, pathToCurrentMetadataSet.c_str(), kXMP_IterJustChildren);
         umf_string pathToCurrentMetadata;
         while (mIter.Next(nullptr, &pathToCurrentMetadata))
         {
@@ -518,9 +518,9 @@ void XMPMetadataSource::loadIds(const umf::umf_string& pathToSchema)
 void XMPMetadataSource::loadMetadataId(const umf_string& pathToMetadata, IdType& id)
 {
     umf_string pathToId;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_ID, &pathToId);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_ID, &pathToId);
     XMP_Int64 idValue;
-    if(!xmp->GetProperty_Int64(VMF_NS, pathToId.c_str(), &idValue, 0))
+    if(!xmp->GetProperty_Int64(UMF_NS, pathToId.c_str(), &idValue, 0))
     {
         UMF_EXCEPTION(DataStorageException, "Broken property by path " + pathToMetadata);
     }
@@ -530,16 +530,16 @@ void XMPMetadataSource::loadMetadataId(const umf_string& pathToMetadata, IdType&
 void XMPMetadataSource::saveMetadataId(const umf_string& pathToMetadata, const IdType& id)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_ID, &tmpPath);
-    xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), id);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_ID, &tmpPath);
+    xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), id);
 }
 
 void XMPMetadataSource::loadMetadataFrameIndex(const umf_string& pathToMetadata, long long& frameIndex)
 {
     XMP_Int64 frameIndexValue;
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_FRAME_INDEX, &tmpPath);
-    if(!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &frameIndexValue, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_FRAME_INDEX, &tmpPath);
+    if(!xmp->GetProperty_Int64(UMF_NS, tmpPath.c_str(), &frameIndexValue, nullptr))
     {
         frameIndexValue = Metadata::UNDEFINED_FRAME_INDEX;
     }
@@ -553,11 +553,11 @@ void XMPMetadataSource::loadMetadataFrameIndex(const umf_string& pathToMetadata,
 void XMPMetadataSource::saveMetadataFrameIndex(const umf_string& pathToProperty, const long long& frameIndex)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_FRAME_INDEX, &tmpPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_FRAME_INDEX, &tmpPath);
     if (frameIndex >= 0)
-        xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), frameIndex);
+        xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), frameIndex);
     else if (frameIndex == Metadata::UNDEFINED_FRAME_INDEX)
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->DeleteProperty(UMF_NS, tmpPath.c_str());
     else
         UMF_EXCEPTION(DataStorageException, "Can't save metadata frame index. Invalid frame index value");
 }
@@ -566,8 +566,8 @@ void XMPMetadataSource::loadMetadataNumOfFrames(const umf_string& pathToProperty
 {
     XMP_Int64 numOfFrames;
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_NUM_OF_FRAMES, &tmpPath);
-    if (!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &numOfFrames, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_NUM_OF_FRAMES, &tmpPath);
+    if (!xmp->GetProperty_Int64(UMF_NS, tmpPath.c_str(), &numOfFrames, nullptr))
     {
         numOfFrames = Metadata::UNDEFINED_FRAMES_NUMBER;
     }
@@ -582,11 +582,11 @@ void XMPMetadataSource::loadMetadataNumOfFrames(const umf_string& pathToProperty
 void XMPMetadataSource::saveMetadataNumOfFrames(const umf_string& pathToProperty, const long long& numOfFrames)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_NUM_OF_FRAMES, &tmpPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_NUM_OF_FRAMES, &tmpPath);
     if (numOfFrames > 0)
-        xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), numOfFrames);
+        xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), numOfFrames);
     else if (numOfFrames == Metadata::UNDEFINED_FRAMES_NUMBER)
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->DeleteProperty(UMF_NS, tmpPath.c_str());
     else
         UMF_EXCEPTION(DataStorageException, "Can't save metadata number of frames. Invalid number of frames value");
 }
@@ -595,8 +595,8 @@ void XMPMetadataSource::loadMetadataTime(const umf_string& pathToProperty, long 
 {
     XMP_Int64 timestamp;
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_TIMESTAMP, &tmpPath);
-    if (!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &timestamp, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_TIMESTAMP, &tmpPath);
+    if (!xmp->GetProperty_Int64(UMF_NS, tmpPath.c_str(), &timestamp, nullptr))
     {
         timestamp = Metadata::UNDEFINED_TIMESTAMP;
     }
@@ -610,11 +610,11 @@ void XMPMetadataSource::loadMetadataTime(const umf_string& pathToProperty, long 
 void XMPMetadataSource::saveMetadataTime(const umf_string& pathToProperty, const long long& time)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_TIMESTAMP, &tmpPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_TIMESTAMP, &tmpPath);
     if (time >= 0)
-        xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), time);
+        xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), time);
     else if (time == Metadata::UNDEFINED_TIMESTAMP)
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->DeleteProperty(UMF_NS, tmpPath.c_str());
     else
         UMF_EXCEPTION(DataStorageException, "Can't save metadata timestamp. Invalid timestamp value");
 }
@@ -624,32 +624,32 @@ void XMPMetadataSource::saveMetadataEncrypted(const umf_string &pathToProperty, 
                                               const umf_string &encryptedData)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS,
                                       METADATA_ENCRYPTED_DATA, &tmpPath);
     if(encryptedData.length() > 0)
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), encryptedData.c_str());
+        xmp->SetProperty(UMF_NS, tmpPath.c_str(), encryptedData.c_str());
     }
     else
     {
         umf_string tmpString;
-        if(xmp->GetProperty(VMF_NS, tmpPath.c_str(), &tmpString, nullptr))
+        if(xmp->GetProperty(UMF_NS, tmpPath.c_str(), &tmpString, nullptr))
         {
-            xmp->DeleteStructField(VMF_NS, tmpPath.c_str(), VMF_NS, METADATA_ENCRYPTED_DATA);
+            xmp->DeleteStructField(UMF_NS, tmpPath.c_str(), UMF_NS, METADATA_ENCRYPTED_DATA);
         }
     }
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS,
                                       METADATA_ENCRYPTED_BOOL, &tmpPath);
     if(isEncrypted)
     {
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), "true");
+        xmp->SetProperty(UMF_NS, tmpPath.c_str(), "true");
     }
     else
     {
         umf_string tmpString;
-        if(xmp->GetProperty(VMF_NS, tmpPath.c_str(), &tmpString, nullptr))
+        if(xmp->GetProperty(UMF_NS, tmpPath.c_str(), &tmpString, nullptr))
         {
-            xmp->DeleteStructField(VMF_NS, tmpPath.c_str(), VMF_NS, METADATA_ENCRYPTED_BOOL);
+            xmp->DeleteStructField(UMF_NS, tmpPath.c_str(), UMF_NS, METADATA_ENCRYPTED_BOOL);
         }
     }
 }
@@ -659,16 +659,16 @@ void XMPMetadataSource::loadMetadataEncrypted(const umf_string &pathToProperty, 
                                               umf_string &encryptedData)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS,
                                       METADATA_ENCRYPTED_DATA, &tmpPath);
-    if(!xmp->GetProperty(VMF_NS, tmpPath.c_str(), &encryptedData, nullptr))
+    if(!xmp->GetProperty(UMF_NS, tmpPath.c_str(), &encryptedData, nullptr))
     {
         encryptedData = "";
     }
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS,
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS,
                                       METADATA_ENCRYPTED_BOOL, &tmpPath);
     umf_string textBool;
-    isEncrypted = xmp->GetProperty(VMF_NS, tmpPath.c_str(), &textBool, nullptr);
+    isEncrypted = xmp->GetProperty(UMF_NS, tmpPath.c_str(), &textBool, nullptr);
     isEncrypted = isEncrypted && textBool == "true";
     if(isEncrypted && encryptedData.empty())
     {
@@ -681,8 +681,8 @@ void XMPMetadataSource::loadMetadataDuration(const umf_string& pathToProperty, l
 {
     XMP_Int64 duration;
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_DURATION, &tmpPath);
-    if (!xmp->GetProperty_Int64(VMF_NS, tmpPath.c_str(), &duration, nullptr))
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_DURATION, &tmpPath);
+    if (!xmp->GetProperty_Int64(UMF_NS, tmpPath.c_str(), &duration, nullptr))
     {
         duration = Metadata::UNDEFINED_DURATION;
     }
@@ -696,11 +696,11 @@ void XMPMetadataSource::loadMetadataDuration(const umf_string& pathToProperty, l
 void XMPMetadataSource::saveMetadataDuration(const umf_string& pathToProperty, const long long& duration)
 {
     umf_string tmpPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToProperty.c_str(), VMF_NS, METADATA_DURATION, &tmpPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToProperty.c_str(), UMF_NS, METADATA_DURATION, &tmpPath);
     if (duration > 0)
-        xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), duration);
+        xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), duration);
     else if (duration == Metadata::UNDEFINED_DURATION)
-        xmp->DeleteProperty(VMF_NS, tmpPath.c_str());
+        xmp->DeleteProperty(UMF_NS, tmpPath.c_str());
     else
         UMF_EXCEPTION(DataStorageException, "Can't save metadata duration. Invalid duration value");
 
@@ -708,14 +708,14 @@ void XMPMetadataSource::saveMetadataDuration(const umf_string& pathToProperty, c
 
 void XMPMetadataSource::savePropertyName(const umf_string& pathToProperty, const umf_string& name)
 {
-    xmp->SetStructField(VMF_NS, pathToProperty.c_str(), VMF_NS, PROPERTY_NAME, name.c_str());
+    xmp->SetStructField(UMF_NS, pathToProperty.c_str(), UMF_NS, PROPERTY_NAME, name.c_str());
 }
 
 void XMPMetadataSource::saveMetadataFields(const umf_string& pathToMetadata, const shared_ptr<Metadata>& md)
 {
-    xmp->DeleteStructField(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_FIELDS);
+    xmp->DeleteStructField(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_FIELDS);
     umf_string fieldsPath;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_FIELDS, &fieldsPath);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_FIELDS, &fieldsPath);
     vector<umf_string> fieldNames = md->getFieldNames();
     if (fieldNames.empty() && !md->empty())
     {
@@ -741,26 +741,26 @@ void XMPMetadataSource::saveMetadataReferences(const umf_string& pathToMetadata,
     {
         return;
     }
-    xmp->DeleteStructField(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_REFERENCES);
+    xmp->DeleteStructField(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_REFERENCES);
     umf_string pathToRefs;
-    SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_REFERENCES, &pathToRefs);
-    xmp->SetStructField(VMF_NS, pathToMetadata.c_str(), VMF_NS, METADATA_REFERENCES, nullptr, kXMP_PropValueIsArray);
+    SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_REFERENCES, &pathToRefs);
+    xmp->SetStructField(UMF_NS, pathToMetadata.c_str(), UMF_NS, METADATA_REFERENCES, nullptr, kXMP_PropValueIsArray);
     for(auto ref = refs.begin(); ref != refs.end(); ++ref)
     {
         auto spMetadata = ref->getReferenceMetadata().lock();
         if (spMetadata == NULL)
             UMF_EXCEPTION(NullPointerException, "Trying to save nullptr reference in property by path " + pathToMetadata);
 
-        xmp->AppendArrayItem(VMF_NS, pathToRefs.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
+        xmp->AppendArrayItem(UMF_NS, pathToRefs.c_str(), kXMP_PropValueIsArray, nullptr, kXMP_PropValueIsStruct);
         umf_string pathToThisRef;
-        SXMPUtils::ComposeArrayItemPath(VMF_NS, pathToRefs.c_str(), kXMP_ArrayLastItem, &pathToThisRef);
+        SXMPUtils::ComposeArrayItemPath(UMF_NS, pathToRefs.c_str(), kXMP_ArrayLastItem, &pathToThisRef);
 
         umf_string tmpPath;
 
-        SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToThisRef.c_str(), VMF_NS, REF_NAME, &tmpPath);
-        xmp->SetProperty(VMF_NS, tmpPath.c_str(), ref->getReferenceDescription()->name.c_str());
+        SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToThisRef.c_str(), UMF_NS, REF_NAME, &tmpPath);
+        xmp->SetProperty(UMF_NS, tmpPath.c_str(), ref->getReferenceDescription()->name.c_str());
 
-        SXMPUtils::ComposeStructFieldPath(VMF_NS, pathToThisRef.c_str(), VMF_NS, REF_ID, &tmpPath);
-        xmp->SetProperty_Int64(VMF_NS, tmpPath.c_str(), spMetadata->getId());
+        SXMPUtils::ComposeStructFieldPath(UMF_NS, pathToThisRef.c_str(), UMF_NS, REF_ID, &tmpPath);
+        xmp->SetProperty_Int64(UMF_NS, tmpPath.c_str(), spMetadata->getId());
     }
 }

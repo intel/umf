@@ -12,8 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
 
-#ifndef __VMF_DATASOURCE_HPP__
-#define __VMF_DATASOURCE_HPP__
+#ifndef __UMF_DATASOURCE_HPP__
+#define __UMF_DATASOURCE_HPP__
 
 #include "config.hpp"
 
@@ -30,4 +30,4 @@ void UMF_EXPORT terminate();
 
 } // namespace umf
 
-#endif /* __VMF_DATASOURCE_HPP__ */
+#endif /* __UMF_DATASOURCE_HPP__ */

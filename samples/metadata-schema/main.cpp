@@ -19,7 +19,7 @@
 * This sample shows how to use custom schema in xml file.
 */
 
-#include <vmf/vmf.hpp>
+#include <umf/umf.hpp>
 #include <iostream>
 #include <fstream>
 #include <ctime>

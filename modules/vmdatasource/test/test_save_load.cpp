@@ -132,7 +132,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     const umf::umf_string atom(TEST_SCHEMA_NAME);\
     const umf::umf_string atom(TEST_PROPERTY_NAME);\
     const umf::umf_string atom(TEST_FIELD_NAME);\
-    const umf::vmf_##Type TEST_VALUE(testValue);\
+    const umf::umf_##Type TEST_VALUE(testValue);\
     \
     std::shared_ptr<umf::MetadataSchema> schema(new umf::MetadataSchema(TEST_SCHEMA_NAME));\
     std::vector<umf::FieldDesc> fields;\
@@ -163,7 +163,7 @@ TEST(TestSaveLoadMetadataTyped, TwoStrings)
     ASSERT_EQ(1u, md->getFieldNames().size());\
     umf::Variant value = md->getFieldValue(TEST_FIELD_NAME);\
     ASSERT_EQ(umf::Variant::type_##Type, value.getType());\
-    ASSERT_EQ(TEST_VALUE, (umf::vmf_##Type) value);\
+    ASSERT_EQ(TEST_VALUE, (umf::umf_##Type) value);\
 }\
 \
 }

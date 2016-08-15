@@ -83,7 +83,7 @@ int main(int argc, char **argv)
         auto stringMetadata = stream.queryByName(STRING_METADATA);
         auto savedMetadata = stringMetadata.at(0);
         std::string savedString = savedMetadata->at(0);
-        QMessageBox::information(NULL, "VMF Demo Unicode", QString::fromUtf8(savedString.c_str()));
+        QMessageBox::information(NULL, "UMF Demo Unicode", QString::fromUtf8(savedString.c_str()));
     }
 
     umf::terminate();

@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_DEFAULT_ENCRYPTOR_HPP
-#define VMF_DEFAULT_ENCRYPTOR_HPP
+#ifndef UMF_DEFAULT_ENCRYPTOR_HPP
+#define UMF_DEFAULT_ENCRYPTOR_HPP
 
 #include "encryptor.hpp"
 
@@ -75,4 +75,4 @@ private:
 }
 
 
-#endif //VMF_DEFAULT_ENCRYPTOR_HPP
+#endif //UMF_DEFAULT_ENCRYPTOR_HPP

@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 
 #include <memory>
-#include <vmf/vmf.hpp>
+#include <umf/umf.hpp>
 #include "utils.hpp"
 
 #if TARGET_OS_IPHONE

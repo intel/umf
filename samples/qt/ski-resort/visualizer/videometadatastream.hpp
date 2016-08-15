@@ -1,6 +1,6 @@
 // Copyright (C) 2013, Intel Corporation, all rights reserved.
-#ifndef __VMF_VIDEOMETADATASTREAM_HPP__
-#define __VMF_VIDEOMETADATASTREAM_HPP__
+#ifndef __UMF_VIDEOMETADATASTREAM_HPP__
+#define __UMF_VIDEOMETADATASTREAM_HPP__
 
 #include <QString>
 #include <QMutex>

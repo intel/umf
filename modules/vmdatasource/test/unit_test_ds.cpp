@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         workingPath = ".";
     }
 
-    std::cout << "VMF build info:\n" << umf::getBuildInfo() << std::endl;
+    std::cout << "UMF build info:\n" << umf::getBuildInfo() << std::endl;
     ::testing::InitGoogleTest(&argc, argv);
     umf::Log::setVerbosityLevel(umf::LOG_NO_MESSAGE);
     return RUN_ALL_TESTS();

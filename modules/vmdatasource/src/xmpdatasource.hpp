@@ -33,7 +33,7 @@
 #include <XMP.incl_cpp>
 #include <XMP.hpp>
 
-#define VMF_NS "http://ns.intel.com/umf/2.0"
+#define UMF_NS "http://ns.intel.com/umf/2.0"
 
 namespace umf
 {

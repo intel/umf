@@ -19,7 +19,7 @@
 * This sample shows how to use predefined STD schema and built-in predefined metadata fields.
 */
 
-#include <vmf/vmf.hpp>
+#include <umf/umf.hpp>
 #include <iostream>
 #include <fstream>
 #include <ctime>
