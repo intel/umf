@@ -1,10 +1,3 @@
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
-import com.intel.vmf.Variant;
-import com.intel.vmf.MetadataSchema;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -12,6 +5,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Log;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.MetadataSchema;
+import com.intel.umf.ReferenceDesc;
+import com.intel.umf.Variant;
 
 
 public class VmfMetadataDescTest 
@@ -118,7 +118,7 @@ public class VmfMetadataDescTest
     @Test
     public void testDeclareCustomReferenceThrown()
     {
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: This reference name already exist!");
         mdDesc1.declareCustomReference ("friend", true);
     }
@@ -126,7 +126,7 @@ public class VmfMetadataDescTest
     @Test
     public void testCreateThrown()
     {
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid metadata descriprion type.");
         @SuppressWarnings("unused")
         MetadataDesc mdDesc = new MetadataDesc ("name", Variant.type_empty);

@@ -123,7 +123,7 @@ std::string FormatCompressed::compress(const std::string& input)
 
 std::string FormatCompressed::decompress(const std::string& input)
 {
-    //parse it as usual serialized VMF data, search for specific schemas
+    //parse it as usual serialized UMF data, search for specific schemas
     std::vector<std::shared_ptr<MetadataSchema>> schemas;
     std::vector<MetadataInternal> metadata;
     std::vector<std::shared_ptr<MetadataStream::VideoSegment>> segments;

@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef __VMF_DATASOURCEFACTORY_HPP__
-#define __VMF_DATASOURCEFACTORY_HPP__
+#ifndef __UMF_DATASOURCEFACTORY_HPP__
+#define __UMF_DATASOURCEFACTORY_HPP__
 
 /*!
  * \file datasourcefactory.hpp
@@ -44,4 +44,4 @@ private:
 
 } // namespace umf
 
-#endif // __VMF_DATASOURCEFACTORY_HPP__
+#endif // __UMF_DATASOURCEFACTORY_HPP__

@@ -276,15 +276,15 @@ std::string FormatJSON::store(
     const AttribMap& attribs
     )
 {
-    JSONNode vmfRootNode(JSON_NODE);
-    vmfRootNode.set_name(TAG_UMF);
+    JSONNode umfRootNode(JSON_NODE);
+    umfRootNode.set_name(TAG_UMF);
 
     // attribs
     JSONNode attribsArrayNode(JSON_NODE);
     attribsArrayNode.set_name(TAG_ATTRIBS_ARRAY);
     for (const auto& a : attribs)
         attribsArrayNode.push_back(JSONNode(a.first, a.second));
-    vmfRootNode.push_back(attribsArrayNode);
+    umfRootNode.push_back(attribsArrayNode);
 
     // stats
     if(!stats.empty())
@@ -297,7 +297,7 @@ std::string FormatJSON::store(
             add(statNode, s);
             statsArrayNode.push_back(statNode);
         }
-        vmfRootNode.push_back(statsArrayNode);
+        umfRootNode.push_back(statsArrayNode);
     }
 
     // segments
@@ -312,7 +312,7 @@ std::string FormatJSON::store(
             add(segmentNode, spSegment);
             segmentsArrayNode.push_back(segmentNode);
         }
-        vmfRootNode.push_back(segmentsArrayNode);
+        umfRootNode.push_back(segmentsArrayNode);
     }
 
     // schemas
@@ -348,7 +348,7 @@ std::string FormatJSON::store(
             add(schemaNode, spSchema);
             schemasArrayNode.push_back(schemaNode);
         }
-        vmfRootNode.push_back(schemasArrayNode);
+        umfRootNode.push_back(schemasArrayNode);
     }
 
     // set
@@ -363,11 +363,11 @@ std::string FormatJSON::store(
             add(metadataNode, spMetadata);
             metadataArrayNode.push_back(metadataNode);
         }
-        vmfRootNode.push_back(metadataArrayNode);
+        umfRootNode.push_back(metadataArrayNode);
     }
 
     JSONNode root(JSON_NODE);
-    root.push_back(vmfRootNode);
+    root.push_back(umfRootNode);
 
     std::string formatted = root.write_formatted();
     return formatted;
@@ -746,9 +746,9 @@ Format::ParseCounters FormatJSON::parse(
     }
     if (root.size() != 1) UMF_EXCEPTION(IncorrectParamException, "More than one JSON root");
 
-    JSONNode vmfNode = root[0];
-    if (vmfNode.name() != TAG_UMF) UMF_LOG_ERROR("Unexpected root JSON element: " + vmfNode.name());
-    for (const auto& node : vmfNode)
+    JSONNode umfNode = root[0];
+    if (umfNode.name() != TAG_UMF) UMF_LOG_ERROR("Unexpected root JSON element: " + umfNode.name());
+    for (const auto& node : umfNode)
     {
         if (node.name() == TAG_ATTRIBS_ARRAY)
         {

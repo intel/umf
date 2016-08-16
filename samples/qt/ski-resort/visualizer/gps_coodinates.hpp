@@ -1,6 +1,6 @@
 // Copyright (C) 2013, Intel Corporation, all rights reserved.
-#ifndef __VMF_SAMPLES_GPS_COODINATES_HPP__
-#define __VMF_SAMPLES_GPS_COODINATES_HPP__
+#ifndef __UMF_SAMPLES_GPS_COODINATES_HPP__
+#define __UMF_SAMPLES_GPS_COODINATES_HPP__
 
 #include <utility>
 

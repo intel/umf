@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_MY_ENCRYPTOR_HPP
-#define VMF_MY_ENCRYPTOR_HPP
+#ifndef UMF_MY_ENCRYPTOR_HPP
+#define UMF_MY_ENCRYPTOR_HPP
 
 #include "umf/umf.hpp"
 
@@ -43,4 +43,4 @@ private:
 };
 
 
-#endif //VMF_MY_ENCRYPTOR_HPP
+#endif //UMF_MY_ENCRYPTOR_HPP

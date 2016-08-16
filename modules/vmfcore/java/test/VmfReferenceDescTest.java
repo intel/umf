@@ -1,10 +1,11 @@
-import com.intel.vmf.Log;
-import com.intel.vmf.ReferenceDesc;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.intel.umf.Log;
+import com.intel.umf.ReferenceDesc;
 
 public class VmfReferenceDescTest 
 {

@@ -1,14 +1,3 @@
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.FieldValue;
-import com.intel.vmf.Log;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Variant;
-import com.intel.vmf.MetadataSchema;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -16,6 +5,17 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.umf.FieldDesc;
+import com.intel.umf.FieldValue;
+import com.intel.umf.Log;
+import com.intel.umf.Metadata;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.MetadataSchema;
+import com.intel.umf.MetadataSet;
+import com.intel.umf.MetadataStream;
+import com.intel.umf.ReferenceDesc;
+import com.intel.umf.Variant;
 
 public class VmfMetadataSetTest
 {
@@ -197,7 +197,7 @@ public class VmfMetadataSetTest
     	set.erase(1);
     	assertEquals(1, set.getSize());
 
-    	thrown.expect(com.intel.vmf.Exception.class);
+    	thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Item index is out of range: 5");
         set.erase(5);
     }

@@ -1,11 +1,3 @@
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
-import com.intel.vmf.Variant;
-import com.intel.vmf.MetadataSchema;
-import com.intel.vmf.ReferenceDesc;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -13,6 +5,14 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Log;
+import com.intel.umf.Metadata;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.MetadataSchema;
+import com.intel.umf.ReferenceDesc;
+import com.intel.umf.Variant;
 
 public class VmfMetadataSchemaTest 
 {
@@ -100,7 +100,7 @@ public class VmfMetadataSchemaTest
     public void testAddThrow()
     {
         schema.add(mdDesc1);
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Metadata with same name already exists!");
         schema.add(mdDesc1);
     }
@@ -108,7 +108,7 @@ public class VmfMetadataSchemaTest
     @Test
     public void testCreateSchemaThrow()
     {
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Schema name can't be empty.");
         @SuppressWarnings("unused")
         MetadataSchema newSchema = new MetadataSchema("");

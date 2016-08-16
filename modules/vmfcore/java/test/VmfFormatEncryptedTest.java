@@ -8,24 +8,24 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intel.vmf.Compressor;
-import com.intel.vmf.Encryptor;
-import com.intel.vmf.EncryptorDefault;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Format;
-import com.intel.vmf.FormatCompressed;
-import com.intel.vmf.FormatEncrypted;
-import com.intel.vmf.FormatJSON;
-import com.intel.vmf.FormatXML;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.MetadataSchema;
-import com.intel.vmf.MetadataSet;
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Stat;
-import com.intel.vmf.StatField;
-import com.intel.vmf.Variant;
+import com.intel.umf.Compressor;
+import com.intel.umf.Encryptor;
+import com.intel.umf.EncryptorDefault;
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Format;
+import com.intel.umf.FormatCompressed;
+import com.intel.umf.FormatEncrypted;
+import com.intel.umf.FormatJSON;
+import com.intel.umf.FormatXML;
+import com.intel.umf.Metadata;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.MetadataSchema;
+import com.intel.umf.MetadataSet;
+import com.intel.umf.MetadataStream;
+import com.intel.umf.ReferenceDesc;
+import com.intel.umf.Stat;
+import com.intel.umf.StatField;
+import com.intel.umf.Variant;
 
 
 public class VmfFormatEncryptedTest {

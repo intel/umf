@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     // Copy test video file to another location.
     copyFile(VIDEO_FILE, "global_test.avi");
 
-    cout << "VMF sample: read/write GPS location and time" << endl << endl;
+    cout << "UMF sample: read/write GPS location and time" << endl << endl;
 
     const string FILE_NAME = "global_test.avi";
     const string META_SOURCE_NAME = "test-id";

@@ -3,14 +3,14 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.MetadataSchema;
-import com.intel.vmf.MetadataStream;
-import com.intel.vmf.Stat;
-import com.intel.vmf.StatField;
-import com.intel.vmf.Variant;
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Metadata;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.MetadataSchema;
+import com.intel.umf.MetadataStream;
+import com.intel.umf.Stat;
+import com.intel.umf.StatField;
+import com.intel.umf.Variant;
 
 
 public class VmfStatTest {

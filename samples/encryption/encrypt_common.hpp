@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_ENCRYPT_COMMON_HPP
-#define VMF_ENCRYPT_COMMON_HPP
+#ifndef UMF_ENCRYPT_COMMON_HPP
+#define UMF_ENCRYPT_COMMON_HPP
 
 #include "umf/umf.hpp"
 
@@ -37,4 +37,4 @@ void readAndDumpEncryptedMetadata(const umf::umf_string& videoFile,
 int encrypt_builtin(const std::string& videoFile, EncryptionScope scope);
 int encrypt_custom(const std::string& videoFile, EncryptionScope scope);
 
-#endif //VMF_ENCRYPT_COMMON_HPP
+#endif //UMF_ENCRYPT_COMMON_HPP

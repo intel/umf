@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
         umf::MetadataStream stream;
         if (!stream.open(dstFileName, umf::MetadataStream::Update))
-            throw umf::Exception("Can't open file by VMF stream");
+            throw umf::Exception("Can't open file by UMF stream");
 
         string originalFileChecksum = stream.computeChecksum();
 

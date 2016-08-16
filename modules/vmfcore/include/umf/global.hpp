@@ -107,7 +107,7 @@ inline double from_string(const std::string& str) {
 }
 
 /*!
-* \brief returns VMF build info string
+* \brief returns UMF build info string
 */
 UMF_EXPORT std::string getBuildInfo();
 
@@ -160,7 +160,7 @@ template<typename P> struct select2nd
 #endif
 /*!
 * \brief Initialize Video Metadata Framework
-* \details This function should be called before any call of VMF functions
+* \details This function should be called before any call of UMF functions
 */
 UMF_EXPORT extern void initialize();
 
@@ -169,7 +169,7 @@ UMF_EXPORT extern void initialize();
 * \throw InternalErrorException throws if inetrnal error occured
 * \throw DataStorageException throws if error occured if meta data provider
 * \details This function should be called when program stop works with
-* VMF.
+* UMF.
 */
 UMF_EXPORT extern void terminate();
 #ifdef _MSC_VER

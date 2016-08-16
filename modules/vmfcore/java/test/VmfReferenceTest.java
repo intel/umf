@@ -1,15 +1,16 @@
-import com.intel.vmf.Metadata;
-import com.intel.vmf.MetadataDesc;
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
-import com.intel.vmf.ReferenceDesc;
-import com.intel.vmf.Reference;
-import com.intel.vmf.Variant;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Log;
+import com.intel.umf.Metadata;
+import com.intel.umf.MetadataDesc;
+import com.intel.umf.Reference;
+import com.intel.umf.ReferenceDesc;
+import com.intel.umf.Variant;
 
 public class VmfReferenceTest 
 {

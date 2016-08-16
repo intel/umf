@@ -61,7 +61,7 @@ private:
     umf_string id;
 };
 
-} //vmf
+} //umf
 
 #endif //_FAKE_COMPRESSOR_HPP
 

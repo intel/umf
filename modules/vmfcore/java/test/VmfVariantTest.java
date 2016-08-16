@@ -1,9 +1,3 @@
-import com.intel.vmf.Log;
-import com.intel.vmf.Variant;
-import com.intel.vmf.vmf_vec2d;
-import com.intel.vmf.vmf_vec3d;
-import com.intel.vmf.vmf_vec4d;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -11,6 +5,12 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.intel.umf.Log;
+import com.intel.umf.Variant;
+import com.intel.umf.umf_vec2d;
+import com.intel.umf.umf_vec3d;
+import com.intel.umf.umf_vec4d;
 
 public class VmfVariantTest 
 {
@@ -40,9 +40,9 @@ public class VmfVariantTest
         
         String str = "ok";
         
-        vmf_vec2d vec2d = new vmf_vec2d ();
-        vmf_vec3d vec3d = new vmf_vec3d ();
-        vmf_vec4d vec4d = new vmf_vec4d ();
+        umf_vec2d vec2d = new umf_vec2d ();
+        umf_vec3d vec3d = new umf_vec3d ();
+        umf_vec4d vec4d = new umf_vec4d ();
         
         assertEquals(Variant.type_empty, var1.getType());
         
@@ -108,18 +108,18 @@ public class VmfVariantTest
         var1.setTo(iArray);
         assertEquals(Variant.type_integer_vector, var1.getType());
         
-        vmf_vec2d vec2dArray[] = new vmf_vec2d [2];
-        vmf_vec3d vec3dArray[] = new vmf_vec3d [2];
-        vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
+        umf_vec2d vec2dArray[] = new umf_vec2d [2];
+        umf_vec3d vec3dArray[] = new umf_vec3d [2];
+        umf_vec4d vec4dArray[] = new umf_vec4d [2];
         
-        vec2dArray[0] = new vmf_vec2d();
-        vec2dArray[1] = new vmf_vec2d();
+        vec2dArray[0] = new umf_vec2d();
+        vec2dArray[1] = new umf_vec2d();
         
-        vec3dArray[0] = new vmf_vec3d();
-        vec3dArray[1] = new vmf_vec3d();
+        vec3dArray[0] = new umf_vec3d();
+        vec3dArray[1] = new umf_vec3d();
         
-        vec4dArray[0] = new vmf_vec4d();
-        vec4dArray[1] = new vmf_vec4d();
+        vec4dArray[0] = new umf_vec4d();
+        vec4dArray[1] = new umf_vec4d();
         
         var1.setTo(vec2dArray);
         assertEquals(Variant.type_vec2d_vector , var1.getType());
@@ -198,7 +198,7 @@ public class VmfVariantTest
     @Test
     public void testDecodeThrow ()
     {
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid base64 string: more than 2 trailing '=' symbols");
         Variant.base64Decode("trampampampam===");
     }
@@ -206,12 +206,12 @@ public class VmfVariantTest
     @Test
     public void testFromStringThrow ()
     {
-        vmf_vec4d vec4dArray[] = new vmf_vec4d [2];
-        vec4dArray[0] = new vmf_vec4d();
-        vec4dArray[1] = new vmf_vec4d();
+        umf_vec4d vec4dArray[] = new umf_vec4d [2];
+        vec4dArray[0] = new umf_vec4d();
+        vec4dArray[1] = new umf_vec4d();
         var1.setTo(vec4dArray);
         
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Invalid array item separator");
         var1.fromString(Variant.type_vec4d_vector, "0 0 0 0 : 0 0 0 0");
     }
@@ -221,7 +221,7 @@ public class VmfVariantTest
     {
         long longValue = 555555;
         var1.setTo(longValue);
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Non-existent type.");
         var1.convertTo (14);
     }
@@ -231,7 +231,7 @@ public class VmfVariantTest
     {
         long longValue = 555555;
         var1.setTo(longValue);
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Cannot convert value to the target type!");
         var1.convertTo (Variant.type_string);
     }

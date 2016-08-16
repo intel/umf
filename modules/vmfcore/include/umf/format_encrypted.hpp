@@ -44,7 +44,7 @@ public:
      * \param format Shared pointer to instance of Format
      * \param _encryptor Shared pointer to instance of Encryptor class
      * \param _ignoreUnknownEncryptor Flag specifying what to do with unknown encryptor:
-     * throw an exception (false) or pass encrypted data as VMF metadata
+     * throw an exception (false) or pass encrypted data as UMF metadata
      */
     FormatEncrypted(std::shared_ptr<Format> format,
                     std::shared_ptr<Encryptor> _encryptor,

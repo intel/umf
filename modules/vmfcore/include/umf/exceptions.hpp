@@ -20,7 +20,7 @@
 
 /*!
 * \file exceptions.hpp
-* \brief VMF cusrom exceptions
+* \brief UMF cusrom exceptions
 * \details Contains exception classes for several errors.
 */
 
@@ -30,13 +30,13 @@
 
 /*!
 * \def UMF_EXCEPTION
-* \brief VMF exception throw macro
+* \brief UMF exception throw macro
 * \param [in] ex exception type
 * \param[in] message text message that contains exception reason
 * \details Throw an exception of specified class with text message
 */
 #ifdef __GNUC__
-#define UMF_EXCEPTION(ex, message ) do { VMF_LOG_ERROR(message); \
+#define UMF_EXCEPTION(ex, message ) do { UMF_LOG_ERROR(message); \
                                     throw ( ex(message, __func__, __FILE__, __LINE__) ); } while(0)
 #else
 #define UMF_EXCEPTION(ex, message ) do { UMF_LOG_ERROR(message); \
@@ -298,7 +298,7 @@ public:
 };
 
 /*! \class InternalErrorException
-* \brief Throws as an exception when VMF library internal error occured
+* \brief Throws as an exception when UMF library internal error occured
 */
 class InternalErrorException : public Exception
 {

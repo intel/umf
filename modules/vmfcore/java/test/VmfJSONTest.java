@@ -1,11 +1,11 @@
 import java.util.HashMap;
 
-import com.intel.vmf.*;
-
 import static org.junit.Assert.*;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+
+import com.intel.umf.*;
 
 public class VmfJSONTest 
 {
@@ -192,7 +192,7 @@ public class VmfJSONTest
     {
         String text = "";
         
-        thrown.expect(com.intel.vmf.Exception.class);
+        thrown.expect(com.intel.umf.Exception.class);
         thrown.expectMessage("vmf::Exception: Empty input JSON string");
         json.parse(text);
     }

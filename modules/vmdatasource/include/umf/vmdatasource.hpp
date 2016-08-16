@@ -19,12 +19,12 @@ limitations under the License.*/
 
 namespace umf {
 /*!
- * \brief Prepares VMF internal objects for work
+ * \brief Prepares UMF internal objects for work
  */
 void UMF_EXPORT initialize();
 
 /*!
- * \brief Destroys VMF internal objects
+ * \brief Destroys UMF internal objects
  */
 void UMF_EXPORT terminate();
 

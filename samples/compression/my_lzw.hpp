@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef VMF_MY_LZW_HPP
-#define VMF_MY_LZW_HPP
+#ifndef UMF_MY_LZW_HPP
+#define UMF_MY_LZW_HPP
 
 #include "umf/umf.hpp"
 
@@ -40,5 +40,5 @@ public:
 };
 
 
-#endif /*VMF_MY_LZW_HPP */
+#endif /*UMF_MY_LZW_HPP */
 

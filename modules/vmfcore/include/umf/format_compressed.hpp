@@ -42,7 +42,7 @@ public:
      * \param format Shared pointer to instance of Format class
      * \param compressorId ID of compression algorithm
      * \param _ignoreUnknownCompressor Flag specifying what to do with unknown compressor:
-     * throw an exception (false) or pass compressed data as VMF metadata
+     * throw an exception (false) or pass compressed data as UMF metadata
      */
     FormatCompressed(std::shared_ptr<Format> format,
                      const std::string& compressorId,

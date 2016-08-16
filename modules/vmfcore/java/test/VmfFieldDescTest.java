@@ -1,12 +1,12 @@
-import com.intel.vmf.FieldDesc;
-import com.intel.vmf.Log;
-import com.intel.vmf.Variant;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.intel.umf.FieldDesc;
+import com.intel.umf.Log;
+import com.intel.umf.Variant;
 
 public class VmfFieldDescTest 
 {

@@ -3,8 +3,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intel.vmf.Compressor;
-import com.intel.vmf.Variant;
+import com.intel.umf.Compressor;
+import com.intel.umf.Variant;
 
 
 public class VmfCompressorTest {

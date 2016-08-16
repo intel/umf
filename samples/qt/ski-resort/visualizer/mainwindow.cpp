@@ -216,7 +216,7 @@ void MainWindow::changeGpsOutputState(int checkBoxState)
 void MainWindow::showAboutDialog()
 {
     QMessageBox::about(this, "About Visualizer",
-        "Visualizer is a desktop component of the VMF library Ski Resort sample. "
+        "Visualizer is a desktop component of the UMF library Ski Resort sample. "
         "Please see the User guide for more info.\n"
         "Copyright (C) 2013, Intel Corporation, all rights reserved.");
 }

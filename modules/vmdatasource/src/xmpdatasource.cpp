@@ -144,11 +144,11 @@ void XMPDataSource::loadXMPstructs()
         UMF_EXCEPTION(DataStorageException, "Failed to create metadata source or schema source");
     }
 
-    //load standard VMF metadata and decompress them if there is a corresponding schema
+    //load standard UMF metadata and decompress them if there is a corresponding schema
     //or pass them further
     try
     {
-        //load standard VMF metadata and decrypt them if there is a corresponding schema
+        //load standard UMF metadata and decrypt them if there is a corresponding schema
         //or pass them further
         std::map<umf_string, std::shared_ptr<MetadataSchema> > eSchemas;
         tmpSchemaSource->load(eSchemas);
@@ -204,7 +204,7 @@ void XMPDataSource::loadXMPstructs()
             }
         }
 
-        //load standard VMF metadata and decompress them if there is a corresponding schema
+        //load standard UMF metadata and decompress them if there is a corresponding schema
         //or pass them further
         std::map<umf_string, std::shared_ptr<MetadataSchema> > cSchemas;
         tmpSchemaSource->load(cSchemas);
@@ -290,7 +290,7 @@ void XMPDataSource::saveXMPstructs()
         string encoded;
         XMPUtils::EncodeToBase64 (compressed.data(), compressed.size(), &encoded);
 
-        //save compressed data as VMF metadata with corresponding schema
+        //save compressed data as UMF metadata with corresponding schema
         MetadataStream cStream;
         cStream.addSchema(schemaCompression);
         shared_ptr<Metadata> cMetadata;
@@ -337,7 +337,7 @@ void XMPDataSource::saveXMPstructs()
         string encoded;
         XMPUtils::EncodeToBase64(encrypted.data(), encrypted.size(), &encoded);
 
-        //save encrypted data as VMF metadata with corresponding schema
+        //save encrypted data as UMF metadata with corresponding schema
         MetadataStream eStream;
         eStream.addSchema(schemaEncryption);
         shared_ptr<Metadata> eMetadata;

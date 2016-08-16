@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intel.vmf.Encryptor;
-import com.intel.vmf.EncryptorDefault;
-import com.intel.vmf.Variant;
+import com.intel.umf.Encryptor;
+import com.intel.umf.EncryptorDefault;
+import com.intel.umf.Variant;
 
 
 public class VmfEncryptorTest {

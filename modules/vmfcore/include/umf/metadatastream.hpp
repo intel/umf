@@ -65,8 +65,8 @@ public:
         InMemory  = 0, /**< Stream data are in-memory */
         ReadOnly  = 1, /**< Open file for read only */
         Update = 2, /**< Open file for read and write */
-        IgnoreUnknownCompressor = 4, /**< Represent compressed data as VMF metadata if decompressor is unknown*/
-        IgnoreUnknownEncryptor = 8 /**< Represent encrypted data as VMF metadata if decryptor is unknown*/
+        IgnoreUnknownCompressor = 4, /**< Represent compressed data as UMF metadata if decompressor is unknown*/
+        IgnoreUnknownEncryptor = 8 /**< Represent encrypted data as UMF metadata if decryptor is unknown*/
     };
     typedef int OpenMode;
 

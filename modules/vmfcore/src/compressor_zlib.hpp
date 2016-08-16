@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_COMPRESSOR_ZLIB_HPP
-#define VMF_COMPRESSOR_ZLIB_HPP
+#ifndef UMF_COMPRESSOR_ZLIB_HPP
+#define UMF_COMPRESSOR_ZLIB_HPP
 
 #include "umf/compressor.hpp"
 
@@ -71,4 +71,4 @@ public:
 
 } /* umf */
 
-#endif /* VMF_COMPRESSOR_ZLIB_HPP */
+#endif /* UMF_COMPRESSOR_ZLIB_HPP */

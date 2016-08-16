@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef VMF_COMPRESS_COMMON_HPP
-#define VMF_COMPRESS_COMMON_HPP
+#ifndef UMF_COMPRESS_COMMON_HPP
+#define UMF_COMPRESS_COMMON_HPP
 
 #include "umf/umf.hpp"
 
@@ -26,4 +26,4 @@ void readAndDumpMetadata(const umf::umf_string& videoFile);
 int compress_builtin(const std::string& videoFile);
 int compress_custom(const std::string& videoFile);
 
-#endif //VMF_COMPRESS_COMMON_HPP
+#endif //UMF_COMPRESS_COMMON_HPP

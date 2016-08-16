@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef __VMF_DATA_SOURCE_INTERFACE_H__
-#define __VMF_DATA_SOURCE_INTERFACE_H__
+#ifndef __UMF_DATA_SOURCE_INTERFACE_H__
+#define __UMF_DATA_SOURCE_INTERFACE_H__
 
 /*!
 * \file datasource.hpp
@@ -93,13 +93,13 @@ public:
     virtual void load(std::map< umf_string, std::shared_ptr<MetadataSchema> >& schemas) = 0;
 
     /*!
-     * \brief Load saved next identifier for new VMF objects
+     * \brief Load saved next identifier for new UMF objects
      * \return new numeric identifier
      */
     virtual IdType loadId() = 0;
 
     /*!
-     * \brief Saved next identifier for new VMF objects
+     * \brief Saved next identifier for new UMF objects
      * \param id that will be saved
      */
     virtual void save(const IdType& id) = 0;
@@ -111,7 +111,7 @@ public:
     virtual void remove(const std::vector<IdType>& removedIds) = 0;
 
     /*!
-     * \brief Clears the file from VMF metadata
+     * \brief Clears the file from UMF metadata
      */
     virtual void clear() = 0;
 
@@ -190,4 +190,4 @@ public:
 
 } /* umf */
 
-#endif /* __VMF_DATA_SOURCE_INTERFACE_H__ */
+#endif /* __UMF_DATA_SOURCE_INTERFACE_H__ */

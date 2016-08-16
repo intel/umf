@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.intel.vmf.Log;
+import com.intel.umf.Log;
 
 
 public class VmfLogTest 

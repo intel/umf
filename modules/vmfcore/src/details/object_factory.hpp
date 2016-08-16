@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-#ifndef __VMF_OBJECT_FACTORY_HPP__
-#define __VMF_OBJECT_FACTORY_HPP__
+#ifndef __UMF_OBJECT_FACTORY_HPP__
+#define __UMF_OBJECT_FACTORY_HPP__
 
 #include <memory>
 #include "config.hpp"
@@ -62,4 +62,4 @@ private:
 
 } /* umf */
 
-#endif /* __VMF_OBJECT_FACTORY_HPP__ */
+#endif /* __UMF_OBJECT_FACTORY_HPP__ */

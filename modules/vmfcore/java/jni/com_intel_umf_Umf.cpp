@@ -1,0 +1,66 @@
+#include<string>
+#include<vector>
+#include "umf/metadatastream.hpp"
+#include "throwJavaException.hpp"
+#include <iostream>
+
+
+using namespace std;
+extern "C" {
+
+using namespace umf;
+
+/*
+* Class:     com_intel_umf_Umf
+* Method:    n_initialize
+* Signature: ()V
+*/
+JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1initialize(JNIEnv *env, jclass);
+
+
+JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1initialize (JNIEnv *env, jclass)
+{
+    static const char method_name[] = "umf::n_1initialize";
+    cout << "Tested ";
+    try
+    {
+        umf::initialize();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+}
+
+/*
+* Class:     com_intel_umf_Umf
+* Method:    n_terminate
+* Signature: ()V
+*/
+JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1terminate(JNIEnv *env, jclass);
+
+
+JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1terminate (JNIEnv *env, jclass)
+{
+    static const char method_name[] = "umf::n_1terminate";
+
+    try
+    {
+        umf::terminate();
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, &e, method_name);
+    }
+    catch (...)
+    {
+        throwJavaException(env, 0, method_name);
+    }
+}
+
+
+}

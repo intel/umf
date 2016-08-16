@@ -16,7 +16,7 @@
  */
 #include <gtest/gtest.h>
 #include "test_precomp.hpp"
-#include <vmf/umf.hpp>
+#include <umf/umf.hpp>
 #include "utils.hpp"
 
 #if TARGET_OS_IPHONE

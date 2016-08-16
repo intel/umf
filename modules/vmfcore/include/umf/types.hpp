@@ -20,7 +20,7 @@
 
 /*!
 * \file types.hpp
-* \brief Header file contains declarations of VMF numeric types
+* \brief Header file contains declarations of UMF numeric types
 */
 
 #include <cstdint>
