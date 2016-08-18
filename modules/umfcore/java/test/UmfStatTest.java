@@ -13,7 +13,7 @@ import com.intel.umf.StatField;
 import com.intel.umf.Variant;
 
 
-public class VmfStatTest {
+public class UmfStatTest {
 
     StatField sf1, sf2, sfX;
     Stat s;

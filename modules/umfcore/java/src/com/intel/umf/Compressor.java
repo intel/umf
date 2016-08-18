@@ -2,7 +2,7 @@ package com.intel.umf;
 
 public class Compressor {
 	
-	public static final String BUILTIN_ZLIB = "com.intel.vmf.compressor.zlib";
+	public static final String BUILTIN_ZLIB = "com.intel.umf.compressor.zlib";
 
     public final long nativeObj;
 

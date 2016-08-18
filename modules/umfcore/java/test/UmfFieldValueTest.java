@@ -10,7 +10,7 @@ import com.intel.umf.FieldValue;
 import com.intel.umf.Log;
 import com.intel.umf.Variant;
 
-public class VmfFieldValueTest 
+public class UmfFieldValueTest 
 {
     @BeforeClass
     public static void disableLogging()
@@ -49,7 +49,7 @@ public class VmfFieldValueTest
          fieldValue2.setTo(fieldValue4);
          
          thrown.expect(com.intel.umf.Exception.class);
-         thrown.expectMessage("vmf::Exception: Can't compare Variant objects with incompatible types");
+         thrown.expectMessage("umf::Exception: Can't compare Variant objects with incompatible types");
          assertFalse (fieldValue2.equals(fieldValue3));
     }
     
@@ -81,7 +81,7 @@ public class VmfFieldValueTest
          assertTrue (fieldValue1.equals (fieldValue2));
          
          thrown.expect(com.intel.umf.Exception.class);
-         thrown.expectMessage("vmf::Exception: Non-existent type.");
+         thrown.expectMessage("umf::Exception: Non-existent type.");
          fieldValue1.convertTo (14);
     }
     
@@ -89,7 +89,7 @@ public class VmfFieldValueTest
     public void testConvertIntToString ()
     {
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Cannot convert value to the target type!");
+        thrown.expectMessage("umf::Exception: Cannot convert value to the target type!");
         fieldValue2.convertTo (Variant.type_string);
     }
     

@@ -29,7 +29,7 @@ import com.intel.umf.Variant;
 import com.intel.umf.MetadataStream.VideoSegment;
 
 
-public class VmfMetadataStreamTest 
+public class UmfMetadataStreamTest 
 {
     @BeforeClass
     public static void disableLogging()
@@ -398,7 +398,7 @@ public class VmfMetadataStreamTest
         s2.setDuration(10000);
         stream.addVideoSegment (s1);
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Input segment intersects a one of the already created segments");
+        thrown.expectMessage("umf::Exception: Input segment intersects a one of the already created segments");
         stream.addVideoSegment (s2);
     }
     
@@ -407,7 +407,7 @@ public class VmfMetadataStreamTest
     {
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Segment contains empty 'title' value");
+        thrown.expectMessage("umf::Exception: Segment contains empty 'title' value");
         stream.addVideoSegment (s1);
     }
     
@@ -417,7 +417,7 @@ public class VmfMetadataStreamTest
         MetadataStream.VideoSegment s1 = new MetadataStream.VideoSegment();
         s1.setTitle("title");
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Segment contains invalid 'timeStart' value");
+        thrown.expectMessage("umf::Exception: Segment contains invalid 'timeStart' value");
         stream.addVideoSegment (s1);
     }
     
@@ -428,7 +428,7 @@ public class VmfMetadataStreamTest
         s1.setTitle("title");
         s1.setTime(0);
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Segment contains invalid 'FPS' value");
+        thrown.expectMessage("umf::Exception: Segment contains invalid 'FPS' value");
         stream.addVideoSegment (s1);
     }
     
@@ -437,7 +437,7 @@ public class VmfMetadataStreamTest
     {
         stream.open(dstFile, MetadataStream.ReadWrite);
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
+        thrown.expectMessage("umf::Exception: The previous file has not been closed!");
         stream.saveTo("stream.log");
     }
     
@@ -446,7 +446,7 @@ public class VmfMetadataStreamTest
     {
         stream.clear();
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: No files has been assosiated with this stream");
+        thrown.expectMessage("umf::Exception: No files has been assosiated with this stream");
         stream.reopen(MetadataStream.ReadOnly);
     }
 
@@ -456,7 +456,7 @@ public class VmfMetadataStreamTest
         stream.open(dstFile, MetadataStream.ReadWrite);
         
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: The previous file has not been closed!");
+        thrown.expectMessage("umf::Exception: The previous file has not been closed!");
         stream.reopen(MetadataStream.ReadWrite);
     }
     
@@ -467,7 +467,7 @@ public class VmfMetadataStreamTest
         stream.close();
         stream.clear();
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: The file path is emtpy!");
+        thrown.expectMessage("umf::Exception: The file path is emtpy!");
         stream.reopen(MetadataStream.ReadWrite);
     }
     
@@ -476,7 +476,7 @@ public class VmfMetadataStreamTest
     public void testAddSchemaThrow()
     {
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Metadata Schema already exists!");
+        thrown.expectMessage("umf::Exception: Metadata Schema already exists!");
         stream.addSchema(schema);
     }
     

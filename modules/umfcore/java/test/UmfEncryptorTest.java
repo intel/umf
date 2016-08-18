@@ -9,7 +9,7 @@ import com.intel.umf.EncryptorDefault;
 import com.intel.umf.Variant;
 
 
-public class VmfEncryptorTest {
+public class UmfEncryptorTest {
 
 	@Before
     public void setUp() {

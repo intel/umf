@@ -12,7 +12,7 @@ import com.intel.umf.Reference;
 import com.intel.umf.ReferenceDesc;
 import com.intel.umf.Variant;
 
-public class VmfReferenceTest 
+public class UmfReferenceTest 
 {
     @BeforeClass
     public static void disableLogging()

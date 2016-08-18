@@ -8,7 +8,7 @@ import com.intel.umf.FieldDesc;
 import com.intel.umf.Log;
 import com.intel.umf.Variant;
 
-public class VmfFieldDescTest 
+public class UmfFieldDescTest 
 {
     @BeforeClass
     public static void disableLogging()

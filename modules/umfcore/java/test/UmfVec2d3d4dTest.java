@@ -9,7 +9,7 @@ import com.intel.umf.umf_vec2d;
 import com.intel.umf.umf_vec3d;
 import com.intel.umf.umf_vec4d;
 
-public class VmfVec2d3d4dTest 
+public class UmfVec2d3d4dTest 
 {
     @BeforeClass
     public static void disableLogging()
@@ -38,7 +38,7 @@ public class VmfVec2d3d4dTest
     }
     
 	@Test
-    public void testVmfVec2d3d4d ()
+    public void testumfVec2d3d4d ()
     {
         assertEquals(1, v2d.getX(), 0.00001);
         assertEquals(2, v2d.getY(), 0.00001);

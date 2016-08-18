@@ -7,7 +7,7 @@ import com.intel.umf.Compressor;
 import com.intel.umf.Variant;
 
 
-public class VmfCompressorTest {
+public class UmfCompressorTest {
 
 	@Before
     public void setUp() {

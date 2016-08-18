@@ -14,7 +14,7 @@ import com.intel.umf.MetadataSchema;
 import com.intel.umf.ReferenceDesc;
 import com.intel.umf.Variant;
 
-public class VmfMetadataSchemaTest 
+public class UmfMetadataSchemaTest 
 {
     @BeforeClass
     public static void disableLogging()
@@ -84,7 +84,7 @@ public class VmfMetadataSchemaTest
         MetadataDesc mdDescs[] = schema.getAll();
         assertEquals(2, mdDescs.length);
         
-        String stdName = "vmf://ns.intel.com/vmf/std-dst-schema-1.0";
+        String stdName = "umf://ns.intel.com/umf/std-dst-schema-1.0";
         
         MetadataSchema std = MetadataSchema.getStdSchema();
         
@@ -101,7 +101,7 @@ public class VmfMetadataSchemaTest
     {
         schema.add(mdDesc1);
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Metadata with same name already exists!");
+        thrown.expectMessage("umf::Exception: Metadata with same name already exists!");
         schema.add(mdDesc1);
     }
     
@@ -109,7 +109,7 @@ public class VmfMetadataSchemaTest
     public void testCreateSchemaThrow()
     {
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Schema name can't be empty.");
+        thrown.expectMessage("umf::Exception: Schema name can't be empty.");
         @SuppressWarnings("unused")
         MetadataSchema newSchema = new MetadataSchema("");
     }

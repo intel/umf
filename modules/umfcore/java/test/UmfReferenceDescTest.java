@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.intel.umf.Log;
 import com.intel.umf.ReferenceDesc;
 
-public class VmfReferenceDescTest 
+public class UmfReferenceDescTest 
 {
     @BeforeClass
     public static void disableLogging()

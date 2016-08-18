@@ -17,7 +17,7 @@ import com.intel.umf.MetadataStream;
 import com.intel.umf.ReferenceDesc;
 import com.intel.umf.Variant;
 
-public class VmfMetadataSetTest
+public class UmfMetadataSetTest
 {
     @BeforeClass
     public static void disableLogging()
@@ -198,7 +198,7 @@ public class VmfMetadataSetTest
     	assertEquals(1, set.getSize());
 
     	thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Item index is out of range: 5");
+        thrown.expectMessage("umf::Exception: Item index is out of range: 5");
         set.erase(5);
     }
  }

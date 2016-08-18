@@ -14,7 +14,7 @@ import com.intel.umf.ReferenceDesc;
 import com.intel.umf.Variant;
 
 
-public class VmfMetadataDescTest 
+public class UmfMetadataDescTest 
 {
     @BeforeClass
     public static void disableLogging()
@@ -119,7 +119,7 @@ public class VmfMetadataDescTest
     public void testDeclareCustomReferenceThrown()
     {
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: This reference name already exist!");
+        thrown.expectMessage("umf::Exception: This reference name already exist!");
         mdDesc1.declareCustomReference ("friend", true);
     }
     
@@ -127,7 +127,7 @@ public class VmfMetadataDescTest
     public void testCreateThrown()
     {
         thrown.expect(com.intel.umf.Exception.class);
-        thrown.expectMessage("vmf::Exception: Invalid metadata descriprion type.");
+        thrown.expectMessage("umf::Exception: Invalid metadata descriprion type.");
         @SuppressWarnings("unused")
         MetadataDesc mdDesc = new MetadataDesc ("name", Variant.type_empty);
     }
