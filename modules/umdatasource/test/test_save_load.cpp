@@ -1383,7 +1383,7 @@ public:
 
     virtual umf::umf_string getId()
     {
-        return "com.intel.vmf.compressor.test.bloating";
+        return "com.intel.umf.compressor.test.bloating";
     }
 };
 
@@ -1403,7 +1403,7 @@ protected:
 
     void TearDown()
     {
-        umf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+        umf::Compressor::unregister("com.intel.umf.compressor.test.bloating");
         //umf::terminate();
     }
 };
@@ -1464,7 +1464,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
     std::string name = std::get<0>(GetParam());
     std::shared_ptr<umf::Encryptor> encryptor = umf::getEncryptor(std::get<1>(GetParam()));
 
-    if(name == "com.intel.vmf.compressor.test.bloating")
+    if(name == "com.intel.umf.compressor.test.bloating")
     {
         {
             umf::MetadataStream stream;
@@ -1490,7 +1490,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
             stream.close();
         }
 
-        umf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+        umf::Compressor::unregister("com.intel.umf.compressor.test.bloating");
 
         {
             umf::MetadataStream stream;
@@ -1499,7 +1499,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownCompressor)
                                                umf::MetadataStream::IgnoreUnknownCompressor));
             std::vector<std::string> schemaNames = stream.getAllSchemaNames();
             ASSERT_EQ(schemaNames.size(), 1u);
-            ASSERT_EQ(schemaNames[0], "com.intel.vmf.compressed-metadata");
+            ASSERT_EQ(schemaNames[0], "com.intel.umf.compressed-metadata");
         }
 
         //restore as it was before
@@ -1551,7 +1551,7 @@ TEST_P(TestSaveLoadCompressionEncryption, CheckIgnoreUnknownEncryption)
                                            umf::MetadataStream::IgnoreUnknownEncryptor));
         std::vector<std::string> schemaNames = stream.getAllSchemaNames();
         ASSERT_EQ(schemaNames.size(), 1);
-        ASSERT_EQ(schemaNames[0], "com.intel.vmf.encrypted-metadata");
+        ASSERT_EQ(schemaNames[0], "com.intel.umf.encrypted-metadata");
         ASSERT_TRUE(stream.load(schemaNames[0]));
         umf::MetadataSet eSet = stream.queryBySchema(schemaNames[0]);
         ASSERT_FALSE(eSet.empty());
@@ -1564,7 +1564,7 @@ INSTANTIATE_TEST_CASE_P(UnitTest, TestSaveLoadCompressionEncryption,
                         ::testing::Combine(
                             ::testing::Values(umf::Compressor::builtinId(),
                                               "unregistered",
-                                              "com.intel.vmf.compressor.test.bloating"),
+                                              "com.intel.umf.compressor.test.bloating"),
                             ::testing::Values(umf::CryptAlgo::DEFAULT, umf::CryptAlgo::WEAK, umf::CryptAlgo::NONE)
                             ));
 

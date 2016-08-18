@@ -17,7 +17,7 @@
 
 #include "test_precomp.hpp"
 
-TEST(TestVmfRawBuffer, operatorAssign)
+TEST(TestUmfRawBuffer, operatorAssign)
 {
     umf::umf_rawbuffer buf;
 
@@ -31,7 +31,7 @@ TEST(TestVmfRawBuffer, operatorAssign)
 }
 
 
-TEST(TestVmfRawBuffer, operatorAssignMove)
+TEST(TestUmfRawBuffer, operatorAssignMove)
 {
     std::string s = "Some string containing text";
 
@@ -41,7 +41,7 @@ TEST(TestVmfRawBuffer, operatorAssignMove)
 }
 
 
-TEST(TestVmfRawBuffer, Constructors)
+TEST(TestUmfRawBuffer, Constructors)
 {
     umf::umf_rawbuffer emptyRb;
     ASSERT_EQ(emptyRb.size(), 0u);

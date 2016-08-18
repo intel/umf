@@ -18,7 +18,7 @@ else()
     set(GTEST_HAS_CLONE 1)
 endif()
 
-set(GTEST_DIR ${VMF_3PTY_DIR}/gtest/fused-src)
+set(GTEST_DIR ${UMF_3PTY_DIR}/gtest/fused-src)
 
 set(GTEST_INCLUDE_DIR "${GTEST_DIR}" CACHE PATH "GTest lib include dir" )
 

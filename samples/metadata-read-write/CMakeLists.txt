@@ -7,15 +7,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 find_package(VMF)
 
-include_directories(${VMF_INCLUDE_DIR})
-link_directories(${VMF_LIB_DIR})
+include_directories(${UMF_INCLUDE_DIR})
+link_directories(${UMF_LIB_DIR})
 
-set(VIDEO_PATH "${VMF_DATA_DIR}/BlueSquare.avi")
+set(VIDEO_PATH "${UMF_DATA_DIR}/BlueSquare.avi")
 set(OUTPUT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}")
 
 file(GLOB SRC "*.cpp")
 add_executable(${PROJ_NAME} ${SRC})
-target_link_libraries(${PROJ_NAME} ${VMF_LIBS})
+target_link_libraries(${PROJ_NAME} ${UMF_LIBS})
 set_target_properties(${PROJ_NAME} PROPERTIES FOLDER "samples")
 
 file(TO_NATIVE_PATH "${VIDEO_PATH}" VIDEO_PATH)

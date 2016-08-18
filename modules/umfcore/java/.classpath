@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="VMF Java API/VMF_BIN_DIR"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="UMF Java API/UMF_BIN_DIR"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="test"/>

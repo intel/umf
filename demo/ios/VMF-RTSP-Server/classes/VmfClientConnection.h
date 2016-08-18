@@ -1,5 +1,5 @@
 //
-//  VmfClientConnection.h
+//  UmfClientConnection.h
 //  Encoder Demo
 //
 //  Created by Itseez on 05/04/16.
@@ -9,7 +9,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "RTSPServer.h"
 
-@interface VmfClientConnection : NSObject <CLLocationManagerDelegate>
+@interface UmfClientConnection : NSObject <CLLocationManagerDelegate>
 {
     CFSocketRef _dataSocket;
     
@@ -34,7 +34,7 @@
 @property (readwrite) bool isEmulatedGPS;
 @property (readwrite) bool useCompression;
 
-+ (VmfClientConnection*) createWithSocket:(CFSocketNativeHandle) s server:(RTSPServer*) server;
++ (UmfClientConnection*) createWithSocket:(CFSocketNativeHandle) s server:(RTSPServer*) server;
 - (void) onSocketData:(CFDataRef)data;
 - (void) sendMessage:(NSData*) msgData;
 - (void) toggleEmulatedGPS:(bool) enable;

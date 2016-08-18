@@ -692,7 +692,7 @@ TEST_P(TestSerialization, EncryptSchema)
 //don't check for incorrect compressors
 INSTANTIATE_TEST_CASE_P(UnitTest, TestSerialization,
                         ::testing::Combine(::testing::Values(TypeXML, TypeJson),
-                                           ::testing::Values("com.intel.vmf.compressor.zlib", ""),
+                                           ::testing::Values("com.intel.umf.compressor.zlib", ""),
                                            ::testing::Values(CryptAlgo::DEFAULT,
                                                              CryptAlgo::WEAK,
                                                              CryptAlgo::NONE)));

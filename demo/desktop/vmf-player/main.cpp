@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
     QmlVlcConfig& config = QmlVlcConfig::instance();
     config.enableDebug( false );
 
-    qmlRegisterType<MetadataProvider>("vmf3.demo.metadata", 1, 0, "MetadataProvider");
+    qmlRegisterType<MetadataProvider>("umf3.demo.metadata", 1, 0, "MetadataProvider");
 
-    qmlRegisterType<Location>("vmf3.demo.metadata", 1, 0, "Location");
-    qmlRegisterType<WrappingInfo>("vmf3.demo.metadata", 1, 0, "WrappingInfo");
-    qmlRegisterType<StatInfo>("vmf3.demo.metadata", 1, 0, "StatInfo");
+    qmlRegisterType<Location>("umf3.demo.metadata", 1, 0, "Location");
+    qmlRegisterType<WrappingInfo>("umf3.demo.metadata", 1, 0, "WrappingInfo");
+    qmlRegisterType<StatInfo>("umf3.demo.metadata", 1, 0, "StatInfo");
 
 #ifdef WIN32
     WSADATA wsa;

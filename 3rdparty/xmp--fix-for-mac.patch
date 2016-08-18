@@ -142,11 +142,11 @@ index 2f2d787..f312bb4 100644
  
  #enable_testing(true)
  
--add_subdirectory(${VMF_3PTY_DIR}/gtest)
+-add_subdirectory(${UMF_3PTY_DIR}/gtest)
 +if(BUILD_TESTS)
-+    add_subdirectory(${VMF_3PTY_DIR}/gtest)
++    add_subdirectory(${UMF_3PTY_DIR}/gtest)
 +endif()
- add_subdirectory(${VMF_3PTY_DIR}/xmp)
+ add_subdirectory(${UMF_3PTY_DIR}/xmp)
  add_subdirectory(modules)
  
 -- 

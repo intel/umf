@@ -7,9 +7,9 @@
     <key>CFBundleIdentifier</key>
     <string>org.vmf</string>
     <key>CFBundleVersion</key>
-    <string>${VMF_VERSION_MAJOR}.${VMF_VERSION_MINOR}</string>
+    <string>${UMF_VERSION_MAJOR}.${UMF_VERSION_MINOR}</string>
     <key>CFBundleShortVersionString</key>
-    <string>${VMF_VERSION_MAJOR}.${VMF_VERSION_MINOR}</string>
+    <string>${UMF_VERSION_MAJOR}.${UMF_VERSION_MINOR}</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundlePackageType</key>

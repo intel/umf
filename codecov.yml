@@ -7,5 +7,5 @@ coverage:
   - CMakeFiles/.*
   - test/.*
   - modules/vmdatasource/test/.*
-  - modules/vmfcore/test/.*
+  - modules/umfcore/test/.*
   - usr/lib/.*

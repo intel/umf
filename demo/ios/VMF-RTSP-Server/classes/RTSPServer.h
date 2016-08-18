@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h> 
-//#import "VmfClientConnection.h"
+//#import "UmfClientConnection.h"
 #include <sys/socket.h> 
 #include <netinet/in.h>
 
-@class VmfClientConnection;
+@class UmfClientConnection;
 
 @interface RTSPServer : NSObject
 
@@ -20,7 +20,7 @@
 + (RTSPServer*) setupListener:(NSData*) configData;
 
 - (NSData*) getConfigData;
-- (void) onVmfAccept:(CFSocketNativeHandle) childHandle;
+- (void) onUmfAccept:(CFSocketNativeHandle) childHandle;
 - (void) onVideoData:(NSArray*) data time:(double) pts;
 - (void) shutdownConnection:(id) conn;
 - (void) shutdownServer;
@@ -28,7 +28,7 @@
 - (void) toggleUseCompression:(bool) enable;
 
 @property (readwrite, atomic) int bitrate;
-@property (readwrite) VmfClientConnection* vmf;
+@property (readwrite) UmfClientConnection* umf;
 @property (readwrite) long long startVideoStreamTime;
 @property (readonly) bool isEmulatedGPS;
 @property (readonly) bool useCompression;

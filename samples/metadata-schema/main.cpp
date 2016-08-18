@@ -86,7 +86,7 @@ void demoLoadSchemaFromFile(const string& schemaFilePath, const string& schemaNa
 int main(int argc, char* argv[])
 {
 	string schemaFilePath("demo_schema.xml");
-	string schemaName("vmf://ns.intel.com/vmf/demo-schema-1.0");
+	string schemaName("umf://ns.intel.com/umf/demo-schema-1.0");
 	
 	string appPath = argv[0];
 #ifdef WIN32

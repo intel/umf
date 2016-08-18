@@ -89,12 +89,12 @@
 #define COMPRESSION_ALGO_PROP_NAME  "algo"
 #define COMPRESSED_DATA_PROP_NAME   "data"
 #define COMPRESSED_DATA_DESC_NAME   "compressed-metadata"
-#define COMPRESSED_DATA_SCHEMA_NAME "com.intel.vmf.compressed-metadata"
+#define COMPRESSED_DATA_SCHEMA_NAME "com.intel.umf.compressed-metadata"
 
 #define ENCRYPTION_HINT_PROP_NAME "hint"
 #define ENCRYPTED_DATA_PROP_NAME "data"
 #define ENCRYPTED_DATA_DESC_NAME "encrypted-metadata"
-#define ENCRYPTED_DATA_SCHEMA_NAME "com.intel.vmf.encrypted-metadata"
+#define ENCRYPTED_DATA_SCHEMA_NAME "com.intel.umf.encrypted-metadata"
 
 #define TAG_STAT "stat"
 #define TAG_STAT_FIELDS_ARRAY "fields-array"

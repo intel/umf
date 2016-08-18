@@ -53,8 +53,8 @@ elseif(${UNIX} AND ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -Wall")
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${VMF_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
-link_directories(${VMF_LIB_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${UMF_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
+link_directories(${UMF_LIB_DIR})
 
 if(WIN32)
     add_executable(ski_resort_visualizer WIN32
@@ -74,5 +74,5 @@ else()
     )
 endif()
 
-target_link_libraries(ski_resort_visualizer Qt5::Widgets ${OpenCV_LIBS} ${VMF_LIBS})
+target_link_libraries(ski_resort_visualizer Qt5::Widgets ${OpenCV_LIBS} ${UMF_LIBS})
 set_target_properties(ski_resort_visualizer PROPERTIES FOLDER "samples")

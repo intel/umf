@@ -65,10 +65,10 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -Wall")
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${OpenCV_INCLUDE_DIRS} ${VMF_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-link_directories(${VMF_LIB_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${OpenCV_INCLUDE_DIRS} ${UMF_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+link_directories(${UMF_LIB_DIR})
 
-set(CASCADES_PATH "${VMF_DATA_DIR}/haarcascade_frontalface_alt2.xml")
+set(CASCADES_PATH "${UMF_DATA_DIR}/haarcascade_frontalface_alt2.xml")
 set(CASCADES_OUTPUT "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}")
 
 file(TO_NATIVE_PATH "${CASCADES_PATH}" CASCADES_PATH)
@@ -102,7 +102,7 @@ else()
     )
 endif()
 
-target_link_libraries(photo_book Qt5::Widgets ${OpenCV_LIBS} ${VMF_LIBS})
+target_link_libraries(photo_book Qt5::Widgets ${OpenCV_LIBS} ${UMF_LIBS})
 set_target_properties(photo_book PROPERTIES FOLDER "samples")
 
 source_group(QtFiles FILES ${photo_book_QT_HEADERS} ${photo_book_FORMS_HEADERS}

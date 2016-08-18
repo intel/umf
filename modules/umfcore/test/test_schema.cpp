@@ -23,7 +23,7 @@ class TestMetadataSchema : public ::testing::Test
 protected:
     void SetUp()
     {
-        SCHEMA_NAME = "vmf:http://ns.intel.com/vmf/1.0";
+        SCHEMA_NAME = "umf:http://ns.intel.com/umf/1.0";
 
         EXPECT_NO_THROW(spSchema = std::shared_ptr< umf::MetadataSchema >( new umf::MetadataSchema( SCHEMA_NAME )));
 

@@ -21,7 +21,7 @@
 TEST(TestStdSchema, GetName)
 {
     std::string sn = umf::MetadataSchema::getStdSchemaName();
-    ASSERT_EQ(sn, "vmf://ns.intel.com/vmf/std-dst-schema-1.0");
+    ASSERT_EQ(sn, "umf://ns.intel.com/umf/std-dst-schema-1.0");
 }
 
 TEST(TestStdSchema, GetSchema)

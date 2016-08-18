@@ -60,7 +60,7 @@ public:
 
     virtual umf::umf_string getId()
     {
-        return "com.intel.vmf.compressor.test.bloating";
+        return "com.intel.umf.compressor.test.bloating";
     }
 };
 
@@ -78,7 +78,7 @@ protected:
 
     void TearDown()
     {
-        umf::Compressor::unregister("com.intel.vmf.compressor.test.bloating");
+        umf::Compressor::unregister("com.intel.umf.compressor.test.bloating");
         //umf::terminate();
     }
 
@@ -161,7 +161,7 @@ TEST_P(TestCompressor, CheckRegisteredIds)
     std::vector<umf_string> regIds = umf::Compressor::getRegisteredIds();
     std::set<umf_string> registeredIds(regIds.begin(), regIds.end());
     std::set<umf_string> knownIds = { Compressor::builtinId(),
-                                      "com.intel.vmf.compressor.test.bloating" };
+                                      "com.intel.umf.compressor.test.bloating" };
     ASSERT_EQ(registeredIds, knownIds);
 }
 
@@ -186,5 +186,5 @@ TEST_P(TestCompressor, TryRegisterExisting)
 INSTANTIATE_TEST_CASE_P(UnitTest, TestCompressor,
                         ::testing::Values(Compressor::builtinId(),
                                           "unregistered",
-                                          "com.intel.vmf.compressor.test.bloating"));
+                                          "com.intel.umf.compressor.test.bloating"));
 

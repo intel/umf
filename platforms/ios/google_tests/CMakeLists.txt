@@ -22,7 +22,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -stdlib=libc++")
 set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework vmf")
 
 file(GLOB SRC "../../../modules/vmdatasource/test/*.cpp"
-              "../../../modules/vmfcore/test/*.cpp"
+              "../../../modules/umfcore/test/*.cpp"
               "../../../3rdparty/gtest/fused-src/gtest/gtest-all.cc"
               "../../../3rdparty/gtest/fused-src/gtest/gtest.h"
               "../../../data/BlueSquare.avi")
@@ -30,7 +30,7 @@ file(GLOB SRC "../../../modules/vmdatasource/test/*.cpp"
 file(GLOB RSRC_FILES "../../../data/BlueSquare.avi")
 
 list(REMOVE_ITEM SRC "${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/vmdatasource/test/unit_test_ds.cpp")
-list(REMOVE_ITEM SRC "${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/vmfcore/test/test_main.cpp")
+list(REMOVE_ITEM SRC "${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/umfcore/test/test_main.cpp")
 list(APPEND SRC "${CMAKE_SOURCE_DIR}/main.mm")
 
 set (MY_HEADERS "${VMF_FRAMEWORK}/vmf.framework" "../../../3rdparty/gtest/fused-src/gtest/")

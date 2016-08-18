@@ -1,7 +1,7 @@
 #ifndef METADATAPROVIDER_H
 #define METADATAPROVIDER_H
 
-#include <vmf/vmf.hpp>
+#include <umf/umf.hpp>
 
 #include <QObject>
 #include <QPointF>

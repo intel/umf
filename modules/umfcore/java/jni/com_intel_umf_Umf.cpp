@@ -2,10 +2,8 @@
 #include<vector>
 #include "umf/metadatastream.hpp"
 #include "throwJavaException.hpp"
-#include <iostream>
 
 
-using namespace std;
 extern "C" {
 
 using namespace umf;
@@ -21,7 +19,6 @@ JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1initialize(JNIEnv *env, jclass)
 JNIEXPORT void JNICALL Java_com_intel_umf_Umf_n_1initialize (JNIEnv *env, jclass)
 {
     static const char method_name[] = "umf::n_1initialize";
-    cout << "Tested ";
     try
     {
         umf::initialize();

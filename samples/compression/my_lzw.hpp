@@ -35,7 +35,7 @@ public:
 
     virtual umf::umf_string getId()
     {
-        return "com.intel.vmf.compressor.example.my_lzw";
+        return "com.intel.umf.compressor.example.my_lzw";
     }
 };
 

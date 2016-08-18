@@ -6,14 +6,14 @@ include(3dparty/QmlVlc/QmlVlc.pri)
 INCLUDEPATH += 3dparty
 
 #== TODO replace by cmake procedure
-isEmpty(VMF_DIR) {
-    message("'VMF_DIR' variable is empty, the default value '../vmf-build/install' is used")
-    VMF_DIR = ../vmf-build/install
+isEmpty(UMF_DIR) {
+    message("'UMF_DIR' variable is empty, the default value '../vmf-build/install' is used")
+    UMF_DIR = ../vmf-build/install
 }
-INCLUDEPATH += $$VMF_DIR/include ../../../$$VMF_DIR/include
+INCLUDEPATH += $$UMF_DIR/include ../../../$$UMF_DIR/include
 
-LIBS += -L$$VMF_DIR/x64/lib -L$$VMF_DIR/x64/vc12/lib
-LIBS += -L../../../$$VMF_DIR/x64/lib -L../../../$$VMF_DIR/x64/vc12/lib
+LIBS += -L$$UMF_DIR/x64/lib -L$$UMF_DIR/x64/vc12/lib
+LIBS += -L../../../$$UMF_DIR/x64/lib -L../../../$$UMF_DIR/x64/vc12/lib
 
 CONFIG(debug, debug|release) {
     LIBS += -lvmfd

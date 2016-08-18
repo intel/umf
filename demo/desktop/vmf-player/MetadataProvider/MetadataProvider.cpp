@@ -36,8 +36,8 @@ static const std::string statName = "stat";
 
 static const size_t bufSize = 1 << 20;
 
-static const std::string streamCompressionId = "com.intel.vmf.compressor.zlib";
-static const std::string streamPassphrase = "VMF Demo passphrase!";
+static const std::string streamCompressionId = "com.intel.umf.compressor.zlib";
+static const std::string streamPassphrase = "UMF Demo passphrase!";
 
 #if defined(USE_NATIVE_ENDIAN)
 # define zzntohl(_sz) (_sz)
@@ -233,7 +233,7 @@ bool MetadataProvider::connect()
         {
             char buf[40000];
 
-            // VMF/VMF
+            // UMF/UMF
             ssize_t size = receiveMessageRaw(m_sock, buf, sizeof(buf));
             if ((size == 3) && (buf[0] == 'V') && (buf[1] == 'M') && (buf[2] == 'F'))
             {
@@ -307,7 +307,7 @@ void MetadataProvider::setWrappingStatus(std::shared_ptr<umf::Format> f,
     //check encryption status
     tmpCounter = f->parse(buf, tmpMetadata, tmpSchemas, tmpSegments,
                           tmpStats, tmpAttribs);
-    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.encrypted-metadata")
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.umf.encrypted-metadata")
     {
         toSetPassphrase = streamPassphrase;
     }
@@ -315,7 +315,7 @@ void MetadataProvider::setWrappingStatus(std::shared_ptr<umf::Format> f,
     tmpSchemas.clear();
     tmpCounter = compressionDetector.parse(buf, tmpMetadata, tmpSchemas,
                                            tmpSegments, tmpStats, tmpAttribs);
-    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.vmf.compressed-metadata")
+    if(tmpCounter.schemas && tmpSchemas[0]->getName() == "com.intel.umf.compressed-metadata")
     {
         toSetCompressionId = streamCompressionId;
     }
@@ -541,7 +541,7 @@ void MetadataProvider::updateLocations()
     stat->update(true);
 
     //grab statistics
-    m_statInfo->setCount((umf::vmf_integer)stat->getField(countStatName).getValue());
+    m_statInfo->setCount((umf::umf_integer)stat->getField(countStatName).getValue());
     m_statInfo->setMinLat(stat->getField(minStatName).getValue());
     m_statInfo->setAvgLat(stat->getField(avgStatName).getValue());
     m_statInfo->setLastLat(stat->getField(lastStatName).getValue());
