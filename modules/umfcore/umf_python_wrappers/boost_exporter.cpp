@@ -9,11 +9,26 @@
 #include "umf/umf.hpp"
 #include <boost/python/class.hpp>
 #include<boost/python.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/python/register_ptr_to_python.hpp>
+#define BOOST_PYTHON_STATIC_LIB
 
 using namespace std;
 using namespace boost::python;
 using namespace umf;
 
+
+
+namespace utils {
+
+	template< class T >
+	void register_shared_ptrs_to_python() {
+		namespace bpl = boost::python;
+		bpl::register_ptr_to_python< boost::shared_ptr< T > >();
+		bpl::register_ptr_to_python< boost::shared_ptr< const T > >();
+		bpl::implicitly_convertible< boost::shared_ptr< T >, boost::shared_ptr< const T > >();
+	}
+}
 
 double umf_vec2d_getX(const umf::umf_vec2d& self)
 {
@@ -82,9 +97,29 @@ std::string fieldDesc_getName(const umf::FieldDesc& self)
 	return self.name;
 }
 
-umf::Variant::Type fieldDesc_getType(const umf::FieldDesc& self)
+
+static boost::shared_ptr<umf::Variant> Variant_init_rawbuf(boost::python::object py_buffer)
 {
-	return self.type;
+	boost::python::object locals(boost::python::borrowed(PyEval_GetLocals()));
+	boost::python::object py_iter = locals["__builtins__"].attr("iter");
+	boost::python::stl_input_iterator<char> begin(
+		py_iter(py_buffer)), end;
+
+	// Copy the py_buffer into a local buffer with known continguous memory.
+	std::vector<char> buffer(begin, end);
+	return boost::shared_ptr<umf::Variant>(new Variant(buffer));
+}
+
+
+int Variant_getType(const umf::Variant &self)
+{
+	return (int)self.getType();
+}
+
+
+int fieldDesc_getType(const umf::FieldDesc& self)
+{
+	return (int)self.type;
 }
 
 bool fieldDesc_optional(const umf::FieldDesc& self)
@@ -109,6 +144,11 @@ void fieldValue_clear(umf::FieldValue& self)
 void logwrap( const umf::LogLevel level, const std::string& msg, const std::string& func, const std::string&file, int line)
 {
 	Log::log(level, msg, func, file, line);
+}
+
+void Log_setVerbosityLevel(const umf::Log &self, int level)
+{
+	self.setVerbosityLevel((umf::LogLevel) level);
 }
 
 const int LOG_INFOW = umf::LogLevel::LOG_INFO;
@@ -159,22 +199,26 @@ bool MetadataStream_load2(umf::MetadataStream& self, const std::string& sSchemaN
 }
 
 
-void MetadataStream_add1(umf::MetadataStream& self, std::shared_ptr<Stat>& stat)
+void MetadataStream_add1(umf::MetadataStream& self, umf::Stat &stat)
 {
-	self.add(stat);
+	self.add(std::make_shared<umf::Stat>(stat));
 }
 
-void MetadataStream_add2(umf::MetadataStream& self, std::shared_ptr<MetadataSchema> spSchema)
+void MetadataStream_add2(umf::MetadataStream& self, umf::MetadataSchema &spSchema)
 {
-	self.add(spSchema);
+	self.add(std::make_shared<umf::MetadataSchema>(spSchema));
 }
 
 
-void MetadataStream_add3(umf::MetadataStream& self, std::shared_ptr<umf::MetadataStream::VideoSegment> newSegment)
+void MetadataStream_add3(umf::MetadataStream& self, umf::MetadataStream::VideoSegment& newSegment)
 {
-	self.add(newSegment);
+	self.add(std::make_shared<umf::MetadataStream::VideoSegment>(newSegment));
 }
 
+void MetadataStream_add4(umf::MetadataStream &self, umf::Metadata& metadata)
+{
+	self.add(std::make_shared<umf::Metadata>(metadata));
+}
 
 bool  MetadataStream_remove1(umf::MetadataStream& self, const umf::IdType& id)
 {
@@ -256,6 +300,92 @@ bool ReferenceDesc_isCustom(const umf::ReferenceDesc &self)
 
 }
 
+bool MetadataStream_open(umf::MetadataStream &self,const std::string &str, int mode)
+{
+	return self.open(str, (umf::MetadataStream::OpenMode)mode);
+}
+
+static boost::shared_ptr<umf::MetadataDesc> MetadataDesc_init1(const std::string& str, boost::python::list list)
+{
+	std::vector<umf::FieldDesc> list_to_vec;
+	for (int i = 0; i < len(list); i++)
+	{
+		list_to_vec.push_back(boost::python::extract<umf::FieldDesc>(list[i]));
+	}
+	return boost::shared_ptr<umf::MetadataDesc>(new umf::MetadataDesc(str, list_to_vec,false));
+
+}
+
+
+void MetadataSchema_add(umf::MetadataSchema self, umf::MetadataDesc &desc)
+{
+	self.add(std::make_shared<MetadataDesc>(desc));
+}
+
+
+boost::python::list MetadataStream_getAllSchemaNames(umf::MetadataStream &self)
+{
+	boost::python::list l;
+	std::vector<string> schemaNamesVector = self.getAllSchemaNames();
+	for (std::string s : schemaNamesVector)
+	{
+		l.append(s);
+	}
+	return l;
+}
+
+static boost::shared_ptr<umf::Metadata> Metadata_init(umf::MetadataDesc desc)
+{
+	return boost::shared_ptr<umf::Metadata>(new umf::Metadata(std::make_shared<umf::MetadataDesc>(desc)));
+}
+
+void MetadataStream_addSchema(umf::MetadataStream &self, umf::MetadataSchema mdSchema)
+{
+	self.addSchema(std::make_shared<umf::MetadataSchema> (mdSchema));
+}
+
+
+static boost::shared_ptr<umf::Stat> Stat_init(std::string& str, boost::python::list &l)
+{
+	std::vector<umf::StatField> sfVect;
+	boost::python::ssize_t len = boost::python::len(l);
+	for (int i = 0; i < len; i++)
+	{
+		sfVect.push_back(boost::python::extract<umf::StatField>(l[i]));
+	}
+	return boost::shared_ptr<umf::Stat>(new umf::Stat(str, sfVect));
+}
+
+
+void Encryptor_encrypt(umf::Encryptor &self, const std::string &input)
+{
+	umf::umf_rawbuffer output;
+	self.encrypt(input, output);
+}
+
+std::string Encryptor_decrypt(umf::Encryptor &self, const umf::Variant &data)
+{
+	std::string text;
+	self.decrypt(data.get_rawbuffer(), text);
+	return text;
+}
+
+
+
+void EncryptorDefault_encrypt(umf::EncryptorDefault &self, const std::string &input)
+{
+	umf::umf_rawbuffer output;
+	self.encrypt(input, output);
+}
+
+std::string EncryptorDefault_decrypt(umf::EncryptorDefault &self, const umf::Variant &data)
+{
+	std::string text;
+	self.decrypt(data.get_rawbuffer(), text);
+	return text;
+}
+
+
 BOOST_PYTHON_MODULE(umflib) {
 	
 	//UMF initialize and terminate functions
@@ -291,6 +421,7 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("equals", &umf::umf_vec4d::operator==)
 		;
 
+
 	//statfield class
 	class_<umf::StatField>("StatField")
 		.def(init < std::string, std::string, std::string, std::string, std::string>())
@@ -308,7 +439,8 @@ BOOST_PYTHON_MODULE(umflib) {
 
 	//function pointer for update
 	void    (umf::Stat::*u1)(bool) = &umf::Stat::update;
-	class_<umf::Stat>("Stat", init<std::string, const std::vector< StatField >&>())
+	class_<umf::Stat>("Stat",no_init )
+		.def("__init__",Stat_init)
 		.def("getName", &umf::Stat::getName)
 		.def("getState", &umf::Stat::getState)
 		.def("setUpdateMode", &umf::Stat::setUpdateMode)
@@ -330,6 +462,7 @@ BOOST_PYTHON_MODULE(umflib) {
 		;
 
 
+
 	//Variant class
 	//FP's for fromString
 	void	(umf::Variant::*fromString1)(umf::Variant::Type, const std::string&) = &umf::Variant::fromString;
@@ -349,12 +482,13 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def(init<const std::vector<umf::umf_vec2d>&>())
 		.def(init<const std::vector<umf::umf_vec3d>&>())
 		.def(init<const std::vector<umf::umf_vec4d>&>())
+		.def("__init__",Variant_init_rawbuf)
 		.def("convertTo", &umf::Variant::convertTo)
 		.def("base64decode", &umf::Variant::base64decode)
 		.def("base64encode", &umf::Variant::base64encode)
 		.def("fromString", fromString1)
 		.def("fromString", fromString2)
-		.def("getType", &umf::Variant::getType)
+		.def("getType", Variant_getType)
 		.def("getTypeName", &umf::Variant::getTypeName)
 		.def("get_integer", boost::python::make_function(&umf::Variant::get_integer, boost::python::return_value_policy<boost::python::copy_const_reference>()))
 		.def("get_integer_vector", boost::python::make_function(&umf::Variant::get_integer_vector, boost::python::return_value_policy<boost::python::copy_const_reference>()))
@@ -380,8 +514,9 @@ BOOST_PYTHON_MODULE(umflib) {
 
 	
 	//Compressor class
-	class_<umf::Compressor,boost::noncopyable>("Compressor",no_init)
+	class_<umf::Compressor, boost::noncopyable>("Compressor", no_init)
 		.def("create", &umf::Compressor::create)
+		.staticmethod("create")
 		.def("createNewInstance", &umf::Compressor::createNewInstance)
 		.def("compress", &umf::Compressor::compress)
 		.def("builtinId", &umf::Compressor::builtinId)
@@ -395,16 +530,16 @@ BOOST_PYTHON_MODULE(umflib) {
 
 	//Encryptor class
 	class_<umf::Encryptor, boost::noncopyable >("Encryptor", no_init)
-		.def("encrypt", &umf::Encryptor::encrypt)
-		.def("decrypt",&umf::Encryptor::decrypt)
+		.def("encrypt", Encryptor_encrypt)
+		.def("decrypt",Encryptor_decrypt)
 		.def("getHint",&umf::Encryptor::getHint)
 		;
 	
 
 	//EncryptorDefault class
 	class_<umf::EncryptorDefault>("EncryptorDefault", init<std::string>())
-		.def("encrypt",&umf::EncryptorDefault::encrypt)
-		.def("decrypt",&umf::EncryptorDefault::decrypt)
+		.def("encrypt", EncryptorDefault_encrypt)
+		.def("decrypt",EncryptorDefault_decrypt)
 		.def("getHint",&umf::EncryptorDefault::getHint)
 		;
 
@@ -509,6 +644,7 @@ BOOST_PYTHON_MODULE(umflib) {
 
 	//FieldDesc class
 	class_<umf::FieldDesc>("FieldDesc")
+		.def(init<std::string>())
 		.def("__init__",make_constructor(fieldDescConst1))
 		.def(init<std::string,umf::Variant::Type,bool>())
 		.def("equals", &umf::FieldDesc::operator==)
@@ -580,14 +716,15 @@ BOOST_PYTHON_MODULE(umflib) {
 	class_<umf::Log>("Log")
 		.def("log", logwrap)
 		.staticmethod("log")
-		.def("setVerbosityLevel", &umf::Log::setVerbosityLevel)
+		.def("setVerbosityLevel", Log_setVerbosityLevel)
 		.def("getVerbosityLevel", &umf::Log::getVerbosityLevel)
 		.def("setLogToConsole", &umf::Log::logToConsole)
 		.def("setLogToFile", &umf::Log::logToFile)
 		;
 
 	//MetaData class
-	class_<umf::Metadata>("Metadata", init<std::shared_ptr< MetadataDesc >&, bool>())
+	class_<umf::Metadata>("Metadata",no_init)
+		.def("__init__", make_constructor(Metadata_init))
 		.def("getId", &umf::Metadata::getId)
 		.def("getFrameIndex", &umf::Metadata::getFrameIndex)
 		.def("getNumOfFrames", &umf::Metadata::getNumOfFrames)
@@ -622,7 +759,7 @@ BOOST_PYTHON_MODULE(umflib) {
 	// MetadataDesc
 	class_<umf::MetadataDesc>("MetadataDesc")
 		.def(init<std::string, umf::Variant::Type>())
-		.def(init<std::string, std::vector< FieldDesc >&>())
+		.def("__init__",make_constructor(MetadataDesc_init1))
 		.def(init<std::string, std::vector< FieldDesc >&, std::vector<std::shared_ptr<ReferenceDesc>>&>())
 		.def("getMetadataName", &umf::MetadataDesc::getMetadataName)
 		.def("getSchemaName", &umf::MetadataDesc::getSchemaName)
@@ -645,7 +782,7 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("getName", &umf::MetadataSchema::getName)
 		.def("getAuthor", &umf::MetadataSchema::getAuthor)
 		.def("size", &umf::MetadataSchema::size)
-		.def("add", &umf::MetadataSchema::add)
+		.def("add", MetadataSchema_add)
 		.def("findMetadataDesc", &umf::MetadataSchema::findMetadataDesc)
 		.def("getAll", &umf::MetadataSchema::getAll)
 		.def("getStdSchemaName", &umf::MetadataSchema::getStdSchemaName)
@@ -672,7 +809,7 @@ BOOST_PYTHON_MODULE(umflib) {
 
 	//MetaDataStream class
 	class_<umf::MetadataStream>("MetadataStream")
-		.def("open", &umf::MetadataStream::open)
+		.def("open", MetadataStream_open)
 		.def("reopen", &umf::MetadataStream::reopen)
 		.def("load", MetadataStream_load1)
 		.def("load", MetadataStream_load2)
@@ -683,13 +820,14 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("add", MetadataStream_add1)
 		.def("add", MetadataStream_add2)
 		.def("add", MetadataStream_add3)
+		.def("add", MetadataStream_add4)
 		.def("remove", MetadataStream_remove1)
 		.def("remove", MetadataStream_remove2)
 		.def("remove", MetadataStream_remove3)
 		.def("remove", MetadataStream_remove4)
-		.def("addSchema", &umf::MetadataStream::addSchema)
+		.def("addSchema", MetadataStream_addSchema)
 		.def("getSchema", &umf::MetadataStream::getSchema)
-		.def("getAllSchemaNames", &umf::MetadataStream::getAllSchemaNames)
+		.def("getAllSchemaNames", MetadataStream_getAllSchemaNames)
 		.def("getAll", &umf::MetadataStream::getAll)
 		.def("importSet", MetadataStream_import1)
 		.def("importSet", MetadataStream_import2)
@@ -716,7 +854,6 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("queryByReference", MetadataStream_queryByReference2)
 		;
 
-
 	// Reference class
 		class_<umf::Reference>("Reference")
 		.def(init<std::shared_ptr<ReferenceDesc>&, std::weak_ptr<Metadata>&>())
@@ -735,4 +872,8 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("isCustom", ReferenceDesc_isCustom)
 		;
 
+
+	//register c++ types to python
+	utils::register_shared_ptrs_to_python<umf::MetadataSchema >();
+	boost::python::register_ptr_to_python<std::shared_ptr<umf::MetadataSchema>>();
 }

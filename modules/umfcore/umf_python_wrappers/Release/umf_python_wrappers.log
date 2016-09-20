@@ -1,3 +1,9 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (BoostPythonTest.vcxproj, umf_python_wrappers.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (umf_python_wrappers.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   boost_exporter.cpp
-boost_exporter.cpp(3): fatal error C1083: Cannot open include file: 'boost/python/module.hpp': No such file or directory
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(1189,5): warning MSB8012: TargetPath(C:\Dev\UMF\build\Release\umf_python_wrappers.dll) does not match the Linker's OutputFile property value (C:\Dev\UMF\build\Release\umflib.pyd). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(1190,5): warning MSB8012: TargetExt(.dll) does not match the Linker's OutputFile property value (.pyd). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(1191,5): warning MSB8012: TargetName(umf_python_wrappers) does not match the Linker's OutputFile property value (umflib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+     Creating library C:\Dev\UMF\build\Release\umf_python_wrappers.lib and object C:\Dev\UMF\build\Release\umf_python_wrappers.exp
+  umf_python_wrappers.vcxproj -> C:\Dev\UMF\build\Release\umf_python_wrappers.dll
+  umf_python_wrappers.vcxproj -> C:\Dev\UMF\build\Release\umf_python_wrappers.pdb (Full PDB)

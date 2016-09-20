@@ -56,7 +56,6 @@ bool MetadataStream::open(const std::string& sFilePath, MetadataStream::OpenMode
         addedIds.clear();
         videoSegments.clear();
         for (auto& stat : m_stats) stat->clear();
-
         m_sFilePath = sFilePath;
         //encryption of all scopes except whole stream should be performed by MetadataStream
         //dataSource should know nothing about that
@@ -479,11 +478,11 @@ void MetadataStream::addSchema( std::shared_ptr< MetadataSchema > spSchema )
         UMF_EXCEPTION(IncorrectParamException, "Metadata Schema name cannot be empty!" );
     }
 
-    auto it = m_mapSchemas.find( sSchemaName );
-    if( it != m_mapSchemas.end())
-    {
-        UMF_EXCEPTION(IncorrectParamException, "Metadata Schema already exists!" );
-    }
+    //auto it = m_mapSchemas.find( sSchemaName );
+    //if( it != m_mapSchemas.end())
+    //{
+    //    UMF_EXCEPTION(IncorrectParamException, "Metadata Schema already exists!" );
+    //}
 
     m_mapSchemas[ sSchemaName ] = spSchema;
 }

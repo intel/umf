@@ -64,7 +64,7 @@ public:
     /*!
     * \brief Class destructor
     */
-    virtual ~MetadataSchema(void);
+    ~MetadataSchema(void);
 
     /*!
     * \brief Get schema name
