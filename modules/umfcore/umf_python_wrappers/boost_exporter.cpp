@@ -188,6 +188,17 @@ FieldDesc& MetadataDesc_getFieldDesc2(umf::MetadataDesc& self, const std::string
 	return self.getFieldDesc(sFieldName);
 }
 
+std::string VideoSegment_getResolution(umf::MetadataStream::VideoSegment &self)
+{
+	long width;
+	long height;
+	std::string result;
+	self.getResolution(width, height);
+	result = width + "," + height;
+	return result;
+}
+
+
 bool MetadataStream_load1(umf::MetadataStream& self, const std::string & sSchemaName)
 {
 	return self.load(sSchemaName);
@@ -803,7 +814,7 @@ BOOST_PYTHON_MODULE(umflib) {
 		.def("setDuration", &umf::MetadataStream::VideoSegment::setDuration)
 		.def("getTime", &umf::MetadataStream::VideoSegment::getTime)
 		.def("setTime", &umf::MetadataStream::VideoSegment::setTime)
-		.def("getResolution", &umf::MetadataStream::VideoSegment::getResolution)
+		.def("getResolution", VideoSegment_getResolution)
 		.def("setResolution", &umf::MetadataStream::VideoSegment::setResolution)
 		;
 

@@ -50,8 +50,6 @@ gpsMetadata= umflib.Metadata(gpsDesc)
 
 gpsMetadata.setFieldValue(GPS_COORD_FIELD,umflib.Variant(GPS_METADATA_ITEM1))
 gpsMetadata.setFieldValue(GPS_TIME_FIELD, umflib.Variant(t))
-print(gpsMetadata.hasField(GPS_TIME_FIELD))
-print(mdStream.getSchema(GPS_SCHEMA_NAME).getName())
 mdStream.add(gpsMetadata)
 
 mdStream.save();

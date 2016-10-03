@@ -5,3 +5,5 @@
 /build*/
 /.travis.yml.swp
 /coveralls.yml~
+*.log
+*.tlog
