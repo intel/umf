@@ -32,3 +32,5 @@ The library uses the following 3rd party components:
 The UMF SDK uses Doxygen (www.doxygen.org) for API Specification generation.
 
 See docs/UMF_User_guide.pdf for instructions on building and using UMF.
+
+Contact the project lead Erik Niemeyer (GitHub UserID "eaniemey") with questions or comments.
