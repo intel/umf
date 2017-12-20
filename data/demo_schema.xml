@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <umf nextId="0" filepath="" checksum="">
+<metadata-array>
   <schemas-array>
     <schema name="umf://ns.intel.com/umf/demo-schema-1.0" author="Intel">
       <description name="table2">
@@ -17,5 +18,5 @@
       </description>
     </schema>
   </schemas-array>
-  <metadata-array/>
+  </metadata-array>
 </umf>
