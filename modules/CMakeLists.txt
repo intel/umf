@@ -16,7 +16,6 @@ macro(append_target_property _target _property _value)
 endmacro()
 
 if(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251")
     add_definitions(-DUNICODE)
     add_definitions(-DLIBXML_STATIC)
