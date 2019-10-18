@@ -20,7 +20,7 @@
 
 #include <memory>
 
-#if !defined(_MSC_FULL_VER) || _MSC_FULL_VER < 190023026
+#if !defined(__GNUC__) && !defined(__INTEL_CXX11_MODE__) && _MSC_FULL_VER < 190023026
   // MSVC before 2015 doesn't support 'noexcept'
   #define _ALLOW_KEYWORD_MACROS 1
   #define noexcept throw()
